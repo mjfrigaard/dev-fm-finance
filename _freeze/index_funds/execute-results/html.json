@@ -1,0 +1,15 @@
+{
+  "hash": "7a4e0ca04085180d9dc57da67ccd31c0",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Index Funds\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

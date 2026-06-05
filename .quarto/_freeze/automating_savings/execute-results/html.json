@@ -1,0 +1,15 @@
+{
+  "hash": "d78f3da50b9bb584f80ae8f5dda569ba",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Automating Savings\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

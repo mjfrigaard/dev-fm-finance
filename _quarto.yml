@@ -1,0 +1,61 @@
+project:
+  type: website
+
+website:
+  title: "DEV (fm-finance)"
+  navbar:
+    left:
+      - text: "Foundations"
+        menu:
+          - income.qmd
+          - budgeting.qmd
+          - tracking_spending.qmd
+          - emergency_fund.qmd
+          - managing_debt.qmd
+      - text: "Savings"
+        menu:
+          - savings_strategies.qmd
+          - high_yield_accounts.qmd
+          - automating_savings.qmd
+      - text: "Investing"
+        menu:
+          - investing_basics.qmd
+          - retirement_accounts.qmd
+          - index_funds.qmd
+          - asset_allocation.qmd
+      - text: "Taxes & Insurance"
+        menu:
+          - taxes.qmd
+          - insurance.qmd
+      - text: "Planning"
+        menu:
+          - financial_goals.qmd
+          - major_purchases.qmd
+          - estate_planning.qmd
+
+format:
+  html:
+    theme: [flatly, custom.scss]
+    highlight-style: arrow
+    toc: true
+    toc-depth: 5
+    toc-location: right
+    toc-expand: 3
+    toc-title: Contents
+    code-link: false
+    code-block-bg: "#f8f8f8"
+    code-block-border-left: "#99bbc9"
+    code-annotations: hover
+    number-sections: true
+    callout-appearance: simple
+    code-fold: show
+    code-summary: 'show/hide'
+    df-print: tibble
+    dpi: 320
+    fig-format: retina
+    fig-asp: 0.618
+    fontsize: 1.025em
+    linestretch: 1.30
+
+execute:
+  freeze: auto

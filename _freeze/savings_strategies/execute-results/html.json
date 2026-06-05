@@ -1,0 +1,15 @@
+{
+  "hash": "6a462e36e28c06edc09ddc03294ab8fa",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Savings Strategies\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hash": "0567fa3255aa1b4b6641cbbd561f38da",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Asset Allocation\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

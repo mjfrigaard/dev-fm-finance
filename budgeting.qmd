@@ -1,0 +1,29 @@
+---
+title: "Budgeting"
+---
+
+```{r}
+#| label: setup-r
+#| message: false
+#| warning: false
+#| include: false
+library(tidyverse)
+reticulate::py_require(c("numpy", "pandas"))
+```
+
+```{python}
+#| label: setup-py
+#| include: false
+import pandas as pd
+import numpy as np
+```
+
+## Budgeting Math
+
+### Percentages (Your Most-Used Skill) {.unnumbered}
+
+### Annualizing and Monthly-izing {.unnumbered}
+
+### Opportunity Cost Math {.unnumbered}
+
+### Break-Even and Payback Calculations {.unnumbered}

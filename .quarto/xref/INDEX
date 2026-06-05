@@ -1,0 +1,56 @@
+{
+  "budgeting.qmd": {
+    "budgeting.html": "a883573c"
+  },
+  "estate_planning.qmd": {
+    "estate_planning.html": "fae691b7"
+  },
+  "investing_basics.qmd": {
+    "investing_basics.html": "85ddacce"
+  },
+  "index_funds.qmd": {
+    "index_funds.html": "97a5b20d"
+  },
+  "major_purchases.qmd": {
+    "major_purchases.html": "86cd84c2"
+  },
+  "high_yield_accounts.qmd": {
+    "high_yield_accounts.html": "e8dc6ab0"
+  },
+  "tracking_spending.qmd": {
+    "tracking_spending.html": "984097ac"
+  },
+  "automating_savings.qmd": {
+    "automating_savings.html": "65124f9d"
+  },
+  "taxes.qmd": {
+    "taxes.html": "52a9ada6"
+  },
+  "managing_debt.qmd": {
+    "managing_debt.html": "8ae905c6"
+  },
+  "index.qmd": {
+    "index.html": "af8093b8"
+  },
+  "income.qmd": {
+    "income.html": "f06065d7"
+  },
+  "asset_allocation.qmd": {
+    "asset_allocation.html": "f6302ae9"
+  },
+  "retirement_accounts.qmd": {
+    "retirement_accounts.html": "e13d65ae"
+  },
+  "financial_goals.qmd": {
+    "financial_goals.html": "c72c1f9c"
+  },
+  "savings_strategies.qmd": {
+    "savings_strategies.html": "f6885b80"
+  },
+  "insurance.qmd": {
+    "insurance.html": "d27c2b85"
+  },
+  "emergency_fund.qmd": {
+    "emergency_fund.html": "30adf82b"
+  }
+}

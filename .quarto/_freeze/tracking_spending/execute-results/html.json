@@ -1,0 +1,15 @@
+{
+  "hash": "8b138a27ba9594e56b45b40068555f5a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Tracking Spending\"\n---\n\n\n\n\n\n## Math for tracking spending\n\n### The Subscription Audit Math {.unnumbered}\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

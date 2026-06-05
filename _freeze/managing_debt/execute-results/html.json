@@ -1,0 +1,15 @@
+{
+  "hash": "43e45e34c76b4202006e5f660dc41dfd",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Managing Debt\"\n---\n\n\n\n\n\n## Math for Managing Debt\n\n### APR vs. APY: Know What You're Actually Paying {.unnumbered}\n\n### The True Cost of Minimum Payments {.unnumbered}\n\n### Total Interest Paid Over a Loan's Life {.unnumbered}\n\n### Debt-to-Income Ratio (DTI) {.unnumbered}\n\n### The Pay-Off vs. Invest Comparison {.unnumbered}\n\n### The Avalanche vs. Snowball Math {.unnumbered}\n\n### The Credit Utilization Ratio {.unnumbered}\n\n## Putting the Math to Work\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

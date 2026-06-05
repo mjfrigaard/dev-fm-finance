@@ -1,0 +1,15 @@
+{
+  "hash": "b68f5288290886423679a90896ad5ef7",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Financial Goals\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

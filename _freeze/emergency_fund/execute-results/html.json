@@ -1,0 +1,15 @@
+{
+  "hash": "b6f866fcd7ccfb846eeac80c38d8d4d6",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Emergency Fund\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

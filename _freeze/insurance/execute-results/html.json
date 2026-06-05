@@ -1,0 +1,15 @@
+{
+  "hash": "ffde60dfa0c9c96b7c3de82d34d5d35f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Insurance\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

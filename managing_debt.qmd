@@ -1,0 +1,37 @@
+---
+title: "Managing Debt"
+---
+
+```{r}
+#| label: setup-r
+#| message: false
+#| warning: false
+#| include: false
+library(tidyverse)
+reticulate::py_require(c("numpy", "pandas"))
+```
+
+```{python}
+#| label: setup-py
+#| include: false
+import pandas as pd
+import numpy as np
+```
+
+## Math for Managing Debt
+
+### APR vs. APY: Know What You're Actually Paying {.unnumbered}
+
+### The True Cost of Minimum Payments {.unnumbered}
+
+### Total Interest Paid Over a Loan's Life {.unnumbered}
+
+### Debt-to-Income Ratio (DTI) {.unnumbered}
+
+### The Pay-Off vs. Invest Comparison {.unnumbered}
+
+### The Avalanche vs. Snowball Math {.unnumbered}
+
+### The Credit Utilization Ratio {.unnumbered}
+
+## Putting the Math to Work

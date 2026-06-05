@@ -1,0 +1,15 @@
+{
+  "hash": "45f1d8a01c544425755400446998f36d",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Investing Basics\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

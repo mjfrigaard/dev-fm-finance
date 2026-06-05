@@ -1,0 +1,8 @@
+---
+title: "DEV (fm-finance)"
+---
+
+Development scratch space for code and math examples in the
+[fm-finance](https://github.com/mjfrigaard/fm-finance) book.
+
+Use the navbar to navigate to a chapter.

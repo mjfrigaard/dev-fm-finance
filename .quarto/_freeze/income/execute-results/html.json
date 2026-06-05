@@ -1,0 +1,15 @@
+{
+  "hash": "4cd158d25fd6219e34003e0ec6826e1a",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Income\"\n---\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

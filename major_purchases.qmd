@@ -1,0 +1,23 @@
+---
+title: "Major Purchases"
+---
+
+```{r}
+#| label: setup-r
+#| message: false
+#| warning: false
+#| include: false
+library(tidyverse)
+reticulate::py_require(c("numpy", "pandas"))
+```
+
+```{python}
+#| label: setup-py
+#| include: false
+import pandas as pd
+import numpy as np
+```
+
+### The Rent vs. Buy Calculation (Felix's 5% Rule) {.unnumbered}
+
+### Mortgage Amortization: The Front-Loaded Interest Reality {.unnumbered}

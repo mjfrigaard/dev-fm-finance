@@ -1,0 +1,15 @@
+{
+  "hash": "b5d0aee7d8fb836bb6552d1f76b4d336",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Budgeting\"\n---\n\n\n\n\n\n## Budgeting Math\n\n### Percentages (Your Most-Used Skill) {.unnumbered}\n\n### Annualizing and Monthly-izing {.unnumbered}\n\n### Opportunity Cost Math {.unnumbered}\n\n### Break-Even and Payback Calculations {.unnumbered}\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
