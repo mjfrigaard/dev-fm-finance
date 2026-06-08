@@ -1,17 +1,45 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "DEV (fm-finance)",
-    "section": "",
-    "text": "Development scratch space for code and math examples in the fm-finance book.\nUse the navbar to navigate to a chapter."
-  },
-  {
     "objectID": "tracking_spending.html#math-for-tracking-spending",
     "href": "tracking_spending.html#math-for-tracking-spending",
     "title": "Tracking Spending",
     "section": "2 Math for tracking spending",
     "text": "2 Math for tracking spending\n\nThe Subscription Audit Math"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DEV (fm-finance)",
+    "section": "",
+    "text": "This is my development scratch space for code and math examples in the fm-finance book.\nUse the navbar to navigate to a chapter."
+  },
+  {
+    "objectID": "index.html#getting-set-up",
+    "href": "index.html#getting-set-up",
+    "title": "DEV (fm-finance)",
+    "section": "1 Getting set up",
+    "text": "1 Getting set up\nThe examples in this book are written in two free programming languages: R and Python. You don’t need to know either one yet—this page walks you through installing both, no matter which computer you use.\n\n\n\n\n\n\nYou only have to do this once. Set aside about 20–30 minutes, and feel free to take it one language at a time.\n\n\n\nA few words you’ll see along the way:\n\nInstall: download a program and add it to your computer, the same way you’d add any app.\nConsole: a window where you type a command and the computer types back. We use it only to check that things are working.\nIDE (Integrated Development Environment): a friendly workspace for writing and running code. Think of it as a word processor built for programming."
+  },
+  {
+    "objectID": "index.html#installing-r",
+    "href": "index.html#installing-r",
+    "title": "DEV (fm-finance)",
+    "section": "2 Installing R",
+    "text": "2 Installing R\nR is the language we’ll use most. We’ll install two things: R itself (the engine) and RStudio (the workspace where you’ll actually write code).\n\n2.1 Step 1 — Install R\nPick the tab for your computer below.\n\nWindowsmacOSLinux\n\n\n\nGo to the R download page: cran.r-project.org/bin/windows/base.\nClick the large Download R for Windows link at the top.\nOpen the file you just downloaded (it’ll be in your Downloads folder).\nClick Next through the installer, accepting the suggested options.\n\n\n\n\nGo to the R download page: cran.r-project.org/bin/macosx.\nDownload the file that matches your Mac:\n\nApple Silicon (M1, M2, M3, or newer) — most Macs sold since late 2020.\nIntel — older Macs.\nNot sure? Click the Apple menu () in the top-left corner → About This Mac. If it says “Apple M…”, choose Apple Silicon.\n\nOpen the downloaded .pkg file and click Continue through the installer.\n\n\n\nMost Linux systems install R through their built-in software manager. Open a terminal and run the command for your system:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install r-base\nOn Fedora:\nsudo dnf install R\n\n\n\n\n\n2.2 Step 2 — Install RStudio\nRStudio is the same on every operating system.\n\nGo to posit.co/download/rstudio-desktop.\nScroll to Step 2 on that page and click the download button for your computer (the website detects it for you).\nOpen the downloaded file and follow the prompts to install.\n\n\n\n\n\n\n\nInstall R before RStudio. RStudio is just the workspace—it needs R already on your computer to do anything.\n\n\n\n\n\n2.3 Step 3 — Check that R works\nOpen RStudio. In the Console (the panel on the left), type the line below and press Enter:\n2 + 2\nIf you see [1] 4, R is working. 🎉"
+  },
+  {
+    "objectID": "index.html#installing-python",
+    "href": "index.html#installing-python",
+    "title": "DEV (fm-finance)",
+    "section": "3 Installing Python",
+    "text": "3 Installing Python\nPython is the second language we’ll use. We’ll install Python itself and a free workspace called Positron.\n\n3.1 Step 1 — Install Python\n\nWindowsmacOSLinux\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded file.\nImportant: on the first installer screen, check the box that says Add Python to PATH before clicking Install Now. This lets your computer find Python later.\n\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded .pkg file and click Continue through the installer, accepting the suggested options.\n\n\n\nMost Linux systems already include Python. Open a terminal and run the command for your system to make sure it’s installed:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install python3 python3-pip\nOn Fedora:\nsudo dnf install python3 python3-pip\n\n\n\n\n\n3.2 Step 2 — Install Positron\nPositron is a free workspace for writing Python (and R) code, made by the same team as RStudio.\n\nGo to positron.posit.co/download.\nDownload the version for your computer.\nOpen the downloaded file and follow the prompts to install.\n\n\n\n3.3 Step 3 — Check that Python works\nOpen a console and type the line below, then press Enter:\n\nWindowsmacOS / Linux\n\n\nOpen the Start menu, type cmd, and open Command Prompt. Then run:\npython --version\n\n\nOpen the Terminal app and run:\npython3 --version\n\n\n\nIf you see something like Python 3.12.0, Python is working. 🎉"
+  },
+  {
+    "objectID": "index.html#where-to-go-next",
+    "href": "index.html#where-to-go-next",
+    "title": "DEV (fm-finance)",
+    "section": "4 Where to go next",
+    "text": "4 Where to go next\nYou’re all set! Head to the Income chapter using the navbar to start running the examples.\n\n\n\n\n\n\nTipStuck?\n\n\n\nIf an install didn’t work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above."
   },
   {
     "objectID": "major_purchases.html",
@@ -26,5 +54,12 @@
     "title": "Managing Debt",
     "section": "2 Putting the Math to Work",
     "text": "2 Putting the Math to Work"
+  },
+  {
+    "objectID": "income.html",
+    "href": "income.html",
+    "title": "Income",
+    "section": "",
+    "text": "This chapter covers how much you make. There isn’t any math in this section, but I’ve included some instructions for getting your computer set up to run the code."
   }
 ]
