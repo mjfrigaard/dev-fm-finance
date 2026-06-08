@@ -8,10 +8,10 @@ website:
       - text: "Foundations"
         menu:
           - income.qmd
-          - budgeting.qmd
           - tracking_spending.qmd
-          - emergency_fund.qmd
+          - budgeting.qmd
           - managing_debt.qmd
+          - emergency_fund.qmd
       - text: "Savings"
         menu:
           - savings_strategies.qmd

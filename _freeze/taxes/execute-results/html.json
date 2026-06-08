@@ -1,9 +1,11 @@
 {
-  "hash": "b55e77077a4f9d90378142f47d4f0df9",
+  "hash": "85ea0ea788c802d159749511bddea4c5",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Taxes\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "taxes_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

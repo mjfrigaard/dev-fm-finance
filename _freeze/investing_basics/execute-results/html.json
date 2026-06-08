@@ -1,9 +1,11 @@
 {
-  "hash": "45f1d8a01c544425755400446998f36d",
+  "hash": "c78cb10f4cecbe381ab14c4eff1ff62a",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Investing Basics\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "investing_basics_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

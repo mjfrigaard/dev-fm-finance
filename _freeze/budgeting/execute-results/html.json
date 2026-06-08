@@ -1,9 +1,11 @@
 {
-  "hash": "b5d0aee7d8fb836bb6552d1f76b4d336",
+  "hash": "9a6eb7ca0eec117c5883e4aaada02edf",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Budgeting\"\n---\n\n\n\n\n\n## Budgeting Math\n\n### Percentages (Your Most-Used Skill) {.unnumbered}\n\n### Annualizing and Monthly-izing {.unnumbered}\n\n### Opportunity Cost Math {.unnumbered}\n\n### Break-Even and Payback Calculations {.unnumbered}\n",
-    "supporting": [],
+    "supporting": [
+      "budgeting_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

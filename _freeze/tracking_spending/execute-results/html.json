@@ -1,9 +1,11 @@
 {
-  "hash": "8b138a27ba9594e56b45b40068555f5a",
+  "hash": "b79ade0d9628cab9c66df0da7561c4da",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"Tracking Spending\"\n---\n\n\n\n\n\n## Math for tracking spending\n\n### The Subscription Audit Math {.unnumbered}\n",
-    "supporting": [],
+    "markdown": "---\ntitle: \"Tracking Spending\"\n---\n\n\n\n\n\n## Using Spreadsheets\n\n## Math for tracking spending\n\n### The Subscription Audit Math {.unnumbered}\n",
+    "supporting": [
+      "tracking_spending_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

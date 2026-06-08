@@ -1,0 +1,10 @@
+/.quarto/
+**/*.quarto_ipynb
+.Rprofile
+
+# Local tooling — never track
+.claude/
+.positai/
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md

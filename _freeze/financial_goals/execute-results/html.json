@@ -1,9 +1,11 @@
 {
-  "hash": "b68f5288290886423679a90896ad5ef7",
+  "hash": "777ddf7d19544ac9540326b42767b23c",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Financial Goals\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "financial_goals_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

@@ -1,9 +1,11 @@
 {
-  "hash": "ffde60dfa0c9c96b7c3de82d34d5d35f",
+  "hash": "8c2833294cfdd76b412294caea889a81",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Insurance\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "insurance_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

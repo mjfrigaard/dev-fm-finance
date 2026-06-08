@@ -8,12 +8,15 @@ title: "Income"
 #| warning: false
 #| include: false
 library(tidyverse)
-reticulate::py_require(c("numpy", "pandas"))
+reticulate::py_require(c("numpy", "polars"))
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import pandas as pd
+import polars as pl
 import numpy as np
 ```
+
+This chapter covers how much you make. There isn't any math in this section, but I've included some instructions for getting your computer set up to run the code. 
+
