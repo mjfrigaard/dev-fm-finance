@@ -1,8 +1,8 @@
 {
-  "hash": "4cd158d25fd6219e34003e0ec6826e1a",
+  "hash": "130a49574a142b842e38b31233203baf",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"Income\"\n---\n\n\n\n\n",
+    "markdown": "---\ntitle: \"Income\"\n---\n\n\n\n\n\nThis chapter covers how much you make. There isn't any math in this section, but I've included some instructions for getting your computer set up to run the code. \n\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

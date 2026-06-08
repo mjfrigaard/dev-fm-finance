@@ -1,9 +1,11 @@
 {
-  "hash": "5726ac004e70ddba8c8601d52ef52041",
+  "hash": "a37bac7e02e0e11d27776d891028b1c9",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Estate Planning\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "estate_planning_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

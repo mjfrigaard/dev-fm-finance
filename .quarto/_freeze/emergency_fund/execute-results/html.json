@@ -1,9 +1,11 @@
 {
-  "hash": "b6f866fcd7ccfb846eeac80c38d8d4d6",
+  "hash": "479c73b007ba6a64bc9091de9da9feba",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Emergency Fund\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "emergency_fund_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

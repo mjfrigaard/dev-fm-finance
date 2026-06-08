@@ -1,9 +1,11 @@
 {
-  "hash": "46768ba52784a80f6a458ad6618d0005",
+  "hash": "f339d73b3f70ac3703ecdab273450a07",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Major Purchases\"\n---\n\n\n\n\n\n### The Rent vs. Buy Calculation (Felix's 5% Rule) {.unnumbered}\n\n### Mortgage Amortization: The Front-Loaded Interest Reality {.unnumbered}\n",
-    "supporting": [],
+    "supporting": [
+      "major_purchases_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

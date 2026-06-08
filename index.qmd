@@ -2,7 +2,166 @@
 title: "DEV (fm-finance)"
 ---
 
-Development scratch space for code and math examples in the
-[fm-finance](https://github.com/mjfrigaard/fm-finance) book.
+This is my development scratch space for code and math examples in the [fm-finance](https://github.com/mjfrigaard/fm-finance) book.
 
 Use the navbar to navigate to a chapter.
+
+## Getting set up
+
+The examples in this book are written in two free programming languages: **R** and **Python**. You don't need to know either one yet---this page walks you through installing both, no matter which computer you use.
+
+::: {.callout-tip}
+You only have to do this once. Set aside about 20--30 minutes, and feel free to take it one language at a time.
+:::
+
+A few words you'll see along the way:
+
+- **Install**: download a program and add it to your computer, the same way you'd add any app.
+- **Console**: a window where you type a command and the computer types back. We use it only to check that things are working.
+- **IDE** (*Integrated Development Environment*): a friendly workspace for writing and running code. Think of it as a word processor built for programming.
+
+## Installing R
+
+R is the language we'll use most. We'll install two things: **R** itself (the engine) and **RStudio** (the workspace where you'll actually write code).
+
+### Step 1 --- Install R
+
+Pick the tab for your computer below.
+
+::: {.panel-tabset}
+
+#### Windows
+
+1. Go to the R download page: [cran.r-project.org/bin/windows/base](https://cran.r-project.org/bin/windows/base/).
+2. Click the large **Download R for Windows** link at the top.
+3. Open the file you just downloaded (it'll be in your *Downloads* folder).
+4. Click **Next** through the installer, accepting the suggested options.
+
+#### macOS
+
+1. Go to the R download page: [cran.r-project.org/bin/macosx](https://cran.r-project.org/bin/macosx/).
+2. Download the file that matches your Mac:
+   - **Apple Silicon** (M1, M2, M3, or newer) --- most Macs sold since late 2020.
+   - **Intel** --- older Macs.
+   - *Not sure?* Click the Apple menu () in the top-left corner → **About This Mac**. If it says "Apple M…", choose Apple Silicon.
+3. Open the downloaded `.pkg` file and click **Continue** through the installer.
+
+#### Linux
+
+Most Linux systems install R through their built-in software manager. Open a terminal and run the command for your system:
+
+On Ubuntu, Pop!\_OS, or Debian:
+
+```bash
+sudo apt update && sudo apt install r-base
+```
+
+On Fedora:
+
+```bash
+sudo dnf install R
+```
+
+:::
+
+### Step 2 --- Install RStudio
+
+RStudio is the same on every operating system.
+
+1. Go to [posit.co/download/rstudio-desktop](https://posit.co/download/rstudio-desktop/).
+2. Scroll to **Step 2** on that page and click the download button for your computer (the website detects it for you).
+3. Open the downloaded file and follow the prompts to install.
+
+::: {.callout-note}
+Install R *before* RStudio. RStudio is just the workspace---it needs R already on your computer to do anything.
+:::
+
+### Step 3 --- Check that R works
+
+Open **RStudio**. In the **Console** (the panel on the left), type the line below and press <kbd>Enter</kbd>:
+
+```r
+2 + 2
+```
+
+If you see `[1] 4`, R is working. 🎉
+
+## Installing Python
+
+Python is the second language we'll use. We'll install Python itself and a free workspace called **Positron**.
+
+### Step 1 --- Install Python
+
+::: {.panel-tabset}
+
+#### Windows
+
+1. Go to [python.org/downloads](https://www.python.org/downloads/) and click the yellow **Download Python** button.
+2. Open the downloaded file.
+3. **Important:** on the first installer screen, check the box that says **Add Python to PATH** *before* clicking **Install Now**. This lets your computer find Python later.
+
+#### macOS
+
+1. Go to [python.org/downloads](https://www.python.org/downloads/) and click the yellow **Download Python** button.
+2. Open the downloaded `.pkg` file and click **Continue** through the installer, accepting the suggested options.
+
+#### Linux
+
+Most Linux systems already include Python. Open a terminal and run the command for your system to make sure it's installed:
+
+On Ubuntu, Pop!\_OS, or Debian:
+
+```bash
+sudo apt update && sudo apt install python3 python3-pip
+```
+
+On Fedora:
+
+```bash
+sudo dnf install python3 python3-pip
+```
+
+:::
+
+### Step 2 --- Install Positron
+
+Positron is a free workspace for writing Python (and R) code, made by the same team as RStudio.
+
+1. Go to [positron.posit.co/download](https://positron.posit.co/download.html).
+2. Download the version for your computer.
+3. Open the downloaded file and follow the prompts to install.
+
+### Step 3 --- Check that Python works
+
+Open a **console** and type the line below, then press <kbd>Enter</kbd>:
+
+::: {.panel-tabset}
+
+#### Windows
+
+Open the **Start** menu, type `cmd`, and open **Command Prompt**. Then run:
+
+```bash
+python --version
+```
+
+#### macOS / Linux
+
+Open the **Terminal** app and run:
+
+```bash
+python3 --version
+```
+
+:::
+
+If you see something like `Python 3.12.0`, Python is working. 🎉
+
+## Where to go next
+
+You're all set! Head to the [Income](income.qmd) chapter using the navbar to start running the examples.
+
+::: {.callout-tip}
+## Stuck?
+If an install didn't work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above.
+:::

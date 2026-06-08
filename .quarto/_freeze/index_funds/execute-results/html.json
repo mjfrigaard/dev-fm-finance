@@ -1,9 +1,11 @@
 {
-  "hash": "7a4e0ca04085180d9dc57da67ccd31c0",
+  "hash": "7bb36b0b138cbe339f24dc0d82da46c3",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Index Funds\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "index_funds_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],

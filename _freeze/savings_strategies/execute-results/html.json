@@ -1,9 +1,11 @@
 {
-  "hash": "6a462e36e28c06edc09ddc03294ab8fa",
+  "hash": "3c63c6ebba0d5cdd7545bc671430b168",
   "result": {
     "engine": "knitr",
     "markdown": "---\ntitle: \"Savings Strategies\"\n---\n\n\n\n\n",
-    "supporting": [],
+    "supporting": [
+      "savings_strategies_files"
+    ],
     "filters": [
       "rmarkdown/pagebreak.lua"
     ],
