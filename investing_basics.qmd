@@ -17,3 +17,137 @@ reticulate::py_require(c("numpy", "polars"))
 import polars as pl
 import numpy as np
 ```
+
+## Math for Investing Basics {#math-for-investing-basics}
+
+Investing math is mostly one idea, compounding, applied in a few different ways. Each calculation below is written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
+
+In code, the `^` symbol (R) and `**` symbol (Python) both mean "raise to the power of." So `(1 + 0.07)^10` means "1.07 multiplied by itself 10 times."
+
+### Future Value and the Rule of 72 {.unnumbered}
+
+**Formula:** FV = PV × (1 + r)\^n
+
+Where: FV = future value, PV = present value (today's amount), *r* = annual return, *n* = years.
+
+The companion shortcut is the **Rule of 72**: divide 72 by the return percentage to estimate how many years it takes your money to double.
+
+> Years to double ≈ 72 ÷ annual return %
+
+Example: \$10,000 at 7% for 10 years grows to \~\$19,672, and at 7% money doubles roughly every 10 years.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: compound-r
+future_value <- function(present_value, rate, years) {
+  present_value * (1 + rate)^years
+}
+
+rule_of_72 <- function(annual_return_pct) {
+  72 / annual_return_pct
+}
+
+# scalar: $10,000 at 7% for 10 years
+future_value(present_value = 10000, rate = 0.07, years = 10)
+
+# how long until your money doubles at 7%?
+rule_of_72(annual_return_pct = 7)
+
+# vectorized: same $10,000 at 7% across multiple horizons
+data.frame(
+  years = c(5, 10, 20, 30),
+  value = future_value(present_value = 10000, rate = 0.07, years = c(5, 10, 20, 30))
+)
+```
+
+## Python
+
+```{python}
+#| label: compound-py
+def future_value(present_value, rate, years):
+    return present_value * (1 + rate) ** years
+
+def rule_of_72(annual_return_pct):
+    return 72 / annual_return_pct
+
+# scalar: $10,000 at 7% for 10 years
+print(future_value(present_value=10000, rate=0.07, years=10))
+
+# how long until your money doubles at 7%?
+print(rule_of_72(annual_return_pct=7))
+
+# vectorized: numpy lets us pass an array of horizons in one call
+horizons = np.array([5, 10, 20, 30])
+future_value(present_value=10000, rate=0.07, years=horizons)
+```
+:::
+
+### Future Value of Regular Contributions {.unnumbered}
+
+Most people don't invest a lump sum once; they add money every month. The future value of a stream of equal contributions is:
+
+**Formula:** FV = PMT × [((1 + r)\^n − 1) ÷ r]
+
+Where: PMT = the amount contributed each period, *r* = the return per period, *n* = the number of periods.
+
+Example: \$500/month for 30 years (360 months) at a 7% annual return (\~0.583% per month) grows to \~\$610,000, of which only \$180,000 is money you actually put in.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: fv-series-r
+future_value_series <- function(contribution, rate, periods) {
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+
+# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
+future_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)
+```
+
+## Python
+
+```{python}
+#| label: fv-series-py
+def future_value_series(contribution, rate, periods):
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+
+# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
+future_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12)
+```
+:::
+
+### Real (Inflation-Adjusted) Return {.unnumbered}
+
+A 7% return with 3% inflation does *not* leave you 4% richer in spending power; the relationship is multiplicative, not subtractive.
+
+**Formula:** Real Return = (1 + nominal) ÷ (1 + inflation) − 1
+
+Example: (1.07 ÷ 1.03) − 1 = \~3.88%, slightly less than the 4% you'd get by simple subtraction.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: real-return-r
+real_return <- function(nominal, inflation) {
+  (1 + nominal) / (1 + inflation) - 1
+}
+
+# 7% nominal return against 3% inflation
+real_return(nominal = 0.07, inflation = 0.03)
+```
+
+## Python
+
+```{python}
+#| label: real-return-py
+def real_return(nominal, inflation):
+    return (1 + nominal) / (1 + inflation) - 1
+
+# 7% nominal return against 3% inflation
+real_return(nominal=0.07, inflation=0.03)
+```
+:::

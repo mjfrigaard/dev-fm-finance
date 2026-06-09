@@ -11,7 +11,9 @@ Use the navbar to navigate to a chapter.
 The examples in this book are written in two free programming languages: **R** and **Python**. You don't need to know either one yet---this page walks you through installing both, no matter which computer you use.
 
 ::: {.callout-tip}
+
 You only have to do this once. Set aside about 20--30 minutes, and feel free to take it one language at a time.
+
 :::
 
 A few words you'll see along the way:
@@ -22,7 +24,7 @@ A few words you'll see along the way:
 
 ## Installing R
 
-R is the language we'll use most. We'll install two things: **R** itself (the engine) and **RStudio** (the workspace where you'll actually write code).
+R is the language I'm most familiar with, so we will install it first. We'll install two things: **R** itself (the engine) and **RStudio** (the workspace where you'll actually write code).
 
 ### Step 1 --- Install R
 
@@ -162,6 +164,8 @@ If you see something like `Python 3.12.0`, Python is working. 🎉
 You're all set! Head to the [Income](income.qmd) chapter using the navbar to start running the examples.
 
 ::: {.callout-tip}
+
 ## Stuck?
 If an install didn't work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above.
+
 :::
