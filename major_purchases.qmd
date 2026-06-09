@@ -18,6 +18,128 @@ import polars as pl
 import numpy as np
 ```
 
-### The Rent vs. Buy Calculation (Felix's 5% Rule) {.unnumbered}
+## Math for Major Purchases {#math-for-major-purchases}
 
-### Mortgage Amortization: The Front-Loaded Interest Reality {.unnumbered}
+Big purchases are where small percentage differences turn into tens of thousands of dollars. Each calculation below is written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
+
+### The Rent-vs-Buy 5% Rule {.unnumbered}
+
+Felix's rule estimates the annual *unrecoverable* cost of owning as about 5% of the home's value, then compares the monthly equivalent to your rent.
+
+**Formula:** Monthly cost of owning ≈ (Home Value × 0.05) ÷ 12
+
+Example: a \$600,000 home → (600,000 × 0.05) ÷ 12 = **\$2,500/month**. Rent below that, and renting-and-investing-the-difference tends to win.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: rent-buy-r
+rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
+  (home_value * unrecoverable_rate) / 12
+}
+
+# $600,000 home at the standard 5% unrecoverable rate
+rent_buy_threshold(home_value = 600000)
+```
+
+## Python
+
+```{python}
+#| label: rent-buy-py
+def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
+    return (home_value * unrecoverable_rate) / 12
+
+# $600,000 home at the standard 5% unrecoverable rate
+rent_buy_threshold(home_value=600000)
+```
+:::
+
+### The Monthly Mortgage Payment {.unnumbered}
+
+This is the standard amortization formula behind every mortgage calculator.
+
+**Formula:** M = P × [ r(1 + r)\^n ] ÷ [ (1 + r)\^n − 1 ]
+
+Where: P = the loan principal, *r* = the monthly interest rate (annual ÷ 12), *n* = the total number of payments (years × 12).
+
+Example: a \$480,000 loan (a \$600,000 home with 20% down) at 6% for 30 years → **\~\$2,878/month**.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: mortgage-payment-r
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+
+# $480,000 loan at 6% over 30 years
+mortgage_payment(principal = 480000, annual_rate = 0.06, years = 30)
+```
+
+## Python
+
+```{python}
+#| label: mortgage-payment-py
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+
+# $480,000 loan at 6% over 30 years
+mortgage_payment(principal=480000, annual_rate=0.06, years=30)
+```
+:::
+
+### Where the First Year's Payments Go {.unnumbered}
+
+The front-loaded-interest reality, in numbers: in month one your interest is simply the balance times the monthly rate, and only the rest reduces the principal.
+
+**Formula:**
+
+- First-month interest = Principal × (annual rate ÷ 12)
+- First-month principal = Monthly Payment − First-month interest
+
+Example: on that \$480,000 loan, month-one interest is \$2,400 of the \~\$2,878 payment, about **83% interest**, leaving only \~\$478 toward principal.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: first-payment-r
+first_payment_split <- function(principal, annual_rate, years) {
+  payment  <- mortgage_payment(principal, annual_rate, years)
+  interest <- principal * (annual_rate / 12)
+  data.frame(
+    payment      = payment,
+    interest     = interest,
+    principal    = payment - interest,
+    pct_interest = (interest / payment) * 100
+  )
+}
+
+# first payment on a $480,000 loan at 6% over 30 years
+first_payment_split(principal = 480000, annual_rate = 0.06, years = 30)
+```
+
+## Python
+
+```{python}
+#| label: first-payment-py
+def first_payment_split(principal, annual_rate, years):
+    payment = mortgage_payment(principal, annual_rate, years)
+    interest = principal * (annual_rate / 12)
+    return {
+        "payment": payment,
+        "interest": interest,
+        "principal": payment - interest,
+        "pct_interest": (interest / payment) * 100,
+    }
+
+# first payment on a $480,000 loan at 6% over 30 years
+first_payment_split(principal=480000, annual_rate=0.06, years=30)
+```
+:::

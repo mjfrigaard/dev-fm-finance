@@ -18,5 +18,81 @@ import polars as pl
 import numpy as np
 ```
 
-This chapter covers how much you make. There isn't any math in this section, but I've included some instructions for getting your computer set up to run the code. 
+## Math for Income {#math-for-income}
+
+The income chapter is mostly about behavior, but two numbers turn that behavior into something you can track. Each calculation below is also written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
+
+### The Fixed-Cost Ratio {.unnumbered}
+
+Fixed costs (rent, loan payments, insurance, utilities) are the commitments you can't easily change month to month. Keeping them under \~60% of take-home pay leaves room to save *and* to spend on what you love without guilt.
+
+**Formula:** Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100
+
+Example: \$2,700 of fixed costs on \$5,000 take-home → 54%, just under the ceiling.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: fixed-cost-r
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  (fixed_costs / take_home) * 100
+}
+
+# $2,700 of fixed costs on $5,000 take-home pay
+fixed_cost_ratio(fixed_costs = 2700, take_home = 5000)
+```
+
+## Python
+
+```{python}
+#| label: fixed-cost-py
+def fixed_cost_ratio(fixed_costs, take_home):
+    return (fixed_costs / take_home) * 100
+
+# $2,700 of fixed costs on $5,000 take-home pay
+fixed_cost_ratio(fixed_costs=2700, take_home=5000)
+```
+:::
+
+### What a Raise Is Really Worth {.unnumbered}
+
+"Split the raise" only pays off if the saved half is actually invested. Putting half of a monthly raise into the market for a few decades shows why the *habit* matters more than the dollar amount.
+
+**Formula:** FV = PMT × [((1 + r)\^n − 1) ÷ r]
+
+This is the future-value-of-contributions formula from [Investing Basics](investing_basics.qmd), where PMT is the amount invested each month, *r* is the monthly return, and *n* is the number of months.
+
+Example: a \$400/month raise, half of it invested (\$200/month) for 25 years at a 7% annual return → **\~\$162,000**.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: raise-value-r
+raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
+  contribution <- monthly_raise * invest_share
+  monthly_rate <- rate / 12
+  periods      <- years * 12
+  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
+}
+
+# half of a $400/month raise, invested for 25 years at 7%
+raise_invested_value(monthly_raise = 400, invest_share = 0.5, rate = 0.07, years = 25)
+```
+
+## Python
+
+```{python}
+#| label: raise-value-py
+def raise_invested_value(monthly_raise, invest_share, rate, years):
+    contribution = monthly_raise * invest_share
+    monthly_rate = rate / 12
+    periods = years * 12
+    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+
+# half of a $400/month raise, invested for 25 years at 7%
+raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25)
+```
+:::
 
