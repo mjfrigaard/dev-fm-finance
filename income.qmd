@@ -20,17 +20,41 @@ import numpy as np
 
 ## Math for Income {#math-for-income}
 
-The income chapter is mostly about behavior, but two numbers turn that behavior into something you can track. Each calculation below is also written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
+The [income](https://mjfrigaard.github.io/fm-finance/income.html) chapter is mostly about behavior, but it also introduces some math and how to write R/Python functions.
+
+### Functions {.unnumbered}
+
+Functions perform operations: calculate a total, build a table, create a graph, etc. The function's *arguments* are the inputs it needs to do its job, and the *output* is what it gives back. For example, the `sum()` function takes a list of numbers as an argument and outputs their total.
+
+In R, functions are defined using the `function()` keyword,
+
+``` r
+my_fun <- function() {
+  # function body
+}
+```
+
+In Python, you use `def`:
+
+``` python
+def my_fun():
+    # function body
+```
+
+Both languages allow you to create your own functions to perform specific tasks, which is especially useful for financial calculations.
 
 ### The Fixed-Cost Ratio {.unnumbered}
 
-Fixed costs (rent, loan payments, insurance, utilities) are the commitments you can't easily change month to month. Keeping them under \~60% of take-home pay leaves room to save *and* to spend on what you love without guilt.
+Fixed costs are things like rent, loan payments, insurance, and utilities. THey are considered *fixed* because they don't really change month to month.
+
+A good benchmark is to keep them under \~60% of your income/take-home pay (leaving about 40% for *variable* costs and savings).
 
 **Formula:** Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100
 
 Example: \$2,700 of fixed costs on \$5,000 take-home → 54%, just under the ceiling.
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
@@ -38,34 +62,91 @@ Example: \$2,700 of fixed costs on \$5,000 take-home → 54%, just under the cei
 fixed_cost_ratio <- function(fixed_costs, take_home) {
   (fixed_costs / take_home) * 100
 }
+```
 
-# $2,700 of fixed costs on $5,000 take-home pay
-fixed_cost_ratio(fixed_costs = 2700, take_home = 5000)
+Now we can apply the function to \$2,700 of fixed costs on \$5,000 take-home pay. The output is a percentage, so we can add a `%` sign to the output with the `paste0()` function:
+
+```{r}
+#| label: fixed-cost-r-apply
+fixed_cost_ratio(fixed_costs = 2700, take_home = 5000) |> 
+  paste0("%")
+```
+
+#### Using pipes in R {.unnumbered}
+
+The pipe operator (`|>`) allows you to take the output of one function and use it as the input for another function, making your code more readable and efficient. Read more in the [Pipe Operator](r_vs_py.qmd#sec-pipe-operator) section of R vs. Python.
+
+``` r
+function1() |> 
+  function2() |> 
+  function3()
+```
+
+In the example above, we calculate the fixed-cost ratio and then immediately format it as a percentage string. A better way to do this is to create a new function that combines both steps:
+
+```{r}
+#| label: fixed-cost-r-pipe
+fixed_cost_ratio_pct <- function(fixed_costs, take_home) {
+  ratio <- (fixed_costs / take_home) * 100
+  paste0(ratio, "%")
+}
+fixed_cost_ratio_pct(fixed_costs = 2700, take_home = 5000)
 ```
 
 ## Python
 
+In Python, we can define the same function without needing a pipe operator, since we can directly return the formatted string:
+
 ```{python}
 #| label: fixed-cost-py
 def fixed_cost_ratio(fixed_costs, take_home):
-    return (fixed_costs / take_home) * 100
+    ratio = (fixed_costs / take_home) * 100
+    return f"{ratio:.2f}%"
+```
 
-# $2,700 of fixed costs on $5,000 take-home pay
+\$2,700 of fixed costs on \$5,000 take-home pay
+
+```{python}
+#| label: fixed-cost-py-apply
 fixed_cost_ratio(fixed_costs=2700, take_home=5000)
 ```
+
+Note the differences in using `paste0()` in R vs. f-strings in Python for formatting the output as a percentage string. Read more about string formatting in [String Formatting](r_vs_py.qmd#sec-string-formatting).
+
+## Excel
+
+In Excel there's no function to define: you put the numbers in cells and write the formula once. Enter the fixed costs in cell **A2** and take-home pay in **B2**, then in **C2**:
+
+```excel
+=A2/B2
+```
+
+That gives `0.54`. Format **C2** as a percentage (**Home → %**, or **Ctrl+Shift+5**) and it displays **54%**.
+
+To produce the percent *string* directly (the analog of R's `paste0(..., "%")` and Python's f-string), use `TEXT()` instead:
+
+```excel
+=TEXT(A2/B2, "0.00%")
+```
+
+This returns the text `"54.00%"`, matching the Python output above.
+
 :::
 
 ### What a Raise Is Really Worth {.unnumbered}
 
-"Split the raise" only pays off if the saved half is actually invested. Putting half of a monthly raise into the market for a few decades shows why the *habit* matters more than the dollar amount.
+In the [Income](https://mjfrigaard.github.io/fm-finance/income.html) chapter, we saw that "Split the raise" (i.e., put half of your monthly raise into the market for a few decades) is a powerful strategy for building wealth. But how powerful? Let's put some numbers to it.
 
-**Formula:** FV = PMT × [((1 + r)\^n − 1) ÷ r]
+**Formula:** FV = PMT × \[((1 + r)\^n − 1) ÷ r\]
 
-This is the future-value-of-contributions formula from [Investing Basics](investing_basics.qmd), where PMT is the amount invested each month, *r* is the monthly return, and *n* is the number of months.
+- PMT is the amount invested each month  
+- *r* is the monthly return  
+- *n* is the number of months.
 
-Example: a \$400/month raise, half of it invested (\$200/month) for 25 years at a 7% annual return → **\~\$162,000**.
+This is the future-value-of-contributions formula we revisit in [Investing Basics](https://mjfrigaard.github.io/fm-finance/investing_basics.html). 
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
@@ -76,9 +157,13 @@ raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
   periods      <- years * 12
   contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
 }
+```
 
-# half of a $400/month raise, invested for 25 years at 7%
-raise_invested_value(monthly_raise = 400, invest_share = 0.5, rate = 0.07, years = 25)
+Let's see what happens when we take half of a $300/month raise, invested for 15 years at 7%:
+
+```{r}
+#| label: raise-value-r-apply
+raise_invested_value(monthly_raise = 300, invest_share = 0.5, rate = 0.07, years = 15)
 ```
 
 ## Python
@@ -90,9 +175,27 @@ def raise_invested_value(monthly_raise, invest_share, rate, years):
     monthly_rate = rate / 12
     periods = years * 12
     return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
-
-# half of a $400/month raise, invested for 25 years at 7%
-raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25)
 ```
-:::
 
+Half of a $300/month raise, invested for 15 years at 7%
+
+```{python}
+#| label: raise-value-py-apply
+raise_invested_value(monthly_raise=300, invest_share=0.5, rate=0.07, years=15)
+```
+
+## Excel
+
+This is exactly what Excel's built-in **`FV()`** (future value) function is for, so you don't have to write the formula yourself. Its arguments are `FV(rate, nper, pmt)`:
+
+- `rate` --- the return *per period* (monthly here): `7%/12`
+- `nper` --- the number of periods: `25*12`
+- `pmt` --- the amount invested each period, entered as a **negative** number because it's cash leaving your pocket: `-200`
+
+```excel
+=FV(7%/12, 25*12, -200)
+```
+
+This returns **\$162,014.34**, the same result as the R and Python functions above. (Excel reports a positive number because the contributions were entered as negative cash flows.)
+
+:::

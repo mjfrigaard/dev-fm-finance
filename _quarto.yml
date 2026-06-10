@@ -32,6 +32,9 @@ website:
           - financial_goals.qmd
           - major_purchases.qmd
           - estate_planning.qmd
+      - text: "Resources"
+        menu:
+          - r_vs_py.qmd
 
 format:
   html:
@@ -59,3 +62,8 @@ format:
 
 execute:
   freeze: auto
+
+knitr: 
+  opts_chunk:
+    collapse: true
+    comment: "# "
