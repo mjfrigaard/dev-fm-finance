@@ -1,0 +1,407 @@
+---
+title: "R vs. Python"
+---
+
+
+## Notable Differences Between R and Python {#sec-r-vs-python}
+
+The sections below are a quick reference for the most important differences in syntax and style between R and Python. Don't worry about memorizing these right now---just know that they exist, and you'll see examples of each in the next chapters.
+
+### Assignment Operator {#sec-assignment-operator}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R uses `<-` (preferred convention) or  ` = ` for assignment.
+
+Python Uses ` = ` for assignment.
+
+:::
+
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+x <- 10
+```
+
+```python
+x = 10
+```
+:::
+
+### Function Definition {#sec-function-definition}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R Functions are created with `function()` and assigned to a variable. Function bodies are wrapped in curly braces `{}`.
+
+Python Functions are defined with the `def` keyword, followed by a colon and an indented body.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+add_fun <- function(a, b) {
+  a + b
+}
+```
+
+```python
+def add_fun(a, b):
+    return a + b
+```
+
+:::
+
+### Return Values {#sec-return-values}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R automatically returns the last evaluated expression. The `return()` function is optional.
+
+Python requires an explicit `return` statement to return a value—otherwise returns `None`.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+double_fun <- function(x) x * 2
+```
+
+```python
+def double_fun(x):
+    return x * 2
+```
+
+:::
+
+### Pipe Operator {#sec-pipe-operator}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R has a built-in pipe `|>` (base R) and the popular `%>%` operator from `magrittr`/`dplyr` for chaining operations.
+
+Python has no native pipe operator. Chaining is done via method calls—`polars` is especially well-suited for this style.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+data |>
+  filter(x > 5) |>
+  summarise(avg = mean(x))
+```
+
+```python
+import polars as pl
+
+(
+    data
+    .filter(pl.col("x") > 5)
+    .select(pl.col("x").mean().alias("avg"))
+)
+```
+
+:::
+
+### String Formatting {#sec-string-formatting}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R uses `paste()`, `paste0()`, `sprintf()`, or `glue::glue()` for string construction.
+
+Python uses [f-strings](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals), the `.format()` method, or `%` formatting.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+name <- "John"
+paste0("Hello, ", name)
+glue::glue("Hello, {name}")
+```
+
+```python
+name = "John"
+f"Hello, {name}"
+```
+
+:::
+
+### Code Block Structure {#sec-code-block-structure}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R uses curly braces `{}` to define code blocks. Indentation is purely stylistic.
+
+Python uses **indentation** (typically 4 spaces) to define code blocks. Indentation is syntactically required.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+if (x > 0) {
+  print("positive")
+}
+```
+
+```python
+if x > 0:
+    print("positive")
+```
+
+:::
+
+### Whitespace Rules {#sec-whitespace-rules}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+Spaces, line breaks, and indentation are flexible and stylistic in R 
+
+In Python, indentation is **syntactic** (inconsistent indentation raises an `IndentationError`). Blank lines are ignored but can be used to separate code blocks for readability.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+# R — all of this is valid 
+# and produces the same result
+
+# Clean, conventional style
+if (x > 0) {
+  result <- x * 2
+  print(result)
+}
+
+# Messy but still valid
+if(x>0){result<-x*2
+    print(result)}
+
+# Extreme and ugly but works
+if   (  x > 0  )    {
+result        <-x*2
+   print(   result   )
+              }
+```
+
+```python
+# Python — indentation matters
+# Correct: consistent 4-space 
+# indentation
+if x > 0:
+    result = x * 2
+    print(result)
+
+# Blank lines are fine 
+# they improve readability
+def process(x):
+
+    if x > 0:
+        result = x * 2
+
+        print(result)
+
+    return result
+
+# Raises IndentationError
+if x > 0:
+    result = x * 2
+        print(result) # ❌ bad indent
+```
+
+:::
+
+### Indexing {#sec-indexing}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R uses **1-based** indexing.
+
+Python uses **0-based** indexing.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+vec <- c("a", "b", "c")
+vec[1]   # returns "a"
+```
+
+```python
+lst = ["a", "b", "c"]
+lst[0]   # returns "a"
+```
+
+:::
+
+### Missing Values {#sec-missing-values}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+R uses `NA` (with variants like `NA_integer_`, `NA_character_`), plus `NULL` and `NaN`.
+
+Python uses `None` natively; `polars` represents missing values as `null` in its columnar data structures.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+x <- c(1, NA, 3)
+is.na(x)
+```
+
+```python
+import polars as pl
+s = pl.Series([1, None, 3])
+s.is_null()
+```
+
+:::
+
+### Vectorization {#sec-vectorization}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+In R, vectors are first-class citizens—most operations are vectorized by default.
+
+In Python, native lists are **not** vectorized. Vector math requires `numpy` or columnar libraries like `polars`.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+c(1, 2, 3) * 2   
+# returns c(2, 4, 6)
+```
+
+```python
+import polars as pl
+pl.Series([1, 2, 3]) * 2   
+# returns Series [2, 4, 6]
+```
+
+:::
+
+
+### Package Management {#sec-package-management}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+In R, packages are installed with `install.packages()` and loaded with `library()`.
+
+
+In Python, packages are installed via `pip` or `conda` from the terminal and loaded with `import`.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+install.packages("dplyr")
+library(dplyr)
+```
+
+```python
+# terminal: pip install polars
+import polars as pl
+```
+
+:::
+
+### Comments {#sec-comments}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+In R, comments are single-line only, using `#`. No multi-line comment syntax.
+
+In Python, single-line comments use `#`. Triple-quoted strings (`"""..."""`) are commonly used as block comments or docstrings.
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+# This is a comment
+```
+
+```python
+# This is a comment
+
+"""
+This is a multi-line
+comment or docstring.
+"""
+```
+
+:::
+
+### Boolean Values {#sec-boolean-values}
+
+:::{layout="[50,50]" layout-valign="top"}
+
+In R, `TRUE` / `FALSE` (can be abbreviated as `T` / `F`).
+
+In Python, `True` / `False` (capitalized, no abbreviation).
+
+:::
+
+:::{layout="[50,50]" layout-valign="top"}
+
+```r
+flag <- TRUE
+```
+
+```python
+flag = True
+```
+
+:::
+
+### Logical Operators {#sec-logical-operators}
+
+
+R uses `&`, `|`, `!` for vectorized logic; `&&`, `||` for scalar logic.
+
+```r
+c(TRUE, FALSE) & c(TRUE, TRUE)   # vectorized
+TRUE && FALSE                    # scalar
+```
+
+Python uses `and`, `or`, `not` for scalar logic; `&`, `|`, `~` for vectorized logic in `numpy`/`polars` expressions.
+
+```python
+True and False  # scalar
+
+import polars as pl
+df.filter((pl.col("a") > 0) & (pl.col("b") < 10)) # vectorized
+```
+
+### Data Frames {#sec-data-frames}
+
+`data.frame` is built into base R; enhanced versions include `tibble` (tidyverse) and `data.table`.
+
+```r
+df <- data.frame(
+    name = c("A", "B"), 
+    value = c(1, 2)
+  )
+```
+
+In Python, data frames are not built-in—requires a library like `polars` (`pl.DataFrame`), which offers fast, multithreaded performance and a clean expression API.
+
+```python
+import polars as pl
+df = pl.DataFrame({"name": ["A", "B"], "value": [1, 2]})
+```
+
+
+
