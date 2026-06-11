@@ -51,8 +51,6 @@ A good benchmark is to keep them under \~60% of your income/take-home pay (leavi
 
 **Formula:** Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100
 
-Example: \$2,700 of fixed costs on \$5,000 take-home → 54%, just under the ceiling.
-
 ::: panel-tabset
 
 ## R
@@ -64,23 +62,18 @@ fixed_cost_ratio <- function(fixed_costs, take_home) {
 }
 ```
 
-Now we can apply the function to \$2,700 of fixed costs on \$5,000 take-home pay. The output is a percentage, so we can add a `%` sign to the output with the `paste0()` function:
+Now we can apply the function to \$4,200 of fixed costs on \$9,200 take-home pay. The output is a percentage, so we can `round()` it and add a `%` sign to the output with the `paste0()` function:
 
 ```{r}
 #| label: fixed-cost-r-apply
-fixed_cost_ratio(fixed_costs = 2700, take_home = 5000) |> 
+fixed_cost_ratio(fixed_costs = 4200, take_home = 9200) |> 
+  round(1) |>
   paste0("%")
 ```
 
-#### Using pipes in R {.unnumbered}
+#### Pipes in R {.unnumbered}
 
 The pipe operator (`|>`) allows you to take the output of one function and use it as the input for another function, making your code more readable and efficient. Read more in the [Pipe Operator](r_vs_py.qmd#sec-pipe-operator) section of R vs. Python.
-
-``` r
-function1() |> 
-  function2() |> 
-  function3()
-```
 
 In the example above, we calculate the fixed-cost ratio and then immediately format it as a percentage string. A better way to do this is to create a new function that combines both steps:
 
@@ -88,48 +81,56 @@ In the example above, we calculate the fixed-cost ratio and then immediately for
 #| label: fixed-cost-r-pipe
 fixed_cost_ratio_pct <- function(fixed_costs, take_home) {
   ratio <- (fixed_costs / take_home) * 100
-  paste0(ratio, "%")
+  round(ratio, 1) |>
+  paste0("%")
 }
-fixed_cost_ratio_pct(fixed_costs = 2700, take_home = 5000)
+```
+
+```{r}
+#| label: fixed-cost-r-pipe-apply
+fixed_cost_ratio_pct(fixed_costs = 4200, take_home = 9200)
 ```
 
 ## Python
 
-In Python, we can define the same function without needing a pipe operator, since we can directly return the formatted string:
+In Python, we can define the same function without needing a pipe operator, since we can directly return the rounded and properly formatted string:
 
 ```{python}
 #| label: fixed-cost-py
 def fixed_cost_ratio(fixed_costs, take_home):
     ratio = (fixed_costs / take_home) * 100
-    return f"{ratio:.2f}%"
+    return f"{ratio:.1f}%"
 ```
 
-\$2,700 of fixed costs on \$5,000 take-home pay
+Apply our Python function to \$4,200 of fixed costs on \$9,200 take-home
 
 ```{python}
 #| label: fixed-cost-py-apply
-fixed_cost_ratio(fixed_costs=2700, take_home=5000)
+fixed_cost_ratio(fixed_costs=4200, take_home=9200)
 ```
 
-Note the differences in using `paste0()` in R vs. f-strings in Python for formatting the output as a percentage string. Read more about string formatting in [String Formatting](r_vs_py.qmd#sec-string-formatting).
+Note the differences in using `paste0()` in R vs. [f-strings in Python](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) for formatting the output as a percentage string. Read more about string formatting in [String Formatting](r_vs_py.qmd#sec-string-formatting).
 
 ## Excel
 
-In Excel there's no function to define: you put the numbers in cells and write the formula once. Enter the fixed costs in cell **A2** and take-home pay in **B2**, then in **C2**:
+In Excel there's no function: we just put the numbers in cells and write the formula once. Enter the fixed costs in cell **A2** and take-home pay in **B2**, then in **C2**:
 
-```excel
+```swift
 =A2/B2
 ```
 
-That gives `0.54`. Format **C2** as a percentage (**Home → %**, or **Ctrl+Shift+5**) and it displays **54%**.
+That gives the ratio as decimal, but we can format **C2** as a percentage using **Home → %**, or **Ctrl+Shift+5**.
 
 To produce the percent *string* directly (the analog of R's `paste0(..., "%")` and Python's f-string), use `TEXT()` instead:
 
-```excel
+```swift
 =TEXT(A2/B2, "0.00%")
 ```
 
-This returns the text `"54.00%"`, matching the Python output above.
+Below is the example from the text, showing the fixed-cost ratio as a percentage string:
+
+![](img/income-fixed-cost-ratio-text-perc.png){width="75%"}
+
 
 :::
 
@@ -186,16 +187,18 @@ raise_invested_value(monthly_raise=300, invest_share=0.5, rate=0.07, years=15)
 
 ## Excel
 
-This is exactly what Excel's built-in **`FV()`** (future value) function is for, so you don't have to write the formula yourself. Its arguments are `FV(rate, nper, pmt)`:
+Excel's built-in [**`FV()`** (future value) function's](https://support.microsoft.com/en-US/Excel/fv-function) arguments are `FV(rate, nper, pmt)`:
 
-- `rate` --- the return *per period* (monthly here): `7%/12`
-- `nper` --- the number of periods: `25*12`
-- `pmt` --- the amount invested each period, entered as a **negative** number because it's cash leaving your pocket: `-200`
+- `rate` is the return *per period* (monthly here): `7%/12`
+- `nper` is the number of periods: `15*12`
+- `pmt` is the amount invested each period, entered as a *negative* number because it's cash leaving your pocket: `-150` (half of $300) or `-300*0.5`
 
-```excel
-=FV(7%/12, 25*12, -200)
+Half of a $300/month raise, invested for 15 years at 7%
+
+```swift
+=FV(0.07/12, 15*12, -300*0.5)
 ```
 
-This returns **\$162,014.34**, the same result as the R and Python functions above. (Excel reports a positive number because the contributions were entered as negative cash flows.)
+![](img/income-future-value.png){width="75%" fig-align='center'}
 
 :::
