@@ -43,9 +43,83 @@ def my_fun():
 
 Both languages allow you to create your own functions to perform specific tasks, which is especially useful for financial calculations.
 
+### Number formatting {.unnumbered}
+
+Before working through any calculations, it helps to have a few small functions that handle the `$` and `%` symbols you'll see throughout this book. We'll call these *formatting utilities*: they take a bare number and return a reader-friendly string.
+
+::: panel-tabset
+
+## R
+
+`fmt_dollar()` adds a dollar sign, comma separators for thousands, and rounds to a given number of decimal places:
+
+```{r}
+#| label: fmt-dollar-r
+fmt_dollar <- function(x, digits = 2) {
+  paste0("$", formatC(x, format = "f", digits = digits, big.mark = ","))
+}
+```
+
+`fmt_pct()` expects a decimal rate (e.g., `0.07` for 7%) and converts it to a percentage string:
+
+```{r}
+#| label: fmt-pct-r
+fmt_pct <- function(x, digits = 1) {
+  paste0(round(x * 100, digits), "%")
+}
+```
+
+```{r}
+#| label: fmt-utils-r-apply
+fmt_dollar(9200)
+fmt_dollar(4200.50)
+fmt_pct(0.07)
+fmt_pct(0.456)
+```
+
+## Python
+
+`fmt_dollar()` uses an [f-string](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals) with `,` for thousands and `.{digits}f` for decimal places:
+
+```{python}
+#| label: fmt-dollar-py
+def fmt_dollar(x, digits=2):
+    return f"${x:,.{digits}f}"
+```
+
+`fmt_pct()` also takes a decimal rate and multiplies by 100 before formatting:
+
+```{python}
+#| label: fmt-pct-py
+def fmt_pct(x, digits=1):
+    return f"{x * 100:.{digits}f}%"
+```
+
+```{python}
+#| label: fmt-utils-py-apply
+print(fmt_dollar(9200))
+print(fmt_dollar(4200.50))
+print(fmt_pct(0.07))
+print(fmt_pct(0.456))
+```
+
+## Excel 
+
+In Excel, number formatting can be done with the tools in the toolbar. Just select the cells you'd to format and select the appropriate option from the dropdown.
+
+![Common number formats in Excel](img/income-xlsx-number-formats.png){width='100%' fig-align="center"}
+
+Note there are two options for money (currency and accounting).[^excel-formats]
+
+:::
+
+[^excel-formats]: Read more about the [differences between currency and accounting](https://support.microsoft.com/en-us/excel/format-numbers-as-currency-in-excel#__toc305071612) formats in Excel. 
+
+Both `fmt_dollar()` and `fmt_pct()` follow the same convention: input is always a plain number, output is always a string. You'll see them used to clean up results throughout this chapter.
+
 ### The Fixed-Cost Ratio {.unnumbered}
 
-Fixed costs are things like rent, loan payments, insurance, and utilities. THey are considered *fixed* because they don't really change month to month.
+Fixed costs are things like rent, loan payments, insurance, and utilities. They are considered *fixed* because they don't really change month to month.
 
 A good benchmark is to keep them under \~60% of your income/take-home pay (leaving about 40% for *variable* costs and savings).
 
@@ -58,31 +132,27 @@ A good benchmark is to keep them under \~60% of your income/take-home pay (leavi
 ```{r}
 #| label: fixed-cost-r
 fixed_cost_ratio <- function(fixed_costs, take_home) {
-  (fixed_costs / take_home) * 100
+  fixed_costs / take_home
 }
 ```
 
-Now we can apply the function to \$4,200 of fixed costs on \$9,200 take-home pay. The output is a percentage, so we can `round()` it and add a `%` sign to the output with the `paste0()` function:
+Now we can apply the function to \$4,200 of fixed costs on \$9,200 take-home pay. The result is a decimal, so we pipe it into `fmt_pct()` to format it as a percentage string:
 
 ```{r}
 #| label: fixed-cost-r-apply
-fixed_cost_ratio(fixed_costs = 4200, take_home = 9200) |> 
-  round(1) |>
-  paste0("%")
+fixed_cost_ratio(fixed_costs = 4200, take_home = 9200) |> fmt_pct()
 ```
 
 #### Pipes in R {.unnumbered}
 
 The pipe operator (`|>`) allows you to take the output of one function and use it as the input for another function, making your code more readable and efficient. Read more in the [Pipe Operator](r_vs_py.qmd#sec-pipe-operator) section of R vs. Python.
 
-In the example above, we calculate the fixed-cost ratio and then immediately format it as a percentage string. A better way to do this is to create a new function that combines both steps:
+In the example above, we pipe the raw ratio into `fmt_pct()` to produce the percentage string. A better way to do this is to wrap both steps in a single function:
 
 ```{r}
 #| label: fixed-cost-r-pipe
 fixed_cost_ratio_pct <- function(fixed_costs, take_home) {
-  ratio <- (fixed_costs / take_home) * 100
-  round(ratio, 1) |>
-  paste0("%")
+  fixed_cost_ratio(fixed_costs, take_home) |> fmt_pct()
 }
 ```
 
@@ -164,7 +234,8 @@ Let's see what happens when we take half of a $300/month raise, invested for 15 
 
 ```{r}
 #| label: raise-value-r-apply
-raise_invested_value(monthly_raise = 300, invest_share = 0.5, rate = 0.07, years = 15)
+raise_invested_value(monthly_raise = 300, invest_share = 0.5, rate = 0.07, years = 15) |>
+  fmt_dollar()
 ```
 
 ## Python
