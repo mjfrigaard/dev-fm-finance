@@ -18,6 +18,8 @@ import polars as pl
 import numpy as np
 ```
 
+APR vs APY gap, minimum payment split, total interest comparison (6-yr vs 4-yr), DTI income split with 43% threshold line, guaranteed vs. expected return, avalanche vs. snowball ordering, and credit utilization with 30%/10% threshold lines.
+
 ## Math for Managing Debt
 
 ### APR vs. APY: Know What You're Actually Paying {.unnumbered}

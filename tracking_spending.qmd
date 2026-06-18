@@ -18,6 +18,8 @@ import polars as pl
 import numpy as np
 ```
 
+ subscription-bar-model — vertical bars showing a $20/month subscription's missed compounding value at years 0, 5, 10, 20, 30 (year-30 bar in red). Added R/Python `subscription_opportunity_cost()` code tabs since the subsection had none.
+
 ## Using Spreadsheets
 
 This section introduces the `r_bank_statement` and `py_bank_statement` datasets and rectangular data in R and Python. It also covers the basics of data manipulation using `tidyverse` in R and `polars` in Python.

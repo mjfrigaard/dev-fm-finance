@@ -18,6 +18,10 @@ import polars as pl
 import numpy as np
 ```
 
+- rent-buy-bar-model — horizontal stacked bar decomposing the 5% rule into its three components (property tax, maintenance, cost of capital)
+- mortgage-payment-bar-model — grouped bars comparing monthly payments for the same $400k loan at 15/20/30-year terms
+- first-payment-bar-model — horizontal stacked bars showing the interest/principal split at Month 1, Month 180, and Month 348 — makes the front-loading of interest visible
+
 ## Math for Major Purchases {#math-for-major-purchases}
 
 Big purchases are where small percentage differences turn into tens of thousands of dollars. Each calculation below is written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
