@@ -17,3 +17,5 @@ reticulate::py_require(c("numpy", "polars"))
 import polars as pl
 import numpy as np
 ```
+
+savings-rate-bar-model — four horizontal bars showing annual dollars saved at 8%/15%/25%/35% of a $60,000 income, colored red through mint to show progression from danger zone to FI path.

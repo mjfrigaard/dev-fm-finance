@@ -18,6 +18,10 @@ import polars as pl
 import numpy as np
 ```
 
+- compound-bar-model — $10,000 growing at 7% across Year 0/5/10/20/30 with a color gradient from mint to red showing acceleration
+- fv-series-bar-model — stacked bars separating contributed dollars (teal) from investment gains (mint) at Year 10/20/30 for $500/month contributions
+- real-return-bar-model — three side-by-side bars: nominal 7%, inflation 3%, real ~3.9% — making visible what inflation actually costs
+
 ## Math for Investing Basics {#math-for-investing-basics}
 
 Investing math is mostly one idea, compounding, applied in a few different ways. Each calculation below is written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
