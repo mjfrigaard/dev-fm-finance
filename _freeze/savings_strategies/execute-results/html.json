@@ -1,8 +1,8 @@
 {
-  "hash": "3c63c6ebba0d5cdd7545bc671430b168",
+  "hash": "6db6f72e3e9cd060b2388794dddf4d2a",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: \"Savings Strategies\"\n---\n\n\n\n\n",
+    "markdown": "---\ntitle: \"Savings Strategies\"\n---\n\n\n\n\n\n## Book Topics\n\n- **Pay yourself first**: automate savings before anything else hits the checking account\n- **Savings rate**: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns\n- **Benchmarks**: <10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence\n- **Sinking funds**: pre-save for known future expenses (car insurance, vacation, gifts) so they don't hit as surprises\n- **Target**: save as much as you can *sustain*; a consistent 15% beats a sporadic 30%\n\n## Savings Rate\n\nThe savings rate tells you how much of your income you're keeping, expressed as a percentage.\n\n**Formula:** Savings Rate = (Income − Spending) ÷ Income × 100\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Annual dollars saved at four savings-rate tiers on a $60,000 income](savings_strategies_files/figure-html/savings-rate-bar-model-1.png){width=576}\n:::\n:::\n\n\n::: panel-tabset\n## R\n\n\n::: {.cell}\n\n```{.r .cell-code}\nsavings_rate <- function(income, spending) {\n  ((income - spending) / income) * 100\n}\n\nsavings_rate(income = 5000, spending = 3500)\n#> [1] 30\n```\n:::\n\n\n## Python\n\n\n::: {.cell}\n\n```{.python .cell-code}\ndef savings_rate(income, spending):\n    return ((income - spending) / income) * 100\n\nsavings_rate(income=5000, spending=3500)\n#> 30.0\n```\n:::\n\n\n## Excel\n\nWith income in `A2` and spending in `B2`:\n\n```swift\n=((A2-B2)/A2)*100\n```\n:::\n",
     "supporting": [
       "savings_strategies_files"
     ],

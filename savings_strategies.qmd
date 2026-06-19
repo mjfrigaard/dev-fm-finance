@@ -7,15 +7,86 @@ title: "Savings Strategies"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
 
-savings-rate-bar-model — four horizontal bars showing annual dollars saved at 8%/15%/25%/35% of a $60,000 income, colored red through mint to show progression from danger zone to FI path.
+## Book Topics
+
+- **Pay yourself first**: automate savings before anything else hits the checking account
+- **Savings rate**: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns
+- **Benchmarks**: <10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence
+- **Sinking funds**: pre-save for known future expenses (car insurance, vacation, gifts) so they don't hit as surprises
+- **Target**: save as much as you can *sustain*; a consistent 15% beats a sporadic 30%
+
+## Savings Rate
+
+The savings rate tells you how much of your income you're keeping, expressed as a percentage.
+
+**Formula:** Savings Rate = (Income − Spending) ÷ Income × 100
+
+```{r}
+#| label: savings-rate-bar-model
+#| echo: false
+#| fig-cap: "Annual dollars saved at four savings-rate tiers on a $60,000 income"
+#| fig-asp: 0.50
+library(ggplot2)
+income <- 60000
+tiers <- data.frame(
+  label = c("8% (danger zone)", "15% (average)", "25% (strong)", "35% (FI path)"),
+  rate  = c(0.08, 0.15, 0.25, 0.35),
+  fill  = c("#f44242", "#0e9aa7", "#48a56a", "#86ddcd"),
+  stringsAsFactors = FALSE
+)
+tiers$saved   <- income * tiers$rate
+tiers$bar_lbl <- paste0("saves $", format(tiers$saved, big.mark = ",", scientific = FALSE), "/yr")
+tiers$label   <- factor(tiers$label, levels = rev(tiers$label))
+
+ggplot(tiers, aes(x = label, y = saved, fill = label)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.3) +
+  geom_text(aes(label = bar_lbl), hjust = -0.08, fontface = "bold",
+            size = 3.5, colour = "#1C1C1E") +
+  coord_flip() +
+  scale_fill_manual(values = setNames(tiers$fill, tiers$label)) +
+  scale_y_continuous(labels = function(x) paste0("$", format(x, big.mark = ",")),
+                     limits = c(0, income * 0.45)) +
+  labs(x = NULL, y = "Annual savings (on $60,000 income)") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+```
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: savings-rate-r
+savings_rate <- function(income, spending) {
+  ((income - spending) / income) * 100
+}
+
+savings_rate(income = 5000, spending = 3500)
+```
+
+## Python
+
+```{python}
+#| label: savings-rate-py
+def savings_rate(income, spending):
+    return ((income - spending) / income) * 100
+
+savings_rate(income=5000, spending=3500)
+```
+
+## Excel
+
+With income in `A2` and spending in `B2`:
+
+```swift
+=((A2-B2)/A2)*100
+```
+:::
