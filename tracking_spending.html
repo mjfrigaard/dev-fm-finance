@@ -254,11 +254,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#using-spreadsheets" id="toc-using-spreadsheets" class="nav-link active" data-scroll-target="#using-spreadsheets"><span class="header-section-number">1</span> Using Spreadsheets</a></li>
-  <li><a href="#math-for-tracking-spending" id="toc-math-for-tracking-spending" class="nav-link" data-scroll-target="#math-for-tracking-spending"><span class="header-section-number">2</span> Math for tracking spending</a>
-  <ul>
-  <li><a href="#the-subscription-audit-math" id="toc-the-subscription-audit-math" class="nav-link" data-scroll-target="#the-subscription-audit-math">The Subscription Audit Math</a></li>
-  </ul></li>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#bank-statement-data" id="toc-bank-statement-data" class="nav-link" data-scroll-target="#bank-statement-data"><span class="header-section-number">2</span> Bank Statement Data</a></li>
+  <li><a href="#categorizing-transactions" id="toc-categorizing-transactions" class="nav-link" data-scroll-target="#categorizing-transactions"><span class="header-section-number">3</span> Categorizing Transactions</a></li>
+  <li><a href="#subscription-opportunity-cost" id="toc-subscription-opportunity-cost" class="nav-link" data-scroll-target="#subscription-opportunity-cost"><span class="header-section-number">4</span> Subscription Opportunity Cost</a></li>
   </ul>
 </nav>
     </div>
@@ -284,54 +283,151 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="using-spreadsheets" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="using-spreadsheets"><span class="header-section-number">1</span> Using Spreadsheets</h2>
-<p>This section introduces the <code>r_bank_statement</code> and <code>py_bank_statement</code> datasets and rectangular data in R and Python. It also covers the basics of data manipulation using <code>tidyverse</code> in R and <code>polars</code> in Python.</p>
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Capture methods</strong>: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month</li>
+<li><strong>Bank statement exports</strong>: <code>Date</code>, <code>Description</code>, <code>Amount</code> columns; you add the <code>Category</code></li>
+<li><strong>Categorization</strong>: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running</li>
+<li><strong>Monthly review</strong>: pull statements → categorize → compare to budget → pick <em>one</em> change; repeat 12× per year</li>
+<li><strong>Subscriptions</strong>: average household spends $200–$300/month without realizing it; audit every 90 days</li>
+</ul>
+</section>
+<section id="bank-statement-data" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="bank-statement-data"><span class="header-section-number">2</span> Bank Statement Data</h2>
+<p>A minimal bank export has three columns: <code>Date</code>, <code>Description</code>, and <code>Amount</code>.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p>Create the <code>r_bank_statement</code> dataset using <code>tibble</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tibble)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Date =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-02"</span>, <span class="st">"2026-01-02"</span>, <span class="st">"2026-01-03"</span>, <span class="st">"2026-01-03"</span>,</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-04"</span>, <span class="st">"2026-01-04"</span>, <span class="st">"2026-01-05"</span>, <span class="st">"2026-01-06"</span>,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-07"</span>, <span class="st">"2026-01-08"</span>, <span class="st">"2026-01-09"</span>, <span class="st">"2026-01-10"</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-11"</span>, <span class="st">"2026-01-12"</span>, <span class="st">"2026-01-13"</span>, <span class="st">"2026-01-14"</span>,</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-15"</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  )),</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Description =</span> <span class="fu">c</span>(</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Employer Payroll"</span>,       <span class="st">"Rent"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Comcast Internet"</span>,       <span class="st">"Trader Joe's"</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Shell Gas"</span>,              <span class="st">"Netflix"</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Starbucks"</span>,              <span class="st">"PG&amp;E Electric"</span>,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AT&amp;T Wireless"</span>,          <span class="st">"Spotify"</span>,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Whole Foods"</span>,            <span class="st">"Chipotle"</span>,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Geico Auto Insurance"</span>,   <span class="st">"NYTimes Digital"</span>,</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Shell Gas"</span>,              <span class="st">"Costco"</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"24 Hour Fitness"</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">Amount =</span> <span class="fu">c</span>(</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>     <span class="fl">2400.00</span>, <span class="sc">-</span><span class="fl">1500.00</span>,</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">75.00</span>,   <span class="sc">-</span><span class="fl">82.45</span>,</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">45.20</span>,   <span class="sc">-</span><span class="fl">15.99</span>,</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>       <span class="sc">-</span><span class="fl">6.75</span>,  <span class="sc">-</span><span class="fl">142.30</span>,</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">85.00</span>,   <span class="sc">-</span><span class="fl">10.99</span>,</span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">64.12</span>,   <span class="sc">-</span><span class="fl">14.50</span>,</span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>     <span class="sc">-</span><span class="fl">125.00</span>,   <span class="sc">-</span><span class="fl">17.00</span>,</span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">42.80</span>,  <span class="sc">-</span><span class="fl">156.78</span>,</span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>      <span class="sc">-</span><span class="fl">39.99</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Date =</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-02"</span>, <span class="st">"2026-01-02"</span>, <span class="st">"2026-01-03"</span>, <span class="st">"2026-01-03"</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-04"</span>, <span class="st">"2026-01-04"</span>, <span class="st">"2026-01-05"</span>, <span class="st">"2026-01-06"</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-07"</span>, <span class="st">"2026-01-08"</span>, <span class="st">"2026-01-09"</span>, <span class="st">"2026-01-10"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-11"</span>, <span class="st">"2026-01-12"</span>, <span class="st">"2026-01-13"</span>, <span class="st">"2026-01-14"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2026-01-15"</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  )),</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Description =</span> <span class="fu">c</span>(</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Employer Payroll"</span>, <span class="st">"Rent"</span>, <span class="st">"Comcast Internet"</span>, <span class="st">"Trader Joe's"</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Shell Gas"</span>, <span class="st">"Netflix"</span>, <span class="st">"Starbucks"</span>, <span class="st">"PG&amp;E Electric"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"AT&amp;T Wireless"</span>, <span class="st">"Spotify"</span>, <span class="st">"Whole Foods"</span>, <span class="st">"Chipotle"</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Geico Auto Insurance"</span>, <span class="st">"NYTimes Digital"</span>, <span class="st">"Shell Gas"</span>, <span class="st">"Costco"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">"24 Hour Fitness"</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">Amount =</span> <span class="fu">c</span>(</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>     <span class="fl">2400.00</span>, <span class="sc">-</span><span class="fl">1500.00</span>, <span class="sc">-</span><span class="fl">75.00</span>, <span class="sc">-</span><span class="fl">82.45</span>, <span class="sc">-</span><span class="fl">45.20</span>, <span class="sc">-</span><span class="fl">15.99</span>, <span class="sc">-</span><span class="fl">6.75</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    <span class="sc">-</span><span class="fl">142.30</span>, <span class="sc">-</span><span class="fl">85.00</span>, <span class="sc">-</span><span class="fl">10.99</span>, <span class="sc">-</span><span class="fl">64.12</span>, <span class="sc">-</span><span class="fl">14.50</span>, <span class="sc">-</span><span class="fl">125.00</span>, <span class="sc">-</span><span class="fl">17.00</span>,</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>     <span class="sc">-</span><span class="fl">42.80</span>, <span class="sc">-</span><span class="fl">156.78</span>, <span class="sc">-</span><span class="fl">39.99</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: right;">Amount</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2026-01-02</td>
+<td style="text-align: left;">Employer Payroll</td>
+<td style="text-align: right;">2400.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-02</td>
+<td style="text-align: left;">Rent</td>
+<td style="text-align: right;">-1500.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-03</td>
+<td style="text-align: left;">Comcast Internet</td>
+<td style="text-align: right;">-75.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-03</td>
+<td style="text-align: left;">Trader Joe’s</td>
+<td style="text-align: right;">-82.45</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-04</td>
+<td style="text-align: left;">Shell Gas</td>
+<td style="text-align: right;">-45.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-04</td>
+<td style="text-align: left;">Netflix</td>
+<td style="text-align: right;">-15.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-05</td>
+<td style="text-align: left;">Starbucks</td>
+<td style="text-align: right;">-6.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-06</td>
+<td style="text-align: left;">PG&amp;E Electric</td>
+<td style="text-align: right;">-142.30</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-07</td>
+<td style="text-align: left;">AT&amp;T Wireless</td>
+<td style="text-align: right;">-85.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-08</td>
+<td style="text-align: left;">Spotify</td>
+<td style="text-align: right;">-10.99</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-09</td>
+<td style="text-align: left;">Whole Foods</td>
+<td style="text-align: right;">-64.12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-10</td>
+<td style="text-align: left;">Chipotle</td>
+<td style="text-align: right;">-14.50</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-11</td>
+<td style="text-align: left;">Geico Auto Insurance</td>
+<td style="text-align: right;">-125.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-12</td>
+<td style="text-align: left;">NYTimes Digital</td>
+<td style="text-align: right;">-17.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-13</td>
+<td style="text-align: left;">Shell Gas</td>
+<td style="text-align: right;">-42.80</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-14</td>
+<td style="text-align: left;">Costco</td>
+<td style="text-align: right;">-156.78</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-15</td>
+<td style="text-align: left;">24 Hour Fitness</td>
+<td style="text-align: right;">-39.99</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p>Create the <code>py_bank_statement</code> dataset using <code>tibble</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -346,51 +442,518 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">"2026-01-15"</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    ],</span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Description"</span>: [</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Employer Payroll"</span>,     <span class="st">"Rent"</span>,</span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Comcast Internet"</span>,     <span class="st">"Trader Joe's"</span>,</span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Shell Gas"</span>,            <span class="st">"Netflix"</span>,</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Starbucks"</span>,            <span class="st">"PG&amp;E Electric"</span>,</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"AT&amp;T Wireless"</span>,        <span class="st">"Spotify"</span>,</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Whole Foods"</span>,          <span class="st">"Chipotle"</span>,</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Geico Auto Insurance"</span>, <span class="st">"NYTimes Digital"</span>,</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Shell Gas"</span>,            <span class="st">"Costco"</span>,</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="st">"24 Hour Fitness"</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    ],</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Amount"</span>: [</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>         <span class="fl">2400.00</span>, <span class="op">-</span><span class="fl">1500.00</span>,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">75.00</span>,   <span class="op">-</span><span class="fl">82.45</span>,</span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">45.20</span>,   <span class="op">-</span><span class="fl">15.99</span>,</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>           <span class="op">-</span><span class="fl">6.75</span>,  <span class="op">-</span><span class="fl">142.30</span>,</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">85.00</span>,   <span class="op">-</span><span class="fl">10.99</span>,</span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">64.12</span>,   <span class="op">-</span><span class="fl">14.50</span>,</span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>         <span class="op">-</span><span class="fl">125.00</span>,   <span class="op">-</span><span class="fl">17.00</span>,</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">42.80</span>,  <span class="op">-</span><span class="fl">156.78</span>,</span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>          <span class="op">-</span><span class="fl">39.99</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    ]</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>}).with_columns(pl.col(<span class="st">"Date"</span>).<span class="bu">str</span>.to_date())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Employer Payroll"</span>, <span class="st">"Rent"</span>, <span class="st">"Comcast Internet"</span>, <span class="st">"Trader Joe's"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Shell Gas"</span>, <span class="st">"Netflix"</span>, <span class="st">"Starbucks"</span>, <span class="st">"PG&amp;E Electric"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">"AT&amp;T Wireless"</span>, <span class="st">"Spotify"</span>, <span class="st">"Whole Foods"</span>, <span class="st">"Chipotle"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">"Geico Auto Insurance"</span>, <span class="st">"NYTimes Digital"</span>, <span class="st">"Shell Gas"</span>, <span class="st">"Costco"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">"24 Hour Fitness"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Amount"</span>: [</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>         <span class="fl">2400.00</span>, <span class="op">-</span><span class="fl">1500.00</span>, <span class="op">-</span><span class="fl">75.00</span>, <span class="op">-</span><span class="fl">82.45</span>, <span class="op">-</span><span class="fl">45.20</span>, <span class="op">-</span><span class="fl">15.99</span>, <span class="op">-</span><span class="fl">6.75</span>,</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span><span class="fl">142.30</span>, <span class="op">-</span><span class="fl">85.00</span>, <span class="op">-</span><span class="fl">10.99</span>, <span class="op">-</span><span class="fl">64.12</span>, <span class="op">-</span><span class="fl">14.50</span>, <span class="op">-</span><span class="fl">125.00</span>, <span class="op">-</span><span class="fl">17.00</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>         <span class="op">-</span><span class="fl">42.80</span>, <span class="op">-</span><span class="fl">156.78</span>, <span class="op">-</span><span class="fl">39.99</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}).with_columns(pl.col(<span class="st">"Date"</span>).<span class="bu">str</span>.to_date())</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>py_bank_statement</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (17, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">Description</th>
+<th data-quarto-table-cell-role="th">Amount</th>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>str</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026-01-02</td>
+<td>"Employer Payroll"</td>
+<td>2400.0</td>
+</tr>
+<tr class="even">
+<td>2026-01-02</td>
+<td>"Rent"</td>
+<td>-1500.0</td>
+</tr>
+<tr class="odd">
+<td>2026-01-03</td>
+<td>"Comcast Internet"</td>
+<td>-75.0</td>
+</tr>
+<tr class="even">
+<td>2026-01-03</td>
+<td>"Trader Joe's"</td>
+<td>-82.45</td>
+</tr>
+<tr class="odd">
+<td>2026-01-04</td>
+<td>"Shell Gas"</td>
+<td>-45.2</td>
+</tr>
+<tr class="even">
+<td>2026-01-04</td>
+<td>"Netflix"</td>
+<td>-15.99</td>
+</tr>
+<tr class="odd">
+<td>2026-01-05</td>
+<td>"Starbucks"</td>
+<td>-6.75</td>
+</tr>
+<tr class="even">
+<td>2026-01-06</td>
+<td>"PG&amp;E Electric"</td>
+<td>-142.3</td>
+</tr>
+<tr class="odd">
+<td>2026-01-07</td>
+<td>"AT&amp;T Wireless"</td>
+<td>-85.0</td>
+</tr>
+<tr class="even">
+<td>2026-01-08</td>
+<td>"Spotify"</td>
+<td>-10.99</td>
+</tr>
+<tr class="odd">
+<td>2026-01-09</td>
+<td>"Whole Foods"</td>
+<td>-64.12</td>
+</tr>
+<tr class="even">
+<td>2026-01-10</td>
+<td>"Chipotle"</td>
+<td>-14.5</td>
+</tr>
+<tr class="odd">
+<td>2026-01-11</td>
+<td>"Geico Auto Insurance"</td>
+<td>-125.0</td>
+</tr>
+<tr class="even">
+<td>2026-01-12</td>
+<td>"NYTimes Digital"</td>
+<td>-17.0</td>
+</tr>
+<tr class="odd">
+<td>2026-01-13</td>
+<td>"Shell Gas"</td>
+<td>-42.8</td>
+</tr>
+<tr class="even">
+<td>2026-01-14</td>
+<td>"Costco"</td>
+<td>-156.78</td>
+</tr>
+<tr class="odd">
+<td>2026-01-15</td>
+<td>"24 Hour Fitness"</td>
+<td>-39.99</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>The <code>bank_statement</code> can also be copied + pasted into Excel:</p>
+<p>Copy the data into Excel; <code>Date</code> in A, <code>Description</code> in B, <code>Amount</code> in C.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/tracking_spending-bank-statement.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
+<p><img src="img/tracking_spending-bank-statement.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption><code>bank_statement</code> in Excel</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="math-for-tracking-spending" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="math-for-tracking-spending"><span class="header-section-number">2</span> Math for tracking spending</h2>
-<p>The future value of contributions formula is:</p>
-<section id="the-subscription-audit-math" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-subscription-audit-math">The Subscription Audit Math</h3>
-<p>Formula: <strong>Monthly Subscription × 12 × (1.07)^n</strong> = Opportunity cost in n years</p>
-
-
+<section id="categorizing-transactions" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="categorizing-transactions"><span class="header-section-number">3</span> Categorizing Transactions</h2>
+<p>Map description keywords to budget buckets in a single pass.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="ot">&lt;-</span> r_bank_statement <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Category =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Payroll"</span>,                                 Description) <span class="sc">~</span> <span class="st">"Income"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Rent"</span>,                                    Description) <span class="sc">~</span> <span class="st">"Housing"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Comcast|PG&amp;E|AT&amp;T"</span>,                       Description) <span class="sc">~</span> <span class="st">"Utilities"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Trader Joe|Whole Foods|Costco"</span>,           Description) <span class="sc">~</span> <span class="st">"Groceries"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Shell"</span>,                                   Description) <span class="sc">~</span> <span class="st">"Transportation"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Starbucks|Chipotle"</span>,                      Description) <span class="sc">~</span> <span class="st">"Dining"</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Netflix|Spotify|NYTimes|24 Hour Fitness"</span>, Description) <span class="sc">~</span> <span class="st">"Subscriptions"</span>,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Geico"</span>,                                   Description) <span class="sc">~</span> <span class="st">"Insurance"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                          <span class="sc">~</span> <span class="st">"Other"</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Date</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: right;">Amount</th>
+<th style="text-align: left;">Category</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2026-01-02</td>
+<td style="text-align: left;">Employer Payroll</td>
+<td style="text-align: right;">2400.00</td>
+<td style="text-align: left;">Income</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-02</td>
+<td style="text-align: left;">Rent</td>
+<td style="text-align: right;">-1500.00</td>
+<td style="text-align: left;">Housing</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-03</td>
+<td style="text-align: left;">Comcast Internet</td>
+<td style="text-align: right;">-75.00</td>
+<td style="text-align: left;">Utilities</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-03</td>
+<td style="text-align: left;">Trader Joe’s</td>
+<td style="text-align: right;">-82.45</td>
+<td style="text-align: left;">Groceries</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-04</td>
+<td style="text-align: left;">Shell Gas</td>
+<td style="text-align: right;">-45.20</td>
+<td style="text-align: left;">Transportation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-04</td>
+<td style="text-align: left;">Netflix</td>
+<td style="text-align: right;">-15.99</td>
+<td style="text-align: left;">Subscriptions</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-05</td>
+<td style="text-align: left;">Starbucks</td>
+<td style="text-align: right;">-6.75</td>
+<td style="text-align: left;">Dining</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-06</td>
+<td style="text-align: left;">PG&amp;E Electric</td>
+<td style="text-align: right;">-142.30</td>
+<td style="text-align: left;">Utilities</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-07</td>
+<td style="text-align: left;">AT&amp;T Wireless</td>
+<td style="text-align: right;">-85.00</td>
+<td style="text-align: left;">Utilities</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-08</td>
+<td style="text-align: left;">Spotify</td>
+<td style="text-align: right;">-10.99</td>
+<td style="text-align: left;">Subscriptions</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-09</td>
+<td style="text-align: left;">Whole Foods</td>
+<td style="text-align: right;">-64.12</td>
+<td style="text-align: left;">Groceries</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-10</td>
+<td style="text-align: left;">Chipotle</td>
+<td style="text-align: right;">-14.50</td>
+<td style="text-align: left;">Dining</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-11</td>
+<td style="text-align: left;">Geico Auto Insurance</td>
+<td style="text-align: right;">-125.00</td>
+<td style="text-align: left;">Insurance</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-12</td>
+<td style="text-align: left;">NYTimes Digital</td>
+<td style="text-align: right;">-17.00</td>
+<td style="text-align: left;">Subscriptions</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-13</td>
+<td style="text-align: left;">Shell Gas</td>
+<td style="text-align: right;">-42.80</td>
+<td style="text-align: left;">Transportation</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2026-01-14</td>
+<td style="text-align: left;">Costco</td>
+<td style="text-align: right;">-156.78</td>
+<td style="text-align: left;">Groceries</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2026-01-15</td>
+<td style="text-align: left;">24 Hour Fitness</td>
+<td style="text-align: right;">-39.99</td>
+<td style="text-align: left;">Subscriptions</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>py_bank_statement <span class="op">=</span> py_bank_statement.with_columns(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    Category <span class="op">=</span> pl.when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Payroll"</span>)).then(pl.lit(<span class="st">"Income"</span>))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Rent"</span>)).then(pl.lit(<span class="st">"Housing"</span>))</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Comcast|PG&amp;E|AT&amp;T"</span>)).then(pl.lit(<span class="st">"Utilities"</span>))</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Trader Joe|Whole Foods|Costco"</span>)).then(pl.lit(<span class="st">"Groceries"</span>))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Shell"</span>)).then(pl.lit(<span class="st">"Transportation"</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Starbucks|Chipotle"</span>)).then(pl.lit(<span class="st">"Dining"</span>))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Netflix|Spotify|NYTimes|24 Hour Fitness"</span>)).then(pl.lit(<span class="st">"Subscriptions"</span>))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        .when(pl.col(<span class="st">"Description"</span>).<span class="bu">str</span>.contains(<span class="st">"Geico"</span>)).then(pl.lit(<span class="st">"Insurance"</span>))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        .otherwise(pl.lit(<span class="st">"Other"</span>))</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>py_bank_statement</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (17, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Date</th>
+<th data-quarto-table-cell-role="th">Description</th>
+<th data-quarto-table-cell-role="th">Amount</th>
+<th data-quarto-table-cell-role="th">Category</th>
+</tr>
+<tr class="even">
+<td>date</td>
+<td>str</td>
+<td>f64</td>
+<td>str</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2026-01-02</td>
+<td>"Employer Payroll"</td>
+<td>2400.0</td>
+<td>"Income"</td>
+</tr>
+<tr class="even">
+<td>2026-01-02</td>
+<td>"Rent"</td>
+<td>-1500.0</td>
+<td>"Housing"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-03</td>
+<td>"Comcast Internet"</td>
+<td>-75.0</td>
+<td>"Utilities"</td>
+</tr>
+<tr class="even">
+<td>2026-01-03</td>
+<td>"Trader Joe's"</td>
+<td>-82.45</td>
+<td>"Groceries"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-04</td>
+<td>"Shell Gas"</td>
+<td>-45.2</td>
+<td>"Transportation"</td>
+</tr>
+<tr class="even">
+<td>2026-01-04</td>
+<td>"Netflix"</td>
+<td>-15.99</td>
+<td>"Subscriptions"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-05</td>
+<td>"Starbucks"</td>
+<td>-6.75</td>
+<td>"Dining"</td>
+</tr>
+<tr class="even">
+<td>2026-01-06</td>
+<td>"PG&amp;E Electric"</td>
+<td>-142.3</td>
+<td>"Utilities"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-07</td>
+<td>"AT&amp;T Wireless"</td>
+<td>-85.0</td>
+<td>"Utilities"</td>
+</tr>
+<tr class="even">
+<td>2026-01-08</td>
+<td>"Spotify"</td>
+<td>-10.99</td>
+<td>"Subscriptions"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-09</td>
+<td>"Whole Foods"</td>
+<td>-64.12</td>
+<td>"Groceries"</td>
+</tr>
+<tr class="even">
+<td>2026-01-10</td>
+<td>"Chipotle"</td>
+<td>-14.5</td>
+<td>"Dining"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-11</td>
+<td>"Geico Auto Insurance"</td>
+<td>-125.0</td>
+<td>"Insurance"</td>
+</tr>
+<tr class="even">
+<td>2026-01-12</td>
+<td>"NYTimes Digital"</td>
+<td>-17.0</td>
+<td>"Subscriptions"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-13</td>
+<td>"Shell Gas"</td>
+<td>-42.8</td>
+<td>"Transportation"</td>
+</tr>
+<tr class="even">
+<td>2026-01-14</td>
+<td>"Costco"</td>
+<td>-156.78</td>
+<td>"Groceries"</td>
+</tr>
+<tr class="odd">
+<td>2026-01-15</td>
+<td>"24 Hour Fitness"</td>
+<td>-39.99</td>
+<td>"Subscriptions"</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>With <code>Description</code> in column B, paste into <code>D2</code> and fill down:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>IFS<span class="op">(</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Payroll"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Income"</span><span class="op">,</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Rent"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Housing"</span><span class="op">,</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  OR<span class="op">(</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Comcast"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"PG&amp;E"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"AT&amp;T"</span><span class="op">,</span>B2<span class="op">))),</span> <span class="st">"Utilities"</span><span class="op">,</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  OR<span class="op">(</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Trader Joe"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Whole Foods"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Costco"</span><span class="op">,</span>B2<span class="op">))),</span> <span class="st">"Groceries"</span><span class="op">,</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Shell"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Transportation"</span><span class="op">,</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  OR<span class="op">(</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Starbucks"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Chipotle"</span><span class="op">,</span>B2<span class="op">))),</span> <span class="st">"Dining"</span><span class="op">,</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  OR<span class="op">(</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Netflix"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Spotify"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"NYTimes"</span><span class="op">,</span>B2<span class="op">)),</span>ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"24 Hour Fitness"</span><span class="op">,</span>B2<span class="op">))),</span> <span class="st">"Subscriptions"</span><span class="op">,</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Geico"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Insurance"</span><span class="op">,</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  TRUE<span class="op">,</span> <span class="st">"Other"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/tracking_spending-ifs.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption><code>IFS()</code> in Excel</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
 </section>
+<section id="subscription-opportunity-cost" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="subscription-opportunity-cost"><span class="header-section-number">4</span> Subscription Opportunity Cost</h2>
+<p>A small recurring subscription has a large long-run cost when you account for what the money could have earned.</p>
+<p><strong>Formula:</strong> Monthly Cost × 12 × ((1 + r)^n − 1) ÷ r</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Future value of a $20/month subscription’s annual cost if invested at 7%</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_cost, years, <span class="at">rate =</span> <span class="fl">0.07</span>) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="ot">&lt;-</span> monthly_cost <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 22670.59</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22670.58871769843</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>With monthly cost in <code>A2</code>, years in <code>B2</code>, rate in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->

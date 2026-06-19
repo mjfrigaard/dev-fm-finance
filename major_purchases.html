@@ -254,12 +254,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#math-for-major-purchases" id="toc-math-for-major-purchases" class="nav-link active" data-scroll-target="#math-for-major-purchases"><span class="header-section-number">1</span> Math for Major Purchases</a>
-  <ul>
-  <li><a href="#the-rent-vs-buy-5-rule" id="toc-the-rent-vs-buy-5-rule" class="nav-link" data-scroll-target="#the-rent-vs-buy-5-rule">The Rent-vs-Buy 5% Rule</a></li>
-  <li><a href="#the-monthly-mortgage-payment" id="toc-the-monthly-mortgage-payment" class="nav-link" data-scroll-target="#the-monthly-mortgage-payment">The Monthly Mortgage Payment</a></li>
-  <li><a href="#where-the-first-years-payments-go" id="toc-where-the-first-years-payments-go" class="nav-link" data-scroll-target="#where-the-first-years-payments-go">Where the First Year’s Payments Go</a></li>
-  </ul></li>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#rent-vs.-buy-threshold-felixs-5-rule" id="toc-rent-vs.-buy-threshold-felixs-5-rule" class="nav-link" data-scroll-target="#rent-vs.-buy-threshold-felixs-5-rule"><span class="header-section-number">2</span> Rent vs.&nbsp;Buy Threshold (Felix’s 5% Rule)</a></li>
+  <li><a href="#monthly-mortgage-payment" id="toc-monthly-mortgage-payment" class="nav-link" data-scroll-target="#monthly-mortgage-payment"><span class="header-section-number">3</span> Monthly Mortgage Payment</a></li>
+  <li><a href="#first-month-interest-vs.-principal-split" id="toc-first-month-interest-vs.-principal-split" class="nav-link" data-scroll-target="#first-month-interest-vs.-principal-split"><span class="header-section-number">4</span> First-Month Interest vs.&nbsp;Principal Split</a></li>
   </ul>
 </nav>
     </div>
@@ -285,16 +283,32 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="math-for-major-purchases" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="math-for-major-purchases"><span class="header-section-number">1</span> Math for Major Purchases</h2>
-<p>Big purchases are where small percentage differences turn into tens of thousands of dollars. Each calculation below is written as an R and Python function, following the same pattern introduced in the <a href="./budgeting.html">Budgeting</a> chapter.</p>
-<section id="the-rent-vs-buy-5-rule" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-rent-vs-buy-5-rule">The Rent-vs-Buy 5% Rule</h3>
-<p>Felix’s rule estimates the annual <em>unrecoverable</em> cost of owning as about 5% of the home’s value, then compares the monthly equivalent to your rent.</p>
-<p><strong>Formula:</strong> Monthly cost of owning ≈ (Home Value × 0.05) ÷ 12</p>
-<p>Example: a $600,000 home → (600,000 × 0.05) ÷ 12 = <strong>$2,500/month</strong>. Rent below that, and renting-and-investing-the-difference tends to win.</p>
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Renting vs.&nbsp;buying</strong>: “renting is throwing money away” is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix’s 5% Rule)</li>
+<li><strong>5% Rule components</strong>: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent</li>
+<li><strong>When to buy</strong>: plan to stay 7+ years; stable income; won’t be “house poor” (housing &lt;28–30% of gross income)</li>
+<li><strong>Mortgage amortization</strong>: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you’ve barely touched principal</li>
+<li><strong>Cars</strong>: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old</li>
+</ul>
+</section>
+<section id="rent-vs.-buy-threshold-felixs-5-rule" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="rent-vs.-buy-threshold-felixs-5-rule"><span class="header-section-number">2</span> Rent vs.&nbsp;Buy Threshold (Felix’s 5% Rule)</h2>
+<p>Multiply home value by 5%, divide by 12. If you can rent an equivalent home for less, renting and investing the difference is likely the better financial choice.</p>
+<p><strong>Formula:</strong> Monthly ownership cost ≈ (Home Value × 0.05) ÷ 12</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="major_purchases_files/figure-html/rent-buy-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>The three components of the 5% rule on a $500,000 home</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
@@ -304,144 +318,167 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (home_value <span class="sc">*</span> unrecoverable_rate) <span class="sc">/</span> <span class="dv">12</span></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $600,000 home at the standard 5% unrecoverable rate</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rent_buy_threshold</span>(<span class="at">home_value =</span> <span class="dv">600000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rent_buy_threshold</span>(<span class="at">home_value =</span> <span class="dv">600000</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2500</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2500</code></pre>
-</div>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rent_buy_threshold(home_value, unrecoverable_rate<span class="op">=</span><span class="fl">0.05</span>):</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (home_value <span class="op">*</span> unrecoverable_rate) <span class="op">/</span> <span class="dv">12</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># $600,000 home at the standard 5% unrecoverable rate</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>rent_buy_threshold(home_value<span class="op">=</span><span class="dv">600000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rent_buy_threshold(home_value, unrecoverable_rate<span class="op">=</span><span class="fl">0.05</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (home_value <span class="op">*</span> unrecoverable_rate) <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>rent_buy_threshold(home_value<span class="op">=</span><span class="dv">600000</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2500.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>2500.0</code></pre>
 </div>
 </div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>With home value in <code>A2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="fl">0.05</span><span class="op">)/</span><span class="dv">12</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
 </section>
-<section id="the-monthly-mortgage-payment" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-monthly-mortgage-payment">The Monthly Mortgage Payment</h3>
-<p>This is the standard amortization formula behind every mortgage calculator.</p>
-<p><strong>Formula:</strong> M = P × [ r(1 + r)^n ] ÷ [ (1 + r)^n − 1 ]</p>
-<p>Where: P = the loan principal, <em>r</em> = the monthly interest rate (annual ÷ 12), <em>n</em> = the total number of payments (years × 12).</p>
-<p>Example: a $480,000 loan (a $600,000 home with 20% down) at 6% for 30 years → <strong>~$2,878/month</strong>.</p>
+<section id="monthly-mortgage-payment" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="monthly-mortgage-payment"><span class="header-section-number">3</span> Monthly Mortgage Payment</h2>
+<p>The standard amortization formula; shorter terms mean higher payments but much less total interest.</p>
+<p><strong>Formula:</strong> M = P × [r(1 + r)^n] ÷ [(1 + r)^n − 1]</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="major_purchases_files/figure-html/mortgage-payment-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Monthly payment on a $400,000 loan at 6.5% across three terms</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mortgage_payment <span class="ot">&lt;-</span> <span class="cf">function</span>(principal, annual_rate, years) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> annual_rate <span class="sc">/</span> <span class="dv">12</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> years <span class="sc">*</span> <span class="dv">12</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  principal <span class="sc">*</span> (r <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>n) <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>n <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># $480,000 loan at 6% over 30 years</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mortgage_payment</span>(<span class="at">principal =</span> <span class="dv">480000</span>, <span class="at">annual_rate =</span> <span class="fl">0.06</span>, <span class="at">years =</span> <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mortgage_payment <span class="ot">&lt;-</span> <span class="cf">function</span>(principal, annual_rate, years) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> annual_rate <span class="sc">/</span> <span class="dv">12</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> years <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  principal <span class="sc">*</span> (r <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>n) <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># $480,000 loan at 6% over 30 years</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">mortgage_payment</span>(<span class="at">principal =</span> <span class="dv">480000</span>, <span class="at">annual_rate =</span> <span class="fl">0.06</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2877.843</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2877.843</code></pre>
-</div>
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mortgage_payment(principal, annual_rate, years):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> annual_rate <span class="op">/</span> <span class="dv">12</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> years <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> principal <span class="op">*</span> (r <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> n) <span class="op">/</span> ((<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> n <span class="op">-</span> <span class="dv">1</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># $480,000 loan at 6% over 30 years</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>mortgage_payment(principal<span class="op">=</span><span class="dv">480000</span>, annual_rate<span class="op">=</span><span class="fl">0.06</span>, years<span class="op">=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mortgage_payment(principal, annual_rate, years):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> annual_rate <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> years <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> principal <span class="op">*</span> (r <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> n) <span class="op">/</span> ((<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> n <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>mortgage_payment(principal<span class="op">=</span><span class="dv">480000</span>, annual_rate<span class="op">=</span><span class="fl">0.06</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2877.8425207332334</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>2877.8425207332334</code></pre>
 </div>
 </div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Use the built-in <code>PMT()</code> function: <code>PMT(rate, nper, pv)</code></p>
+<ul>
+<li><code>rate</code>: monthly = <code>6%/12</code></li>
+<li><code>nper</code>: months = <code>30*12</code></li>
+<li><code>pv</code>: loan amount as negative = <code>-480000</code></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>PMT<span class="op">(</span><span class="dv">6</span><span class="op">%/</span><span class="dv">12</span><span class="op">,</span> <span class="dv">30</span><span class="op">*</span><span class="dv">12</span><span class="op">,</span> <span class="op">-</span><span class="dv">480000</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
 </section>
-<section id="where-the-first-years-payments-go" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="where-the-first-years-payments-go">Where the First Year’s Payments Go</h3>
-<p>The front-loaded-interest reality, in numbers: in month one your interest is simply the balance times the monthly rate, and only the rest reduces the principal.</p>
-<p><strong>Formula:</strong></p>
+<section id="first-month-interest-vs.-principal-split" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="first-month-interest-vs.-principal-split"><span class="header-section-number">4</span> First-Month Interest vs.&nbsp;Principal Split</h2>
+<p>Early mortgage payments are mostly interest; only the remainder reduces the balance.</p>
+<p><strong>Formulas:</strong></p>
 <ul>
 <li>First-month interest = Principal × (annual rate ÷ 12)</li>
 <li>First-month principal = Monthly Payment − First-month interest</li>
 </ul>
-<p>Example: on that $480,000 loan, month-one interest is $2,400 of the ~$2,878 payment, about <strong>83% interest</strong>, leaving only ~$478 toward principal.</p>
+<div class="cell">
+<pre><code>#&gt; Warning: Removed 2 rows containing missing values or values outside
+#&gt; the scale range (`geom_col()`).
+#&gt; Warning: Removed 1 row containing missing values or values outside
+#&gt; the scale range (`geom_text()`).</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="major_purchases_files/figure-html/first-payment-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Interest vs.&nbsp;principal split at three points on a $400,000 / 6.5% / 30-yr mortgage</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>first_payment_split <span class="ot">&lt;-</span> <span class="cf">function</span>(principal, annual_rate, years) {</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  payment  <span class="ot">&lt;-</span> <span class="fu">mortgage_payment</span>(principal, annual_rate, years)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  interest <span class="ot">&lt;-</span> principal <span class="sc">*</span> (annual_rate <span class="sc">/</span> <span class="dv">12</span>)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">payment      =</span> payment,</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">interest     =</span> interest,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">principal    =</span> payment <span class="sc">-</span> interest,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_interest =</span> (interest <span class="sc">/</span> payment) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co"># first payment on a $480,000 loan at 6% over 30 years</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">first_payment_split</span>(<span class="at">principal =</span> <span class="dv">480000</span>, <span class="at">annual_rate =</span> <span class="fl">0.06</span>, <span class="at">years =</span> <span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>first_payment_split <span class="ot">&lt;-</span> <span class="cf">function</span>(principal, annual_rate, years) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  payment  <span class="ot">&lt;-</span> <span class="fu">mortgage_payment</span>(principal, annual_rate, years)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  interest <span class="ot">&lt;-</span> principal <span class="sc">*</span> (annual_rate <span class="sc">/</span> <span class="dv">12</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">payment      =</span> <span class="fu">round</span>(payment, <span class="dv">2</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">interest     =</span> <span class="fu">round</span>(interest, <span class="dv">2</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">principal    =</span> <span class="fu">round</span>(payment <span class="sc">-</span> interest, <span class="dv">2</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_interest =</span> <span class="fu">round</span>((interest <span class="sc">/</span> payment) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">first_payment_split</span>(<span class="at">principal =</span> <span class="dv">480000</span>, <span class="at">annual_rate =</span> <span class="fl">0.06</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 4</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   payment interest principal pct_interest</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1   2878.     2400      478.         83.4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 4
-  payment interest principal pct_interest
-    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;
-1   2878.     2400      478.         83.4</code></pre>
-</div>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> first_payment_split(principal, annual_rate, years):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    payment <span class="op">=</span> mortgage_payment(principal, annual_rate, years)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    interest <span class="op">=</span> principal <span class="op">*</span> (annual_rate <span class="op">/</span> <span class="dv">12</span>)</span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment"</span>: payment,</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"interest"</span>: interest,</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"principal"</span>: payment <span class="op">-</span> interest,</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pct_interest"</span>: (interest <span class="op">/</span> payment) <span class="op">*</span> <span class="dv">100</span>,</span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    }</span>
-<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># first payment on a $480,000 loan at 6% over 30 years</span></span>
-<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>first_payment_split(principal<span class="op">=</span><span class="dv">480000</span>, annual_rate<span class="op">=</span><span class="fl">0.06</span>, years<span class="op">=</span><span class="dv">30</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> first_payment_split(principal, annual_rate, years):</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    payment <span class="op">=</span> mortgage_payment(principal, annual_rate, years)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    interest <span class="op">=</span> principal <span class="op">*</span> (annual_rate <span class="op">/</span> <span class="dv">12</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>        <span class="st">"payment"</span>:      <span class="bu">round</span>(payment, <span class="dv">2</span>),</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">"interest"</span>:     <span class="bu">round</span>(interest, <span class="dv">2</span>),</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">"principal"</span>:    <span class="bu">round</span>(payment <span class="op">-</span> interest, <span class="dv">2</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">"pct_interest"</span>: <span class="bu">round</span>((interest <span class="op">/</span> payment) <span class="op">*</span> <span class="dv">100</span>, <span class="dv">1</span>),</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>first_payment_split(principal<span class="op">=</span><span class="dv">480000</span>, annual_rate<span class="op">=</span><span class="fl">0.06</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; {'payment': 2877.84, 'interest': 2400.0, 'principal': 477.84, 'pct_interest': 83.4}</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>{'payment': 2877.8425207332334, 'interest': 2400.0, 'principal': 477.8425207332334, 'pct_interest': 83.39580719616701}</code></pre>
 </div>
 </div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>With loan amount in <code>A2</code>, annual rate in <code>B2</code>, and monthly payment (from <code>PMT()</code>) in <code>C2</code>:</p>
+<p>First-month interest:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*(</span>B2<span class="op">/</span><span class="dv">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>First-month principal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>C2<span class="op">-</span>A2<span class="op">*(</span>B2<span class="op">/</span><span class="dv">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

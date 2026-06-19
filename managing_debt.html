@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -219,17 +254,12 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#math-for-managing-debt" id="toc-math-for-managing-debt" class="nav-link active" data-scroll-target="#math-for-managing-debt"><span class="header-section-number">1</span> Math for Managing Debt</a>
-  <ul>
-  <li><a href="#apr-vs.-apy-know-what-youre-actually-paying" id="toc-apr-vs.-apy-know-what-youre-actually-paying" class="nav-link" data-scroll-target="#apr-vs.-apy-know-what-youre-actually-paying">APR vs.&nbsp;APY: Know What You’re Actually Paying</a></li>
-  <li><a href="#the-true-cost-of-minimum-payments" id="toc-the-true-cost-of-minimum-payments" class="nav-link" data-scroll-target="#the-true-cost-of-minimum-payments">The True Cost of Minimum Payments</a></li>
-  <li><a href="#total-interest-paid-over-a-loans-life" id="toc-total-interest-paid-over-a-loans-life" class="nav-link" data-scroll-target="#total-interest-paid-over-a-loans-life">Total Interest Paid Over a Loan’s Life</a></li>
-  <li><a href="#debt-to-income-ratio-dti" id="toc-debt-to-income-ratio-dti" class="nav-link" data-scroll-target="#debt-to-income-ratio-dti">Debt-to-Income Ratio (DTI)</a></li>
-  <li><a href="#the-pay-off-vs.-invest-comparison" id="toc-the-pay-off-vs.-invest-comparison" class="nav-link" data-scroll-target="#the-pay-off-vs.-invest-comparison">The Pay-Off vs.&nbsp;Invest Comparison</a></li>
-  <li><a href="#the-avalanche-vs.-snowball-math" id="toc-the-avalanche-vs.-snowball-math" class="nav-link" data-scroll-target="#the-avalanche-vs.-snowball-math">The Avalanche vs.&nbsp;Snowball Math</a></li>
-  <li><a href="#the-credit-utilization-ratio" id="toc-the-credit-utilization-ratio" class="nav-link" data-scroll-target="#the-credit-utilization-ratio">The Credit Utilization Ratio</a></li>
-  </ul></li>
-  <li><a href="#putting-the-math-to-work" id="toc-putting-the-math-to-work" class="nav-link" data-scroll-target="#putting-the-math-to-work"><span class="header-section-number">2</span> Putting the Math to Work</a></li>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#apr-vs.-apy" id="toc-apr-vs.-apy" class="nav-link" data-scroll-target="#apr-vs.-apy"><span class="header-section-number">2</span> APR vs.&nbsp;APY</a></li>
+  <li><a href="#minimum-payment-trap" id="toc-minimum-payment-trap" class="nav-link" data-scroll-target="#minimum-payment-trap"><span class="header-section-number">3</span> Minimum Payment Trap</a></li>
+  <li><a href="#total-interest-on-a-loan" id="toc-total-interest-on-a-loan" class="nav-link" data-scroll-target="#total-interest-on-a-loan"><span class="header-section-number">4</span> Total Interest on a Loan</a></li>
+  <li><a href="#debt-to-income-ratio-dti" id="toc-debt-to-income-ratio-dti" class="nav-link" data-scroll-target="#debt-to-income-ratio-dti"><span class="header-section-number">5</span> Debt-to-Income Ratio (DTI)</a></li>
+  <li><a href="#avalanche-vs.-snowball-order" id="toc-avalanche-vs.-snowball-order" class="nav-link" data-scroll-target="#avalanche-vs.-snowball-order"><span class="header-section-number">6</span> Avalanche vs.&nbsp;Snowball Order</a></li>
   </ul>
 </nav>
     </div>
@@ -255,32 +285,290 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="math-for-managing-debt" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="math-for-managing-debt"><span class="header-section-number">1</span> Math for Managing Debt</h2>
-<section id="apr-vs.-apy-know-what-youre-actually-paying" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="apr-vs.-apy-know-what-youre-actually-paying">APR vs.&nbsp;APY: Know What You’re Actually Paying</h3>
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Debt hierarchy</strong>: toxic (15–29% APR: credit cards, payday loans) → moderate (5–10%: car loans, private student loans) → strategic (3–7%: mortgages, federal student loans)</li>
+<li><strong>Credit cards</strong>: eliminate before any other goal; minimum payments are designed to keep you in debt indefinitely; once paid off, use as a payment tool not a financing tool</li>
+<li><strong>Student loans</strong>: evaluate the return — debt ≤ 1× first-year salary on a 10-year plan; for federal loans, compare IBR/SAVE/RAP based on income</li>
+<li><strong>Car loans</strong>: depreciating assets financed at 7–9% are wealth killers; 20/4/10 rule (20% down, ≤4-year term, ≤10% of gross income on transportation)</li>
+<li><strong>Pay off vs.&nbsp;invest</strong>: if loan rate &gt; expected return → pay off; if loan rate &lt; expected return → invest; add a peace-of-mind premium for guaranteed vs.&nbsp;probable returns</li>
+</ul>
 </section>
-<section id="the-true-cost-of-minimum-payments" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-true-cost-of-minimum-payments">The True Cost of Minimum Payments</h3>
+<section id="apr-vs.-apy" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="apr-vs.-apy"><span class="header-section-number">2</span> APR vs.&nbsp;APY</h2>
+<p>Lenders quote APR; you actually pay APY (which is higher due to compounding).</p>
+<p><strong>Formula:</strong> APY = (1 + APR ÷ n)^n − 1</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="managing_debt_files/figure-html/apr-apy-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>APR cost vs.&nbsp;APY cost on a $10,000 balance (24% APR, daily compounding)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>apr_to_apy <span class="ot">&lt;-</span> <span class="cf">function</span>(apr, <span class="at">periods_per_year =</span> <span class="dv">365</span>) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span> <span class="sc">+</span> apr <span class="sc">/</span> periods_per_year)<span class="sc">^</span>periods_per_year <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">apr_to_apy</span>(<span class="at">apr =</span> <span class="fl">0.24</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.2711489</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> apr_to_apy(apr, periods_per_year<span class="op">=</span><span class="dv">365</span>):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">+</span> apr <span class="op">/</span> periods_per_year) <span class="op">**</span> periods_per_year <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>apr_to_apy(apr<span class="op">=</span><span class="fl">0.24</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.27114889144128895</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>With APR in <code>A2</code> and compounding periods in <code>B2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span><span class="dv">1</span><span class="op">+</span>A2<span class="op">/</span>B2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="total-interest-paid-over-a-loans-life" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="total-interest-paid-over-a-loans-life">Total Interest Paid Over a Loan’s Life</h3>
+<section id="minimum-payment-trap" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="minimum-payment-trap"><span class="header-section-number">3</span> Minimum Payment Trap</h2>
+<p>Minimum payments barely reduce the balance — most goes to interest.</p>
+<p><strong>Approximation:</strong> Months to pay off ≈ Balance ÷ (Payment − Monthly Interest)</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="managing_debt_files/figure-html/min-payment-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Where a $100 minimum payment actually goes</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>months_to_payoff <span class="ot">&lt;-</span> <span class="cf">function</span>(balance, monthly_payment, apr) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  monthly_interest    <span class="ot">&lt;-</span> balance <span class="sc">*</span> (apr <span class="sc">/</span> <span class="dv">12</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  principal_reduction <span class="ot">&lt;-</span> monthly_payment <span class="sc">-</span> monthly_interest</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  balance <span class="sc">/</span> principal_reduction</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># $5,000 balance, $100/month, 22% APR</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_payoff</span>(<span class="at">balance =</span> <span class="dv">5000</span>, <span class="at">monthly_payment =</span> <span class="dv">100</span>, <span class="at">apr =</span> <span class="fl">0.22</span>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 600</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> months_to_payoff(balance, monthly_payment, apr):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    monthly_interest    <span class="op">=</span> balance <span class="op">*</span> (apr <span class="op">/</span> <span class="dv">12</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    principal_reduction <span class="op">=</span> monthly_payment <span class="op">-</span> monthly_interest</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> balance <span class="op">/</span> principal_reduction</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>months_to_payoff(balance<span class="op">=</span><span class="dv">5000</span>, monthly_payment<span class="op">=</span><span class="dv">100</span>, apr<span class="op">=</span><span class="fl">0.22</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 600.0000000000003</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>With balance in <code>A2</code>, payment in <code>B2</code>, APR in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/(</span>B2<span class="op">-(</span>A2<span class="op">*(</span>C2<span class="op">/</span><span class="dv">12</span><span class="op">)))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="debt-to-income-ratio-dti" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="debt-to-income-ratio-dti">Debt-to-Income Ratio (DTI)</h3>
+<section id="total-interest-on-a-loan" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="total-interest-on-a-loan"><span class="header-section-number">4</span> Total Interest on a Loan</h2>
+<p>The real cost of any installment loan is principal plus all the interest paid over the life of the loan.</p>
+<p><strong>Formula:</strong> Total Interest = (Monthly Payment × Number of Payments) − Principal</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="managing_debt_files/figure-html/total-interest-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>$30,000 car loan — principal vs.&nbsp;interest for 6-year and 4-year terms</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>total_interest <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_payment, n_months, principal) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  (monthly_payment <span class="sc">*</span> n_months) <span class="sc">-</span> principal</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">total_interest</span>(<span class="at">monthly_payment =</span> <span class="dv">512</span>, <span class="at">n_months =</span> <span class="dv">72</span>, <span class="at">principal =</span> <span class="dv">30000</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 6864</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">total_interest</span>(<span class="at">monthly_payment =</span> <span class="dv">719</span>, <span class="at">n_months =</span> <span class="dv">48</span>, <span class="at">principal =</span> <span class="dv">30000</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4512</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> total_interest(monthly_payment, n_months, principal):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (monthly_payment <span class="op">*</span> n_months) <span class="op">-</span> principal</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(total_interest(monthly_payment<span class="op">=</span><span class="dv">512</span>, n_months<span class="op">=</span><span class="dv">72</span>, principal<span class="op">=</span><span class="dv">30000</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6864</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(total_interest(monthly_payment<span class="op">=</span><span class="dv">719</span>, n_months<span class="op">=</span><span class="dv">48</span>, principal<span class="op">=</span><span class="dv">30000</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4512</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>With payment in <code>A2</code>, months in <code>B2</code>, principal in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span>B2<span class="op">)-</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="the-pay-off-vs.-invest-comparison" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-pay-off-vs.-invest-comparison">The Pay-Off vs.&nbsp;Invest Comparison</h3>
+<section id="debt-to-income-ratio-dti" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="debt-to-income-ratio-dti"><span class="header-section-number">5</span> Debt-to-Income Ratio (DTI)</h2>
+<p>Lenders calculate this about you. Calculate it yourself first.</p>
+<p><strong>Formula:</strong> DTI = (Total Monthly Debt Payments ÷ Gross Monthly Income) × 100</p>
+<p>Benchmarks: &lt;20% healthy; 20–35% manageable; 36–43% stretched; &gt;43% danger zone.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="managing_debt_files/figure-html/dti-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>$7,000 monthly income split into debt payments and remaining income</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>dti_ratio <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_debt_payments, gross_monthly_income) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (monthly_debt_payments <span class="sc">/</span> gross_monthly_income) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dti_ratio</span>(<span class="at">monthly_debt_payments =</span> <span class="dv">2500</span>, <span class="at">gross_monthly_income =</span> <span class="dv">7000</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 35.71429</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dti_ratio(monthly_debt_payments, gross_monthly_income):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (monthly_debt_payments <span class="op">/</span> gross_monthly_income) <span class="op">*</span> <span class="dv">100</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>dti_ratio(monthly_debt_payments<span class="op">=</span><span class="dv">2500</span>, gross_monthly_income<span class="op">=</span><span class="dv">7000</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 35.714285714285715</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
+<p>With debt payments in <code>A2</code> and income in <code>B2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">/</span>B2<span class="op">)*</span><span class="dv">100</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
 </section>
-<section id="the-avalanche-vs.-snowball-math" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-avalanche-vs.-snowball-math">The Avalanche vs.&nbsp;Snowball Math</h3>
-</section>
-<section id="the-credit-utilization-ratio" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-credit-utilization-ratio">The Credit Utilization Ratio</h3>
-</section>
-</section>
-<section id="putting-the-math-to-work" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="putting-the-math-to-work"><span class="header-section-number">2</span> Putting the Math to Work</h2>
+<section id="avalanche-vs.-snowball-order" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="avalanche-vs.-snowball-order"><span class="header-section-number">6</span> Avalanche vs.&nbsp;Snowball Order</h2>
+<p>Two methods for ordering debt payoff; both work, each has trade-offs.</p>
+<ul>
+<li><strong>Avalanche</strong>: highest APR first — mathematically optimal, saves the most interest</li>
+<li><strong>Snowball</strong>: smallest balance first — psychologically motivating, builds momentum</li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-2" role="tab" aria-controls="tabset-5-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-5-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-3" role="tab" aria-controls="tabset-5-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>order_avalanche <span class="ot">&lt;-</span> <span class="cf">function</span>(debts) debts[<span class="fu">order</span>(<span class="sc">-</span>debts<span class="sc">$</span>apr), ]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>order_snowball  <span class="ot">&lt;-</span> <span class="cf">function</span>(debts) debts[<span class="fu">order</span>(debts<span class="sc">$</span>balance), ]</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>debts <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">name    =</span> <span class="fu">c</span>(<span class="st">"Card A"</span>, <span class="st">"Card B"</span>, <span class="st">"Card C"</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">balance =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">5000</span>, <span class="dv">2000</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">apr     =</span> <span class="fu">c</span>(<span class="fl">0.18</span>, <span class="fl">0.24</span>, <span class="fl">0.15</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="fu">order_avalanche</span>(debts)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name   balance   apr</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Card B    5000  0.24</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Card A    1000  0.18</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Card C    2000  0.15</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="fu">order_snowball</span>(debts)</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   name   balance   apr</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Card A    1000  0.18</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 Card C    2000  0.15</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 Card B    5000  0.24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-5-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> order_avalanche(debts):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sorted</span>(debts, key<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"apr"</span>], reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> order_snowball(debts):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sorted</span>(debts, key<span class="op">=</span><span class="kw">lambda</span> d: d[<span class="st">"balance"</span>])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>debts <span class="op">=</span> [</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"name"</span>: <span class="st">"Card A"</span>, <span class="st">"balance"</span>: <span class="dv">1000</span>, <span class="st">"apr"</span>: <span class="fl">0.18</span>},</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"name"</span>: <span class="st">"Card B"</span>, <span class="st">"balance"</span>: <span class="dv">5000</span>, <span class="st">"apr"</span>: <span class="fl">0.24</span>},</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    {<span class="st">"name"</span>: <span class="st">"Card C"</span>, <span class="st">"balance"</span>: <span class="dv">2000</span>, <span class="st">"apr"</span>: <span class="fl">0.15</span>},</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(order_avalanche(debts))</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [{'name': 'Card B', 'balance': 5000, 'apr': 0.24}, {'name': 'Card A', 'balance': 1000, 'apr': 0.18}, {'name': 'Card C', 'balance': 2000, 'apr': 0.15}]</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(order_snowball(debts))</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [{'name': 'Card A', 'balance': 1000, 'apr': 0.18}, {'name': 'Card C', 'balance': 2000, 'apr': 0.15}, {'name': 'Card B', 'balance': 5000, 'apr': 0.24}]</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-5-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-5-3-tab">
+<p>Sort the debt table by APR descending for avalanche, or by Balance ascending for snowball — use <code>Data → Sort</code> on the appropriate column.</p>
+</div>
+</div>
+</div>
 
 
 </section>
