@@ -7,38 +7,52 @@ title: "Investing Basics"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
 
-- compound-bar-model — $10,000 growing at 7% across Year 0/5/10/20/30 with a color gradient from mint to red showing acceleration
-- fv-series-bar-model — stacked bars separating contributed dollars (teal) from investment gains (mint) at Year 10/20/30 for $500/month contributions
-- real-return-bar-model — three side-by-side bars: nominal 7%, inflation 3%, real ~3.9% — making visible what inflation actually costs
+## Book Topics
 
-## Math for Investing Basics {#math-for-investing-basics}
+- **Compounding**: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %
+- **Risk vs. return**: higher expected return = higher volatility; choose a level you can *stick with* through downturns
+- **Diversification**: don't bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)
+- **Real vs. nominal return**: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms
 
-Investing math is mostly one idea, compounding, applied in a few different ways. Each calculation below is written as an R and Python function, following the same pattern introduced in the [Budgeting](budgeting.qmd) chapter.
+## Future Value (Compounding)
 
-In code, the `^` symbol (R) and `**` symbol (Python) both mean "raise to the power of." So `(1 + 0.07)^10` means "1.07 multiplied by itself 10 times."
-
-### Future Value and the Rule of 72 {.unnumbered}
+A single lump sum growing at a constant rate.
 
 **Formula:** FV = PV × (1 + r)\^n
 
-Where: FV = future value, PV = present value (today's amount), *r* = annual return, *n* = years.
-
-The companion shortcut is the **Rule of 72**: divide 72 by the return percentage to estimate how many years it takes your money to double.
-
-> Years to double ≈ 72 ÷ annual return %
-
-Example: \$10,000 at 7% for 10 years grows to \~\$19,672, and at 7% money doubles roughly every 10 years.
+```{r}
+#| label: compound-bar-model
+#| echo: false
+#| fig-cap: "$10,000 growing at 7% — value at each checkpoint"
+#| fig-asp: 0.50
+library(ggplot2)
+yrs  <- c(0, 5, 10, 20, 30)
+vals <- round(10000 * (1.07)^yrs)
+bar_colors <- c("#86ddcd", "#5ec8be", "#0e9aa7", "#e07070", "#f44242")
+df_fv <- data.frame(
+  year  = factor(paste0("Year ", yrs), levels = paste0("Year ", yrs)),
+  value = vals,
+  fill  = bar_colors
+)
+ggplot(df_fv, aes(x = year, y = value, fill = fill)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0("$", formatC(value, format = "d", big.mark = ","))),
+            vjust = -0.4, fontface = "bold", size = 3.5) +
+  scale_fill_identity() +
+  scale_y_continuous(limits = c(0, max(vals) * 1.18),
+                     labels = function(x) paste0("$", round(x / 1000), "k")) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
+```
 
 ::: panel-tabset
 ## R
@@ -53,16 +67,13 @@ rule_of_72 <- function(annual_return_pct) {
   72 / annual_return_pct
 }
 
-# scalar: $10,000 at 7% for 10 years
 future_value(present_value = 10000, rate = 0.07, years = 10)
-
-# how long until your money doubles at 7%?
 rule_of_72(annual_return_pct = 7)
 
-# vectorized: same $10,000 at 7% across multiple horizons
+# vectorized across multiple horizons
 data.frame(
   years = c(5, 10, 20, 30),
-  value = future_value(present_value = 10000, rate = 0.07, years = c(5, 10, 20, 30))
+  value = future_value(10000, 0.07, c(5, 10, 20, 30))
 )
 ```
 
@@ -70,33 +81,77 @@ data.frame(
 
 ```{python}
 #| label: compound-py
+import numpy as np
+
 def future_value(present_value, rate, years):
     return present_value * (1 + rate) ** years
 
 def rule_of_72(annual_return_pct):
     return 72 / annual_return_pct
 
-# scalar: $10,000 at 7% for 10 years
 print(future_value(present_value=10000, rate=0.07, years=10))
-
-# how long until your money doubles at 7%?
 print(rule_of_72(annual_return_pct=7))
 
-# vectorized: numpy lets us pass an array of horizons in one call
 horizons = np.array([5, 10, 20, 30])
 future_value(present_value=10000, rate=0.07, years=horizons)
 ```
+
+## Excel
+
+With present value in `A2`, rate in `B2`, years in `C2`:
+
+```swift
+=A2*(1+B2)^C2
+```
+
+Rule of 72 (rate as a percent in `A2`):
+
+```swift
+=72/A2
+```
 :::
 
-### Future Value of Regular Contributions {.unnumbered}
+## Future Value of Regular Contributions
 
-Most people don't invest a lump sum once; they add money every month. The future value of a stream of equal contributions is:
+Monthly investing builds wealth two ways: the money contributed and the returns on all prior contributions.
 
-**Formula:** FV = PMT × [((1 + r)\^n − 1) ÷ r]
+**Formula:** FV = PMT × \[((1 + r)\^n − 1) ÷ r\]
 
-Where: PMT = the amount contributed each period, *r* = the return per period, *n* = the number of periods.
-
-Example: \$500/month for 30 years (360 months) at a 7% annual return (\~0.583% per month) grows to \~\$610,000, of which only \$180,000 is money you actually put in.
+```{r}
+#| label: fv-series-bar-model
+#| echo: false
+#| fig-cap: "$500/month contributions at 7% — contributed vs. gains"
+#| fig-asp: 0.50
+library(ggplot2)
+yrs_vec    <- c(10, 20, 30)
+annual_pmt <- 500 * 12
+contributed <- annual_pmt * yrs_vec
+total       <- annual_pmt * ((1.07^yrs_vec - 1) / 0.07)
+gains       <- total - contributed
+df_long <- data.frame(
+  year   = rep(factor(paste0("Year ", yrs_vec), levels = paste0("Year ", yrs_vec)), 2),
+  amount = c(contributed, gains),
+  layer  = factor(rep(c("Money contributed", "Investment gains"), each = 3),
+                  levels = c("Investment gains", "Money contributed"))
+)
+totals_lab <- data.frame(
+  year  = factor(paste0("Year ", yrs_vec), levels = paste0("Year ", yrs_vec)),
+  total = contributed + gains
+)
+ggplot(df_long, aes(x = year, y = amount, fill = layer)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(data = totals_lab, aes(x = year, y = total,
+                label = paste0("$", formatC(round(total), format = "d", big.mark = ","))),
+            inherit.aes = FALSE, vjust = -0.4, fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = c("Money contributed" = "#0e9aa7",
+                               "Investment gains"  = "#86ddcd")) +
+  scale_y_continuous(limits = c(0, max(contributed + gains) * 1.15),
+                     labels = function(x) paste0("$", round(x / 1000), "k")) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
+        legend.position = "top")
+```
 
 ::: panel-tabset
 ## R
@@ -107,7 +162,7 @@ future_value_series <- function(contribution, rate, periods) {
   contribution * (((1 + rate)^periods - 1) / rate)
 }
 
-# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
+# $500/month for 30 years at 7% annual (monthly rate = 0.07/12)
 future_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)
 ```
 
@@ -118,18 +173,50 @@ future_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)
 def future_value_series(contribution, rate, periods):
     return contribution * (((1 + rate) ** periods - 1) / rate)
 
-# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
 future_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12)
+```
+
+## Excel
+
+Use the built-in `FV()` function: `FV(rate, nper, pmt)`
+
+- `rate`: monthly = `7%/12`
+- `nper`: months = `30*12`
+- `pmt`: monthly contribution as negative = `-500`
+
+```swift
+=FV(7%/12, 30*12, -500)
 ```
 :::
 
-### Real (Inflation-Adjusted) Return {.unnumbered}
+## Real (Inflation-Adjusted) Return
 
-A 7% return with 3% inflation does *not* leave you 4% richer in spending power; the relationship is multiplicative, not subtractive.
+Nominal returns overstate purchasing power gains; inflation takes its slice every year.
 
 **Formula:** Real Return = (1 + nominal) ÷ (1 + inflation) − 1
 
-Example: (1.07 ÷ 1.03) − 1 = \~3.88%, slightly less than the 4% you'd get by simple subtraction.
+```{r}
+#| label: real-return-bar-model
+#| echo: false
+#| fig-cap: "Nominal return, inflation, and real return"
+#| fig-asp: 0.50
+library(ggplot2)
+df_rr <- data.frame(
+  label = factor(c("Nominal return (7%)", "Inflation (3%)", "Real return (~3.9%)"),
+                 levels = c("Nominal return (7%)", "Inflation (3%)", "Real return (~3.9%)")),
+  value = c(7, 3, (1.07 / 1.03 - 1) * 100),
+  fill  = c("#0e9aa7", "#f44242", "#48a56a")
+)
+ggplot(df_rr, aes(x = label, y = value, fill = fill)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0(round(value, 1), "%")),
+            vjust = -0.4, fontface = "bold", size = 4) +
+  scale_fill_identity() +
+  scale_y_continuous(limits = c(0, 9), labels = function(x) paste0(x, "%")) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
+```
 
 ::: panel-tabset
 ## R
@@ -140,7 +227,6 @@ real_return <- function(nominal, inflation) {
   (1 + nominal) / (1 + inflation) - 1
 }
 
-# 7% nominal return against 3% inflation
 real_return(nominal = 0.07, inflation = 0.03)
 ```
 
@@ -151,7 +237,14 @@ real_return(nominal = 0.07, inflation = 0.03)
 def real_return(nominal, inflation):
     return (1 + nominal) / (1 + inflation) - 1
 
-# 7% nominal return against 3% inflation
 real_return(nominal=0.07, inflation=0.03)
+```
+
+## Excel
+
+With nominal rate in `A2` and inflation in `B2`:
+
+```swift
+=(1+A2)/(1+B2)-1
 ```
 :::

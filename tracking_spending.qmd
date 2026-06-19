@@ -7,32 +7,33 @@ title: "Tracking Spending"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
 import polars as pl
-import numpy as np
+pl.Config.set_tbl_rows(20)
 ```
 
- subscription-bar-model — vertical bars showing a $20/month subscription's missed compounding value at years 0, 5, 10, 20, 30 (year-30 bar in red). Added R/Python `subscription_opportunity_cost()` code tabs since the subsection had none.
+## Book Topics
 
-## Using Spreadsheets
+- **Capture methods**: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month
+- **Bank statement exports**: `Date`, `Description`, `Amount` columns; you add the `Category`
+- **Categorization**: 6–10 stable buckets; use "Other" when in doubt; only promote a new category after seeing it 3 months running
+- **Monthly review**: pull statements → categorize → compare to budget → pick *one* change; repeat 12× per year
+- **Subscriptions**: average household spends $200–$300/month without realizing it; audit every 90 days
 
-This section introduces the `r_bank_statement` and `py_bank_statement` datasets and rectangular data in R and Python. It also covers the basics of data manipulation using `tidyverse` in R and `polars` in Python.
+## Bank Statement Data
+
+A minimal bank export has three columns: `Date`, `Description`, and `Amount`.
 
 ::: panel-tabset
-
 ## R
-
-Create the `r_bank_statement` dataset using `tibble`:
 
 ```{r}
 #| label: bank-statement-r
-library(tibble)
 r_bank_statement <- tibble::tibble(
   Date = as.Date(c(
     "2026-01-02", "2026-01-02", "2026-01-03", "2026-01-03",
@@ -42,33 +43,23 @@ r_bank_statement <- tibble::tibble(
     "2026-01-15"
   )),
   Description = c(
-    "Employer Payroll",       "Rent",
-    "Comcast Internet",       "Trader Joe's",
-    "Shell Gas",              "Netflix",
-    "Starbucks",              "PG&E Electric",
-    "AT&T Wireless",          "Spotify",
-    "Whole Foods",            "Chipotle",
-    "Geico Auto Insurance",   "NYTimes Digital",
-    "Shell Gas",              "Costco",
+    "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+    "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+    "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+    "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
     "24 Hour Fitness"
   ),
   Amount = c(
-     2400.00, -1500.00,
-      -75.00,   -82.45,
-      -45.20,   -15.99,
-       -6.75,  -142.30,
-      -85.00,   -10.99,
-      -64.12,   -14.50,
-     -125.00,   -17.00,
-      -42.80,  -156.78,
-      -39.99
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99
   )
 )
+
+r_bank_statement |> knitr::kable()
 ```
 
-## Python 
-
-Create the `py_bank_statement` dataset using `tibble`:
+## Python
 
 ```{python}
 #| label: bank-statement-py
@@ -83,45 +74,157 @@ py_bank_statement = pl.DataFrame({
         "2026-01-15"
     ],
     "Description": [
-        "Employer Payroll",     "Rent",
-        "Comcast Internet",     "Trader Joe's",
-        "Shell Gas",            "Netflix",
-        "Starbucks",            "PG&E Electric",
-        "AT&T Wireless",        "Spotify",
-        "Whole Foods",          "Chipotle",
-        "Geico Auto Insurance", "NYTimes Digital",
-        "Shell Gas",            "Costco",
+        "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+        "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+        "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+        "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
         "24 Hour Fitness"
     ],
     "Amount": [
-         2400.00, -1500.00,
-          -75.00,   -82.45,
-          -45.20,   -15.99,
-           -6.75,  -142.30,
-          -85.00,   -10.99,
-          -64.12,   -14.50,
-         -125.00,   -17.00,
-          -42.80,  -156.78,
-          -39.99
+         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+         -42.80, -156.78, -39.99
     ]
 }).with_columns(pl.col("Date").str.to_date())
+
+py_bank_statement
 ```
 
-## Excel 
+## Excel
 
-The `bank_statement` can also be copied + pasted into Excel:
+Copy the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 
-![](img/tracking_spending-bank-statement.png){width="75%" fig-align='center'}
-
-
+![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
 :::
 
-## Math for tracking spending
+## Categorizing Transactions
 
-The future value of contributions formula is:
+Map description keywords to budget buckets in a single pass.
 
-### The Subscription Audit Math {.unnumbered}
+::: panel-tabset
+## R
 
-Formula: **Monthly Subscription × 12 × (1.07)^n** = Opportunity cost in n years
+```{r}
+#| label: categorize-r
+r_bank_statement <- r_bank_statement |>
+  dplyr::mutate(
+    Category = dplyr::case_when(
+      grepl("Payroll",                                 Description) ~ "Income",
+      grepl("Rent",                                    Description) ~ "Housing",
+      grepl("Comcast|PG&E|AT&T",                       Description) ~ "Utilities",
+      grepl("Trader Joe|Whole Foods|Costco",           Description) ~ "Groceries",
+      grepl("Shell",                                   Description) ~ "Transportation",
+      grepl("Starbucks|Chipotle",                      Description) ~ "Dining",
+      grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
+      grepl("Geico",                                   Description) ~ "Insurance",
+      TRUE                                                          ~ "Other"
+    )
+  )
 
+r_bank_statement |> knitr::kable()
+```
 
+## Python
+
+```{python}
+#| label: categorize-py
+py_bank_statement = py_bank_statement.with_columns(
+    Category = pl.when(pl.col("Description").str.contains("Payroll")).then(pl.lit("Income"))
+        .when(pl.col("Description").str.contains("Rent")).then(pl.lit("Housing"))
+        .when(pl.col("Description").str.contains("Comcast|PG&E|AT&T")).then(pl.lit("Utilities"))
+        .when(pl.col("Description").str.contains("Trader Joe|Whole Foods|Costco")).then(pl.lit("Groceries"))
+        .when(pl.col("Description").str.contains("Shell")).then(pl.lit("Transportation"))
+        .when(pl.col("Description").str.contains("Starbucks|Chipotle")).then(pl.lit("Dining"))
+        .when(pl.col("Description").str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness")).then(pl.lit("Subscriptions"))
+        .when(pl.col("Description").str.contains("Geico")).then(pl.lit("Insurance"))
+        .otherwise(pl.lit("Other"))
+)
+
+py_bank_statement
+```
+
+## Excel
+
+With `Description` in column B, paste into `D2` and fill down:
+
+```swift
+=IFS(
+  ISNUMBER(SEARCH("Payroll",B2)), "Income",
+  ISNUMBER(SEARCH("Rent",B2)), "Housing",
+  OR(ISNUMBER(SEARCH("Comcast",B2)),ISNUMBER(SEARCH("PG&E",B2)),ISNUMBER(SEARCH("AT&T",B2))), "Utilities",
+  OR(ISNUMBER(SEARCH("Trader Joe",B2)),ISNUMBER(SEARCH("Whole Foods",B2)),ISNUMBER(SEARCH("Costco",B2))), "Groceries",
+  ISNUMBER(SEARCH("Shell",B2)), "Transportation",
+  OR(ISNUMBER(SEARCH("Starbucks",B2)),ISNUMBER(SEARCH("Chipotle",B2))), "Dining",
+  OR(ISNUMBER(SEARCH("Netflix",B2)),ISNUMBER(SEARCH("Spotify",B2)),ISNUMBER(SEARCH("NYTimes",B2)),ISNUMBER(SEARCH("24 Hour Fitness",B2))), "Subscriptions",
+  ISNUMBER(SEARCH("Geico",B2)), "Insurance",
+  TRUE, "Other"
+)
+```
+
+![`IFS()` in Excel](img/tracking_spending-ifs.png){width='100%' fig-align='center'}
+:::
+
+## Subscription Opportunity Cost
+
+A small recurring subscription has a large long-run cost when you account for what the money could have earned.
+
+**Formula:** Monthly Cost × 12 × ((1 + r)\^n − 1) ÷ r
+
+```{r}
+#| label: subscription-bar-model
+#| echo: false
+#| fig-cap: "Future value of a $20/month subscription's annual cost if invested at 7%"
+#| fig-asp: 0.50
+library(ggplot2)
+years <- c(0, 5, 10, 20, 30)
+values <- c(240, 240 * ((1.07^5  - 1) / 0.07), 240 * ((1.07^10 - 1) / 0.07),
+            240 * ((1.07^20 - 1) / 0.07), 240 * ((1.07^30 - 1) / 0.07))
+df_sub <- data.frame(
+  year  = factor(paste0("Year ", years), levels = paste0("Year ", years)),
+  value = values,
+  fill  = c(rep("#0e9aa7", 4), "#f44242")
+)
+ggplot(df_sub, aes(x = year, y = value, fill = fill)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0("$", formatC(round(value), format = "d", big.mark = ","))),
+            vjust = -0.4, fontface = "bold", size = 3.5, colour = "#1C1C1E") +
+  scale_fill_identity() +
+  scale_y_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ",")),
+                     expand = expansion(mult = c(0, 0.12))) +
+  labs(x = "Checkpoint", y = "Accumulated value (7% annual return)") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
+```
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: subscription-opp-cost-r
+subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  annual_cost <- monthly_cost * 12
+  annual_cost * ((1 + rate)^years - 1) / rate
+}
+
+subscription_opportunity_cost(monthly_cost = 20, years = 30)
+```
+
+## Python
+
+```{python}
+#| label: subscription-opp-cost-py
+def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
+    annual_cost = monthly_cost * 12
+    return annual_cost * ((1 + rate) ** years - 1) / rate
+
+subscription_opportunity_cost(monthly_cost=20, years=30)
+```
+
+## Excel
+
+With monthly cost in `A2`, years in `B2`, rate in `C2`:
+
+```swift
+=(A2*12)*((1+C2)^B2-1)/C2
+```
+:::

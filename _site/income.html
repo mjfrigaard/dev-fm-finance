@@ -254,13 +254,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Contents</h2>
    
   <ul>
-  <li><a href="#math-for-income" id="toc-math-for-income" class="nav-link active" data-scroll-target="#math-for-income"><span class="header-section-number">1</span> Math for Income</a>
-  <ul>
-  <li><a href="#functions" id="toc-functions" class="nav-link" data-scroll-target="#functions">Functions</a></li>
-  <li><a href="#number-formatting" id="toc-number-formatting" class="nav-link" data-scroll-target="#number-formatting">Number formatting</a></li>
-  <li><a href="#the-fixed-cost-ratio" id="toc-the-fixed-cost-ratio" class="nav-link" data-scroll-target="#the-fixed-cost-ratio">The Fixed-Cost Ratio</a></li>
-  <li><a href="#what-a-raise-is-really-worth" id="toc-what-a-raise-is-really-worth" class="nav-link" data-scroll-target="#what-a-raise-is-really-worth">What a Raise Is Really Worth</a></li>
-  </ul></li>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#writing-functions" id="toc-writing-functions" class="nav-link" data-scroll-target="#writing-functions"><span class="header-section-number">2</span> Writing Functions</a></li>
+  <li><a href="#number-formatting" id="toc-number-formatting" class="nav-link" data-scroll-target="#number-formatting"><span class="header-section-number">3</span> Number Formatting</a></li>
+  <li><a href="#fixed-cost-ratio" id="toc-fixed-cost-ratio" class="nav-link" data-scroll-target="#fixed-cost-ratio"><span class="header-section-number">4</span> Fixed-Cost Ratio</a></li>
+  <li><a href="#using-pipes-in-r" id="toc-using-pipes-in-r" class="nav-link" data-scroll-target="#using-pipes-in-r"><span class="header-section-number">5</span> Using Pipes in R</a></li>
+  <li><a href="#what-a-raise-is-really-worth" id="toc-what-a-raise-is-really-worth" class="nav-link" data-scroll-target="#what-a-raise-is-really-worth"><span class="header-section-number">6</span> What a Raise Is Really Worth</a></li>
   </ul>
 </nav>
     </div>
@@ -286,29 +285,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="math-for-income" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="math-for-income"><span class="header-section-number">1</span> Math for Income</h2>
-<p>The <a href="https://mjfrigaard.github.io/fm-finance/income.html">income</a> chapter is mostly about behavior, but it also introduces some math and how to write R/Python functions.</p>
-<section id="functions" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="functions">Functions</h3>
-<p>Functions perform operations: calculate a total, build a table, create a graph, etc. The function’s <em>arguments</em> are the inputs it needs to do its job, and the <em>output</em> is what it gives back. For example, the <code>sum()</code> function takes a list of numbers as an argument and outputs their total.</p>
-<p>In R, functions are defined using the <code>function()</code> keyword,</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_fun <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># function body</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>In Python, you use <code>def</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_fun():</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># function body</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Both languages allow you to create your own functions to perform specific tasks, which is especially useful for financial calculations.</p>
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Wealth vs.&nbsp;spending</strong>: true wealth is the income you <em>didn’t</em> spend, quietly compounding (Housel)</li>
+<li><strong>Human capital</strong>: early in a career, future earning potential is the biggest asset; invest in skills before stocks (Felix)</li>
+<li><strong>Spending and happiness</strong>: experiences &gt; possessions; buying time &gt; buying things; lifestyle inflation is the silent killer</li>
+<li><strong>Three anchoring rules</strong>: spend on what you love / cut what you don’t (Sethi); gap between ego and income (Housel); keep it simple (Bogle)</li>
+<li><strong>Wealth formula</strong>: <em>Wealth = Focus + (Stoicism × Time × Diversification)</em> — Focus is additive, the rest is multiplicative (Galloway)</li>
+<li><strong>As income grows</strong>: split every raise — 50% to investing, 50% to lifestyle; avoid inflating spending to match every dollar</li>
+</ul>
 </section>
-<section id="number-formatting" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="number-formatting">Number formatting</h3>
-<p>Before working through any calculations, it helps to have a few small functions that handle the <code>$</code> and <code>%</code> symbols you’ll see throughout this book. We’ll call these <em>formatting utilities</em>: they take a bare number and return a reader-friendly string.</p>
+<section id="writing-functions" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="writing-functions"><span class="header-section-number">2</span> Writing Functions</h2>
+<p>Functions perform operations: calculate a total, build a table, create a graph. The function’s <em>arguments</em> are the inputs it needs to do its job and the <em>output</em> is what it gives back. For example, <code>sum()</code> takes a list of numbers as input and outputs their total.</p>
+<p>In R, functions are defined with the <code>function()</code> keyword and assigned to a name. The body goes inside curly braces.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>my_fun <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>In Python, functions are defined with <code>def</code>, followed by a colon and an indented body. An explicit <code>return</code> statement is required; without it the function returns <code>None</code>.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> my_fun(x):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x <span class="op">*</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Both languages let you create reusable functions for financial calculations. The key difference is that R automatically returns the last evaluated expression while Python requires <code>return</code>.</p>
+</section>
+<section id="number-formatting" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="number-formatting"><span class="header-section-number">3</span> Number Formatting</h2>
+<p>Before working through the math, it helps to have two small formatting utilities that handle the <code>$</code> and <code>%</code> symbols seen throughout the book. They take a plain number and return a reader-friendly string.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p><code>fmt_dollar()</code> adds a dollar sign, comma separators for thousands, and rounds to a given number of decimal places:</p>
+<p><code>fmt_dollar()</code> adds a dollar sign, comma separators, and rounds to a set number of decimal places.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -317,7 +324,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p><code>fmt_pct()</code> expects a decimal rate (e.g., <code>0.07</code> for 7%) and converts it to a percentage string:</p>
+<p><code>fmt_pct()</code> expects a decimal rate (e.g.&nbsp;<code>0.07</code> for 7%) and converts it to a percentage string.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -330,18 +337,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_dollar</span>(<span class="dv">9200</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "$9,200.00"</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$9,200.00"</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_dollar</span>(<span class="fl">4200.50</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "$4,200.50"</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$4,200.50"</span></span>
 <span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_pct</span>(<span class="fl">0.07</span>)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "7%"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "7%"</span></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_pct</span>(<span class="fl">0.456</span>)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "45.6%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "45.6%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<p><code>fmt_dollar()</code> uses an <a href="https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals">f-string</a> with <code>,</code> for thousands and <code>.{digits}f</code> for decimal places:</p>
+<p><code>fmt_dollar()</code> uses an <a href="https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals">f-string</a> with <code>,</code> for thousands and <code>.{digits}f</code> for decimal places.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -349,7 +356,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"$</span><span class="sc">{</span>x<span class="sc">:,.</span>{digits}f<span class="sc">}</span><span class="ss">"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p><code>fmt_pct()</code> also takes a decimal rate and multiplies by 100 before formatting:</p>
+<p><code>fmt_pct()</code> takes a decimal rate, multiplies by 100, and formats the result.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -361,35 +368,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(<span class="dv">9200</span>))</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  $9,200.00</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $9,200.00</span></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(<span class="fl">4200.50</span>))</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#  $4,200.50</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $4,200.50</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_pct(<span class="fl">0.07</span>))</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#  7.0%</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7.0%</span></span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_pct(<span class="fl">0.456</span>))</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#  45.6%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 45.6%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>In Excel, number formatting can be done with the tools in the toolbar. Just select the cells you’d to format and select the appropriate option from the dropdown.</p>
+<p>In Excel, number formatting is applied through the toolbar. Select the cells to format and choose the appropriate option from the Number Format dropdown.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/income-xlsx-number-formats.png" class="img-fluid figure-img" style="width:100.0%"></p>
 <figcaption>Common number formats in Excel</figcaption>
 </figure>
 </div>
-<p>Note there are two options for money (currency and accounting).<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>There are two options for money: Currency and Accounting.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
 </div>
 </div>
 </div>
-<p>Both <code>fmt_dollar()</code> and <code>fmt_pct()</code> follow the same convention: input is always a plain number, output is always a string. You’ll see them used to clean up results throughout this chapter.</p>
+<p>Both <code>fmt_dollar()</code> and <code>fmt_pct()</code> follow the same convention: input is always a plain number, output is always a string. They are used throughout the remaining sections to clean up results.</p>
 </section>
-<section id="the-fixed-cost-ratio" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="the-fixed-cost-ratio">The Fixed-Cost Ratio</h3>
-<p>Fixed costs are things like rent, loan payments, insurance, and utilities. They are considered <em>fixed</em> because they don’t really change month to month.</p>
-<p>A good benchmark is to keep them under ~60% of your income/take-home pay (leaving about 40% for <em>variable</em> costs and savings).</p>
+<section id="fixed-cost-ratio" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="fixed-cost-ratio"><span class="header-section-number">4</span> Fixed-Cost Ratio</h2>
+<p>Fixed costs (rent, loans, insurance, utilities) should stay under ~60% of take-home pay.</p>
 <p><strong>Formula:</strong> Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="income_files/figure-html/fixed-cost-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>Take-home pay divided into fixed costs and flexible spending ($8,000 total)</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -399,82 +415,80 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fixed_cost_ratio <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_costs, take_home) {</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  fixed_costs <span class="sc">/</span> take_home</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fixed_cost_ratio</span>(<span class="at">fixed_costs =</span> <span class="dv">4400</span>, <span class="at">take_home =</span> <span class="dv">8000</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_pct</span>()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "55%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Now we can apply the function to $4,200 of fixed costs on $9,200 take-home pay. The result is a decimal, so we pipe it into <code>fmt_pct()</code> to format it as a percentage string:</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fixed_cost_ratio</span>(<span class="at">fixed_costs =</span> <span class="dv">4200</span>, <span class="at">take_home =</span> <span class="dv">9200</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_pct</span>()</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "45.7%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<section id="pipes-in-r" class="level4 unnumbered">
-<h4 class="unnumbered anchored" data-anchor-id="pipes-in-r">Pipes in R</h4>
-<p>The pipe operator (<code>|&gt;</code>) allows you to take the output of one function and use it as the input for another function, making your code more readable and efficient. Read more in the <a href="./r_vs_py.html#sec-pipe-operator">Pipe Operator</a> section of R vs.&nbsp;Python.</p>
-<p>In the example above, we pipe the raw ratio into <code>fmt_pct()</code> to produce the percentage string. A better way to do this is to wrap both steps in a single function:</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fixed_cost_ratio_pct <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_costs, take_home) {</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fixed_cost_ratio</span>(fixed_costs, take_home) <span class="sc">|&gt;</span> <span class="fu">fmt_pct</span>()</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fixed_cost_ratio_pct</span>(<span class="at">fixed_costs =</span> <span class="dv">4200</span>, <span class="at">take_home =</span> <span class="dv">9200</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "45.7%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-</section>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<p>In Python, we can define the same function without needing a pipe operator, since we can directly return the rounded and properly formatted string:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fixed_cost_ratio(fixed_costs, take_home):</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    ratio <span class="op">=</span> (fixed_costs <span class="op">/</span> take_home) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>ratio<span class="sc">:.1f}</span><span class="ss">%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fixed_cost_ratio(fixed_costs, take_home):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fixed_costs <span class="op">/</span> take_home</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>fmt_pct(fixed_cost_ratio(fixed_costs<span class="op">=</span><span class="dv">4400</span>, take_home<span class="op">=</span><span class="dv">8000</span>))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '55.0%'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
-<p>Apply our Python function to $4,200 of fixed costs on $9,200 take-home</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>fixed_cost_ratio(fixed_costs<span class="op">=</span><span class="dv">4200</span>, take_home<span class="op">=</span><span class="dv">9200</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  '45.7%'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>Note the differences in using <code>paste0()</code> in R vs.&nbsp;<a href="https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals">f-strings in Python</a> for formatting the output as a percentage string. Read more about string formatting in <a href="./r_vs_py.html#sec-string-formatting">String Formatting</a>.</p>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>In Excel there’s no function: we just put the numbers in cells and write the formula once. Enter the fixed costs in cell <strong>A2</strong> and take-home pay in <strong>B2</strong>, then in <strong>C2</strong>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span>B2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>That gives the ratio as decimal, but we can format <strong>C2</strong> as a percentage using <strong>Home → %</strong>, or <strong>Ctrl+Shift+5</strong>.</p>
-<p>To produce the percent <em>string</em> directly (the analog of R’s <code>paste0(..., "%")</code> and Python’s f-string), use <code>TEXT()</code> instead:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>TEXT<span class="op">(</span>A2<span class="op">/</span>B2<span class="op">,</span> <span class="st">"0.00%"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Below is the example from the text, showing the fixed-cost ratio as a percentage string:</p>
+<p>Enter fixed costs in <code>A2</code>, take-home in <code>B2</code>, then in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span>B2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Format <code>C2</code> as percentage (<code>Home → %</code>). For a percent string:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>TEXT<span class="op">(</span>A2<span class="op">/</span>B2<span class="op">,</span> <span class="st">"0.0%"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p><img src="img/income-fixed-cost-ratio-text-perc.png" class="img-fluid" style="width:75.0%"></p>
 </div>
 </div>
 </div>
 </section>
-<section id="what-a-raise-is-really-worth" class="level3 unnumbered">
-<h3 class="unnumbered anchored" data-anchor-id="what-a-raise-is-really-worth">What a Raise Is Really Worth</h3>
-<p>In the <a href="https://mjfrigaard.github.io/fm-finance/income.html">Income</a> chapter, we saw that “Split the raise” (i.e., put half of your monthly raise into the market for a few decades) is a powerful strategy for building wealth. But how powerful? Let’s put some numbers to it.</p>
+<section id="using-pipes-in-r" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="using-pipes-in-r"><span class="header-section-number">5</span> Using Pipes in R</h2>
+<p>The pipe operator (<code>|&gt;</code>) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fixed_cost_ratio</span>(<span class="at">fixed_costs =</span> <span class="dv">4400</span>, <span class="at">take_home =</span> <span class="dv">8000</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_pct</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Read that as: compute the ratio, <em>then</em> format it as a percentage. The alternative without a pipe nests the calls and reads from the inside out, which is harder to follow.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_pct</span>(<span class="fu">fixed_cost_ratio</span>(<span class="at">fixed_costs =</span> <span class="dv">4400</span>, <span class="at">take_home =</span> <span class="dv">8000</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>When two steps always belong together, wrap them in a single function so callers only see one name.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>fixed_cost_ratio_pct <span class="ot">&lt;-</span> <span class="cf">function</span>(fixed_costs, take_home) {</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fixed_cost_ratio</span>(fixed_costs, take_home) <span class="sc">|&gt;</span> <span class="fu">fmt_pct</span>()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fixed_cost_ratio_pct</span>(<span class="at">fixed_costs =</span> <span class="dv">4400</span>, <span class="at">take_home =</span> <span class="dv">8000</span>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "55%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Python has no native pipe operator. The equivalent is simply wrapping the inner call.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fixed_cost_ratio_pct(fixed_costs, take_home):</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmt_pct(fixed_cost_ratio(fixed_costs, take_home))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>fixed_cost_ratio_pct(fixed_costs<span class="op">=</span><span class="dv">4400</span>, take_home<span class="op">=</span><span class="dv">8000</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '55.0%'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Read more about the pipe operator in <a href="./r_vs_py.html#sec-pipe-operator">R vs.&nbsp;Python</a>.</p>
+</section>
+<section id="what-a-raise-is-really-worth" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="what-a-raise-is-really-worth"><span class="header-section-number">6</span> What a Raise Is Really Worth</h2>
+<p>Split every raise: invest half, spend half. The future value of contributions formula shows how powerful this habit is.</p>
 <p><strong>Formula:</strong> FV = PMT × [((1 + r)^n − 1) ÷ r]</p>
-<ul>
-<li>PMT is the amount invested each month<br>
-</li>
-<li><em>r</em> is the monthly return<br>
-</li>
-<li><em>n</em> is the number of months.</li>
-</ul>
-<p>This is the future-value-of-contributions formula we revisit in <a href="https://mjfrigaard.github.io/fm-finance/investing_basics.html">Investing Basics</a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="income_files/figure-html/raise-value-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<figcaption>$200/month invested at 7% — value at each 5-year checkpoint</figcaption>
+</figure>
+</div>
+</div>
+</div>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -487,16 +501,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  monthly_rate <span class="ot">&lt;-</span> rate <span class="sc">/</span> <span class="dv">12</span></span>
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  periods      <span class="ot">&lt;-</span> years <span class="sc">*</span> <span class="dv">12</span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  contribution <span class="sc">*</span> (((<span class="dv">1</span> <span class="sc">+</span> monthly_rate)<span class="sc">^</span>periods <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> monthly_rate)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>Let’s see what happens when we take half of a $300/month raise, invested for 15 years at 7%:</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">raise_invested_value</span>(<span class="at">monthly_raise =</span> <span class="dv">300</span>, <span class="at">invest_share =</span> <span class="fl">0.5</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">15</span>) <span class="sc">|&gt;</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_dollar</span>()</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co">#  [1] "$47,544.34"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="co"># half of a $400/month raise, invested for 25 years at 7%</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">raise_invested_value</span>(<span class="at">monthly_raise =</span> <span class="dv">400</span>, <span class="at">invest_share =</span> <span class="fl">0.5</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                     <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">25</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$162,014.34"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -504,31 +514,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> raise_invested_value(monthly_raise, invest_share, rate, years):</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> monthly_raise <span class="op">*</span> invest_share</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    monthly_rate <span class="op">=</span> rate <span class="op">/</span> <span class="dv">12</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    periods <span class="op">=</span> years <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> contribution <span class="op">*</span> (((<span class="dv">1</span> <span class="op">+</span> monthly_rate) <span class="op">**</span> periods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> monthly_rate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>Half of a $300/month raise, invested for 15 years at 7%</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>raise_invested_value(monthly_raise<span class="op">=</span><span class="dv">300</span>, invest_share<span class="op">=</span><span class="fl">0.5</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">15</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#  47544.34450819771</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> raise_invested_value(monthly_raise, invest_share, rate, years):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    contribution <span class="op">=</span> monthly_raise <span class="op">*</span> invest_share</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    monthly_rate <span class="op">=</span> rate <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    periods <span class="op">=</span> years <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> contribution <span class="op">*</span> (((<span class="dv">1</span> <span class="op">+</span> monthly_rate) <span class="op">**</span> periods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> monthly_rate)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># half of a $400/month raise, invested for 25 years at 7%</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>fmt_dollar(raise_invested_value(monthly_raise<span class="op">=</span><span class="dv">400</span>, invest_share<span class="op">=</span><span class="fl">0.5</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">25</span>))</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$162,014.34'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<p>Excel’s built-in <a href="https://support.microsoft.com/en-US/Excel/fv-function"><strong><code>FV()</code></strong> (future value) function’s</a> arguments are <code>FV(rate, nper, pmt)</code>:</p>
+<p>Use the built-in <code>FV()</code> function: <code>FV(rate, nper, pmt)</code></p>
 <ul>
-<li><code>rate</code> is the return <em>per period</em> (monthly here): <code>7%/12</code></li>
-<li><code>nper</code> is the number of periods: <code>15*12</code></li>
-<li><code>pmt</code> is the amount invested each period, entered as a <em>negative</em> number because it’s cash leaving your pocket: <code>-150</code> (half of $300) or <code>-300*0.5</code></li>
+<li><code>rate</code>: monthly return = <code>7%/12</code></li>
+<li><code>nper</code>: number of months = <code>25*12</code></li>
+<li><code>pmt</code>: monthly contribution as a negative = <code>-200</code></li>
 </ul>
-<p>Half of a $300/month raise, invested for 15 years at 7%</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span><span class="fl">0.07</span><span class="op">/</span><span class="dv">12</span><span class="op">,</span> <span class="dv">15</span><span class="op">*</span><span class="dv">12</span><span class="op">,</span> <span class="op">-</span><span class="dv">300</span><span class="op">*</span><span class="fl">0.5</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span><span class="dv">7</span><span class="op">%/</span><span class="dv">12</span><span class="op">,</span> <span class="dv">25</span><span class="op">*</span><span class="dv">12</span><span class="op">,</span> <span class="op">-</span><span class="dv">200</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/income-future-value.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%"></p>
@@ -540,13 +545,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 </section>
-</section>
 
 
 <div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
 
 <ol>
-<li id="fn1"><p>Read more about the <a href="https://support.microsoft.com/en-us/excel/format-numbers-as-currency-in-excel#__toc305071612">differences between currency and accounting</a> formats in Excel.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn1"><p>Read more about the <a href="https://support.microsoft.com/en-us/excel/format-numbers-as-currency-in-excel#__toc305071612">differences between Currency and Accounting</a> formats in Excel.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
 </ol>
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -622,7 +626,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

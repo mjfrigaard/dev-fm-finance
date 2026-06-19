@@ -7,33 +7,331 @@ title: "Managing Debt"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
 
-APR vs APY gap, minimum payment split, total interest comparison (6-yr vs 4-yr), DTI income split with 43% threshold line, guaranteed vs. expected return, avalanche vs. snowball ordering, and credit utilization with 30%/10% threshold lines.
+## Book Topics
 
-## Math for Managing Debt
+- **Debt hierarchy**: toxic (15–29% APR: credit cards, payday loans) → moderate (5–10%: car loans, private student loans) → strategic (3–7%: mortgages, federal student loans)
+- **Credit cards**: eliminate before any other goal; minimum payments are designed to keep you in debt indefinitely; once paid off, use as a payment tool not a financing tool
+- **Student loans**: evaluate the return — debt ≤ 1× first-year salary on a 10-year plan; for federal loans, compare IBR/SAVE/RAP based on income
+- **Car loans**: depreciating assets financed at 7–9% are wealth killers; 20/4/10 rule (20% down, ≤4-year term, ≤10% of gross income on transportation)
+- **Pay off vs. invest**: if loan rate > expected return → pay off; if loan rate < expected return → invest; add a peace-of-mind premium for guaranteed vs. probable returns
 
-### APR vs. APY: Know What You're Actually Paying {.unnumbered}
+## APR vs. APY
 
-### The True Cost of Minimum Payments {.unnumbered}
+Lenders quote APR; you actually pay APY (which is higher due to compounding).
 
-### Total Interest Paid Over a Loan's Life {.unnumbered}
+**Formula:** APY = (1 + APR ÷ n)\^n − 1
 
-### Debt-to-Income Ratio (DTI) {.unnumbered}
+```{r}
+#| label: apr-apy-bar-model
+#| echo: false
+#| fig-cap: "APR cost vs. APY cost on a $10,000 balance (24% APR, daily compounding)"
+#| fig-asp: 0.50
+library(ggplot2)
+df_apr <- data.frame(type = c("APR cost\n(stated)", "APY cost\n(actual)"), cost = c(2400, 2710))
+df_apr$type <- factor(df_apr$type, levels = df_apr$type)
+ggplot(df_apr, aes(x = type, y = cost, fill = type)) +
+  geom_col(width = 0.5) +
+  geom_text(aes(label = paste0("$", format(cost, big.mark = ","))),
+            vjust = -0.4, fontface = "bold", size = 4) +
+  annotate("segment", x = 2, xend = 2, y = 2400, yend = 2710, colour = "#1C1C1E",
+           linewidth = 0.8, arrow = arrow(ends = "both", length = unit(0.08, "inches"))) +
+  annotate("text", x = 2.35, y = 2555, label = "+$310\nhidden\ncost",
+           colour = "#1C1C1E", fontface = "bold", size = 3.2, hjust = 0) +
+  scale_fill_manual(values = c("APR cost\n(stated)" = "#0e9aa7", "APY cost\n(actual)" = "#f44242")) +
+  scale_y_continuous(limits = c(0, 3100),
+                     labels = function(x) paste0("$", format(x, big.mark = ","))) +
+  labs(x = NULL, y = "Annual interest on $10,000 balance") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank())
+```
 
-### The Pay-Off vs. Invest Comparison {.unnumbered}
+::: panel-tabset
+## R
 
-### The Avalanche vs. Snowball Math {.unnumbered}
+```{r}
+#| label: apr-apy-r
+apr_to_apy <- function(apr, periods_per_year = 365) {
+  (1 + apr / periods_per_year)^periods_per_year - 1
+}
 
-### The Credit Utilization Ratio {.unnumbered}
+apr_to_apy(apr = 0.24)
+```
 
-## Putting the Math to Work
+## Python
+
+```{python}
+#| label: apr-apy-py
+def apr_to_apy(apr, periods_per_year=365):
+    return (1 + apr / periods_per_year) ** periods_per_year - 1
+
+apr_to_apy(apr=0.24)
+```
+
+## Excel
+
+With APR in `A2` and compounding periods in `B2`:
+
+```swift
+=(1+A2/B2)^B2-1
+```
+:::
+
+## Minimum Payment Trap
+
+Minimum payments barely reduce the balance — most goes to interest.
+
+**Approximation:** Months to pay off ≈ Balance ÷ (Payment − Monthly Interest)
+
+```{r}
+#| label: min-payment-bar-model
+#| echo: false
+#| fig-cap: "Where a $100 minimum payment actually goes"
+#| fig-asp: 0.55
+library(ggplot2)
+df_min <- data.frame(
+  label  = factor(c("Interest\n($92)", "Principal\nreduction ($8)"),
+                  levels = c("Interest\n($92)", "Principal\nreduction ($8)")),
+  amount = c(92, 8),
+  fill   = c("#f44242", "#48a56a")
+)
+ggplot(df_min, aes(x = label, y = amount, fill = fill)) +
+  geom_col(width = 0.5) +
+  geom_text(aes(label = paste0("$", amount)), vjust = -0.4,
+            fontface = "bold", size = 4.5, colour = "#1C1C1E") +
+  scale_fill_identity() +
+  scale_y_continuous(limits = c(0, 108), labels = function(x) paste0("$", x)) +
+  labs(x = NULL, y = "Amount (of $100 payment)") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.x = element_text(face = "bold", size = 11))
+```
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: min-payoff-r
+months_to_payoff <- function(balance, monthly_payment, apr) {
+  monthly_interest    <- balance * (apr / 12)
+  principal_reduction <- monthly_payment - monthly_interest
+  balance / principal_reduction
+}
+
+# $5,000 balance, $100/month, 22% APR
+months_to_payoff(balance = 5000, monthly_payment = 100, apr = 0.22)
+```
+
+## Python
+
+```{python}
+#| label: min-payoff-py
+def months_to_payoff(balance, monthly_payment, apr):
+    monthly_interest    = balance * (apr / 12)
+    principal_reduction = monthly_payment - monthly_interest
+    return balance / principal_reduction
+
+months_to_payoff(balance=5000, monthly_payment=100, apr=0.22)
+```
+
+## Excel
+
+With balance in `A2`, payment in `B2`, APR in `C2`:
+
+```swift
+=A2/(B2-(A2*(C2/12)))
+```
+:::
+
+## Total Interest on a Loan
+
+The real cost of any installment loan is principal plus all the interest paid over the life of the loan.
+
+**Formula:** Total Interest = (Monthly Payment × Number of Payments) − Principal
+
+```{r}
+#| label: total-interest-bar-model
+#| echo: false
+#| fig-cap: "$30,000 car loan — principal vs. interest for 6-year and 4-year terms"
+#| fig-asp: 0.50
+library(ggplot2)
+df_ti <- data.frame(
+  term      = c("6-year loan", "6-year loan", "4-year loan", "4-year loan"),
+  component = c("Principal", "Interest", "Principal", "Interest"),
+  amount    = c(30000, 6864, 30000, 4512)
+)
+df_ti$term      <- factor(df_ti$term, levels = c("6-year loan", "4-year loan"))
+df_ti$component <- factor(df_ti$component, levels = c("Interest", "Principal"))
+ggplot(df_ti, aes(x = term, y = amount, fill = component)) +
+  geom_col(width = 0.45, position = "stack") +
+  geom_text(aes(label = ifelse(component == "Interest",
+                               paste0("Interest\n$", format(amount, big.mark = ",")),
+                               paste0("Principal\n$", format(amount, big.mark = ",")))),
+            position = position_stack(vjust = 0.5),
+            colour = "white", fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = c("Principal" = "#0e9aa7", "Interest" = "#f44242")) +
+  scale_y_continuous(labels = function(x) paste0("$", format(x, big.mark = ","))) +
+  labs(x = NULL, y = "Total paid") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: total-interest-r
+total_interest <- function(monthly_payment, n_months, principal) {
+  (monthly_payment * n_months) - principal
+}
+
+total_interest(monthly_payment = 512, n_months = 72, principal = 30000)
+total_interest(monthly_payment = 719, n_months = 48, principal = 30000)
+```
+
+## Python
+
+```{python}
+#| label: total-interest-py
+def total_interest(monthly_payment, n_months, principal):
+    return (monthly_payment * n_months) - principal
+
+print(total_interest(monthly_payment=512, n_months=72, principal=30000))
+print(total_interest(monthly_payment=719, n_months=48, principal=30000))
+```
+
+## Excel
+
+With payment in `A2`, months in `B2`, principal in `C2`:
+
+```swift
+=(A2*B2)-C2
+```
+:::
+
+## Debt-to-Income Ratio (DTI)
+
+Lenders calculate this about you. Calculate it yourself first.
+
+**Formula:** DTI = (Total Monthly Debt Payments ÷ Gross Monthly Income) × 100
+
+Benchmarks: <20% healthy; 20–35% manageable; 36–43% stretched; >43% danger zone.
+
+```{r}
+#| label: dti-bar-model
+#| echo: false
+#| fig-cap: "$7,000 monthly income split into debt payments and remaining income"
+#| fig-asp: 0.50
+library(ggplot2)
+df_dti <- data.frame(
+  component = c("Debt payments\n$2,500 (36%)", "Remaining income\n$4,500 (64%)"),
+  amount    = c(2500, 4500)
+)
+df_dti$component <- factor(df_dti$component, levels = df_dti$component)
+ggplot(df_dti, aes(x = "", y = amount, fill = component)) +
+  geom_col(width = 0.45) +
+  geom_text(aes(label = component), position = position_stack(vjust = 0.5),
+            colour = "white", fontface = "bold", size = 3.8) +
+  geom_hline(yintercept = 7000 * 0.43, colour = "#1C1C1E",
+             linewidth = 1, linetype = "dashed") +
+  annotate("text", x = 1.35, y = 7000 * 0.43 + 80, label = "43% danger zone",
+           colour = "#1C1C1E", fontface = "bold", size = 3.2, hjust = 0) +
+  coord_flip() +
+  scale_fill_manual(values = c("Debt payments\n$2,500 (36%)" = "#f44242",
+                               "Remaining income\n$4,500 (64%)" = "#0e9aa7")) +
+  scale_y_continuous(labels = function(x) paste0("$", format(x, big.mark = ","))) +
+  labs(x = NULL, y = "Gross monthly income ($7,000)") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(), panel.grid = element_blank())
+```
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: dti-r
+dti_ratio <- function(monthly_debt_payments, gross_monthly_income) {
+  (monthly_debt_payments / gross_monthly_income) * 100
+}
+
+dti_ratio(monthly_debt_payments = 2500, gross_monthly_income = 7000)
+```
+
+## Python
+
+```{python}
+#| label: dti-py
+def dti_ratio(monthly_debt_payments, gross_monthly_income):
+    return (monthly_debt_payments / gross_monthly_income) * 100
+
+dti_ratio(monthly_debt_payments=2500, gross_monthly_income=7000)
+```
+
+## Excel
+
+With debt payments in `A2` and income in `B2`:
+
+```swift
+=(A2/B2)*100
+```
+:::
+
+## Avalanche vs. Snowball Order
+
+Two methods for ordering debt payoff; both work, each has trade-offs.
+
+- **Avalanche**: highest APR first — mathematically optimal, saves the most interest
+- **Snowball**: smallest balance first — psychologically motivating, builds momentum
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: avalanche-snowball-r
+order_avalanche <- function(debts) debts[order(-debts$apr), ]
+order_snowball  <- function(debts) debts[order(debts$balance), ]
+
+debts <- data.frame(
+  name    = c("Card A", "Card B", "Card C"),
+  balance = c(1000, 5000, 2000),
+  apr     = c(0.18, 0.24, 0.15)
+)
+
+order_avalanche(debts)
+order_snowball(debts)
+```
+
+## Python
+
+```{python}
+#| label: avalanche-snowball-py
+def order_avalanche(debts):
+    return sorted(debts, key=lambda d: d["apr"], reverse=True)
+
+def order_snowball(debts):
+    return sorted(debts, key=lambda d: d["balance"])
+
+debts = [
+    {"name": "Card A", "balance": 1000, "apr": 0.18},
+    {"name": "Card B", "balance": 5000, "apr": 0.24},
+    {"name": "Card C", "balance": 2000, "apr": 0.15},
+]
+
+print(order_avalanche(debts))
+print(order_snowball(debts))
+```
+
+## Excel
+
+Sort the debt table by APR descending for avalanche, or by Balance ascending for snowball — use `Data → Sort` on the appropriate column.
+:::
