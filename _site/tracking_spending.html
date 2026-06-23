@@ -295,7 +295,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="bank-statement-data" class="level2" data-number="2">
 <h2 data-number="2" class="anchored" data-anchor-id="bank-statement-data"><span class="header-section-number">2</span> Bank Statement Data</h2>
-<p>A minimal bank export has three columns: <code>Date</code>, <code>Description</code>, and <code>Amount</code>.</p>
+<p>A minimal bank export has three columns: <code>Date</code>, <code>Description</code>, and <code>Amount</code>. The code blocks below show how to create an example bank statement file in R, Python, and Excel.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -426,8 +426,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>We can view the bank statement in R using <code>knitr::kable()</code>.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>In Python, we’ll use <code>polars</code> to create a <code>DataFrame</code> and display the bank statement. This is similar to the <code>tibble</code> we created above.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -572,7 +574,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>Copy the data into Excel; <code>Date</code> in A, <code>Description</code> in B, <code>Amount</code> in C.</p>
+<p>We can simply copy and paste the data into Excel; <code>Date</code> in A, <code>Description</code> in B, <code>Amount</code> in C.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="img/tracking_spending-bank-statement.png" class="img-fluid figure-img" style="width:75.0%"></p>
@@ -590,25 +592,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>In R, we can use <code>dplyr</code> to do the following:</p>
+<ul>
+<li><p><code>dplyr::case_when()</code> evaluates each pattern in order and assigns the matching category</p>
+<ul>
+<li><code>grepl()</code> does the keyword test against <code>Description</code></li>
+</ul></li>
+<li><p>The final <code>TRUE</code> arm catches everything that didn’t match and labels it <code>"Other"</code></p></li>
+</ul>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="ot">&lt;-</span> r_bank_statement <span class="sc">|&gt;</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">Category =</span> dplyr<span class="sc">::</span><span class="fu">case_when</span>(</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Payroll"</span>,                                 Description) <span class="sc">~</span> <span class="st">"Income"</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Rent"</span>,                                    Description) <span class="sc">~</span> <span class="st">"Housing"</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Comcast|PG&amp;E|AT&amp;T"</span>,                       Description) <span class="sc">~</span> <span class="st">"Utilities"</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Trader Joe|Whole Foods|Costco"</span>,           Description) <span class="sc">~</span> <span class="st">"Groceries"</span>,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Shell"</span>,                                   Description) <span class="sc">~</span> <span class="st">"Transportation"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Starbucks|Chipotle"</span>,                      Description) <span class="sc">~</span> <span class="st">"Dining"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Payroll"</span>, Description) <span class="sc">~</span> <span class="st">"Income"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Rent"</span>, Description) <span class="sc">~</span> <span class="st">"Housing"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Comcast|PG&amp;E|AT&amp;T"</span>, Description) <span class="sc">~</span> <span class="st">"Utilities"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Trader Joe|Whole Foods|Costco"</span>, Description) <span class="sc">~</span> <span class="st">"Groceries"</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Shell"</span>, Description) <span class="sc">~</span> <span class="st">"Transportation"</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Starbucks|Chipotle"</span>, Description) <span class="sc">~</span> <span class="st">"Dining"</span>,</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Netflix|Spotify|NYTimes|24 Hour Fitness"</span>, Description) <span class="sc">~</span> <span class="st">"Subscriptions"</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Geico"</span>,                                   Description) <span class="sc">~</span> <span class="st">"Insurance"</span>,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                          <span class="sc">~</span> <span class="st">"Other"</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>      <span class="fu">grepl</span>(<span class="st">"Geico"</span>, Description) <span class="sc">~</span> <span class="st">"Insurance"</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span> <span class="sc">~</span> <span class="st">"Other"</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>r_bank_statement <span class="sc">|&gt;</span> </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -729,6 +740,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p><code>polars</code> is similar to <code>dplyr</code>, but:</p>
+<ul>
+<li><p><code>with_columns()</code> is the <code>mutate()</code> analog</p>
+<ul>
+<li>a chain of <code>pl.when().then()</code> calls is the <code>case_when()</code> analog</li>
+</ul></li>
+<li><p><code>pl.col("Description").str.contains(...)</code> does the keyword test</p>
+<ul>
+<li>regex by default and the <code>|</code> between merchants is alternation</li>
+</ul></li>
+</ul>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
@@ -920,35 +942,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Note the rate is given as a decimal and the order of operations.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_cost, years, <span class="at">rate =</span> <span class="fl">0.07</span>) {</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="ot">&lt;-</span> monthly_cost <span class="sc">*</span> <span class="dv">12</span></span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 22670.59</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$22,670.59"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>Note the exponential is indicated with <code>**</code> (not <code>^</code>):</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 22670.58871769843</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fmt_dollar(subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$22,670.59'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <p>With monthly cost in <code>A2</code>, years in <code>B2</code>, rate in <code>C2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -1030,7 +1062,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

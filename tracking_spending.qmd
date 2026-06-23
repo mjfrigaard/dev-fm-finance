@@ -15,6 +15,12 @@ source("_common.R")
 #| include: false
 import polars as pl
 pl.Config.set_tbl_rows(20)
+
+def fmt_dollar(x, digits=2):
+    return f"${x:,.{digits}f}"
+
+def fmt_pct(x, digits=1):
+    return f"{x * 100:.{digits}f}%"
 ```
 
 ## Book Topics
@@ -27,9 +33,10 @@ pl.Config.set_tbl_rows(20)
 
 ## Bank Statement Data
 
-A minimal bank export has three columns: `Date`, `Description`, and `Amount`.
+A minimal bank export has three columns: `Date`, `Description`, and `Amount`. The code blocks below show how to create an example bank statement file in R, Python, and Excel. 
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
@@ -59,7 +66,11 @@ r_bank_statement <- tibble::tibble(
 r_bank_statement |> knitr::kable()
 ```
 
+We can view the bank statement in R using `knitr::kable()`.
+
 ## Python
+
+In Python, we'll use `polars` to create a `DataFrame` and display the bank statement. This is similar to the `tibble` we created above. 
 
 ```{python}
 #| label: bank-statement-py
@@ -92,7 +103,7 @@ py_bank_statement
 
 ## Excel
 
-Copy the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
+We can simply copy and paste the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 
 ![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
 :::
@@ -102,29 +113,48 @@ Copy the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 Map description keywords to budget buckets in a single pass.
 
 ::: panel-tabset
+
 ## R
 
+In R, we can use `dplyr` to do the following:
+
+- `dplyr::case_when()` evaluates each pattern in order and assigns the matching category
+
+  - `grepl()` does the keyword test against `Description`
+
+- The final `TRUE` arm catches everything that didn't match and labels it `"Other"`
 ```{r}
 #| label: categorize-r
 r_bank_statement <- r_bank_statement |>
   dplyr::mutate(
     Category = dplyr::case_when(
-      grepl("Payroll",                                 Description) ~ "Income",
-      grepl("Rent",                                    Description) ~ "Housing",
-      grepl("Comcast|PG&E|AT&T",                       Description) ~ "Utilities",
-      grepl("Trader Joe|Whole Foods|Costco",           Description) ~ "Groceries",
-      grepl("Shell",                                   Description) ~ "Transportation",
-      grepl("Starbucks|Chipotle",                      Description) ~ "Dining",
+      grepl("Payroll", Description) ~ "Income",
+      grepl("Rent", Description) ~ "Housing",
+      grepl("Comcast|PG&E|AT&T", Description) ~ "Utilities",
+      grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
+      grepl("Shell", Description) ~ "Transportation",
+      grepl("Starbucks|Chipotle", Description) ~ "Dining",
       grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
-      grepl("Geico",                                   Description) ~ "Insurance",
-      TRUE                                                          ~ "Other"
+      grepl("Geico", Description) ~ "Insurance",
+      TRUE ~ "Other"
     )
   )
 
-r_bank_statement |> knitr::kable()
+r_bank_statement |> 
+  knitr::kable()
 ```
 
 ## Python
+
+`polars` is similar to `dplyr`, but:
+
+- `with_columns()` is the `mutate()` analog
+
+  - a chain of `pl.when().then()` calls is the `case_when()` analog
+
+- `pl.col("Description").str.contains(...)` does the keyword test
+
+  - regex by default and the `|` between merchants is alternation
 
 ```{python}
 #| label: categorize-py
@@ -197,27 +227,37 @@ ggplot(df_sub, aes(x = year, y = value, fill = fill)) +
 ```
 
 ::: panel-tabset
+
 ## R
 
+Note the rate is given as a decimal and the order of operations. 
 ```{r}
 #| label: subscription-opp-cost-r
 subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
   annual_cost <- monthly_cost * 12
   annual_cost * ((1 + rate)^years - 1) / rate
 }
+```
 
-subscription_opportunity_cost(monthly_cost = 20, years = 30)
+```{r}
+#| label: subscription-opp-cost-r-apply
+subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
 ```
 
 ## Python
+
+Note the exponential is indicated with `**` (not `^`):
 
 ```{python}
 #| label: subscription-opp-cost-py
 def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
     annual_cost = monthly_cost * 12
     return annual_cost * ((1 + rate) ** years - 1) / rate
+```
 
-subscription_opportunity_cost(monthly_cost=20, years=30)
+```{python}
+#| label: subscription-opp-cost-py-apply
+fmt_dollar(subscription_opportunity_cost(monthly_cost=20, years=30))
 ```
 
 ## Excel
