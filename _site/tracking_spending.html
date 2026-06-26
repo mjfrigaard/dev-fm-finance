@@ -76,6 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -577,7 +580,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>We can simply copy and paste the data into Excel; <code>Date</code> in A, <code>Description</code> in B, <code>Amount</code> in C.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/tracking_spending-bank-statement.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-bank-statement.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="bank_statement in Excel"><img src="img/tracking_spending-bank-statement.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="bank_statement in Excel"></a></p>
+</figure>
+</div>
 <figcaption><code>bank_statement</code> in Excel</figcaption>
 </figure>
 </div>
@@ -902,7 +909,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>With <code>Description</code> in column B, paste into <code>D2</code> and fill down:</p>
+<p>In Excel, the <a href="https://support.microsoft.com/en-US/Excel/IFS-function"><code>IFS()</code> function</a> is the direct analog of <code>case_when()</code>/<code>when().then()</code>.</p>
+<ul>
+<li><p><code>IFS()</code> takes a list of conditions and corresponding values, evaluated top to bottom, with the first match winning</p></li>
+<li><p><code>SEARCH()</code> returns the position of a keyword in a cell (or <code>#VALUE!</code> if not found)</p></li>
+<li><p>Wrapping it in <code>ISNUMBER()</code> turns that into a true/false test</p>
+<ul>
+<li>For categories with several rows/transactions, wrap the tests in <code>OR()</code></li>
+</ul></li>
+<li><p>The final <code>TRUE, "Other"</code> arm is the equivalent of <code>dplyr</code>’s <code>TRUE ~ "Other"</code> and <code>polars</code>’s <code>.otherwise(...)</code>; it catches anything that didn’t match an earlier pattern.</p></li>
+</ul>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>IFS<span class="op">(</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Payroll"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Income"</span><span class="op">,</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Rent"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Housing"</span><span class="op">,</span></span>
@@ -914,10 +930,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  ISNUMBER<span class="op">(</span>SEARCH<span class="op">(</span><span class="st">"Geico"</span><span class="op">,</span>B2<span class="op">)),</span> <span class="st">"Insurance"</span><span class="op">,</span></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  TRUE<span class="op">,</span> <span class="st">"Other"</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>If the statement is laid out with <code>Date</code> in column <code>A</code>, <code>Description</code> in column <code>B</code>, and <code>Amount</code> in column <code>C</code>, type <code>Category</code> in cell <code>D1</code>, then paste the formula below into <code>D2</code>:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/tracking_spending-ifs.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-ifs.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="IFS() in Excel"><img src="img/tracking_spending-ifs.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="IFS() in Excel"></a></p>
+</figure>
+</div>
 <figcaption><code>IFS()</code> in Excel</figcaption>
+</figure>
+</div>
+<p>Then copy <code>D2</code> down through every transaction row (select <code>D2</code>, double-click the small square in the bottom-right corner, or use <code>Ctrl+D</code> after selecting <code>D2:D{last_row}</code>).</p>
+<ul>
+<li>To add a new merchant when one shows up: edit the formula in <code>D2</code>, then re-fill down. Keep the new merchant near the bottom of its category group so the existing patterns still resolve first.</li>
+</ul>
+<p>In Excel, we can also use the <em>Format as Table</em> feature to make the data easier to read.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> You can select a color/style for your table and it will automatically update the data.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-format-as-table.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Format as table"><img src="img/tracking_spending-format-as-table.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Format as table"></a></p>
+</figure>
+</div>
+<figcaption>Format as table</figcaption>
 </figure>
 </div>
 </div>
@@ -932,7 +968,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<p><a href="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Future value of a $20/month subscription’s annual cost if invested at 7%"><img src="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Future value of a $20/month subscription’s annual cost if invested at 7%"></a></p>
 <figcaption>Future value of a $20/month subscription’s annual cost if invested at 7%</figcaption>
 </figure>
 </div>
@@ -948,39 +984,99 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_cost, years, <span class="at">rate =</span> <span class="fl">0.07</span>) {</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="ot">&lt;-</span> monthly_cost <span class="sc">*</span> <span class="dv">12</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  op_cost <span class="ot">&lt;-</span> (annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_dollar</span>(op_cost)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$22,670.59"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<p>Note the exponential is indicated with <code>**</code> (not <code>^</code>):</p>
+<p>Note the exponential is indicated with <code>**</code> (not <code>^</code>). In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    op_cost <span class="op">=</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmt_dollar(op_cost) <span class="co"># format the result as a dollar amount</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fmt_dollar(subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$22,670.59'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<p>With monthly cost in <code>A2</code>, years in <code>B2</code>, rate in <code>C2</code>:</p>
+<p>In Excel, create a new sheet with the inputs:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 21%">
+<col style="width: 37%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Monthly cost</th>
+<th>Number of Years</th>
+<th>Annual Return (as decimal)</th>
+<th>Opportunity Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>$20</td>
+<td>30</td>
+<td>0.07</td>
+<td><em>Formula below</em></td>
+</tr>
+</tbody>
+</table>
+<p>The formula (given this setup) is below:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>A2*12</code> converts the monthly cost to annual; the rest is the future-value-of-an-annuity formula using the rate in <code>C2</code> and the horizon in <code>B2</code>. The formula (given this setup) is below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-opportunity_cost.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Opportunity Cost in Excel"><img src="img/tracking_spending-opportunity_cost.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost in Excel"></a></p>
+</figure>
+</div>
+<figcaption>Opportunity Cost in Excel</figcaption>
+</figure>
+</div>
+<p>Note that if we had the data arranged differently, we’d have to adjust the formula accordingly:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-opportunity_cost2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Opportunity Cost 2 in Excel"><img src="img/tracking_spending-opportunity_cost2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost 2 in Excel"></a></p>
+</figure>
+</div>
+<figcaption>Opportunity Cost 2 in Excel</figcaption>
+</figure>
+</div>
+<p>Both will work, and for straightforward formulas like this, you can pick whichever one you prefer. Later, we’ll discuss how to arrange data in excel so it can be easily analyzed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="img/tracking_spending-opportunity_cost_layouts.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Opportunity Cost Layouts in Excel"><img src="img/tracking_spending-opportunity_cost_layouts.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost Layouts in Excel"></a></p>
+</figure>
+</div>
+<figcaption>Opportunity Cost Layouts in Excel</figcaption>
+</figure>
+</div>
 </div>
 </div>
 </div>
@@ -988,7 +1084,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </section>
 
-</main> <!-- /main -->
+
+<div id="quarto-appendix" class="default"><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>Read the <a href="https://support.microsoft.com/en-us/excel/overview-of-excel-tables">Overview of Excel tables</a> on the Microsoft documentation.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     const icon = "";
@@ -1429,6 +1531,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

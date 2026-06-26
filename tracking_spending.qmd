@@ -106,6 +106,9 @@ py_bank_statement
 We can simply copy and paste the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 
 ![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
+
+
+
 :::
 
 ## Categorizing Transactions
@@ -175,7 +178,17 @@ py_bank_statement
 
 ## Excel
 
-With `Description` in column B, paste into `D2` and fill down:
+In Excel, the [`IFS()` function](https://support.microsoft.com/en-US/Excel/IFS-function) is the direct analog of `case_when()`/`when().then()`. 
+
+- `IFS()` takes a list of conditions and corresponding values, evaluated top to bottom, with the first match winning
+
+- `SEARCH()` returns the position of a keyword in a cell (or `#VALUE!` if not found)
+
+- Wrapping it in `ISNUMBER()` turns that into a true/false test
+
+  - For categories with several rows/transactions, wrap the tests in `OR()`
+
+- The final `TRUE, "Other"` arm is the equivalent of `dplyr`'s `TRUE ~ "Other"` and `polars`'s `.otherwise(...)`; it catches anything that didn't match an earlier pattern.
 
 ```swift
 =IFS(
@@ -191,7 +204,20 @@ With `Description` in column B, paste into `D2` and fill down:
 )
 ```
 
+If the statement is laid out with `Date` in column `A`, `Description` in column `B`, and `Amount` in column `C`, type `Category` in cell `D1`, then paste the formula below into `D2`:
+
 ![`IFS()` in Excel](img/tracking_spending-ifs.png){width='100%' fig-align='center'}
+
+Then copy `D2` down through every transaction row (select `D2`, double-click the small square in the bottom-right corner, or use `Ctrl+D` after selecting `D2:D{last_row}`).
+
+* To add a new merchant when one shows up: edit the formula in `D2`, then re-fill down. Keep the new merchant near the bottom of its category group so the existing patterns still resolve first.
+
+In Excel, we can also use the *Format as Table* feature to make the data easier to read.[^excel-tables] You can select a color/style for your table and it will automatically update the data. 
+
+![Format as table](img/tracking_spending-format-as-table.png){width='100%' fig-align='center'}
+
+[^excel-tables]: Read the [Overview of Excel tables](https://support.microsoft.com/en-us/excel/overview-of-excel-tables) on the Microsoft documentation. 
+
 :::
 
 ## Subscription Opportunity Cost
@@ -235,36 +261,58 @@ Note the rate is given as a decimal and the order of operations.
 #| label: subscription-opp-cost-r
 subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
   annual_cost <- monthly_cost * 12
-  annual_cost * ((1 + rate)^years - 1) / rate
+  op_cost <- (annual_cost * ((1 + rate)^years - 1) / rate)
+  fmt_dollar(op_cost)
 }
 ```
 
 ```{r}
 #| label: subscription-opp-cost-r-apply
-subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
+subscription_opportunity_cost(monthly_cost = 20, years = 30)
 ```
 
 ## Python
 
-Note the exponential is indicated with `**` (not `^`):
+Note the exponential is indicated with `**` (not `^`). In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
 
 ```{python}
 #| label: subscription-opp-cost-py
 def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
     annual_cost = monthly_cost * 12
-    return annual_cost * ((1 + rate) ** years - 1) / rate
+    op_cost = annual_cost * ((1 + rate) ** years - 1) / rate
+    return fmt_dollar(op_cost) # format the result as a dollar amount
 ```
 
 ```{python}
 #| label: subscription-opp-cost-py-apply
-fmt_dollar(subscription_opportunity_cost(monthly_cost=20, years=30))
+subscription_opportunity_cost(monthly_cost=20, years=30)
 ```
 
 ## Excel
 
-With monthly cost in `A2`, years in `B2`, rate in `C2`:
+In Excel, create a new sheet with the inputs: 
+
+| Monthly cost | Number of Years | Annual Return (as decimal) | Opportunity Cost |
+| ------------ | --------------- | -------------------------- | ---------------- |
+| $20          | 30              | 0.07                       | *Formula below*  |
+
+The formula (given this setup) is below:
 
 ```swift
 =(A2*12)*((1+C2)^B2-1)/C2
 ```
+
+`A2*12` converts the monthly cost to annual; the rest is the future-value-of-an-annuity formula using the rate in `C2` and the horizon in `B2`. The formula (given this setup) is below:
+
+![Opportunity Cost in Excel](img/tracking_spending-opportunity_cost.png){width='100%' fig-align='center'}
+
+Note that if we had the data arranged differently, we'd have to adjust the formula accordingly: 
+
+![Opportunity Cost 2 in Excel](img/tracking_spending-opportunity_cost2.png){width='100%' fig-align='center'}
+
+Both will work, and for straightforward formulas like this, you can pick whichever one you prefer. Later, we'll discuss how to arrange data in excel so it can be easily analyzed. 
+
+![Opportunity Cost Layouts in Excel](img/tracking_spending-opportunity_cost_layouts.png){width='100%' fig-align='center'}
+
+
 :::
