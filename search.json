@@ -1,45 +1,290 @@
 [
   {
-    "objectID": "budgeting.html",
-    "href": "budgeting.html",
-    "title": "Budgeting",
+    "objectID": "CLAUDE.html",
+    "href": "CLAUDE.html",
+    "title": "1 CLAUDE.md",
     "section": "",
-    "text": "Mindset shift: budgets are about conscious allocation, not restriction; “room for error” is the most underrated concept (Housel)\nExpense categories: fixed (predictable), variable (fluctuate), periodic (annual/irregular); each requires a different strategy\nSinking funds: set aside 1/12 of annual periodic costs each month to avoid “budget emergencies”\nZero-based budgeting: every dollar gets a job; income − all allocations = 0; best for rebuilding from debt\nPercentage-based budgeting: Sethi’s Conscious Spending Plan (50–60% fixed, 10%+ investing, 20–35% guilt-free); low maintenance at steady income\nBest tool: the one you’ll actually use; automatic imports, easy categorization, and a summary view matter most"
+    "text": "This file provides guidance to Claude Code when working with this repository.\n\n\n\nDo not commit LLM evidence: no mentions in commit messages (Co-Authored-By), no hidden folders (.claude/, .positai/), no LLM-related files (CLAUDE.md, AGENTS.md). Leave no trace.\nMinimize use of hyphens and dashes; limit bullets\nLocal agents: /Users/mjfrigaard/projects/agents/\nLocal skills: /Users/mjfrigaard/projects/skills/\nR package: /Users/mjfrigaard/projects/pkgs/R/fmfinr\nPython package: /Users/mjfrigaard/projects/pkgs/python/fmfinpy\n\n\n\n\nDevelopment sandbox for “Personal Finance: a Field Manual”; a Quarto website teaching personal finance with dual R/Python code examples for general (non-technical) audiences.\n\nDev repo: This directory (test code, iterate on examples)\nPublished book: /Users/mjfrigaard/projects/books/fm-finance\nSite: https://mjfrigaard.github.io/fm-finance/\n\nPedagogical approach: Singapore Math Method: concrete (real-world scenarios) → pictorial (charts, Shiny dashboards) → abstract (formulas, code). Sequential building where earlier chapters enable later ones.\n\n\n\nBuild / render:\nquarto render              # full site\nquarto render income.qmd   # single chapter\nquarto preview             # live preview\nShiny apps:\nshiny run _apps/Python/budgeting/app.py           # Python\nshiny run --reload _apps/Python/budgeting/app.py  # with auto-reload\nRscript -e 'shiny::runApp(\"_apps/R/budgeting\")'   # R from terminal\n\n\n\nDual-language design: Every chapter uses both R (tidyverse + ggplot2) and Python (polars, numpy). Code examples appear side by side.\nShared utilities (_common.R / _common.py): fmt_dollar(), fmt_pct() (number formatting), co_box() (styled callout boxes).\nQuarto config: flatly theme with custom.scss overrides, freeze: auto for caching, right TOC, numbered sections, code folding.\nShiny apps (_apps/R/budgeting/app.R, _apps/Python/budgeting/app.py): Interactive demonstrations of financial concepts.\n\n\n\n\n*.qmd — Chapter files (source _common.R / _common.py)\n_quarto.yml — Project config\ncustom.scss — Theme overrides\n_common.R, _common.py — Shared utilities\n_apps/ — Shiny demos\n_site/, _freeze/ — Build artifacts (git-ignored)\n\n\n\n\nCallouts: co_box(color, header, contents) with colors: g (tip), b (note), r (important), o (warning), y (caution).\nNumber formatting: Use fmt_dollar() and fmt_pct() for readable output.\nChapter structure: Minimal YAML (title only), then setup blocks sourcing _common.R and _common.py.\n\n\n\n\nEdit chapter and test: quarto render chapter.qmd\nLive preview: quarto preview\nTest Shiny apps: shiny run _apps/Python/budgeting/app.py or Rscript -e 'shiny::runApp(\"_apps/R/budgeting\")'\nCommit and push to /Users/mjfrigaard/projects/books/fm-finance\n\n\n\n\n\nAudience: General readers, no financial jargon. Code supports learning, not the focus.\nCaching: freeze: auto caches results; run quarto render chapter.qmd after code changes.\nStyling: Edit custom.scss for theme tweaks (primary color: green).\nEnvironment: Requires R 4.5+, Python 3.9+, and packages from fmfinr/fmfinpy."
   },
   {
-    "objectID": "budgeting.html#book-topics",
-    "href": "budgeting.html#book-topics",
-    "title": "Budgeting",
+    "objectID": "CLAUDE.html#general",
+    "href": "CLAUDE.html#general",
+    "title": "1 CLAUDE.md",
     "section": "",
-    "text": "Mindset shift: budgets are about conscious allocation, not restriction; “room for error” is the most underrated concept (Housel)\nExpense categories: fixed (predictable), variable (fluctuate), periodic (annual/irregular); each requires a different strategy\nSinking funds: set aside 1/12 of annual periodic costs each month to avoid “budget emergencies”\nZero-based budgeting: every dollar gets a job; income − all allocations = 0; best for rebuilding from debt\nPercentage-based budgeting: Sethi’s Conscious Spending Plan (50–60% fixed, 10%+ investing, 20–35% guilt-free); low maintenance at steady income\nBest tool: the one you’ll actually use; automatic imports, easy categorization, and a summary view matter most"
+    "text": "Do not commit LLM evidence: no mentions in commit messages (Co-Authored-By), no hidden folders (.claude/, .positai/), no LLM-related files (CLAUDE.md, AGENTS.md). Leave no trace.\nMinimize use of hyphens and dashes; limit bullets\nLocal agents: /Users/mjfrigaard/projects/agents/\nLocal skills: /Users/mjfrigaard/projects/skills/\nR package: /Users/mjfrigaard/projects/pkgs/R/fmfinr\nPython package: /Users/mjfrigaard/projects/pkgs/python/fmfinpy"
   },
   {
-    "objectID": "budgeting.html#percentages",
-    "href": "budgeting.html#percentages",
-    "title": "Budgeting",
-    "section": "2 Percentages",
-    "text": "2 Percentages\nThe foundational budgeting calculation: what share of income does each expense represent?\nFormula: (Expense ÷ Income) × 100\n\n\n\n\n\nRent ($1,500) as a share of a $5,000 paycheck\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\npercent_of_income &lt;- function(expense, income) {\n  (expense / income) * 100\n}\n\npercent_of_income(expense = 1500, income = 5000)\n#&gt; [1] 30\n\n\n\n\n\n\nshow/hide\ndef percent_of_income(expense, income):\n    return (expense / income) * 100\n\npercent_of_income(expense=1500, income=5000)\n#&gt; 30.0\n\n\n\n\nWith expense in A2 and income in B2:\n=(A2/B2)*100"
+    "objectID": "CLAUDE.html#overview",
+    "href": "CLAUDE.html#overview",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Development sandbox for “Personal Finance: a Field Manual”; a Quarto website teaching personal finance with dual R/Python code examples for general (non-technical) audiences.\n\nDev repo: This directory (test code, iterate on examples)\nPublished book: /Users/mjfrigaard/projects/books/fm-finance\nSite: https://mjfrigaard.github.io/fm-finance/\n\nPedagogical approach: Singapore Math Method: concrete (real-world scenarios) → pictorial (charts, Shiny dashboards) → abstract (formulas, code). Sequential building where earlier chapters enable later ones."
   },
   {
-    "objectID": "budgeting.html#annualizing-and-monthly-izing",
-    "href": "budgeting.html#annualizing-and-monthly-izing",
-    "title": "Budgeting",
-    "section": "3 Annualizing and Monthly-izing",
-    "text": "3 Annualizing and Monthly-izing\nScale any spending habit across time periods to see the true cost.\nAnnual → Monthly: ÷ 12 | Monthly → Annual: × 12 | Weekly → Monthly: × 4.33 | Daily → Annual: × 365\n\n\n\n\n\nThe same $5/day habit across four time periods\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nto_annual &lt;- function(amount, period = c(\"daily\", \"weekly\", \"monthly\")) {\n  period  &lt;- match.arg(period)\n  factors &lt;- c(daily = 365, weekly = 52, monthly = 12)\n  amount * factors[[period]]\n}\n\nto_monthly &lt;- function(amount, period = c(\"daily\", \"weekly\", \"annual\")) {\n  period  &lt;- match.arg(period)\n  factors &lt;- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)\n  amount * factors[[period]]\n}\n\nto_annual(amount = 5, period = \"daily\")\n#&gt; [1] 1825\nto_monthly(amount = 150, period = \"weekly\")\n#&gt; [1] 649.5\n\n\n\n\n\n\nshow/hide\ndef to_annual(amount, period=\"daily\"):\n    factors = {\"daily\": 365, \"weekly\": 52, \"monthly\": 12}\n    return amount * factors[period]\n\ndef to_monthly(amount, period=\"daily\"):\n    factors = {\"daily\": 30.44, \"weekly\": 4.33, \"annual\": 1 / 12}\n    return amount * factors[period]\n\nprint(to_annual(amount=5, period=\"daily\"))\n#&gt; 1825\nprint(to_monthly(amount=150, period=\"weekly\"))\n#&gt; 649.5\n\n\n\n\nWith daily amount in A2:\n=A2*365      # daily → annual\n=A2*52       # weekly → annual\n=A2/12       # annual → monthly"
+    "objectID": "CLAUDE.html#quick-reference",
+    "href": "CLAUDE.html#quick-reference",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Build / render:\nquarto render              # full site\nquarto render income.qmd   # single chapter\nquarto preview             # live preview\nShiny apps:\nshiny run _apps/Python/budgeting/app.py           # Python\nshiny run --reload _apps/Python/budgeting/app.py  # with auto-reload\nRscript -e 'shiny::runApp(\"_apps/R/budgeting\")'   # R from terminal"
   },
   {
-    "objectID": "budgeting.html#opportunity-cost",
-    "href": "budgeting.html#opportunity-cost",
-    "title": "Budgeting",
-    "section": "4 Opportunity Cost",
-    "text": "4 Opportunity Cost\nEvery dollar spent is also what that dollar could have become. The hidden cost of any purchase is its future value if invested instead.\nFormula: amount × (1 + r)^n\n\n\n\n\n\n$25,000 invested at 7% — value at each checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nopportunity_cost &lt;- function(amount, rate, years) {\n  amount * (1 + rate)^years\n}\n\nopportunity_cost(amount = 25000, rate = 0.07, years = 30)\n#&gt; [1] 190306.4\n\n\n\n\n\n\nshow/hide\ndef opportunity_cost(amount, rate, years):\n    return amount * (1 + rate) ** years\n\nopportunity_cost(amount=25000, rate=0.07, years=30)\n#&gt; 190306.37606655105\n\n\n\n\nWith amount in A2, rate in B2, years in C2:\n=A2*(1+B2)^C2"
+    "objectID": "CLAUDE.html#architecture",
+    "href": "CLAUDE.html#architecture",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Dual-language design: Every chapter uses both R (tidyverse + ggplot2) and Python (polars, numpy). Code examples appear side by side.\nShared utilities (_common.R / _common.py): fmt_dollar(), fmt_pct() (number formatting), co_box() (styled callout boxes).\nQuarto config: flatly theme with custom.scss overrides, freeze: auto for caching, right TOC, numbered sections, code folding.\nShiny apps (_apps/R/budgeting/app.R, _apps/Python/budgeting/app.py): Interactive demonstrations of financial concepts."
   },
   {
-    "objectID": "budgeting.html#break-even",
-    "href": "budgeting.html#break-even",
-    "title": "Budgeting",
-    "section": "5 Break-Even",
-    "text": "5 Break-Even\nUseful for evaluating memberships, refinances, or any purchase with an upfront cost and recurring savings.\nFormula: Upfront Cost ÷ Monthly Savings = months to break even\n\n\n\n\n\n$60/month savings accumulating toward a $500 upfront cost\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nmonths_to_break_even &lt;- function(upfront_cost, monthly_savings) {\n  upfront_cost / monthly_savings\n}\n\nmonths_to_break_even(upfront_cost = 500, monthly_savings = 60)\n#&gt; [1] 8.333333\n\n\n\n\n\n\nshow/hide\ndef months_to_break_even(upfront_cost, monthly_savings):\n    return upfront_cost / monthly_savings\n\nmonths_to_break_even(upfront_cost=500, monthly_savings=60)\n#&gt; 8.333333333333334\n\n\n\n\nWith upfront cost in A2 and monthly savings in B2:\n=A2/B2"
+    "objectID": "CLAUDE.html#file-structure",
+    "href": "CLAUDE.html#file-structure",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "*.qmd — Chapter files (source _common.R / _common.py)\n_quarto.yml — Project config\ncustom.scss — Theme overrides\n_common.R, _common.py — Shared utilities\n_apps/ — Shiny demos\n_site/, _freeze/ — Build artifacts (git-ignored)"
+  },
+  {
+    "objectID": "CLAUDE.html#key-patterns",
+    "href": "CLAUDE.html#key-patterns",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Callouts: co_box(color, header, contents) with colors: g (tip), b (note), r (important), o (warning), y (caution).\nNumber formatting: Use fmt_dollar() and fmt_pct() for readable output.\nChapter structure: Minimal YAML (title only), then setup blocks sourcing _common.R and _common.py."
+  },
+  {
+    "objectID": "CLAUDE.html#workflow",
+    "href": "CLAUDE.html#workflow",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Edit chapter and test: quarto render chapter.qmd\nLive preview: quarto preview\nTest Shiny apps: shiny run _apps/Python/budgeting/app.py or Rscript -e 'shiny::runApp(\"_apps/R/budgeting\")'\nCommit and push to /Users/mjfrigaard/projects/books/fm-finance"
+  },
+  {
+    "objectID": "CLAUDE.html#notes",
+    "href": "CLAUDE.html#notes",
+    "title": "1 CLAUDE.md",
+    "section": "",
+    "text": "Audience: General readers, no financial jargon. Code supports learning, not the focus.\nCaching: freeze: auto caches results; run quarto render chapter.qmd after code changes.\nStyling: Edit custom.scss for theme tweaks (primary color: green).\nEnvironment: Requires R 4.5+, Python 3.9+, and packages from fmfinr/fmfinpy."
+  },
+  {
+    "objectID": "savings_strategies.html",
+    "href": "savings_strategies.html",
+    "title": "Savings Strategies",
+    "section": "",
+    "text": "Pay yourself first: automate savings before anything else hits the checking account\nSavings rate: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns\nBenchmarks: &lt;10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence\nSinking funds: pre-save for known future expenses (car insurance, vacation, gifts) so they don’t hit as surprises\nTarget: save as much as you can sustain; a consistent 15% beats a sporadic 30%"
+  },
+  {
+    "objectID": "savings_strategies.html#book-topics",
+    "href": "savings_strategies.html#book-topics",
+    "title": "Savings Strategies",
+    "section": "",
+    "text": "Pay yourself first: automate savings before anything else hits the checking account\nSavings rate: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns\nBenchmarks: &lt;10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence\nSinking funds: pre-save for known future expenses (car insurance, vacation, gifts) so they don’t hit as surprises\nTarget: save as much as you can sustain; a consistent 15% beats a sporadic 30%"
+  },
+  {
+    "objectID": "savings_strategies.html#savings-rate",
+    "href": "savings_strategies.html#savings-rate",
+    "title": "Savings Strategies",
+    "section": "2 Savings Rate",
+    "text": "2 Savings Rate\nThe savings rate tells you how much of your income you’re keeping, expressed as a percentage.\nFormula: Savings Rate = (Income − Spending) ÷ Income × 100\n\n\n\n\n\nAnnual dollars saved at four savings-rate tiers on a $60,000 income\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nsavings_rate &lt;- function(income, spending) {\n  ((income - spending) / income) * 100\n}\n\nsavings_rate(income = 5000, spending = 3500)\n#&gt; [1] 30\n\n\n\n\n\n\nshow/hide\ndef savings_rate(income, spending):\n    return ((income - spending) / income) * 100\n\nsavings_rate(income=5000, spending=3500)\n#&gt; 30.0\n\n\n\n\nWith income in A2 and spending in B2:\n=((A2-B2)/A2)*100"
+  },
+  {
+    "objectID": "income.html",
+    "href": "income.html",
+    "title": "Income",
+    "section": "",
+    "text": "Wealth vs. spending: true wealth is the income you didn’t spend, quietly compounding (Housel)\nHuman capital: early in a career, future earning potential is the biggest asset; invest in skills before stocks (Felix)\nSpending and happiness: experiences &gt; possessions; buying time &gt; buying things; lifestyle inflation is the silent killer\nThree anchoring rules: spend on what you love / cut what you don’t (Sethi); gap between ego and income (Housel); keep it simple (Bogle)\nWealth formula: Wealth = Focus + (Stoicism × Time × Diversification) — Focus is additive, the rest is multiplicative (Galloway)\nAs income grows: split every raise — 50% to investing, 50% to lifestyle; avoid inflating spending to match every dollar"
+  },
+  {
+    "objectID": "income.html#book-topics",
+    "href": "income.html#book-topics",
+    "title": "Income",
+    "section": "",
+    "text": "Wealth vs. spending: true wealth is the income you didn’t spend, quietly compounding (Housel)\nHuman capital: early in a career, future earning potential is the biggest asset; invest in skills before stocks (Felix)\nSpending and happiness: experiences &gt; possessions; buying time &gt; buying things; lifestyle inflation is the silent killer\nThree anchoring rules: spend on what you love / cut what you don’t (Sethi); gap between ego and income (Housel); keep it simple (Bogle)\nWealth formula: Wealth = Focus + (Stoicism × Time × Diversification) — Focus is additive, the rest is multiplicative (Galloway)\nAs income grows: split every raise — 50% to investing, 50% to lifestyle; avoid inflating spending to match every dollar"
+  },
+  {
+    "objectID": "income.html#writing-functions",
+    "href": "income.html#writing-functions",
+    "title": "Income",
+    "section": "2 Writing Functions",
+    "text": "2 Writing Functions\nFunctions perform operations: calculate a total, build a table, create a graph. The function’s arguments are the inputs it needs to do its job and the output is what it gives back. For example, sum() takes a list of numbers as input and outputs their total.\nIn R, functions are defined with the function() keyword and assigned to a name. The body goes inside curly braces.\nmy_fun &lt;- function(x) {\n  x * 2\n}\nIn Python, functions are defined with def, followed by a colon and an indented body. An explicit return statement is required; without it the function returns None.\ndef my_fun(x):\n    return x * 2\nBoth languages let you create reusable functions for financial calculations. The key difference is that R automatically returns the last evaluated expression while Python requires return."
+  },
+  {
+    "objectID": "income.html#number-formatting",
+    "href": "income.html#number-formatting",
+    "title": "Income",
+    "section": "3 Number Formatting",
+    "text": "3 Number Formatting\nBefore working through the math, it helps to have two small formatting utilities that handle the $ and % symbols seen throughout the book. They take a plain number and return a reader-friendly string.\n\nRPythonExcel\n\n\nfmt_dollar() adds a dollar sign, comma separators, and rounds to a set number of decimal places.\n\n\nshow/hide\nfmt_dollar &lt;- function(x, digits = 2) {\n  paste0(\"$\", formatC(x, format = \"f\", digits = digits, big.mark = \",\"))\n}\n\n\nfmt_pct() expects a decimal rate (e.g. 0.07 for 7%) and converts it to a percentage string.\n\n\nshow/hide\nfmt_pct &lt;- function(x, digits = 1) {\n  paste0(round(x * 100, digits), \"%\")\n}\n\n\nThis can be used to format percentages as strings with a percent sign.\n\n\nshow/hide\nfmt_dollar(9200)\n#&gt; [1] \"$9,200.00\"\nfmt_dollar(4200.50)\n#&gt; [1] \"$4,200.50\"\nfmt_pct(0.07)\n#&gt; [1] \"7%\"\nfmt_pct(0.456)\n#&gt; [1] \"45.6%\"\n\n\n\n\nfmt_dollar() uses an f-string with , for thousands and .{digits}f for decimal places.\n\n\nshow/hide\ndef fmt_dollar(x, digits=2):\n    return f\"${x:,.{digits}f}\"\n\n\nfmt_pct() takes a decimal rate, multiplies by 100, and formats the result.\n\n\nshow/hide\ndef fmt_pct(x, digits=1):\n    return f\"{x * 100:.{digits}f}%\"\n\n\nUtility functions like fmt_pct() can be re-used in other, more complex functions.\n\n\nshow/hide\nprint(fmt_dollar(9200))\n#&gt; $9,200.00\nprint(fmt_dollar(4200.50))\n#&gt; $4,200.50\nprint(fmt_pct(0.07))\n#&gt; 7.0%\nprint(fmt_pct(0.456))\n#&gt; 45.6%\n\n\n\n\nIn Excel, number formatting is applied through the toolbar. Select the cells to format and choose the appropriate option from the Number Format dropdown.\n\n\n\n\n\n\n\nCommon number formats in Excel\n\n\nThere are two options for money: Currency and Accounting.1\n\n\n\nBoth fmt_dollar() and fmt_pct() follow the same convention: input is always a plain number, output is always a string. They are used throughout the remaining sections to clean up results."
+  },
+  {
+    "objectID": "income.html#fixed-cost-ratio",
+    "href": "income.html#fixed-cost-ratio",
+    "title": "Income",
+    "section": "4 Fixed-Cost Ratio",
+    "text": "4 Fixed-Cost Ratio\nFixed costs (rent, loans, insurance, utilities) should stay under ~60% of take-home pay.\nFormula: Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100\n\n\n\n\n\nTake-home pay divided into fixed costs and flexible spending ($8,000 total)\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfixed_cost_ratio &lt;- function(fixed_costs, take_home) {\n  fixed_costs / take_home\n}\n\n\n\n\nshow/hide\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000)\n#&gt; [1] 0.55\n\n\n\n\n\n\nshow/hide\ndef fixed_cost_ratio(fixed_costs, take_home):\n    return fixed_costs / take_home\n\n\n\n\nshow/hide\nfixed_cost_ratio(fixed_costs=4400, take_home=8000)\n#&gt; 0.55\n\n\n\n\nEnter fixed costs in A2, take-home in B2, then in C2:\n=A2/B2\nFormat C2 as percentage (Home → %). For a percent string:\n=TEXT(A2/B2, \"0.0%\")"
+  },
+  {
+    "objectID": "income.html#using-pipes-in-r",
+    "href": "income.html#using-pipes-in-r",
+    "title": "Income",
+    "section": "5 Using Pipes in R",
+    "text": "5 Using Pipes in R\nThe pipe operator (|&gt;) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out. We previously wrote the fmt_pct() function, so we can ‘pipe’ the output of fixed_cost_ratio() into fmt_pct() to get a formatted percentage string.\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |&gt; fmt_pct()\nRead that as: compute the ratio, then format it as a percentage. The alternative without a pipe nests the calls and reads from the inside out, which is harder to follow.\nfmt_pct(fixed_cost_ratio(fixed_costs = 4400, take_home = 8000))\nWhen two steps always belong together, wrap them in a single function so callers only see one name.\n\nfixed_cost_ratio &lt;- function(fixed_costs, take_home) {\n  ratio &lt;- fixed_costs / take_home\n    fmt_pct(ratio)\n}\n\n\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000)\n#&gt; [1] \"55%\"\n\nThis would also work:\n\nfixed_cost_ratio &lt;- function(fixed_costs, take_home) {\n  fmt_pct(fixed_costs / take_home)\n}\n\n\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000)\n#&gt; [1] \"55%\"\n\nPython has no native pipe operator. The equivalent is returning the result from fixed_cost_ratio() and passing this value to fmt_pct():\n\ndef fixed_cost_ratio(fixed_costs, take_home):\n    ratio = fixed_costs / take_home\n    return fmt_pct(ratio)\n\n\nfixed_cost_ratio(fixed_costs=4400, take_home=8000)\n#&gt; '55.0%'\n\nPython’s approach emphasizes explicit intermediate steps. Store the result of fixed_cost_ratio() in a variable (ratio), then pass it to fmt_pct(). This reads top-to-bottom and makes debugging easier since you can inspect intermediate values.\nBoth languages can call utility functions from within other functions; the key difference is that R’s pipe operator (|&gt;) allows chaining without intermediate variables, while Python requires them or nested calls.\nRead more about the pipe operator in R vs. Python."
+  },
+  {
+    "objectID": "income.html#split-raise-strategy",
+    "href": "income.html#split-raise-strategy",
+    "title": "Income",
+    "section": "6 Split Raise Strategy",
+    "text": "6 Split Raise Strategy\nSplit every raise: invest half, spend half. The future value of contributions formula shows how powerful this habit is.\nFormula: FV = PMT × [((1 + r)^n − 1) ÷ r]\n\n\n\n\n\n$200/month invested at 7% — value at each 5-year checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\nraise_invested_value &lt;- function(monthly_raise, invest_share, rate, years) {\n  contribution &lt;- monthly_raise * invest_share\n  monthly_rate &lt;- rate / 12\n  periods      &lt;- years * 12\n  (contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)) |&gt;\n    fmt_dollar()\n}\n\nHalf of a $400/month raise, invested for 25 years at 7%:\n\nraise_invested_value(monthly_raise = 400, invest_share = 0.5,\n                     rate = 0.07, years = 25)\n#&gt; [1] \"$162,014.34\"\n\n\n\n\n\nshow/hide\ndef raise_invested_value(monthly_raise, invest_share, rate, years):\n    contribution = monthly_raise * invest_share\n    monthly_rate = rate / 12\n    periods = years * 12\n    fv = contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)\n    return fmt_dollar(fv)\n\n\nHalf of a $400/month raise, invested for 25 years at 7%:\n\nraise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25)\n#&gt; '$162,014.34'\n\n\n\nUse the built-in FV() function: FV(rate, nper, pmt)\n\nrate: monthly return = 7%/12\nnper: number of months = 25*12\npmt: monthly contribution as a negative = -200\n\n=FV(7%/12, 25*12, -200)"
+  },
+  {
+    "objectID": "income.html#footnotes",
+    "href": "income.html#footnotes",
+    "title": "Income",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nRead more about the differences between Currency and Accounting formats in Excel.↩︎"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "DEV (fm-finance)",
+    "section": "",
+    "text": "This is my development scratch space for code and math examples in the fm-finance book.\nUse the navbar to navigate to a chapter."
+  },
+  {
+    "objectID": "index.html#getting-set-up",
+    "href": "index.html#getting-set-up",
+    "title": "DEV (fm-finance)",
+    "section": "1 Getting set up",
+    "text": "1 Getting set up\nThe examples in this book are written in two free programming languages: R and Python. You don’t need to know either one yet—this page walks you through installing both, no matter which computer you use.\n\n\n\n\n\n\nYou only have to do this once. Set aside about 20–30 minutes, and feel free to take it one language at a time.\n\n\n\nA few words you’ll see along the way:\n\nInstall: download a program and add it to your computer, the same way you’d add any app.\nConsole: a window where you type a command and the computer types back. We use it only to check that things are working.\nIDE (Integrated Development Environment): a friendly workspace for writing and running code. Think of it as a word processor built for programming."
+  },
+  {
+    "objectID": "index.html#installing-r",
+    "href": "index.html#installing-r",
+    "title": "DEV (fm-finance)",
+    "section": "2 Installing R",
+    "text": "2 Installing R\nR is the language I’m most familiar with, so we will install it first. We’ll install two things: R itself (the engine) and RStudio (the workspace where you’ll actually write code).\n\n2.1 Step 1 — Install R\nPick the tab for your computer below.\n\nWindowsmacOSLinux\n\n\n\nGo to the R download page: cran.r-project.org/bin/windows/base.\nClick the large Download R for Windows link at the top.\nOpen the file you just downloaded (it’ll be in your Downloads folder).\nClick Next through the installer, accepting the suggested options.\n\n\n\n\nGo to the R download page: cran.r-project.org/bin/macosx.\nDownload the file that matches your Mac:\n\nApple Silicon (M1, M2, M3, or newer) — most Macs sold since late 2020.\nIntel — older Macs.\nNot sure? Click the Apple menu () in the top-left corner → About This Mac. If it says “Apple M…”, choose Apple Silicon.\n\nOpen the downloaded .pkg file and click Continue through the installer.\n\n\n\nMost Linux systems install R through their built-in software manager. Open a terminal and run the command for your system:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install r-base\nOn Fedora:\nsudo dnf install R\n\n\n\n\n\n2.2 Step 2 — Install RStudio\nRStudio is the same on every operating system.\n\nGo to posit.co/download/rstudio-desktop.\nScroll to Step 2 on that page and click the download button for your computer (the website detects it for you).\nOpen the downloaded file and follow the prompts to install.\n\n\n\n\n\n\n\nInstall R before RStudio. RStudio is just the workspace—it needs R already on your computer to do anything.\n\n\n\n\n\n2.3 Step 3 — Check that R works\nOpen RStudio. In the Console (the panel on the left), type the line below and press Enter:\n2 + 2\nIf you see [1] 4, R is working. 🎉"
+  },
+  {
+    "objectID": "index.html#installing-python",
+    "href": "index.html#installing-python",
+    "title": "DEV (fm-finance)",
+    "section": "3 Installing Python",
+    "text": "3 Installing Python\nPython is the second language we’ll use. We’ll install Python itself and a free workspace called Positron.\n\n3.1 Step 1 — Install Python\n\nWindowsmacOSLinux\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded file.\nImportant: on the first installer screen, check the box that says Add Python to PATH before clicking Install Now. This lets your computer find Python later.\n\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded .pkg file and click Continue through the installer, accepting the suggested options.\n\n\n\nMost Linux systems already include Python. Open a terminal and run the command for your system to make sure it’s installed:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install python3 python3-pip\nOn Fedora:\nsudo dnf install python3 python3-pip\n\n\n\n\n\n3.2 Step 2 — Install Positron\nPositron is a free workspace for writing Python (and R) code, made by the same team as RStudio.\n\nGo to positron.posit.co/download.\nDownload the version for your computer.\nOpen the downloaded file and follow the prompts to install.\n\n\n\n3.3 Step 3 — Check that Python works\nOpen a console and type the line below, then press Enter:\n\nWindowsmacOS / Linux\n\n\nOpen the Start menu, type cmd, and open Command Prompt. Then run:\npython --version\n\n\nOpen the Terminal app and run:\npython3 --version\n\n\n\nIf you see something like Python 3.12.0, Python is working. 🎉"
+  },
+  {
+    "objectID": "index.html#where-to-go-next",
+    "href": "index.html#where-to-go-next",
+    "title": "DEV (fm-finance)",
+    "section": "4 Where to go next",
+    "text": "4 Where to go next\nYou’re all set! Head to the Income chapter using the navbar to start running the examples.\n\n\n\n\n\n\nTipStuck?\n\n\n\nIf an install didn’t work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above."
+  },
+  {
+    "objectID": "tracking_spending.html",
+    "href": "tracking_spending.html",
+    "title": "Tracking Spending",
+    "section": "",
+    "text": "Capture methods: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month\nBank statement exports: Date, Description, Amount columns; you add the Category\nCategorization: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running\nMonthly review: pull statements → categorize → compare to budget → pick one change; repeat 12× per year\nSubscriptions: average household spends $200–$300/month without realizing it; audit every 90 days"
+  },
+  {
+    "objectID": "tracking_spending.html#book-topics",
+    "href": "tracking_spending.html#book-topics",
+    "title": "Tracking Spending",
+    "section": "",
+    "text": "Capture methods: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month\nBank statement exports: Date, Description, Amount columns; you add the Category\nCategorization: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running\nMonthly review: pull statements → categorize → compare to budget → pick one change; repeat 12× per year\nSubscriptions: average household spends $200–$300/month without realizing it; audit every 90 days"
+  },
+  {
+    "objectID": "tracking_spending.html#bank-statement-data",
+    "href": "tracking_spending.html#bank-statement-data",
+    "title": "Tracking Spending",
+    "section": "2 Bank Statement Data",
+    "text": "2 Bank Statement Data\nA minimal bank export has three columns: Date, Description, and Amount. The code blocks below show how to create an example bank statement file in R, Python, and Excel.\n\nRPythonExcel\n\n\n\n\nshow/hide\nr_bank_statement &lt;- tibble::tibble(\n  Date = as.Date(c(\n    \"2026-01-02\", \"2026-01-02\", \"2026-01-03\", \"2026-01-03\",\n    \"2026-01-04\", \"2026-01-04\", \"2026-01-05\", \"2026-01-06\",\n    \"2026-01-07\", \"2026-01-08\", \"2026-01-09\", \"2026-01-10\",\n    \"2026-01-11\", \"2026-01-12\", \"2026-01-13\", \"2026-01-14\",\n    \"2026-01-15\"\n  )),\n  Description = c(\n    \"Employer Payroll\", \"Rent\", \"Comcast Internet\", \"Trader Joe's\",\n    \"Shell Gas\", \"Netflix\", \"Starbucks\", \"PG&E Electric\",\n    \"AT&T Wireless\", \"Spotify\", \"Whole Foods\", \"Chipotle\",\n    \"Geico Auto Insurance\", \"NYTimes Digital\", \"Shell Gas\", \"Costco\",\n    \"24 Hour Fitness\"\n  ),\n  Amount = c(\n     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,\n    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,\n     -42.80, -156.78, -39.99\n  )\n)\n\nr_bank_statement |&gt; knitr::kable()\n\n\n\n\n\nDate\nDescription\nAmount\n\n\n\n\n2026-01-02\nEmployer Payroll\n2400.00\n\n\n2026-01-02\nRent\n-1500.00\n\n\n2026-01-03\nComcast Internet\n-75.00\n\n\n2026-01-03\nTrader Joe’s\n-82.45\n\n\n2026-01-04\nShell Gas\n-45.20\n\n\n2026-01-04\nNetflix\n-15.99\n\n\n2026-01-05\nStarbucks\n-6.75\n\n\n2026-01-06\nPG&E Electric\n-142.30\n\n\n2026-01-07\nAT&T Wireless\n-85.00\n\n\n2026-01-08\nSpotify\n-10.99\n\n\n2026-01-09\nWhole Foods\n-64.12\n\n\n2026-01-10\nChipotle\n-14.50\n\n\n2026-01-11\nGeico Auto Insurance\n-125.00\n\n\n2026-01-12\nNYTimes Digital\n-17.00\n\n\n2026-01-13\nShell Gas\n-42.80\n\n\n2026-01-14\nCostco\n-156.78\n\n\n2026-01-15\n24 Hour Fitness\n-39.99\n\n\n\n\n\nWe can view the bank statement in R using knitr::kable().\n\n\nIn Python, we’ll use polars to create a DataFrame and display the bank statement. This is similar to the tibble we created above.\n\n\nshow/hide\nimport polars as pl\n\npy_bank_statement = pl.DataFrame({\n    \"Date\": [\n        \"2026-01-02\", \"2026-01-02\", \"2026-01-03\", \"2026-01-03\",\n        \"2026-01-04\", \"2026-01-04\", \"2026-01-05\", \"2026-01-06\",\n        \"2026-01-07\", \"2026-01-08\", \"2026-01-09\", \"2026-01-10\",\n        \"2026-01-11\", \"2026-01-12\", \"2026-01-13\", \"2026-01-14\",\n        \"2026-01-15\"\n    ],\n    \"Description\": [\n        \"Employer Payroll\", \"Rent\", \"Comcast Internet\", \"Trader Joe's\",\n        \"Shell Gas\", \"Netflix\", \"Starbucks\", \"PG&E Electric\",\n        \"AT&T Wireless\", \"Spotify\", \"Whole Foods\", \"Chipotle\",\n        \"Geico Auto Insurance\", \"NYTimes Digital\", \"Shell Gas\", \"Costco\",\n        \"24 Hour Fitness\"\n    ],\n    \"Amount\": [\n         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,\n        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,\n         -42.80, -156.78, -39.99\n    ]\n}).with_columns(pl.col(\"Date\").str.to_date())\n\npy_bank_statement\n\n\n\nshape: (17, 3)\n\n\n\nDate\nDescription\nAmount\n\n\ndate\nstr\nf64\n\n\n\n\n2026-01-02\n\"Employer Payroll\"\n2400.0\n\n\n2026-01-02\n\"Rent\"\n-1500.0\n\n\n2026-01-03\n\"Comcast Internet\"\n-75.0\n\n\n2026-01-03\n\"Trader Joe's\"\n-82.45\n\n\n2026-01-04\n\"Shell Gas\"\n-45.2\n\n\n2026-01-04\n\"Netflix\"\n-15.99\n\n\n2026-01-05\n\"Starbucks\"\n-6.75\n\n\n2026-01-06\n\"PG&E Electric\"\n-142.3\n\n\n2026-01-07\n\"AT&T Wireless\"\n-85.0\n\n\n2026-01-08\n\"Spotify\"\n-10.99\n\n\n2026-01-09\n\"Whole Foods\"\n-64.12\n\n\n2026-01-10\n\"Chipotle\"\n-14.5\n\n\n2026-01-11\n\"Geico Auto Insurance\"\n-125.0\n\n\n2026-01-12\n\"NYTimes Digital\"\n-17.0\n\n\n2026-01-13\n\"Shell Gas\"\n-42.8\n\n\n2026-01-14\n\"Costco\"\n-156.78\n\n\n2026-01-15\n\"24 Hour Fitness\"\n-39.99\n\n\n\n\n\n\n\n\nWe can simply copy and paste the data into Excel; Date in A, Description in B, Amount in C.\n\n\n\n\n\n\n\nbank_statement in Excel"
+  },
+  {
+    "objectID": "tracking_spending.html#categorizing-transactions",
+    "href": "tracking_spending.html#categorizing-transactions",
+    "title": "Tracking Spending",
+    "section": "3 Categorizing Transactions",
+    "text": "3 Categorizing Transactions\nMap description keywords to budget buckets in a single pass.\n\nRPythonExcel\n\n\nIn R, we can use dplyr to do the following:\n\ndplyr::case_when() evaluates each pattern in order and assigns the matching category\n\ngrepl() does the keyword test against Description\n\nThe final TRUE arm catches everything that didn’t match and labels it \"Other\"\n\n\n\nshow/hide\nr_bank_statement &lt;- r_bank_statement |&gt;\n  dplyr::mutate(\n    Category = dplyr::case_when(\n      grepl(\"Payroll\", Description) ~ \"Income\",\n      grepl(\"Rent\", Description) ~ \"Housing\",\n      grepl(\"Comcast|PG&E|AT&T\", Description) ~ \"Utilities\",\n      grepl(\"Trader Joe|Whole Foods|Costco\", Description) ~ \"Groceries\",\n      grepl(\"Shell\", Description) ~ \"Transportation\",\n      grepl(\"Starbucks|Chipotle\", Description) ~ \"Dining\",\n      grepl(\"Netflix|Spotify|NYTimes|24 Hour Fitness\", Description) ~ \"Subscriptions\",\n      grepl(\"Geico\", Description) ~ \"Insurance\",\n      TRUE ~ \"Other\"\n    )\n  )\n\nr_bank_statement |&gt; \n  knitr::kable()\n\n\n\n\n\nDate\nDescription\nAmount\nCategory\n\n\n\n\n2026-01-02\nEmployer Payroll\n2400.00\nIncome\n\n\n2026-01-02\nRent\n-1500.00\nHousing\n\n\n2026-01-03\nComcast Internet\n-75.00\nUtilities\n\n\n2026-01-03\nTrader Joe’s\n-82.45\nGroceries\n\n\n2026-01-04\nShell Gas\n-45.20\nTransportation\n\n\n2026-01-04\nNetflix\n-15.99\nSubscriptions\n\n\n2026-01-05\nStarbucks\n-6.75\nDining\n\n\n2026-01-06\nPG&E Electric\n-142.30\nUtilities\n\n\n2026-01-07\nAT&T Wireless\n-85.00\nUtilities\n\n\n2026-01-08\nSpotify\n-10.99\nSubscriptions\n\n\n2026-01-09\nWhole Foods\n-64.12\nGroceries\n\n\n2026-01-10\nChipotle\n-14.50\nDining\n\n\n2026-01-11\nGeico Auto Insurance\n-125.00\nInsurance\n\n\n2026-01-12\nNYTimes Digital\n-17.00\nSubscriptions\n\n\n2026-01-13\nShell Gas\n-42.80\nTransportation\n\n\n2026-01-14\nCostco\n-156.78\nGroceries\n\n\n2026-01-15\n24 Hour Fitness\n-39.99\nSubscriptions\n\n\n\n\n\n\n\npolars is similar to dplyr, but:\n\nwith_columns() is the mutate() analog\n\na chain of pl.when().then() calls is the case_when() analog\n\npl.col(\"Description\").str.contains(...) does the keyword test\n\nregex by default and the | between merchants is alternation\n\n\n\n\nshow/hide\npy_bank_statement = py_bank_statement.with_columns(\n    Category = pl.when(pl.col(\"Description\").str.contains(\"Payroll\")).then(pl.lit(\"Income\"))\n        .when(pl.col(\"Description\").str.contains(\"Rent\")).then(pl.lit(\"Housing\"))\n        .when(pl.col(\"Description\").str.contains(\"Comcast|PG&E|AT&T\")).then(pl.lit(\"Utilities\"))\n        .when(pl.col(\"Description\").str.contains(\"Trader Joe|Whole Foods|Costco\")).then(pl.lit(\"Groceries\"))\n        .when(pl.col(\"Description\").str.contains(\"Shell\")).then(pl.lit(\"Transportation\"))\n        .when(pl.col(\"Description\").str.contains(\"Starbucks|Chipotle\")).then(pl.lit(\"Dining\"))\n        .when(pl.col(\"Description\").str.contains(\"Netflix|Spotify|NYTimes|24 Hour Fitness\")).then(pl.lit(\"Subscriptions\"))\n        .when(pl.col(\"Description\").str.contains(\"Geico\")).then(pl.lit(\"Insurance\"))\n        .otherwise(pl.lit(\"Other\"))\n)\n\npy_bank_statement\n\n\n\nshape: (17, 4)\n\n\n\nDate\nDescription\nAmount\nCategory\n\n\ndate\nstr\nf64\nstr\n\n\n\n\n2026-01-02\n\"Employer Payroll\"\n2400.0\n\"Income\"\n\n\n2026-01-02\n\"Rent\"\n-1500.0\n\"Housing\"\n\n\n2026-01-03\n\"Comcast Internet\"\n-75.0\n\"Utilities\"\n\n\n2026-01-03\n\"Trader Joe's\"\n-82.45\n\"Groceries\"\n\n\n2026-01-04\n\"Shell Gas\"\n-45.2\n\"Transportation\"\n\n\n2026-01-04\n\"Netflix\"\n-15.99\n\"Subscriptions\"\n\n\n2026-01-05\n\"Starbucks\"\n-6.75\n\"Dining\"\n\n\n2026-01-06\n\"PG&E Electric\"\n-142.3\n\"Utilities\"\n\n\n2026-01-07\n\"AT&T Wireless\"\n-85.0\n\"Utilities\"\n\n\n2026-01-08\n\"Spotify\"\n-10.99\n\"Subscriptions\"\n\n\n2026-01-09\n\"Whole Foods\"\n-64.12\n\"Groceries\"\n\n\n2026-01-10\n\"Chipotle\"\n-14.5\n\"Dining\"\n\n\n2026-01-11\n\"Geico Auto Insurance\"\n-125.0\n\"Insurance\"\n\n\n2026-01-12\n\"NYTimes Digital\"\n-17.0\n\"Subscriptions\"\n\n\n2026-01-13\n\"Shell Gas\"\n-42.8\n\"Transportation\"\n\n\n2026-01-14\n\"Costco\"\n-156.78\n\"Groceries\"\n\n\n2026-01-15\n\"24 Hour Fitness\"\n-39.99\n\"Subscriptions\"\n\n\n\n\n\n\n\n\nIn Excel, the IFS() function is the direct analog of case_when()/when().then().\n\nIFS() takes a list of conditions and corresponding values, evaluated top to bottom, with the first match winning\nSEARCH() returns the position of a keyword in a cell (or #VALUE! if not found)\nWrapping it in ISNUMBER() turns that into a true/false test\n\nFor categories with several rows/transactions, wrap the tests in OR()\n\nThe final TRUE, \"Other\" arm is the equivalent of dplyr’s TRUE ~ \"Other\" and polars’s .otherwise(...); it catches anything that didn’t match an earlier pattern.\n\n=IFS(\n  ISNUMBER(SEARCH(\"Payroll\",B2)), \"Income\",\n  ISNUMBER(SEARCH(\"Rent\",B2)), \"Housing\",\n  OR(ISNUMBER(SEARCH(\"Comcast\",B2)),ISNUMBER(SEARCH(\"PG&E\",B2)),ISNUMBER(SEARCH(\"AT&T\",B2))), \"Utilities\",\n  OR(ISNUMBER(SEARCH(\"Trader Joe\",B2)),ISNUMBER(SEARCH(\"Whole Foods\",B2)),ISNUMBER(SEARCH(\"Costco\",B2))), \"Groceries\",\n  ISNUMBER(SEARCH(\"Shell\",B2)), \"Transportation\",\n  OR(ISNUMBER(SEARCH(\"Starbucks\",B2)),ISNUMBER(SEARCH(\"Chipotle\",B2))), \"Dining\",\n  OR(ISNUMBER(SEARCH(\"Netflix\",B2)),ISNUMBER(SEARCH(\"Spotify\",B2)),ISNUMBER(SEARCH(\"NYTimes\",B2)),ISNUMBER(SEARCH(\"24 Hour Fitness\",B2))), \"Subscriptions\",\n  ISNUMBER(SEARCH(\"Geico\",B2)), \"Insurance\",\n  TRUE, \"Other\"\n)\nIf the statement is laid out with Date in column A, Description in column B, and Amount in column C, type Category in cell D1, then paste the formula below into D2:\n\n\n\n\n\n\n\nIFS() in Excel\n\n\nThen copy D2 down through every transaction row (select D2, double-click the small square in the bottom-right corner, or use Ctrl+D after selecting D2:D{last_row}).\n\nTo add a new merchant when one shows up: edit the formula in D2, then re-fill down. Keep the new merchant near the bottom of its category group so the existing patterns still resolve first.\n\nIn Excel, we can also use the Format as Table feature to make the data easier to read.1 You can select a color/style for your table and it will automatically update the data.\n\n\n\n\n\n\n\nFormat as table"
+  },
+  {
+    "objectID": "tracking_spending.html#subscription-opportunity-cost",
+    "href": "tracking_spending.html#subscription-opportunity-cost",
+    "title": "Tracking Spending",
+    "section": "4 Subscription Opportunity Cost",
+    "text": "4 Subscription Opportunity Cost\nA small recurring subscription has a large long-run cost when you account for what the money could have earned.\nFormula: Monthly Cost × 12 × ((1 + r)^n − 1) ÷ r\n\n\n\n\n\nFuture value of a $20/month subscription’s annual cost if invested at 7%\n\n\n\n\n\nRPythonExcel\n\n\nNote the rate is given as a decimal and the order of operations.\n\n\nshow/hide\nsubscription_opportunity_cost &lt;- function(monthly_cost, years, rate = 0.07) {\n  annual_cost &lt;- monthly_cost * 12\n  op_cost &lt;- (annual_cost * ((1 + rate)^years - 1) / rate)\n  fmt_dollar(op_cost)\n}\n\n\n\n\nshow/hide\nsubscription_opportunity_cost(monthly_cost = 20, years = 30)\n#&gt; [1] \"$22,670.59\"\n\n\n\n\nNote the exponential is indicated with ** (not ^). In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.\n\n\nshow/hide\ndef subscription_opportunity_cost(monthly_cost, years, rate=0.07):\n    annual_cost = monthly_cost * 12\n    op_cost = annual_cost * ((1 + rate) ** years - 1) / rate\n    return fmt_dollar(op_cost) # format the result as a dollar amount\n\n\n\n\nshow/hide\nsubscription_opportunity_cost(monthly_cost=20, years=30)\n#&gt; '$22,670.59'\n\n\n\n\nIn Excel, create a new sheet with the inputs:\n\n\n\n\n\n\n\n\n\nMonthly cost\nNumber of Years\nAnnual Return (as decimal)\nOpportunity Cost\n\n\n\n\n$20\n30\n0.07\nFormula below\n\n\n\nThe formula (given this setup) is below:\n=(A2*12)*((1+C2)^B2-1)/C2\nA2*12 converts the monthly cost to annual; the rest is the future-value-of-an-annuity formula using the rate in C2 and the horizon in B2. The formula (given this setup) is below:\n\n\n\n\n\n\n\nOpportunity Cost in Excel\n\n\nNote that if we had the data arranged differently, we’d have to adjust the formula accordingly:\n\n\n\n\n\n\n\nOpportunity Cost 2 in Excel\n\n\nBoth will work, and for straightforward formulas like this, you can pick whichever one you prefer. Later, we’ll discuss how to arrange data in excel so it can be easily analyzed.\n\n\n\n\n\n\n\nOpportunity Cost Layouts in Excel"
+  },
+  {
+    "objectID": "tracking_spending.html#footnotes",
+    "href": "tracking_spending.html#footnotes",
+    "title": "Tracking Spending",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nRead the Overview of Excel tables on the Microsoft documentation.↩︎"
+  },
+  {
+    "objectID": "major_purchases.html",
+    "href": "major_purchases.html",
+    "title": "Major Purchases",
+    "section": "",
+    "text": "Renting vs. buying: “renting is throwing money away” is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix’s 5% Rule)\n5% Rule components: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent\nWhen to buy: plan to stay 7+ years; stable income; won’t be “house poor” (housing &lt;28–30% of gross income)\nMortgage amortization: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you’ve barely touched principal\nCars: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old"
+  },
+  {
+    "objectID": "major_purchases.html#book-topics",
+    "href": "major_purchases.html#book-topics",
+    "title": "Major Purchases",
+    "section": "",
+    "text": "Renting vs. buying: “renting is throwing money away” is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix’s 5% Rule)\n5% Rule components: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent\nWhen to buy: plan to stay 7+ years; stable income; won’t be “house poor” (housing &lt;28–30% of gross income)\nMortgage amortization: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you’ve barely touched principal\nCars: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old"
+  },
+  {
+    "objectID": "major_purchases.html#rent-vs.-buy-threshold-felixs-5-rule",
+    "href": "major_purchases.html#rent-vs.-buy-threshold-felixs-5-rule",
+    "title": "Major Purchases",
+    "section": "2 Rent vs. Buy Threshold (Felix’s 5% Rule)",
+    "text": "2 Rent vs. Buy Threshold (Felix’s 5% Rule)\nMultiply home value by 5%, divide by 12. If you can rent an equivalent home for less, renting and investing the difference is likely the better financial choice.\nFormula: Monthly ownership cost ≈ (Home Value × 0.05) ÷ 12\n\n\n\n\n\nThe three components of the 5% rule on a $500,000 home\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nrent_buy_threshold &lt;- function(home_value, unrecoverable_rate = 0.05) {\n  (home_value * unrecoverable_rate) / 12\n}\n\nrent_buy_threshold(home_value = 600000)\n#&gt; [1] 2500\n\n\n\n\n\n\nshow/hide\ndef rent_buy_threshold(home_value, unrecoverable_rate=0.05):\n    return (home_value * unrecoverable_rate) / 12\n\nrent_buy_threshold(home_value=600000)\n#&gt; 2500.0\n\n\n\n\nWith home value in A2:\n=(A2*0.05)/12"
+  },
+  {
+    "objectID": "major_purchases.html#monthly-mortgage-payment",
+    "href": "major_purchases.html#monthly-mortgage-payment",
+    "title": "Major Purchases",
+    "section": "3 Monthly Mortgage Payment",
+    "text": "3 Monthly Mortgage Payment\nThe standard amortization formula; shorter terms mean higher payments but much less total interest.\nFormula: M = P × [r(1 + r)^n] ÷ [(1 + r)^n − 1]\n\n\n\n\n\nMonthly payment on a $400,000 loan at 6.5% across three terms\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nmortgage_payment &lt;- function(principal, annual_rate, years) {\n  r &lt;- annual_rate / 12\n  n &lt;- years * 12\n  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)\n}\n\n# $480,000 loan at 6% over 30 years\nmortgage_payment(principal = 480000, annual_rate = 0.06, years = 30)\n#&gt; [1] 2877.843\n\n\n\n\n\n\nshow/hide\ndef mortgage_payment(principal, annual_rate, years):\n    r = annual_rate / 12\n    n = years * 12\n    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)\n\nmortgage_payment(principal=480000, annual_rate=0.06, years=30)\n#&gt; 2877.8425207332334\n\n\n\n\nUse the built-in PMT() function: PMT(rate, nper, pv)\n\nrate: monthly = 6%/12\nnper: months = 30*12\npv: loan amount as negative = -480000\n\n=PMT(6%/12, 30*12, -480000)"
+  },
+  {
+    "objectID": "major_purchases.html#first-month-interest-vs.-principal-split",
+    "href": "major_purchases.html#first-month-interest-vs.-principal-split",
+    "title": "Major Purchases",
+    "section": "4 First-Month Interest vs. Principal Split",
+    "text": "4 First-Month Interest vs. Principal Split\nEarly mortgage payments are mostly interest; only the remainder reduces the balance.\nFormulas:\n\nFirst-month interest = Principal × (annual rate ÷ 12)\nFirst-month principal = Monthly Payment − First-month interest\n\n\n#&gt; Warning: Removed 2 rows containing missing values or values outside\n#&gt; the scale range (`geom_col()`).\n#&gt; Warning: Removed 1 row containing missing values or values outside\n#&gt; the scale range (`geom_text()`).\n\n\n\n\nInterest vs. principal split at three points on a $400,000 / 6.5% / 30-yr mortgage\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfirst_payment_split &lt;- function(principal, annual_rate, years) {\n  payment  &lt;- mortgage_payment(principal, annual_rate, years)\n  interest &lt;- principal * (annual_rate / 12)\n  data.frame(\n    payment      = round(payment, 2),\n    interest     = round(interest, 2),\n    principal    = round(payment - interest, 2),\n    pct_interest = round((interest / payment) * 100, 1)\n  )\n}\n\nfirst_payment_split(principal = 480000, annual_rate = 0.06, years = 30)\n#&gt; # A tibble: 1 × 4\n#&gt;   payment interest principal pct_interest\n#&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;\n#&gt; 1   2878.     2400      478.         83.4\n\n\n\n\n\n\nshow/hide\ndef first_payment_split(principal, annual_rate, years):\n    payment = mortgage_payment(principal, annual_rate, years)\n    interest = principal * (annual_rate / 12)\n    return {\n        \"payment\":      round(payment, 2),\n        \"interest\":     round(interest, 2),\n        \"principal\":    round(payment - interest, 2),\n        \"pct_interest\": round((interest / payment) * 100, 1),\n    }\n\nfirst_payment_split(principal=480000, annual_rate=0.06, years=30)\n#&gt; {'payment': 2877.84, 'interest': 2400.0, 'principal': 477.84, 'pct_interest': 83.4}\n\n\n\n\nWith loan amount in A2, annual rate in B2, and monthly payment (from PMT()) in C2:\nFirst-month interest:\n=A2*(B2/12)\nFirst-month principal:\n=C2-A2*(B2/12)"
+  },
+  {
+    "objectID": "investing_basics.html",
+    "href": "investing_basics.html",
+    "title": "Investing Basics",
+    "section": "",
+    "text": "Compounding: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %\nRisk vs. return: higher expected return = higher volatility; choose a level you can stick with through downturns\nDiversification: don’t bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)\nReal vs. nominal return: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms"
+  },
+  {
+    "objectID": "investing_basics.html#book-topics",
+    "href": "investing_basics.html#book-topics",
+    "title": "Investing Basics",
+    "section": "",
+    "text": "Compounding: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %\nRisk vs. return: higher expected return = higher volatility; choose a level you can stick with through downturns\nDiversification: don’t bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)\nReal vs. nominal return: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms"
+  },
+  {
+    "objectID": "investing_basics.html#future-value-compounding",
+    "href": "investing_basics.html#future-value-compounding",
+    "title": "Investing Basics",
+    "section": "2 Future Value (Compounding)",
+    "text": "2 Future Value (Compounding)\nA single lump sum growing at a constant rate.\nFormula: FV = PV × (1 + r)^n\n\n\n\n\n\n$10,000 growing at 7% — value at each checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfuture_value &lt;- function(present_value, rate, years) {\n  present_value * (1 + rate)^years\n}\n\nrule_of_72 &lt;- function(annual_return_pct) {\n  72 / annual_return_pct\n}\n\nfuture_value(present_value = 10000, rate = 0.07, years = 10)\n#&gt; [1] 19671.51\nrule_of_72(annual_return_pct = 7)\n#&gt; [1] 10.28571\n\n# vectorized across multiple horizons\ndata.frame(\n  years = c(5, 10, 20, 30),\n  value = future_value(10000, 0.07, c(5, 10, 20, 30))\n)\n#&gt; # A tibble: 4 × 2\n#&gt;   years  value\n#&gt;   &lt;dbl&gt;  &lt;dbl&gt;\n#&gt; 1     5 14026.\n#&gt; 2    10 19672.\n#&gt; 3    20 38697.\n#&gt; 4    30 76123.\n\n\n\n\n\n\nshow/hide\nimport numpy as np\n\ndef future_value(present_value, rate, years):\n    return present_value * (1 + rate) ** years\n\ndef rule_of_72(annual_return_pct):\n    return 72 / annual_return_pct\n\nprint(future_value(present_value=10000, rate=0.07, years=10))\n#&gt; 19671.513572895663\nprint(rule_of_72(annual_return_pct=7))\n#&gt; 10.285714285714286\n\nhorizons = np.array([5, 10, 20, 30])\nfuture_value(present_value=10000, rate=0.07, years=horizons)\n#&gt; array([14025.517307  , 19671.5135729 , 38696.84462486, 76122.55042662])\n\n\n\n\nWith present value in A2, rate in B2, years in C2:\n=A2*(1+B2)^C2\nRule of 72 (rate as a percent in A2):\n=72/A2"
+  },
+  {
+    "objectID": "investing_basics.html#future-value-of-regular-contributions",
+    "href": "investing_basics.html#future-value-of-regular-contributions",
+    "title": "Investing Basics",
+    "section": "3 Future Value of Regular Contributions",
+    "text": "3 Future Value of Regular Contributions\nMonthly investing builds wealth two ways: the money contributed and the returns on all prior contributions.\nFormula: FV = PMT × [((1 + r)^n − 1) ÷ r]\n\n\n\n\n\n$500/month contributions at 7% — contributed vs. gains\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfuture_value_series &lt;- function(contribution, rate, periods) {\n  contribution * (((1 + rate)^periods - 1) / rate)\n}\n\n# $500/month for 30 years at 7% annual (monthly rate = 0.07/12)\nfuture_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)\n#&gt; [1] 609985.5\n\n\n\n\n\n\nshow/hide\ndef future_value_series(contribution, rate, periods):\n    return contribution * (((1 + rate) ** periods - 1) / rate)\n\nfuture_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12)\n#&gt; 609985.4978879723\n\n\n\n\nUse the built-in FV() function: FV(rate, nper, pmt)\n\nrate: monthly = 7%/12\nnper: months = 30*12\npmt: monthly contribution as negative = -500\n\n=FV(7%/12, 30*12, -500)"
+  },
+  {
+    "objectID": "investing_basics.html#real-inflation-adjusted-return",
+    "href": "investing_basics.html#real-inflation-adjusted-return",
+    "title": "Investing Basics",
+    "section": "4 Real (Inflation-Adjusted) Return",
+    "text": "4 Real (Inflation-Adjusted) Return\nNominal returns overstate purchasing power gains; inflation takes its slice every year.\nFormula: Real Return = (1 + nominal) ÷ (1 + inflation) − 1\n\n\n\n\n\nNominal return, inflation, and real return\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nreal_return &lt;- function(nominal, inflation) {\n  (1 + nominal) / (1 + inflation) - 1\n}\n\nreal_return(nominal = 0.07, inflation = 0.03)\n#&gt; [1] 0.03883495\n\n\n\n\n\n\nshow/hide\ndef real_return(nominal, inflation):\n    return (1 + nominal) / (1 + inflation) - 1\n\nreal_return(nominal=0.07, inflation=0.03)\n#&gt; 0.03883495145631066\n\n\n\n\nWith nominal rate in A2 and inflation in B2:\n=(1+A2)/(1+B2)-1"
   },
   {
     "objectID": "managing_debt.html",
@@ -91,221 +336,46 @@
     "text": "6 Avalanche vs. Snowball Order\nTwo methods for ordering debt payoff; both work, each has trade-offs.\n\nAvalanche: highest APR first — mathematically optimal, saves the most interest\nSnowball: smallest balance first — psychologically motivating, builds momentum\n\n\nRPythonExcel\n\n\n\n\nshow/hide\norder_avalanche &lt;- function(debts) debts[order(-debts$apr), ]\norder_snowball  &lt;- function(debts) debts[order(debts$balance), ]\n\ndebts &lt;- data.frame(\n  name    = c(\"Card A\", \"Card B\", \"Card C\"),\n  balance = c(1000, 5000, 2000),\n  apr     = c(0.18, 0.24, 0.15)\n)\n\norder_avalanche(debts)\n#&gt; # A tibble: 3 × 3\n#&gt;   name   balance   apr\n#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;\n#&gt; 1 Card B    5000  0.24\n#&gt; 2 Card A    1000  0.18\n#&gt; 3 Card C    2000  0.15\norder_snowball(debts)\n#&gt; # A tibble: 3 × 3\n#&gt;   name   balance   apr\n#&gt;   &lt;chr&gt;    &lt;dbl&gt; &lt;dbl&gt;\n#&gt; 1 Card A    1000  0.18\n#&gt; 2 Card C    2000  0.15\n#&gt; 3 Card B    5000  0.24\n\n\n\n\n\n\nshow/hide\ndef order_avalanche(debts):\n    return sorted(debts, key=lambda d: d[\"apr\"], reverse=True)\n\ndef order_snowball(debts):\n    return sorted(debts, key=lambda d: d[\"balance\"])\n\ndebts = [\n    {\"name\": \"Card A\", \"balance\": 1000, \"apr\": 0.18},\n    {\"name\": \"Card B\", \"balance\": 5000, \"apr\": 0.24},\n    {\"name\": \"Card C\", \"balance\": 2000, \"apr\": 0.15},\n]\n\nprint(order_avalanche(debts))\n#&gt; [{'name': 'Card B', 'balance': 5000, 'apr': 0.24}, {'name': 'Card A', 'balance': 1000, 'apr': 0.18}, {'name': 'Card C', 'balance': 2000, 'apr': 0.15}]\nprint(order_snowball(debts))\n#&gt; [{'name': 'Card A', 'balance': 1000, 'apr': 0.18}, {'name': 'Card C', 'balance': 2000, 'apr': 0.15}, {'name': 'Card B', 'balance': 5000, 'apr': 0.24}]\n\n\n\n\nSort the debt table by APR descending for avalanche, or by Balance ascending for snowball — use Data → Sort on the appropriate column."
   },
   {
-    "objectID": "investing_basics.html",
-    "href": "investing_basics.html",
-    "title": "Investing Basics",
+    "objectID": "budgeting.html",
+    "href": "budgeting.html",
+    "title": "Budgeting",
     "section": "",
-    "text": "Compounding: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %\nRisk vs. return: higher expected return = higher volatility; choose a level you can stick with through downturns\nDiversification: don’t bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)\nReal vs. nominal return: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms"
+    "text": "Mindset shift: budgets are about conscious allocation, not restriction; “room for error” is the most underrated concept (Housel)\nExpense categories: fixed (predictable), variable (fluctuate), periodic (annual/irregular); each requires a different strategy\nSinking funds: set aside 1/12 of annual periodic costs each month to avoid “budget emergencies”\nZero-based budgeting: every dollar gets a job; income − all allocations = 0; best for rebuilding from debt\nPercentage-based budgeting: Sethi’s Conscious Spending Plan (50–60% fixed, 10%+ investing, 20–35% guilt-free); low maintenance at steady income\nBest tool: the one you’ll actually use; automatic imports, easy categorization, and a summary view matter most"
   },
   {
-    "objectID": "investing_basics.html#book-topics",
-    "href": "investing_basics.html#book-topics",
-    "title": "Investing Basics",
+    "objectID": "budgeting.html#book-topics",
+    "href": "budgeting.html#book-topics",
+    "title": "Budgeting",
     "section": "",
-    "text": "Compounding: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %\nRisk vs. return: higher expected return = higher volatility; choose a level you can stick with through downturns\nDiversification: don’t bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)\nReal vs. nominal return: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms"
+    "text": "Mindset shift: budgets are about conscious allocation, not restriction; “room for error” is the most underrated concept (Housel)\nExpense categories: fixed (predictable), variable (fluctuate), periodic (annual/irregular); each requires a different strategy\nSinking funds: set aside 1/12 of annual periodic costs each month to avoid “budget emergencies”\nZero-based budgeting: every dollar gets a job; income − all allocations = 0; best for rebuilding from debt\nPercentage-based budgeting: Sethi’s Conscious Spending Plan (50–60% fixed, 10%+ investing, 20–35% guilt-free); low maintenance at steady income\nBest tool: the one you’ll actually use; automatic imports, easy categorization, and a summary view matter most"
   },
   {
-    "objectID": "investing_basics.html#future-value-compounding",
-    "href": "investing_basics.html#future-value-compounding",
-    "title": "Investing Basics",
-    "section": "2 Future Value (Compounding)",
-    "text": "2 Future Value (Compounding)\nA single lump sum growing at a constant rate.\nFormula: FV = PV × (1 + r)^n\n\n\n\n\n\n$10,000 growing at 7% — value at each checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfuture_value &lt;- function(present_value, rate, years) {\n  present_value * (1 + rate)^years\n}\n\nrule_of_72 &lt;- function(annual_return_pct) {\n  72 / annual_return_pct\n}\n\nfuture_value(present_value = 10000, rate = 0.07, years = 10)\n#&gt; [1] 19671.51\nrule_of_72(annual_return_pct = 7)\n#&gt; [1] 10.28571\n\n# vectorized across multiple horizons\ndata.frame(\n  years = c(5, 10, 20, 30),\n  value = future_value(10000, 0.07, c(5, 10, 20, 30))\n)\n#&gt; # A tibble: 4 × 2\n#&gt;   years  value\n#&gt;   &lt;dbl&gt;  &lt;dbl&gt;\n#&gt; 1     5 14026.\n#&gt; 2    10 19672.\n#&gt; 3    20 38697.\n#&gt; 4    30 76123.\n\n\n\n\n\n\nshow/hide\nimport numpy as np\n\ndef future_value(present_value, rate, years):\n    return present_value * (1 + rate) ** years\n\ndef rule_of_72(annual_return_pct):\n    return 72 / annual_return_pct\n\nprint(future_value(present_value=10000, rate=0.07, years=10))\n#&gt; 19671.513572895663\nprint(rule_of_72(annual_return_pct=7))\n#&gt; 10.285714285714286\n\nhorizons = np.array([5, 10, 20, 30])\nfuture_value(present_value=10000, rate=0.07, years=horizons)\n#&gt; array([14025.517307  , 19671.5135729 , 38696.84462486, 76122.55042662])\n\n\n\n\nWith present value in A2, rate in B2, years in C2:\n=A2*(1+B2)^C2\nRule of 72 (rate as a percent in A2):\n=72/A2"
+    "objectID": "budgeting.html#percentages",
+    "href": "budgeting.html#percentages",
+    "title": "Budgeting",
+    "section": "2 Percentages",
+    "text": "2 Percentages\nThe foundational budgeting calculation: what share of income does each expense represent?\nFormula: (Expense ÷ Income) × 100\n\n\n\n\n\nRent ($1,500) as a share of a $5,000 paycheck\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\npercent_of_income &lt;- function(expense, income) {\n  (expense / income) |&gt;\n    fmt_pct()\n}\n\npercent_of_income(expense = 1500, income = 5000)\n#&gt; [1] \"30%\"\n\n\n\n\nIn Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.\n\n\nshow/hide\ndef percent_of_income(expense, income):\n    ratio = expense / income\n    return fmt_pct(ratio)\n\npercent_of_income(expense=1500, income=5000)\n#&gt; '30.0%'\n\n\n\n\nWith expense in A2 and income in B2:\n=(A2/B2)*100"
   },
   {
-    "objectID": "investing_basics.html#future-value-of-regular-contributions",
-    "href": "investing_basics.html#future-value-of-regular-contributions",
-    "title": "Investing Basics",
-    "section": "3 Future Value of Regular Contributions",
-    "text": "3 Future Value of Regular Contributions\nMonthly investing builds wealth two ways: the money contributed and the returns on all prior contributions.\nFormula: FV = PMT × [((1 + r)^n − 1) ÷ r]\n\n\n\n\n\n$500/month contributions at 7% — contributed vs. gains\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfuture_value_series &lt;- function(contribution, rate, periods) {\n  contribution * (((1 + rate)^periods - 1) / rate)\n}\n\n# $500/month for 30 years at 7% annual (monthly rate = 0.07/12)\nfuture_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)\n#&gt; [1] 609985.5\n\n\n\n\n\n\nshow/hide\ndef future_value_series(contribution, rate, periods):\n    return contribution * (((1 + rate) ** periods - 1) / rate)\n\nfuture_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12)\n#&gt; 609985.4978879723\n\n\n\n\nUse the built-in FV() function: FV(rate, nper, pmt)\n\nrate: monthly = 7%/12\nnper: months = 30*12\npmt: monthly contribution as negative = -500\n\n=FV(7%/12, 30*12, -500)"
+    "objectID": "budgeting.html#annualizing-and-monthly-izing",
+    "href": "budgeting.html#annualizing-and-monthly-izing",
+    "title": "Budgeting",
+    "section": "3 Annualizing and Monthly-izing",
+    "text": "3 Annualizing and Monthly-izing\nScale any spending habit across time periods to see the true cost.\nAnnual → Monthly: ÷ 12\nMonthly → Annual: × 12\nWeekly → Monthly: × 4.33\nDaily → Annual: × 365\n\n\n\n\n\nThe same $5/day habit across four time periods\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nto_annual &lt;- function(amount, period = c(\"daily\", \"weekly\", \"monthly\")) {\n  period  &lt;- match.arg(period)\n  factors &lt;- c(daily = 365, weekly = 52, monthly = 12)\n  amount * factors[[period]]\n}\n\n\n\n\nshow/hide\nto_monthly &lt;- function(amount, period = c(\"daily\", \"weekly\", \"annual\")) {\n  period  &lt;- match.arg(period)\n  factors &lt;- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)\n  amount * factors[[period]]\n}\n\n\n\n\nshow/hide\nto_annual(amount = 5, period = \"daily\")\n#&gt; [1] 1825\n\n\n\n\nshow/hide\nto_monthly(amount = 150, period = \"weekly\")\n#&gt; [1] 649.5\n\n\n\n\n\n\nshow/hide\ndef to_annual(amount, period=\"daily\"):\n    factors = {\"daily\": 365, \"weekly\": 52, \"monthly\": 12}\n    return amount * factors[period]\n\ndef to_monthly(amount, period=\"daily\"):\n    factors = {\"daily\": 30.44, \"weekly\": 4.33, \"annual\": 1 / 12}\n    return amount * factors[period]\n\nprint(to_annual(amount=5, period=\"daily\"))\n#&gt; 1825\nprint(to_monthly(amount=150, period=\"weekly\"))\n#&gt; 649.5\n\n\n\n\nWith daily amount in A2:\n=A2*365      # daily → annual\n=A2*52       # weekly → annual\n=A2/12       # annual → monthly"
   },
   {
-    "objectID": "investing_basics.html#real-inflation-adjusted-return",
-    "href": "investing_basics.html#real-inflation-adjusted-return",
-    "title": "Investing Basics",
-    "section": "4 Real (Inflation-Adjusted) Return",
-    "text": "4 Real (Inflation-Adjusted) Return\nNominal returns overstate purchasing power gains; inflation takes its slice every year.\nFormula: Real Return = (1 + nominal) ÷ (1 + inflation) − 1\n\n\n\n\n\nNominal return, inflation, and real return\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nreal_return &lt;- function(nominal, inflation) {\n  (1 + nominal) / (1 + inflation) - 1\n}\n\nreal_return(nominal = 0.07, inflation = 0.03)\n#&gt; [1] 0.03883495\n\n\n\n\n\n\nshow/hide\ndef real_return(nominal, inflation):\n    return (1 + nominal) / (1 + inflation) - 1\n\nreal_return(nominal=0.07, inflation=0.03)\n#&gt; 0.03883495145631066\n\n\n\n\nWith nominal rate in A2 and inflation in B2:\n=(1+A2)/(1+B2)-1"
+    "objectID": "budgeting.html#opportunity-cost",
+    "href": "budgeting.html#opportunity-cost",
+    "title": "Budgeting",
+    "section": "4 Opportunity Cost",
+    "text": "4 Opportunity Cost\nEvery dollar spent is also what that dollar could have become. The hidden cost of any purchase is its future value if invested instead.\nFormula: amount × (1 + r)^n\n\n\n\n\n\n$25,000 invested at 7% — value at each checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nopportunity_cost &lt;- function(amount, rate, years) {\n  (amount * (1 + rate)^years) |&gt;\n    fmt_dollar()\n}\n\nopportunity_cost(amount = 25000, rate = 0.07, years = 30)\n#&gt; [1] \"$190,306.38\"\n\n\n\n\nIn Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.\n\n\nshow/hide\ndef opportunity_cost(amount, rate, years):\n    fv = amount * (1 + rate) ** years\n    return fmt_dollar(fv)\n\nopportunity_cost(amount=25000, rate=0.07, years=30)\n#&gt; '$190,306.38'\n\n\n\n\nWith amount in A2, rate in B2, years in C2:\n=A2*(1+B2)^C2"
   },
   {
-    "objectID": "major_purchases.html",
-    "href": "major_purchases.html",
-    "title": "Major Purchases",
-    "section": "",
-    "text": "Renting vs. buying: “renting is throwing money away” is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix’s 5% Rule)\n5% Rule components: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent\nWhen to buy: plan to stay 7+ years; stable income; won’t be “house poor” (housing &lt;28–30% of gross income)\nMortgage amortization: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you’ve barely touched principal\nCars: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old"
-  },
-  {
-    "objectID": "major_purchases.html#book-topics",
-    "href": "major_purchases.html#book-topics",
-    "title": "Major Purchases",
-    "section": "",
-    "text": "Renting vs. buying: “renting is throwing money away” is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix’s 5% Rule)\n5% Rule components: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent\nWhen to buy: plan to stay 7+ years; stable income; won’t be “house poor” (housing &lt;28–30% of gross income)\nMortgage amortization: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you’ve barely touched principal\nCars: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old"
-  },
-  {
-    "objectID": "major_purchases.html#rent-vs.-buy-threshold-felixs-5-rule",
-    "href": "major_purchases.html#rent-vs.-buy-threshold-felixs-5-rule",
-    "title": "Major Purchases",
-    "section": "2 Rent vs. Buy Threshold (Felix’s 5% Rule)",
-    "text": "2 Rent vs. Buy Threshold (Felix’s 5% Rule)\nMultiply home value by 5%, divide by 12. If you can rent an equivalent home for less, renting and investing the difference is likely the better financial choice.\nFormula: Monthly ownership cost ≈ (Home Value × 0.05) ÷ 12\n\n\n\n\n\nThe three components of the 5% rule on a $500,000 home\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nrent_buy_threshold &lt;- function(home_value, unrecoverable_rate = 0.05) {\n  (home_value * unrecoverable_rate) / 12\n}\n\nrent_buy_threshold(home_value = 600000)\n#&gt; [1] 2500\n\n\n\n\n\n\nshow/hide\ndef rent_buy_threshold(home_value, unrecoverable_rate=0.05):\n    return (home_value * unrecoverable_rate) / 12\n\nrent_buy_threshold(home_value=600000)\n#&gt; 2500.0\n\n\n\n\nWith home value in A2:\n=(A2*0.05)/12"
-  },
-  {
-    "objectID": "major_purchases.html#monthly-mortgage-payment",
-    "href": "major_purchases.html#monthly-mortgage-payment",
-    "title": "Major Purchases",
-    "section": "3 Monthly Mortgage Payment",
-    "text": "3 Monthly Mortgage Payment\nThe standard amortization formula; shorter terms mean higher payments but much less total interest.\nFormula: M = P × [r(1 + r)^n] ÷ [(1 + r)^n − 1]\n\n\n\n\n\nMonthly payment on a $400,000 loan at 6.5% across three terms\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nmortgage_payment &lt;- function(principal, annual_rate, years) {\n  r &lt;- annual_rate / 12\n  n &lt;- years * 12\n  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)\n}\n\n# $480,000 loan at 6% over 30 years\nmortgage_payment(principal = 480000, annual_rate = 0.06, years = 30)\n#&gt; [1] 2877.843\n\n\n\n\n\n\nshow/hide\ndef mortgage_payment(principal, annual_rate, years):\n    r = annual_rate / 12\n    n = years * 12\n    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)\n\nmortgage_payment(principal=480000, annual_rate=0.06, years=30)\n#&gt; 2877.8425207332334\n\n\n\n\nUse the built-in PMT() function: PMT(rate, nper, pv)\n\nrate: monthly = 6%/12\nnper: months = 30*12\npv: loan amount as negative = -480000\n\n=PMT(6%/12, 30*12, -480000)"
-  },
-  {
-    "objectID": "major_purchases.html#first-month-interest-vs.-principal-split",
-    "href": "major_purchases.html#first-month-interest-vs.-principal-split",
-    "title": "Major Purchases",
-    "section": "4 First-Month Interest vs. Principal Split",
-    "text": "4 First-Month Interest vs. Principal Split\nEarly mortgage payments are mostly interest; only the remainder reduces the balance.\nFormulas:\n\nFirst-month interest = Principal × (annual rate ÷ 12)\nFirst-month principal = Monthly Payment − First-month interest\n\n\n#&gt; Warning: Removed 2 rows containing missing values or values outside\n#&gt; the scale range (`geom_col()`).\n#&gt; Warning: Removed 1 row containing missing values or values outside\n#&gt; the scale range (`geom_text()`).\n\n\n\n\nInterest vs. principal split at three points on a $400,000 / 6.5% / 30-yr mortgage\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfirst_payment_split &lt;- function(principal, annual_rate, years) {\n  payment  &lt;- mortgage_payment(principal, annual_rate, years)\n  interest &lt;- principal * (annual_rate / 12)\n  data.frame(\n    payment      = round(payment, 2),\n    interest     = round(interest, 2),\n    principal    = round(payment - interest, 2),\n    pct_interest = round((interest / payment) * 100, 1)\n  )\n}\n\nfirst_payment_split(principal = 480000, annual_rate = 0.06, years = 30)\n#&gt; # A tibble: 1 × 4\n#&gt;   payment interest principal pct_interest\n#&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;        &lt;dbl&gt;\n#&gt; 1   2878.     2400      478.         83.4\n\n\n\n\n\n\nshow/hide\ndef first_payment_split(principal, annual_rate, years):\n    payment = mortgage_payment(principal, annual_rate, years)\n    interest = principal * (annual_rate / 12)\n    return {\n        \"payment\":      round(payment, 2),\n        \"interest\":     round(interest, 2),\n        \"principal\":    round(payment - interest, 2),\n        \"pct_interest\": round((interest / payment) * 100, 1),\n    }\n\nfirst_payment_split(principal=480000, annual_rate=0.06, years=30)\n#&gt; {'payment': 2877.84, 'interest': 2400.0, 'principal': 477.84, 'pct_interest': 83.4}\n\n\n\n\nWith loan amount in A2, annual rate in B2, and monthly payment (from PMT()) in C2:\nFirst-month interest:\n=A2*(B2/12)\nFirst-month principal:\n=C2-A2*(B2/12)"
-  },
-  {
-    "objectID": "tracking_spending.html",
-    "href": "tracking_spending.html",
-    "title": "Tracking Spending",
-    "section": "",
-    "text": "Capture methods: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month\nBank statement exports: Date, Description, Amount columns; you add the Category\nCategorization: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running\nMonthly review: pull statements → categorize → compare to budget → pick one change; repeat 12× per year\nSubscriptions: average household spends $200–$300/month without realizing it; audit every 90 days"
-  },
-  {
-    "objectID": "tracking_spending.html#book-topics",
-    "href": "tracking_spending.html#book-topics",
-    "title": "Tracking Spending",
-    "section": "",
-    "text": "Capture methods: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month\nBank statement exports: Date, Description, Amount columns; you add the Category\nCategorization: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running\nMonthly review: pull statements → categorize → compare to budget → pick one change; repeat 12× per year\nSubscriptions: average household spends $200–$300/month without realizing it; audit every 90 days"
-  },
-  {
-    "objectID": "tracking_spending.html#bank-statement-data",
-    "href": "tracking_spending.html#bank-statement-data",
-    "title": "Tracking Spending",
-    "section": "2 Bank Statement Data",
-    "text": "2 Bank Statement Data\nA minimal bank export has three columns: Date, Description, and Amount. The code blocks below show how to create an example bank statement file in R, Python, and Excel.\n\nRPythonExcel\n\n\n\n\nshow/hide\nr_bank_statement &lt;- tibble::tibble(\n  Date = as.Date(c(\n    \"2026-01-02\", \"2026-01-02\", \"2026-01-03\", \"2026-01-03\",\n    \"2026-01-04\", \"2026-01-04\", \"2026-01-05\", \"2026-01-06\",\n    \"2026-01-07\", \"2026-01-08\", \"2026-01-09\", \"2026-01-10\",\n    \"2026-01-11\", \"2026-01-12\", \"2026-01-13\", \"2026-01-14\",\n    \"2026-01-15\"\n  )),\n  Description = c(\n    \"Employer Payroll\", \"Rent\", \"Comcast Internet\", \"Trader Joe's\",\n    \"Shell Gas\", \"Netflix\", \"Starbucks\", \"PG&E Electric\",\n    \"AT&T Wireless\", \"Spotify\", \"Whole Foods\", \"Chipotle\",\n    \"Geico Auto Insurance\", \"NYTimes Digital\", \"Shell Gas\", \"Costco\",\n    \"24 Hour Fitness\"\n  ),\n  Amount = c(\n     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,\n    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,\n     -42.80, -156.78, -39.99\n  )\n)\n\nr_bank_statement |&gt; knitr::kable()\n\n\n\n\n\nDate\nDescription\nAmount\n\n\n\n\n2026-01-02\nEmployer Payroll\n2400.00\n\n\n2026-01-02\nRent\n-1500.00\n\n\n2026-01-03\nComcast Internet\n-75.00\n\n\n2026-01-03\nTrader Joe’s\n-82.45\n\n\n2026-01-04\nShell Gas\n-45.20\n\n\n2026-01-04\nNetflix\n-15.99\n\n\n2026-01-05\nStarbucks\n-6.75\n\n\n2026-01-06\nPG&E Electric\n-142.30\n\n\n2026-01-07\nAT&T Wireless\n-85.00\n\n\n2026-01-08\nSpotify\n-10.99\n\n\n2026-01-09\nWhole Foods\n-64.12\n\n\n2026-01-10\nChipotle\n-14.50\n\n\n2026-01-11\nGeico Auto Insurance\n-125.00\n\n\n2026-01-12\nNYTimes Digital\n-17.00\n\n\n2026-01-13\nShell Gas\n-42.80\n\n\n2026-01-14\nCostco\n-156.78\n\n\n2026-01-15\n24 Hour Fitness\n-39.99\n\n\n\n\n\nWe can view the bank statement in R using knitr::kable().\n\n\nIn Python, we’ll use polars to create a DataFrame and display the bank statement. This is similar to the tibble we created above.\n\n\nshow/hide\nimport polars as pl\n\npy_bank_statement = pl.DataFrame({\n    \"Date\": [\n        \"2026-01-02\", \"2026-01-02\", \"2026-01-03\", \"2026-01-03\",\n        \"2026-01-04\", \"2026-01-04\", \"2026-01-05\", \"2026-01-06\",\n        \"2026-01-07\", \"2026-01-08\", \"2026-01-09\", \"2026-01-10\",\n        \"2026-01-11\", \"2026-01-12\", \"2026-01-13\", \"2026-01-14\",\n        \"2026-01-15\"\n    ],\n    \"Description\": [\n        \"Employer Payroll\", \"Rent\", \"Comcast Internet\", \"Trader Joe's\",\n        \"Shell Gas\", \"Netflix\", \"Starbucks\", \"PG&E Electric\",\n        \"AT&T Wireless\", \"Spotify\", \"Whole Foods\", \"Chipotle\",\n        \"Geico Auto Insurance\", \"NYTimes Digital\", \"Shell Gas\", \"Costco\",\n        \"24 Hour Fitness\"\n    ],\n    \"Amount\": [\n         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,\n        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,\n         -42.80, -156.78, -39.99\n    ]\n}).with_columns(pl.col(\"Date\").str.to_date())\n\npy_bank_statement\n\n\n\nshape: (17, 3)\n\n\n\nDate\nDescription\nAmount\n\n\ndate\nstr\nf64\n\n\n\n\n2026-01-02\n\"Employer Payroll\"\n2400.0\n\n\n2026-01-02\n\"Rent\"\n-1500.0\n\n\n2026-01-03\n\"Comcast Internet\"\n-75.0\n\n\n2026-01-03\n\"Trader Joe's\"\n-82.45\n\n\n2026-01-04\n\"Shell Gas\"\n-45.2\n\n\n2026-01-04\n\"Netflix\"\n-15.99\n\n\n2026-01-05\n\"Starbucks\"\n-6.75\n\n\n2026-01-06\n\"PG&E Electric\"\n-142.3\n\n\n2026-01-07\n\"AT&T Wireless\"\n-85.0\n\n\n2026-01-08\n\"Spotify\"\n-10.99\n\n\n2026-01-09\n\"Whole Foods\"\n-64.12\n\n\n2026-01-10\n\"Chipotle\"\n-14.5\n\n\n2026-01-11\n\"Geico Auto Insurance\"\n-125.0\n\n\n2026-01-12\n\"NYTimes Digital\"\n-17.0\n\n\n2026-01-13\n\"Shell Gas\"\n-42.8\n\n\n2026-01-14\n\"Costco\"\n-156.78\n\n\n2026-01-15\n\"24 Hour Fitness\"\n-39.99\n\n\n\n\n\n\n\n\nWe can simply copy and paste the data into Excel; Date in A, Description in B, Amount in C.\n\n\n\nbank_statement in Excel"
-  },
-  {
-    "objectID": "tracking_spending.html#categorizing-transactions",
-    "href": "tracking_spending.html#categorizing-transactions",
-    "title": "Tracking Spending",
-    "section": "3 Categorizing Transactions",
-    "text": "3 Categorizing Transactions\nMap description keywords to budget buckets in a single pass.\n\nRPythonExcel\n\n\nIn R, we can use dplyr to do the following:\n\ndplyr::case_when() evaluates each pattern in order and assigns the matching category\n\ngrepl() does the keyword test against Description\n\nThe final TRUE arm catches everything that didn’t match and labels it \"Other\"\n\n\n\nshow/hide\nr_bank_statement &lt;- r_bank_statement |&gt;\n  dplyr::mutate(\n    Category = dplyr::case_when(\n      grepl(\"Payroll\", Description) ~ \"Income\",\n      grepl(\"Rent\", Description) ~ \"Housing\",\n      grepl(\"Comcast|PG&E|AT&T\", Description) ~ \"Utilities\",\n      grepl(\"Trader Joe|Whole Foods|Costco\", Description) ~ \"Groceries\",\n      grepl(\"Shell\", Description) ~ \"Transportation\",\n      grepl(\"Starbucks|Chipotle\", Description) ~ \"Dining\",\n      grepl(\"Netflix|Spotify|NYTimes|24 Hour Fitness\", Description) ~ \"Subscriptions\",\n      grepl(\"Geico\", Description) ~ \"Insurance\",\n      TRUE ~ \"Other\"\n    )\n  )\n\nr_bank_statement |&gt; \n  knitr::kable()\n\n\n\n\n\nDate\nDescription\nAmount\nCategory\n\n\n\n\n2026-01-02\nEmployer Payroll\n2400.00\nIncome\n\n\n2026-01-02\nRent\n-1500.00\nHousing\n\n\n2026-01-03\nComcast Internet\n-75.00\nUtilities\n\n\n2026-01-03\nTrader Joe’s\n-82.45\nGroceries\n\n\n2026-01-04\nShell Gas\n-45.20\nTransportation\n\n\n2026-01-04\nNetflix\n-15.99\nSubscriptions\n\n\n2026-01-05\nStarbucks\n-6.75\nDining\n\n\n2026-01-06\nPG&E Electric\n-142.30\nUtilities\n\n\n2026-01-07\nAT&T Wireless\n-85.00\nUtilities\n\n\n2026-01-08\nSpotify\n-10.99\nSubscriptions\n\n\n2026-01-09\nWhole Foods\n-64.12\nGroceries\n\n\n2026-01-10\nChipotle\n-14.50\nDining\n\n\n2026-01-11\nGeico Auto Insurance\n-125.00\nInsurance\n\n\n2026-01-12\nNYTimes Digital\n-17.00\nSubscriptions\n\n\n2026-01-13\nShell Gas\n-42.80\nTransportation\n\n\n2026-01-14\nCostco\n-156.78\nGroceries\n\n\n2026-01-15\n24 Hour Fitness\n-39.99\nSubscriptions\n\n\n\n\n\n\n\npolars is similar to dplyr, but:\n\nwith_columns() is the mutate() analog\n\na chain of pl.when().then() calls is the case_when() analog\n\npl.col(\"Description\").str.contains(...) does the keyword test\n\nregex by default and the | between merchants is alternation\n\n\n\n\nshow/hide\npy_bank_statement = py_bank_statement.with_columns(\n    Category = pl.when(pl.col(\"Description\").str.contains(\"Payroll\")).then(pl.lit(\"Income\"))\n        .when(pl.col(\"Description\").str.contains(\"Rent\")).then(pl.lit(\"Housing\"))\n        .when(pl.col(\"Description\").str.contains(\"Comcast|PG&E|AT&T\")).then(pl.lit(\"Utilities\"))\n        .when(pl.col(\"Description\").str.contains(\"Trader Joe|Whole Foods|Costco\")).then(pl.lit(\"Groceries\"))\n        .when(pl.col(\"Description\").str.contains(\"Shell\")).then(pl.lit(\"Transportation\"))\n        .when(pl.col(\"Description\").str.contains(\"Starbucks|Chipotle\")).then(pl.lit(\"Dining\"))\n        .when(pl.col(\"Description\").str.contains(\"Netflix|Spotify|NYTimes|24 Hour Fitness\")).then(pl.lit(\"Subscriptions\"))\n        .when(pl.col(\"Description\").str.contains(\"Geico\")).then(pl.lit(\"Insurance\"))\n        .otherwise(pl.lit(\"Other\"))\n)\n\npy_bank_statement\n\n\n\nshape: (17, 4)\n\n\n\nDate\nDescription\nAmount\nCategory\n\n\ndate\nstr\nf64\nstr\n\n\n\n\n2026-01-02\n\"Employer Payroll\"\n2400.0\n\"Income\"\n\n\n2026-01-02\n\"Rent\"\n-1500.0\n\"Housing\"\n\n\n2026-01-03\n\"Comcast Internet\"\n-75.0\n\"Utilities\"\n\n\n2026-01-03\n\"Trader Joe's\"\n-82.45\n\"Groceries\"\n\n\n2026-01-04\n\"Shell Gas\"\n-45.2\n\"Transportation\"\n\n\n2026-01-04\n\"Netflix\"\n-15.99\n\"Subscriptions\"\n\n\n2026-01-05\n\"Starbucks\"\n-6.75\n\"Dining\"\n\n\n2026-01-06\n\"PG&E Electric\"\n-142.3\n\"Utilities\"\n\n\n2026-01-07\n\"AT&T Wireless\"\n-85.0\n\"Utilities\"\n\n\n2026-01-08\n\"Spotify\"\n-10.99\n\"Subscriptions\"\n\n\n2026-01-09\n\"Whole Foods\"\n-64.12\n\"Groceries\"\n\n\n2026-01-10\n\"Chipotle\"\n-14.5\n\"Dining\"\n\n\n2026-01-11\n\"Geico Auto Insurance\"\n-125.0\n\"Insurance\"\n\n\n2026-01-12\n\"NYTimes Digital\"\n-17.0\n\"Subscriptions\"\n\n\n2026-01-13\n\"Shell Gas\"\n-42.8\n\"Transportation\"\n\n\n2026-01-14\n\"Costco\"\n-156.78\n\"Groceries\"\n\n\n2026-01-15\n\"24 Hour Fitness\"\n-39.99\n\"Subscriptions\"\n\n\n\n\n\n\n\n\nWith Description in column B, paste into D2 and fill down:\n=IFS(\n  ISNUMBER(SEARCH(\"Payroll\",B2)), \"Income\",\n  ISNUMBER(SEARCH(\"Rent\",B2)), \"Housing\",\n  OR(ISNUMBER(SEARCH(\"Comcast\",B2)),ISNUMBER(SEARCH(\"PG&E\",B2)),ISNUMBER(SEARCH(\"AT&T\",B2))), \"Utilities\",\n  OR(ISNUMBER(SEARCH(\"Trader Joe\",B2)),ISNUMBER(SEARCH(\"Whole Foods\",B2)),ISNUMBER(SEARCH(\"Costco\",B2))), \"Groceries\",\n  ISNUMBER(SEARCH(\"Shell\",B2)), \"Transportation\",\n  OR(ISNUMBER(SEARCH(\"Starbucks\",B2)),ISNUMBER(SEARCH(\"Chipotle\",B2))), \"Dining\",\n  OR(ISNUMBER(SEARCH(\"Netflix\",B2)),ISNUMBER(SEARCH(\"Spotify\",B2)),ISNUMBER(SEARCH(\"NYTimes\",B2)),ISNUMBER(SEARCH(\"24 Hour Fitness\",B2))), \"Subscriptions\",\n  ISNUMBER(SEARCH(\"Geico\",B2)), \"Insurance\",\n  TRUE, \"Other\"\n)\n\n\n\nIFS() in Excel"
-  },
-  {
-    "objectID": "tracking_spending.html#subscription-opportunity-cost",
-    "href": "tracking_spending.html#subscription-opportunity-cost",
-    "title": "Tracking Spending",
-    "section": "4 Subscription Opportunity Cost",
-    "text": "4 Subscription Opportunity Cost\nA small recurring subscription has a large long-run cost when you account for what the money could have earned.\nFormula: Monthly Cost × 12 × ((1 + r)^n − 1) ÷ r\n\n\n\n\n\nFuture value of a $20/month subscription’s annual cost if invested at 7%\n\n\n\n\n\nRPythonExcel\n\n\nNote the rate is given as a decimal and the order of operations.\n\n\nshow/hide\nsubscription_opportunity_cost &lt;- function(monthly_cost, years, rate = 0.07) {\n  annual_cost &lt;- monthly_cost * 12\n  annual_cost * ((1 + rate)^years - 1) / rate\n}\n\n\n\n\nshow/hide\nsubscription_opportunity_cost(monthly_cost = 20, years = 30) |&gt; fmt_dollar()\n#&gt; [1] \"$22,670.59\"\n\n\n\n\nNote the exponential is indicated with ** (not ^):\n\n\nshow/hide\ndef subscription_opportunity_cost(monthly_cost, years, rate=0.07):\n    annual_cost = monthly_cost * 12\n    return annual_cost * ((1 + rate) ** years - 1) / rate\n\n\n\n\nshow/hide\nfmt_dollar(subscription_opportunity_cost(monthly_cost=20, years=30))\n#&gt; '$22,670.59'\n\n\n\n\nWith monthly cost in A2, years in B2, rate in C2:\n=(A2*12)*((1+C2)^B2-1)/C2"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "DEV (fm-finance)",
-    "section": "",
-    "text": "This is my development scratch space for code and math examples in the fm-finance book.\nUse the navbar to navigate to a chapter."
-  },
-  {
-    "objectID": "index.html#getting-set-up",
-    "href": "index.html#getting-set-up",
-    "title": "DEV (fm-finance)",
-    "section": "1 Getting set up",
-    "text": "1 Getting set up\nThe examples in this book are written in two free programming languages: R and Python. You don’t need to know either one yet—this page walks you through installing both, no matter which computer you use.\n\n\n\n\n\n\nYou only have to do this once. Set aside about 20–30 minutes, and feel free to take it one language at a time.\n\n\n\nA few words you’ll see along the way:\n\nInstall: download a program and add it to your computer, the same way you’d add any app.\nConsole: a window where you type a command and the computer types back. We use it only to check that things are working.\nIDE (Integrated Development Environment): a friendly workspace for writing and running code. Think of it as a word processor built for programming."
-  },
-  {
-    "objectID": "index.html#installing-r",
-    "href": "index.html#installing-r",
-    "title": "DEV (fm-finance)",
-    "section": "2 Installing R",
-    "text": "2 Installing R\nR is the language I’m most familiar with, so we will install it first. We’ll install two things: R itself (the engine) and RStudio (the workspace where you’ll actually write code).\n\n2.1 Step 1 — Install R\nPick the tab for your computer below.\n\nWindowsmacOSLinux\n\n\n\nGo to the R download page: cran.r-project.org/bin/windows/base.\nClick the large Download R for Windows link at the top.\nOpen the file you just downloaded (it’ll be in your Downloads folder).\nClick Next through the installer, accepting the suggested options.\n\n\n\n\nGo to the R download page: cran.r-project.org/bin/macosx.\nDownload the file that matches your Mac:\n\nApple Silicon (M1, M2, M3, or newer) — most Macs sold since late 2020.\nIntel — older Macs.\nNot sure? Click the Apple menu () in the top-left corner → About This Mac. If it says “Apple M…”, choose Apple Silicon.\n\nOpen the downloaded .pkg file and click Continue through the installer.\n\n\n\nMost Linux systems install R through their built-in software manager. Open a terminal and run the command for your system:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install r-base\nOn Fedora:\nsudo dnf install R\n\n\n\n\n\n2.2 Step 2 — Install RStudio\nRStudio is the same on every operating system.\n\nGo to posit.co/download/rstudio-desktop.\nScroll to Step 2 on that page and click the download button for your computer (the website detects it for you).\nOpen the downloaded file and follow the prompts to install.\n\n\n\n\n\n\n\nInstall R before RStudio. RStudio is just the workspace—it needs R already on your computer to do anything.\n\n\n\n\n\n2.3 Step 3 — Check that R works\nOpen RStudio. In the Console (the panel on the left), type the line below and press Enter:\n2 + 2\nIf you see [1] 4, R is working. 🎉"
-  },
-  {
-    "objectID": "index.html#installing-python",
-    "href": "index.html#installing-python",
-    "title": "DEV (fm-finance)",
-    "section": "3 Installing Python",
-    "text": "3 Installing Python\nPython is the second language we’ll use. We’ll install Python itself and a free workspace called Positron.\n\n3.1 Step 1 — Install Python\n\nWindowsmacOSLinux\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded file.\nImportant: on the first installer screen, check the box that says Add Python to PATH before clicking Install Now. This lets your computer find Python later.\n\n\n\n\nGo to python.org/downloads and click the yellow Download Python button.\nOpen the downloaded .pkg file and click Continue through the installer, accepting the suggested options.\n\n\n\nMost Linux systems already include Python. Open a terminal and run the command for your system to make sure it’s installed:\nOn Ubuntu, Pop!_OS, or Debian:\nsudo apt update && sudo apt install python3 python3-pip\nOn Fedora:\nsudo dnf install python3 python3-pip\n\n\n\n\n\n3.2 Step 2 — Install Positron\nPositron is a free workspace for writing Python (and R) code, made by the same team as RStudio.\n\nGo to positron.posit.co/download.\nDownload the version for your computer.\nOpen the downloaded file and follow the prompts to install.\n\n\n\n3.3 Step 3 — Check that Python works\nOpen a console and type the line below, then press Enter:\n\nWindowsmacOS / Linux\n\n\nOpen the Start menu, type cmd, and open Command Prompt. Then run:\npython --version\n\n\nOpen the Terminal app and run:\npython3 --version\n\n\n\nIf you see something like Python 3.12.0, Python is working. 🎉"
-  },
-  {
-    "objectID": "index.html#where-to-go-next",
-    "href": "index.html#where-to-go-next",
-    "title": "DEV (fm-finance)",
-    "section": "4 Where to go next",
-    "text": "4 Where to go next\nYou’re all set! Head to the Income chapter using the navbar to start running the examples.\n\n\n\n\n\n\nTipStuck?\n\n\n\nIf an install didn’t work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above."
-  },
-  {
-    "objectID": "income.html",
-    "href": "income.html",
-    "title": "Income",
-    "section": "",
-    "text": "Wealth vs. spending: true wealth is the income you didn’t spend, quietly compounding (Housel)\nHuman capital: early in a career, future earning potential is the biggest asset; invest in skills before stocks (Felix)\nSpending and happiness: experiences &gt; possessions; buying time &gt; buying things; lifestyle inflation is the silent killer\nThree anchoring rules: spend on what you love / cut what you don’t (Sethi); gap between ego and income (Housel); keep it simple (Bogle)\nWealth formula: Wealth = Focus + (Stoicism × Time × Diversification) — Focus is additive, the rest is multiplicative (Galloway)\nAs income grows: split every raise — 50% to investing, 50% to lifestyle; avoid inflating spending to match every dollar"
-  },
-  {
-    "objectID": "income.html#book-topics",
-    "href": "income.html#book-topics",
-    "title": "Income",
-    "section": "",
-    "text": "Wealth vs. spending: true wealth is the income you didn’t spend, quietly compounding (Housel)\nHuman capital: early in a career, future earning potential is the biggest asset; invest in skills before stocks (Felix)\nSpending and happiness: experiences &gt; possessions; buying time &gt; buying things; lifestyle inflation is the silent killer\nThree anchoring rules: spend on what you love / cut what you don’t (Sethi); gap between ego and income (Housel); keep it simple (Bogle)\nWealth formula: Wealth = Focus + (Stoicism × Time × Diversification) — Focus is additive, the rest is multiplicative (Galloway)\nAs income grows: split every raise — 50% to investing, 50% to lifestyle; avoid inflating spending to match every dollar"
-  },
-  {
-    "objectID": "income.html#writing-functions",
-    "href": "income.html#writing-functions",
-    "title": "Income",
-    "section": "2 Writing Functions",
-    "text": "2 Writing Functions\nFunctions perform operations: calculate a total, build a table, create a graph. The function’s arguments are the inputs it needs to do its job and the output is what it gives back. For example, sum() takes a list of numbers as input and outputs their total.\nIn R, functions are defined with the function() keyword and assigned to a name. The body goes inside curly braces.\nmy_fun &lt;- function(x) {\n  x * 2\n}\nIn Python, functions are defined with def, followed by a colon and an indented body. An explicit return statement is required; without it the function returns None.\ndef my_fun(x):\n    return x * 2\nBoth languages let you create reusable functions for financial calculations. The key difference is that R automatically returns the last evaluated expression while Python requires return."
-  },
-  {
-    "objectID": "income.html#number-formatting",
-    "href": "income.html#number-formatting",
-    "title": "Income",
-    "section": "3 Number Formatting",
-    "text": "3 Number Formatting\nBefore working through the math, it helps to have two small formatting utilities that handle the $ and % symbols seen throughout the book. They take a plain number and return a reader-friendly string.\n\nRPythonExcel\n\n\nfmt_dollar() adds a dollar sign, comma separators, and rounds to a set number of decimal places.\n\n\nshow/hide\nfmt_dollar &lt;- function(x, digits = 2) {\n  paste0(\"$\", formatC(x, format = \"f\", digits = digits, big.mark = \",\"))\n}\n\n\nfmt_pct() expects a decimal rate (e.g. 0.07 for 7%) and converts it to a percentage string.\n\n\nshow/hide\nfmt_pct &lt;- function(x, digits = 1) {\n  paste0(round(x * 100, digits), \"%\")\n}\n\n\n\n\nshow/hide\nfmt_dollar(9200)\n#&gt; [1] \"$9,200.00\"\nfmt_dollar(4200.50)\n#&gt; [1] \"$4,200.50\"\nfmt_pct(0.07)\n#&gt; [1] \"7%\"\nfmt_pct(0.456)\n#&gt; [1] \"45.6%\"\n\n\n\n\nfmt_dollar() uses an f-string with , for thousands and .{digits}f for decimal places.\n\n\nshow/hide\ndef fmt_dollar(x, digits=2):\n    return f\"${x:,.{digits}f}\"\n\n\nfmt_pct() takes a decimal rate, multiplies by 100, and formats the result.\n\n\nshow/hide\ndef fmt_pct(x, digits=1):\n    return f\"{x * 100:.{digits}f}%\"\n\n\n\n\nshow/hide\nprint(fmt_dollar(9200))\n#&gt; $9,200.00\nprint(fmt_dollar(4200.50))\n#&gt; $4,200.50\nprint(fmt_pct(0.07))\n#&gt; 7.0%\nprint(fmt_pct(0.456))\n#&gt; 45.6%\n\n\n\n\nIn Excel, number formatting is applied through the toolbar. Select the cells to format and choose the appropriate option from the Number Format dropdown.\n\n\n\nCommon number formats in Excel\n\n\nThere are two options for money: Currency and Accounting.1\n\n\n\nBoth fmt_dollar() and fmt_pct() follow the same convention: input is always a plain number, output is always a string. They are used throughout the remaining sections to clean up results."
-  },
-  {
-    "objectID": "income.html#fixed-cost-ratio",
-    "href": "income.html#fixed-cost-ratio",
-    "title": "Income",
-    "section": "4 Fixed-Cost Ratio",
-    "text": "4 Fixed-Cost Ratio\nFixed costs (rent, loans, insurance, utilities) should stay under ~60% of take-home pay.\nFormula: Fixed-Cost Ratio = Fixed Costs ÷ Take-Home Pay × 100\n\n\n\n\n\nTake-home pay divided into fixed costs and flexible spending ($8,000 total)\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nfixed_cost_ratio &lt;- function(fixed_costs, take_home) {\n  fixed_costs / take_home\n}\n\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |&gt; fmt_pct()\n#&gt; [1] \"55%\"\n\n\n\n\n\n\nshow/hide\ndef fixed_cost_ratio(fixed_costs, take_home):\n    return fixed_costs / take_home\n\nfmt_pct(fixed_cost_ratio(fixed_costs=4400, take_home=8000))\n#&gt; '55.0%'\n\n\n\n\nEnter fixed costs in A2, take-home in B2, then in C2:\n=A2/B2\nFormat C2 as percentage (Home → %). For a percent string:\n=TEXT(A2/B2, \"0.0%\")"
-  },
-  {
-    "objectID": "income.html#using-pipes-in-r",
-    "href": "income.html#using-pipes-in-r",
-    "title": "Income",
-    "section": "5 Using Pipes in R",
-    "text": "5 Using Pipes in R\nThe pipe operator (|&gt;) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out.\nfixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |&gt; fmt_pct()\nRead that as: compute the ratio, then format it as a percentage. The alternative without a pipe nests the calls and reads from the inside out, which is harder to follow.\nfmt_pct(fixed_cost_ratio(fixed_costs = 4400, take_home = 8000))\nWhen two steps always belong together, wrap them in a single function so callers only see one name.\n\n\nshow/hide\nfixed_cost_ratio_pct &lt;- function(fixed_costs, take_home) {\n  fixed_cost_ratio(fixed_costs, take_home) |&gt; fmt_pct()\n}\n\nfixed_cost_ratio_pct(fixed_costs = 4400, take_home = 8000)\n#&gt; [1] \"55%\"\n\n\nPython has no native pipe operator. The equivalent is simply wrapping the inner call.\n\n\nshow/hide\ndef fixed_cost_ratio_pct(fixed_costs, take_home):\n    return fmt_pct(fixed_cost_ratio(fixed_costs, take_home))\n\nfixed_cost_ratio_pct(fixed_costs=4400, take_home=8000)\n#&gt; '55.0%'\n\n\nRead more about the pipe operator in R vs. Python."
-  },
-  {
-    "objectID": "income.html#what-a-raise-is-really-worth",
-    "href": "income.html#what-a-raise-is-really-worth",
-    "title": "Income",
-    "section": "6 What a Raise Is Really Worth",
-    "text": "6 What a Raise Is Really Worth\nSplit every raise: invest half, spend half. The future value of contributions formula shows how powerful this habit is.\nFormula: FV = PMT × [((1 + r)^n − 1) ÷ r]\n\n\n\n\n\n$200/month invested at 7% — value at each 5-year checkpoint\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nraise_invested_value &lt;- function(monthly_raise, invest_share, rate, years) {\n  contribution &lt;- monthly_raise * invest_share\n  monthly_rate &lt;- rate / 12\n  periods      &lt;- years * 12\n  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)\n}\n\n# half of a $400/month raise, invested for 25 years at 7%\nraise_invested_value(monthly_raise = 400, invest_share = 0.5,\n                     rate = 0.07, years = 25) |&gt; fmt_dollar()\n#&gt; [1] \"$162,014.34\"\n\n\n\n\n\n\nshow/hide\ndef raise_invested_value(monthly_raise, invest_share, rate, years):\n    contribution = monthly_raise * invest_share\n    monthly_rate = rate / 12\n    periods = years * 12\n    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)\n\n# half of a $400/month raise, invested for 25 years at 7%\nfmt_dollar(raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25))\n#&gt; '$162,014.34'\n\n\n\n\nUse the built-in FV() function: FV(rate, nper, pmt)\n\nrate: monthly return = 7%/12\nnper: number of months = 25*12\npmt: monthly contribution as a negative = -200\n\n=FV(7%/12, 25*12, -200)"
-  },
-  {
-    "objectID": "income.html#footnotes",
-    "href": "income.html#footnotes",
-    "title": "Income",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nRead more about the differences between Currency and Accounting formats in Excel.↩︎"
-  },
-  {
-    "objectID": "savings_strategies.html",
-    "href": "savings_strategies.html",
-    "title": "Savings Strategies",
-    "section": "",
-    "text": "Pay yourself first: automate savings before anything else hits the checking account\nSavings rate: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns\nBenchmarks: &lt;10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence\nSinking funds: pre-save for known future expenses (car insurance, vacation, gifts) so they don’t hit as surprises\nTarget: save as much as you can sustain; a consistent 15% beats a sporadic 30%"
-  },
-  {
-    "objectID": "savings_strategies.html#book-topics",
-    "href": "savings_strategies.html#book-topics",
-    "title": "Savings Strategies",
-    "section": "",
-    "text": "Pay yourself first: automate savings before anything else hits the checking account\nSavings rate: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns\nBenchmarks: &lt;10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence\nSinking funds: pre-save for known future expenses (car insurance, vacation, gifts) so they don’t hit as surprises\nTarget: save as much as you can sustain; a consistent 15% beats a sporadic 30%"
-  },
-  {
-    "objectID": "savings_strategies.html#savings-rate",
-    "href": "savings_strategies.html#savings-rate",
-    "title": "Savings Strategies",
-    "section": "2 Savings Rate",
-    "text": "2 Savings Rate\nThe savings rate tells you how much of your income you’re keeping, expressed as a percentage.\nFormula: Savings Rate = (Income − Spending) ÷ Income × 100\n\n\n\n\n\nAnnual dollars saved at four savings-rate tiers on a $60,000 income\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nsavings_rate &lt;- function(income, spending) {\n  ((income - spending) / income) * 100\n}\n\nsavings_rate(income = 5000, spending = 3500)\n#&gt; [1] 30\n\n\n\n\n\n\nshow/hide\ndef savings_rate(income, spending):\n    return ((income - spending) / income) * 100\n\nsavings_rate(income=5000, spending=3500)\n#&gt; 30.0\n\n\n\n\nWith income in A2 and spending in B2:\n=((A2-B2)/A2)*100"
+    "objectID": "budgeting.html#break-even",
+    "href": "budgeting.html#break-even",
+    "title": "Budgeting",
+    "section": "5 Break-Even",
+    "text": "5 Break-Even\nUseful for evaluating memberships, refinances, or any purchase with an upfront cost and recurring savings.\nFormula: Upfront Cost ÷ Monthly Savings = months to break even\n\n\n\n\n\n$60/month savings accumulating toward a $500 upfront cost\n\n\n\n\n\nRPythonExcel\n\n\n\n\nshow/hide\nmonths_to_break_even &lt;- function(upfront_cost, monthly_savings) {\n  upfront_cost / monthly_savings\n}\n\nmonths_to_break_even(upfront_cost = 500, monthly_savings = 60)\n#&gt; [1] 8.333333\n\n\n\n\n\n\nshow/hide\ndef months_to_break_even(upfront_cost, monthly_savings):\n    return upfront_cost / monthly_savings\n\nmonths_to_break_even(upfront_cost=500, monthly_savings=60)\n#&gt; 8.333333333333334\n\n\n\n\nWith upfront cost in A2 and monthly savings in B2:\n=A2/B2"
   },
   {
     "objectID": "r_vs_py.html",
