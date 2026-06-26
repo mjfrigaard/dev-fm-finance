@@ -56,6 +56,7 @@ format:
     df-print: tibble
     dpi: 320
     fig-format: retina
+    lightbox: true
     fig-asp: 0.618
     fontsize: 1.025em
     linestretch: 1.30
