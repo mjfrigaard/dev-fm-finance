@@ -76,6 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -303,7 +306,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="budgeting_files/figure-html/pct-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<p><a href="budgeting_files/figure-html/pct-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Rent ($1,500) as a share of a $5,000 paycheck"><img src="budgeting_files/figure-html/pct-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Rent ($1,500) as a share of a $5,000 paycheck"></a></p>
 <figcaption>Rent ($1,500) as a share of a $5,000 paycheck</figcaption>
 </figure>
 </div>
@@ -317,23 +320,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>percent_of_income <span class="ot">&lt;-</span> <span class="cf">function</span>(expense, income) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (expense <span class="sc">/</span> income) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">percent_of_income</span>(<span class="at">expense =</span> <span class="dv">1500</span>, <span class="at">income =</span> <span class="dv">5000</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 30</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (expense <span class="sc">/</span> income) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt_pct</span>()</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">percent_of_income</span>(<span class="at">expense =</span> <span class="dv">1500</span>, <span class="at">income =</span> <span class="dv">5000</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "30%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> percent_of_income(expense, income):</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (expense <span class="op">/</span> income) <span class="op">*</span> <span class="dv">100</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>percent_of_income(expense<span class="op">=</span><span class="dv">1500</span>, income<span class="op">=</span><span class="dv">5000</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 30.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    ratio <span class="op">=</span> expense <span class="op">/</span> income</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmt_pct(ratio)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>percent_of_income(expense<span class="op">=</span><span class="dv">1500</span>, income<span class="op">=</span><span class="dv">5000</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '30.0%'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -347,12 +353,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="annualizing-and-monthly-izing" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="annualizing-and-monthly-izing"><span class="header-section-number">3</span> Annualizing and Monthly-izing</h2>
 <p>Scale any spending habit across time periods to see the true cost.</p>
-<p><strong>Annual → Monthly:</strong> ÷ 12 | <strong>Monthly → Annual:</strong> × 12 | <strong>Weekly → Monthly:</strong> × 4.33 | <strong>Daily → Annual:</strong> × 365</p>
+<p><strong>Annual → Monthly:</strong> ÷ 12</p>
+<p><strong>Monthly → Annual:</strong> × 12</p>
+<p><strong>Weekly → Monthly:</strong> × 4.33</p>
+<p><strong>Daily → Annual:</strong> × 365</p>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="budgeting_files/figure-html/annual-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<p><a href="budgeting_files/figure-html/annual-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="The same $5/day habit across four time periods"><img src="budgeting_files/figure-html/annual-bar-model-1.png" class="img-fluid figure-img" width="576" alt="The same $5/day habit across four time periods"></a></p>
 <figcaption>The same $5/day habit across four time periods</figcaption>
 </figure>
 </div>
@@ -369,18 +378,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  period  <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(period)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  factors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">daily =</span> <span class="dv">365</span>, <span class="at">weekly =</span> <span class="dv">52</span>, <span class="at">monthly =</span> <span class="dv">12</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  amount <span class="sc">*</span> factors[[period]]</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>to_monthly <span class="ot">&lt;-</span> <span class="cf">function</span>(amount, <span class="at">period =</span> <span class="fu">c</span>(<span class="st">"daily"</span>, <span class="st">"weekly"</span>, <span class="st">"annual"</span>)) {</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  period  <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(period)</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  factors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">daily =</span> <span class="fl">30.44</span>, <span class="at">weekly =</span> <span class="fl">4.33</span>, <span class="at">annual =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">12</span>)</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  amount <span class="sc">*</span> factors[[period]]</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">to_annual</span>(<span class="at">amount =</span> <span class="dv">5</span>, <span class="at">period =</span> <span class="st">"daily"</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1825</span></span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="fu">to_monthly</span>(<span class="at">amount =</span> <span class="dv">150</span>, <span class="at">period =</span> <span class="st">"weekly"</span>)</span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 649.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>to_monthly <span class="ot">&lt;-</span> <span class="cf">function</span>(amount, <span class="at">period =</span> <span class="fu">c</span>(<span class="st">"daily"</span>, <span class="st">"weekly"</span>, <span class="st">"annual"</span>)) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  period  <span class="ot">&lt;-</span> <span class="fu">match.arg</span>(period)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  factors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">daily =</span> <span class="fl">30.44</span>, <span class="at">weekly =</span> <span class="fl">4.33</span>, <span class="at">annual =</span> <span class="dv">1</span> <span class="sc">/</span> <span class="dv">12</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  amount <span class="sc">*</span> factors[[period]]</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">to_annual</span>(<span class="at">amount =</span> <span class="dv">5</span>, <span class="at">period =</span> <span class="st">"daily"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1825</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">to_monthly</span>(<span class="at">amount =</span> <span class="dv">150</span>, <span class="at">period =</span> <span class="st">"weekly"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 649.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -388,26 +410,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_annual(amount, period<span class="op">=</span><span class="st">"daily"</span>):</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    factors <span class="op">=</span> {<span class="st">"daily"</span>: <span class="dv">365</span>, <span class="st">"weekly"</span>: <span class="dv">52</span>, <span class="st">"monthly"</span>: <span class="dv">12</span>}</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> amount <span class="op">*</span> factors[period]</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_monthly(amount, period<span class="op">=</span><span class="st">"daily"</span>):</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    factors <span class="op">=</span> {<span class="st">"daily"</span>: <span class="fl">30.44</span>, <span class="st">"weekly"</span>: <span class="fl">4.33</span>, <span class="st">"annual"</span>: <span class="dv">1</span> <span class="op">/</span> <span class="dv">12</span>}</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> amount <span class="op">*</span> factors[period]</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(to_annual(amount<span class="op">=</span><span class="dv">5</span>, period<span class="op">=</span><span class="st">"daily"</span>))</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1825</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(to_monthly(amount<span class="op">=</span><span class="dv">150</span>, period<span class="op">=</span><span class="st">"weekly"</span>))</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 649.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_annual(amount, period<span class="op">=</span><span class="st">"daily"</span>):</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    factors <span class="op">=</span> {<span class="st">"daily"</span>: <span class="dv">365</span>, <span class="st">"weekly"</span>: <span class="dv">52</span>, <span class="st">"monthly"</span>: <span class="dv">12</span>}</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> amount <span class="op">*</span> factors[period]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> to_monthly(amount, period<span class="op">=</span><span class="st">"daily"</span>):</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    factors <span class="op">=</span> {<span class="st">"daily"</span>: <span class="fl">30.44</span>, <span class="st">"weekly"</span>: <span class="fl">4.33</span>, <span class="st">"annual"</span>: <span class="dv">1</span> <span class="op">/</span> <span class="dv">12</span>}</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> amount <span class="op">*</span> factors[period]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(to_annual(amount<span class="op">=</span><span class="dv">5</span>, period<span class="op">=</span><span class="st">"daily"</span>))</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1825</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(to_monthly(amount<span class="op">=</span><span class="dv">150</span>, period<span class="op">=</span><span class="st">"weekly"</span>))</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 649.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
 <p>With daily amount in <code>A2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*</span><span class="dv">365</span>      # daily → annual</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*</span><span class="dv">52</span>       # weekly → annual</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span><span class="dv">12</span>       # annual → monthly</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*</span><span class="dv">365</span>      # daily → annual</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*</span><span class="dv">52</span>       # weekly → annual</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span><span class="dv">12</span>       # annual → monthly</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -420,7 +442,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="budgeting_files/figure-html/opp-cost-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<p><a href="budgeting_files/figure-html/opp-cost-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="$25,000 invested at 7% — value at each checkpoint"><img src="budgeting_files/figure-html/opp-cost-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$25,000 invested at 7% — value at each checkpoint"></a></p>
 <figcaption>$25,000 invested at 7% — value at each checkpoint</figcaption>
 </figure>
 </div>
@@ -433,30 +455,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(amount, rate, years) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  amount <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">opportunity_cost</span>(<span class="at">amount =</span> <span class="dv">25000</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 190306.4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(amount, rate, years) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (amount <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years) <span class="sc">|&gt;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fmt_dollar</span>()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">opportunity_cost</span>(<span class="at">amount =</span> <span class="dv">25000</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$190,306.38"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<p>In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opportunity_cost(amount, rate, years):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> amount <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>opportunity_cost(amount<span class="op">=</span><span class="dv">25000</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 190306.37606655105</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> opportunity_cost(amount, rate, years):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    fv <span class="op">=</span> amount <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmt_dollar(fv)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>opportunity_cost(amount<span class="op">=</span><span class="dv">25000</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$190,306.38'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
 <p>With amount in <code>A2</code>, rate in <code>B2</code>, years in <code>C2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)^</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)^</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -469,7 +494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="budgeting_files/figure-html/break-even-bar-model-1.png" class="img-fluid figure-img" width="576"></p>
+<p><a href="budgeting_files/figure-html/break-even-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="$60/month savings accumulating toward a $500 upfront cost"><img src="budgeting_files/figure-html/break-even-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$60/month savings accumulating toward a $500 upfront cost"></a></p>
 <figcaption>$60/month savings accumulating toward a $500 upfront cost</figcaption>
 </figure>
 </div>
@@ -482,12 +507,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>months_to_break_even <span class="ot">&lt;-</span> <span class="cf">function</span>(upfront_cost, monthly_savings) {</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  upfront_cost <span class="sc">/</span> monthly_savings</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_break_even</span>(<span class="at">upfront_cost =</span> <span class="dv">500</span>, <span class="at">monthly_savings =</span> <span class="dv">60</span>)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 8.333333</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>months_to_break_even <span class="ot">&lt;-</span> <span class="cf">function</span>(upfront_cost, monthly_savings) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  upfront_cost <span class="sc">/</span> monthly_savings</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_break_even</span>(<span class="at">upfront_cost =</span> <span class="dv">500</span>, <span class="at">monthly_savings =</span> <span class="dv">60</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 8.333333</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -495,17 +520,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> months_to_break_even(upfront_cost, monthly_savings):</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> upfront_cost <span class="op">/</span> monthly_savings</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>months_to_break_even(upfront_cost<span class="op">=</span><span class="dv">500</span>, monthly_savings<span class="op">=</span><span class="dv">60</span>)</span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8.333333333333334</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> months_to_break_even(upfront_cost, monthly_savings):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> upfront_cost <span class="op">/</span> monthly_savings</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>months_to_break_even(upfront_cost<span class="op">=</span><span class="dv">500</span>, monthly_savings<span class="op">=</span><span class="dv">60</span>)</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8.333333333333334</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <p>With upfront cost in <code>A2</code> and monthly savings in <code>B2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span>B2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">/</span>B2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
@@ -954,6 +979,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

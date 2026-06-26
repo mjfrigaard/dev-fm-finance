@@ -13,6 +13,11 @@ source("_common.R")
 ```{python}
 #| label: setup-py
 #| include: false
+def fmt_dollar(x, digits=2):
+    return f"${x:,.{digits}f}"
+
+def fmt_pct(x, digits=1):
+    return f"{x * 100:.{digits}f}%"
 ```
 
 ## Book Topics
@@ -55,12 +60,14 @@ ggplot(df_pct, aes(x = "", y = amount, fill = label)) +
 ```
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
 #| label: percent-r
 percent_of_income <- function(expense, income) {
-  (expense / income) * 100
+  (expense / income) |>
+    fmt_pct()
 }
 
 percent_of_income(expense = 1500, income = 5000)
@@ -68,10 +75,13 @@ percent_of_income(expense = 1500, income = 5000)
 
 ## Python
 
+In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
+
 ```{python}
 #| label: percent-py
 def percent_of_income(expense, income):
-    return (expense / income) * 100
+    ratio = expense / income
+    return fmt_pct(ratio)
 
 percent_of_income(expense=1500, income=5000)
 ```
@@ -83,13 +93,20 @@ With expense in `A2` and income in `B2`:
 ```swift
 =(A2/B2)*100
 ```
+
 :::
 
 ## Annualizing and Monthly-izing
 
 Scale any spending habit across time periods to see the true cost.
 
-**Annual → Monthly:** ÷ 12 | **Monthly → Annual:** × 12 | **Weekly → Monthly:** × 4.33 | **Daily → Annual:** × 365
+**Annual → Monthly:** ÷ 12 
+
+**Monthly → Annual:** × 12 
+
+**Weekly → Monthly:** × 4.33 
+
+**Daily → Annual:** × 365
 
 ```{r}
 #| label: annual-bar-model
@@ -118,20 +135,28 @@ ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
 ## R
 
 ```{r}
-#| label: annualize-r
+#| label: to_annual-r
 to_annual <- function(amount, period = c("daily", "weekly", "monthly")) {
   period  <- match.arg(period)
   factors <- c(daily = 365, weekly = 52, monthly = 12)
   amount * factors[[period]]
 }
+```
 
+```{r}
+#| label: to_monthly-r
 to_monthly <- function(amount, period = c("daily", "weekly", "annual")) {
   period  <- match.arg(period)
   factors <- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)
   amount * factors[[period]]
 }
+```
 
+```{r}
 to_annual(amount = 5, period = "daily")
+```
+
+```{r}
 to_monthly(amount = 150, period = "weekly")
 ```
 
@@ -197,7 +222,8 @@ ggplot(df_opp, aes(x = year, y = value)) +
 ```{r}
 #| label: opp-cost-r
 opportunity_cost <- function(amount, rate, years) {
-  amount * (1 + rate)^years
+  (amount * (1 + rate)^years) |>
+    fmt_dollar()
 }
 
 opportunity_cost(amount = 25000, rate = 0.07, years = 30)
@@ -205,10 +231,13 @@ opportunity_cost(amount = 25000, rate = 0.07, years = 30)
 
 ## Python
 
+In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
+
 ```{python}
 #| label: opp-cost-py
 def opportunity_cost(amount, rate, years):
-    return amount * (1 + rate) ** years
+    fv = amount * (1 + rate) ** years
+    return fmt_dollar(fv)
 
 opportunity_cost(amount=25000, rate=0.07, years=30)
 ```

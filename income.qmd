@@ -70,6 +70,8 @@ fmt_pct <- function(x, digits = 1) {
 }
 ```
 
+This can be used to format percentages as strings with a percent sign.
+
 ```{r}
 #| label: fmt-utils-r-apply
 fmt_dollar(9200)
@@ -95,6 +97,8 @@ def fmt_dollar(x, digits=2):
 def fmt_pct(x, digits=1):
     return f"{x * 100:.{digits}f}%"
 ```
+
+Utility functions like `fmt_pct()` can be re-used in other, more complex functions. 
 
 ```{python}
 #| label: fmt-utils-py-apply
@@ -165,6 +169,7 @@ ggplot(df_fc, aes(x = "", y = amount, fill = fill)) +
 ```
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
@@ -172,8 +177,11 @@ ggplot(df_fc, aes(x = "", y = amount, fill = fill)) +
 fixed_cost_ratio <- function(fixed_costs, take_home) {
   fixed_costs / take_home
 }
+```
 
-fixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |> fmt_pct()
+```{r}
+#| label: fixed-cost-r-apply
+fixed_cost_ratio(fixed_costs = 4400, take_home = 8000)
 ```
 
 ## Python
@@ -182,8 +190,11 @@ fixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |> fmt_pct()
 #| label: fixed-cost-py
 def fixed_cost_ratio(fixed_costs, take_home):
     return fixed_costs / take_home
+```
 
-fmt_pct(fixed_cost_ratio(fixed_costs=4400, take_home=8000))
+```{python}
+#| label: fixed-cost-py-apply
+fixed_cost_ratio(fixed_costs=4400, take_home=8000)
 ```
 
 ## Excel
@@ -201,11 +212,12 @@ Format `C2` as percentage (`Home → %`). For a percent string:
 ```
 
 ![](img/income-fixed-cost-ratio-text-perc.png){width="75%"}
+
 :::
 
 ## Using Pipes in R
 
-The pipe operator (`|>`) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out.
+The pipe operator (`|>`) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out. We previously wrote the fmt_pct() function, so we can 'pipe' the output of `fixed_cost_ratio()` into `fmt_pct()` to get a formatted percentage string.
 
 ``` r
 fixed_cost_ratio(fixed_costs = 4400, take_home = 8000) |> fmt_pct()
@@ -221,26 +233,58 @@ When two steps always belong together, wrap them in a single function so callers
 
 ```{r}
 #| label: fixed-cost-pct-r
-fixed_cost_ratio_pct <- function(fixed_costs, take_home) {
-  fixed_cost_ratio(fixed_costs, take_home) |> fmt_pct()
+#| code-fold: false
+#| eval: true
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  ratio <- fixed_costs / take_home
+    fmt_pct(ratio)
 }
-
-fixed_cost_ratio_pct(fixed_costs = 4400, take_home = 8000)
 ```
 
-Python has no native pipe operator. The equivalent is simply wrapping the inner call.
+```{r}
+#| code-fold: false
+fixed_cost_ratio(fixed_costs = 4400, take_home = 8000)
+```
+
+This would also work: 
+
+```{r}
+#| label: fixed-cost-pct-r-2
+#| code-fold: false
+#| eval: false 
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  fmt_pct(fixed_costs / take_home)
+}
+```
+
+```{r}
+#| code-fold: false
+fixed_cost_ratio(fixed_costs = 4400, take_home = 8000)
+```
+
+Python has no native pipe operator. The equivalent is returning the result from `fixed_cost_ratio()` and passing this value to `fmt_pct()`:
 
 ```{python}
 #| label: fixed-cost-pct-py
-def fixed_cost_ratio_pct(fixed_costs, take_home):
-    return fmt_pct(fixed_cost_ratio(fixed_costs, take_home))
-
-fixed_cost_ratio_pct(fixed_costs=4400, take_home=8000)
+#| code-fold: false 
+def fixed_cost_ratio(fixed_costs, take_home):
+    ratio = fixed_costs / take_home
+    return fmt_pct(ratio)
 ```
+
+```{python}
+#| label: fixed-cost-pct-py-apply
+#| code-fold: false 
+fixed_cost_ratio(fixed_costs=4400, take_home=8000)
+```
+
+Python's approach emphasizes explicit intermediate steps. Store the result of `fixed_cost_ratio()` in a variable (`ratio`), then pass it to `fmt_pct()`. This reads top-to-bottom and makes debugging easier since you can inspect intermediate values.
+
+Both languages can call utility functions from within other functions; the key difference is that R's pipe operator (`|>`) allows chaining without intermediate variables, while Python requires them or nested calls.
 
 Read more about the pipe operator in [R vs. Python](r_vs_py.qmd#sec-pipe-operator).
 
-## What a Raise Is Really Worth
+## Split Raise Strategy
 
 Split every raise: invest half, spend half. The future value of contributions formula shows how powerful this habit is.
 
@@ -279,20 +323,27 @@ ggplot(df_raise, aes(x = year, y = value)) +
 ```
 
 ::: panel-tabset
+
 ## R
 
 ```{r}
 #| label: raise-value-r
+#| code-fold: false
 raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
   contribution <- monthly_raise * invest_share
   monthly_rate <- rate / 12
   periods      <- years * 12
-  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
+  (contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)) |>
+    fmt_dollar()
 }
+```
 
-# half of a $400/month raise, invested for 25 years at 7%
+Half of a $400/month raise, invested for 25 years at 7%:
+```{r}
+#| label: raise-value-r-apply
+#| code-fold: false
 raise_invested_value(monthly_raise = 400, invest_share = 0.5,
-                     rate = 0.07, years = 25) |> fmt_dollar()
+                     rate = 0.07, years = 25)
 ```
 
 ## Python
@@ -303,10 +354,16 @@ def raise_invested_value(monthly_raise, invest_share, rate, years):
     contribution = monthly_raise * invest_share
     monthly_rate = rate / 12
     periods = years * 12
-    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+    fv = contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+    return fmt_dollar(fv)
+```
 
-# half of a $400/month raise, invested for 25 years at 7%
-fmt_dollar(raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25))
+Half of a $400/month raise, invested for 25 years at 7%:
+
+```{python}
+#| label: raise-value-py-apply
+#| code-fold: false
+raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25)
 ```
 
 ## Excel
