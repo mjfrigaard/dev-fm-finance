@@ -2,7 +2,21 @@
   "permission": {
     "edit": {
       "*.qmd": "allow",
-      "*.md": "allow"
+      "*.md": "allow",
+      "*.R": "allow",
+      "*/.gitignore": "allow"
+    },
+    "bash": {
+      "mkdir *": "allow"
+    },
+    "executeCode": {
+      "*": "allow"
+    },
+    "external_directory": {
+      "/Users/mjfrigaard/projects/agents//*": "allow",
+      "/Users/mjfrigaard/projects/skills//*": "allow",
+      "/Users/mjfrigaard/projects/skills/*": "allow",
+      "/Users/mjfrigaard/projects/agents/*": "allow"
     }
   }
 }
