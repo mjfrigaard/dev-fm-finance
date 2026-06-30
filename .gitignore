@@ -1,3 +1,4 @@
 /.quarto/
+_assets/
 **/*.quarto_ipynb
 .Rprofile

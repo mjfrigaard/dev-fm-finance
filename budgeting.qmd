@@ -63,13 +63,16 @@ ggplot(df_pct, aes(x = "", y = amount, fill = label)) +
 
 ## R
 
+We can create a simple function to calculate the percentage of income that an expense represents. The `fmt_pct()` function formats the result as a percentage.
 ```{r}
 #| label: percent-r
 percent_of_income <- function(expense, income) {
-  (expense / income) |>
-    fmt_pct()
+    fmt_pct(expense / income)
 }
+```
 
+```{r}
+#| label: percent-r-apply
 percent_of_income(expense = 1500, income = 5000)
 ```
 
@@ -88,11 +91,17 @@ percent_of_income(expense=1500, income=5000)
 
 ## Excel
 
-With expense in `A2` and income in `B2`:
+Assuming `Expense` is in cell `B2` and `Income` is in cell `C2`:
 
-```swift
-=(A2/B2)*100
+``` swift
+=(B2 / C2) * 100
 ```
+
+![](img/budget_percent_of_income.png){width='100%' fig-align='center'}
+
+Or, more simply, enter `=B2 / C2` and format the cell as a **Percentage** using the button in the toolbar.
+
+![](img/budget_percent_of_income_format.png){width='100%' fig-align='center'}
 
 :::
 
@@ -132,31 +141,40 @@ ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
 ```
 
 ::: panel-tabset
+
 ## R
+
+Two of the most common conversions are annualizing daily, weekly, and  monthly amounts and converting annual, weekly, or daily amounts to a monthly equivalent. 
 
 ```{r}
 #| label: to_annual-r
+#| code-fold: false
 to_annual <- function(amount, period = c("daily", "weekly", "monthly")) {
   period  <- match.arg(period)
   factors <- c(daily = 365, weekly = 52, monthly = 12)
-  amount * factors[[period]]
+  fmt_dollar(amount * factors[[period]])
 }
 ```
 
 ```{r}
 #| label: to_monthly-r
+#| code-fold: false
 to_monthly <- function(amount, period = c("daily", "weekly", "annual")) {
   period  <- match.arg(period)
   factors <- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)
-  amount * factors[[period]]
+  fmt_dollar(amount * factors[[period]])
 }
 ```
 
 ```{r}
+#| label: to_annual-r-apply
+#| code-fold: false
 to_annual(amount = 5, period = "daily")
 ```
 
 ```{r}
+#| label: to_monthly-r-apply
+#| code-fold: false
 to_monthly(amount = 150, period = "weekly")
 ```
 
@@ -164,27 +182,72 @@ to_monthly(amount = 150, period = "weekly")
 
 ```{python}
 #| label: annualize-py
+#| code-fold: false
 def to_annual(amount, period="daily"):
     factors = {"daily": 365, "weekly": 52, "monthly": 12}
-    return amount * factors[period]
+    return fmt_dollar(amount * factors[period])
+```
 
+```{python}
+#| label: monthlyize-py
+#| code-fold: false
 def to_monthly(amount, period="daily"):
     factors = {"daily": 30.44, "weekly": 4.33, "annual": 1 / 12}
-    return amount * factors[period]
+    return fmt_dollar(amount * factors[period])
+```
 
+```{python}
+#| label: annualize-py-apply
+#| code-fold: false
 print(to_annual(amount=5, period="daily"))
+```
+
+```{python}
+#| label: monthlyize-py-apply
+#| code-fold: false
 print(to_monthly(amount=150, period="weekly"))
 ```
 
 ## Excel
 
-With daily amount in `A2`:
+Let's start with the daily value in cell `A1`, then convert it to the cost per week in cell `A2`:
 
-```swift
-=A2*365      # daily → annual
-=A2*52       # weekly → annual
-=A2/12       # annual → monthly
+``` swift
+=A1 * 7
 ```
+
+Next we can convert the week to the monthly cost in cell `A3`:
+
+``` swift
+=A2 * 4.33
+```
+
+Finally, we get the annual cost in cell `A4`:
+
+``` swift
+=A1 * 365
+```
+
+Format cells `A1` - `A4` as **Currency** or **Accounting**.
+
+![](img/budget_daily2yearly_formula.png){width='100%' fig-align='center'}
+
+To convert a weekly value in cell `A1` to a monthly value, place the following formula in cell `A2`:
+
+``` swift
+=A1 * 4.33
+```
+
+To convert the monthly cost to an annual cost, enter the following in cell `A3`:
+
+``` swift
+=A2 * 12
+```
+
+Format cells `A1` - `A3` as **Currency** or **Accounting**.
+
+![](img/budget_weekly2yearly_formula.png){width='100%' fig-align='center'}
+
 :::
 
 ## Opportunity Cost
@@ -225,7 +288,10 @@ opportunity_cost <- function(amount, rate, years) {
   (amount * (1 + rate)^years) |>
     fmt_dollar()
 }
+```
 
+```{r}
+#| label: opp-cost-r-apply
 opportunity_cost(amount = 25000, rate = 0.07, years = 30)
 ```
 
@@ -238,17 +304,23 @@ In Python, we store intermediate values explicitly before formatting; this makes
 def opportunity_cost(amount, rate, years):
     fv = amount * (1 + rate) ** years
     return fmt_dollar(fv)
+```
 
+```{python}
+#| label: opp-cost-py-apply
 opportunity_cost(amount=25000, rate=0.07, years=30)
 ```
 
 ## Excel
 
-With amount in `A2`, rate in `B2`, years in `C2`:
+Assuming the initial amount is in cell `A2`, the annual rate (as a decimal, e.g., 0.07) is in `B2`, and the number of years is in `C2`:
 
-```swift
+``` swift
 =A2*(1+B2)^C2
 ```
+
+![](img/budget_opportunity_cost_formula.png){width='100%' fig-align='center'}
+
 :::
 
 ## Break-Even
@@ -285,10 +357,15 @@ ggplot(df_be, aes(x = month, y = saved, fill = reached)) +
 
 ```{r}
 #| label: break-even-r
+#| code-fold: false
 months_to_break_even <- function(upfront_cost, monthly_savings) {
   upfront_cost / monthly_savings
 }
+```
 
+```{r}
+#| label: break-even-r-apply
+#| code-fold: false
 months_to_break_even(upfront_cost = 500, monthly_savings = 60)
 ```
 
@@ -296,17 +373,24 @@ months_to_break_even(upfront_cost = 500, monthly_savings = 60)
 
 ```{python}
 #| label: break-even-py
+#| code-fold: false
 def months_to_break_even(upfront_cost, monthly_savings):
     return upfront_cost / monthly_savings
+```
 
+```{python}
+#| label: break-even-py-apply
+#| code-fold: false
 months_to_break_even(upfront_cost=500, monthly_savings=60)
 ```
 
 ## Excel
 
-With upfront cost in `A2` and monthly savings in `B2`:
+Assuming the upfront cost is in cell `A2` and the monthly savings amount is in cell `B2`:
 
-```swift
-=A2/B2
+``` swift
+=A2 / B2
 ```
+
+![](img/budget_break_even_formula.png){width='100%' fig-align='center'}
 :::
