@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Taxes – DEV (fm-finance)</title>
+<title>agents – DEV (fm-finance)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -214,33 +214,97 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#agents.md" id="toc-agents.md" class="nav-link active" data-scroll-target="#agents.md"><span class="header-section-number">1</span> AGENTS.md</a>
+  <ul>
+  <li><a href="#global-behavior-minimal-token-profile-responses" id="toc-global-behavior-minimal-token-profile-responses" class="nav-link" data-scroll-target="#global-behavior-minimal-token-profile-responses"><span class="header-section-number">1.1</span> Global Behavior: Minimal Token Profile Responses</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">1.2</span> Overview</a></li>
+  <li><a href="#quick-reference" id="toc-quick-reference" class="nav-link" data-scroll-target="#quick-reference"><span class="header-section-number">1.3</span> Quick Reference</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">1.4</span> Architecture</a></li>
+  <li><a href="#file-structure" id="toc-file-structure" class="nav-link" data-scroll-target="#file-structure"><span class="header-section-number">1.5</span> File Structure</a></li>
+  <li><a href="#key-patterns" id="toc-key-patterns" class="nav-link" data-scroll-target="#key-patterns"><span class="header-section-number">1.6</span> Key Patterns</a></li>
+  <li><a href="#accompanying-packages" id="toc-accompanying-packages" class="nav-link" data-scroll-target="#accompanying-packages"><span class="header-section-number">1.7</span> Accompanying Packages</a></li>
+  <li><a href="#important-notes" id="toc-important-notes" class="nav-link" data-scroll-target="#important-notes"><span class="header-section-number">1.8</span> Important Notes</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content">
-
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title">
-<h1 class="title">Taxes</h1>
-</div>
-
-
-
-<div class="quarto-title-meta">
-
-    
-  
-    
-  </div>
-  
-
-
-</header>
+<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
 
+<section id="agents.md" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> AGENTS.md</h1>
+<p>Guidance for Posit Assistant when working with this repository.</p>
+<section id="global-behavior-minimal-token-profile-responses" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="global-behavior-minimal-token-profile-responses"><span class="header-section-number">1.1</span> Global Behavior: Minimal Token Profile Responses</h2>
+<p>Be terse. No preamble. No summaries. No “I’ll now…” narration. Return only what was asked. Prefer code over explanation. No apologies. No filler. One-word confirmations when possible.</p>
+</section>
+<section id="overview" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.2</span> Overview</h2>
+<p>Development sandbox for “Personal Finance: a Field Manual” — a Quarto website teaching personal finance with dual R/Python code examples for general (non-technical) audiences.</p>
+<ul>
+<li><strong>Dev repo</strong>: This directory (test code, iterate on examples)</li>
+<li><strong>Published book</strong>: <code>/Users/mjfrigaard/projects/books/fm-finance</code></li>
+<li><strong>Site</strong>: https://mjfrigaard.github.io/fm-finance/</li>
+<li><strong>Pedagogical approach</strong>: Singapore Math Method: concrete (real-world scenarios) → pictorial (charts, Shiny dashboards) → abstract (formulas, code)</li>
+</ul>
+</section>
+<section id="quick-reference" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="quick-reference"><span class="header-section-number">1.3</span> Quick Reference</h2>
+<p><strong>Build / render:</strong> - <code>quarto render</code> — full site - <code>quarto render income.qmd</code> — single chapter - <code>quarto preview</code> — live preview</p>
+<p><strong>Shiny apps:</strong> - <code>shiny run _apps/Python/budgeting/app.py</code> — Python - <code>shiny run --reload _apps/Python/budgeting/app.py</code> — Python with auto-reload - <code>Rscript -e 'shiny::runApp("_apps/R/budgeting")'</code> — R from terminal</p>
+</section>
+<section id="architecture" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="architecture"><span class="header-section-number">1.4</span> Architecture</h2>
+<p><strong>Dual-language design</strong>: Every chapter uses both R (tidyverse + ggplot2) and Python (polars, numpy). Code examples appear side by side.</p>
+<p><strong>Shared utilities</strong> (<code>_common.R</code> / <code>_common.py</code>): - <code>fmt_dollar()</code>, <code>fmt_pct()</code> — number formatting - <code>co_box()</code> — styled callout boxes</p>
+<p><strong>Quarto config</strong>: <code>flatly</code> theme with <code>custom.scss</code> overrides, <code>freeze: auto</code> for caching, right TOC, numbered sections, code folding.</p>
+<p><strong>Shiny apps</strong> (<code>_apps/R/budgeting/app.R</code>, <code>_apps/Python/budgeting/app.py</code>): Interactive demonstrations of financial concepts.</p>
+</section>
+<section id="file-structure" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="file-structure"><span class="header-section-number">1.5</span> File Structure</h2>
+<ul>
+<li><code>*.qmd</code> — Chapter files (source <code>_common.R</code> / <code>_common.py</code>)</li>
+<li><code>_quarto.yml</code> — Project config</li>
+<li><code>custom.scss</code> — Theme overrides</li>
+<li><code>_common.R</code>, <code>_common.py</code> — Shared utilities</li>
+<li><code>_apps/</code> — Shiny demos</li>
+<li><code>_site/</code>, <code>_freeze/</code> — Build artifacts (git-ignored)</li>
+</ul>
+</section>
+<section id="key-patterns" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="key-patterns"><span class="header-section-number">1.6</span> Key Patterns</h2>
+<p><strong>Callouts</strong>: <code>co_box(color, header, contents)</code> with colors: - <code>g</code> — tip - <code>b</code> — note - <code>r</code> — important - <code>o</code> — warning - <code>y</code> — caution</p>
+<p><strong>Number formatting</strong>: Use <code>fmt_dollar()</code> and <code>fmt_pct()</code> for readable output.</p>
+<p><strong>Chapter structure</strong>: Minimal YAML (title only), then setup blocks sourcing <code>_common.R</code> and <code>_common.py</code>.</p>
+</section>
+<section id="accompanying-packages" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="accompanying-packages"><span class="header-section-number">1.7</span> Accompanying Packages</h2>
+<ul>
+<li>R package: <code>/Users/mjfrigaard/projects/pkgs/R/fmfinr</code></li>
+<li>Python package: <code>/Users/mjfrigaard/projects/pkgs/python/fmfinpy</code></li>
+</ul>
+</section>
+<section id="important-notes" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="important-notes"><span class="header-section-number">1.8</span> Important Notes</h2>
+<ul>
+<li><strong>Audience</strong>: General readers, no financial jargon. Code supports learning, not the focus.</li>
+<li><strong>Caching</strong>: <code>freeze: auto</code> caches results; run <code>quarto render chapter.qmd</code> after code changes.</li>
+<li><strong>Styling</strong>: Edit <code>custom.scss</code> for theme tweaks (primary color: green).</li>
+<li><strong>Environment</strong>: Requires R 4.5+, Python 3.9+, and packages from fmfinr/fmfinpy.</li>
+<li><strong>Git workflow</strong>: No Claude/AI mentions in commit messages; no hidden folders (<code>.claude/</code>, <code>.positai/</code>); no instruction files in history.</li>
+</ul>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -316,7 +380,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

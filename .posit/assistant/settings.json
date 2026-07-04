@@ -7,7 +7,8 @@
       "*/.gitignore": "allow"
     },
     "bash": {
-      "mkdir *": "allow"
+      "mkdir *": "allow",
+      "cp *": "allow"
     },
     "executeCode": {
       "*": "allow"
@@ -16,7 +17,8 @@
       "/Users/mjfrigaard/projects/agents//*": "allow",
       "/Users/mjfrigaard/projects/skills//*": "allow",
       "/Users/mjfrigaard/projects/skills/*": "allow",
-      "/Users/mjfrigaard/projects/agents/*": "allow"
+      "/Users/mjfrigaard/projects/agents/*": "allow",
+      "*": "allow"
     }
   }
 }

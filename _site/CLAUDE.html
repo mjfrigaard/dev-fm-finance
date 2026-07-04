@@ -256,14 +256,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#claude.md" id="toc-claude.md" class="nav-link active" data-scroll-target="#claude.md"><span class="header-section-number">1</span> CLAUDE.md</a>
   <ul>
-  <li><a href="#general" id="toc-general" class="nav-link" data-scroll-target="#general"><span class="header-section-number">1.1</span> General</a></li>
-  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">1.2</span> Overview</a></li>
-  <li><a href="#quick-reference" id="toc-quick-reference" class="nav-link" data-scroll-target="#quick-reference"><span class="header-section-number">1.3</span> Quick Reference</a></li>
-  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">1.4</span> Architecture</a></li>
-  <li><a href="#file-structure" id="toc-file-structure" class="nav-link" data-scroll-target="#file-structure"><span class="header-section-number">1.5</span> File Structure</a></li>
-  <li><a href="#key-patterns" id="toc-key-patterns" class="nav-link" data-scroll-target="#key-patterns"><span class="header-section-number">1.6</span> Key Patterns</a></li>
-  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow"><span class="header-section-number">1.7</span> Workflow</a></li>
-  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="header-section-number">1.8</span> Notes</a></li>
+  <li><a href="#global-behavior" id="toc-global-behavior" class="nav-link" data-scroll-target="#global-behavior"><span class="header-section-number">1.1</span> Global Behavior</a></li>
+  <li><a href="#skills-agents" id="toc-skills-agents" class="nav-link" data-scroll-target="#skills-agents"><span class="header-section-number">1.2</span> Skills &amp; Agents</a></li>
+  <li><a href="#accompanying-packages" id="toc-accompanying-packages" class="nav-link" data-scroll-target="#accompanying-packages"><span class="header-section-number">1.3</span> Accompanying packages</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview"><span class="header-section-number">1.4</span> Overview</a></li>
+  <li><a href="#quick-reference" id="toc-quick-reference" class="nav-link" data-scroll-target="#quick-reference"><span class="header-section-number">1.5</span> Quick Reference</a></li>
+  <li><a href="#architecture" id="toc-architecture" class="nav-link" data-scroll-target="#architecture"><span class="header-section-number">1.6</span> Architecture</a></li>
+  <li><a href="#file-structure" id="toc-file-structure" class="nav-link" data-scroll-target="#file-structure"><span class="header-section-number">1.7</span> File Structure</a></li>
+  <li><a href="#key-patterns" id="toc-key-patterns" class="nav-link" data-scroll-target="#key-patterns"><span class="header-section-number">1.8</span> Key Patterns</a></li>
+  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow"><span class="header-section-number">1.9</span> Workflow</a></li>
+  <li><a href="#notes" id="toc-notes" class="nav-link" data-scroll-target="#notes"><span class="header-section-number">1.10</span> Notes</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -277,19 +279,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="claude.md" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> CLAUDE.md</h1>
 <p>This file provides guidance to Claude Code when working with this repository.</p>
-<section id="general" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="general"><span class="header-section-number">1.1</span> General</h2>
+<section id="global-behavior" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="global-behavior"><span class="header-section-number">1.1</span> Global Behavior</h2>
 <ul>
-<li><p>Do not commit LLM evidence: no mentions in commit messages (<code>Co-Authored-By</code>), no hidden folders (<code>.claude/</code>, <code>.positai/</code>), no LLM-related files (<code>CLAUDE.md</code>, <code>AGENTS.md</code>). Leave no trace.</p></li>
-<li><p>Minimize use of hyphens and dashes; limit bullets</p></li>
-<li><p>Local agents: <code>/Users/mjfrigaard/projects/agents/</code></p></li>
-<li><p>Local skills: <code>/Users/mjfrigaard/projects/skills/</code></p></li>
-<li><p>R package: <code>/Users/mjfrigaard/projects/pkgs/R/fmfinr</code></p></li>
-<li><p>Python package: <code>/Users/mjfrigaard/projects/pkgs/python/fmfinpy</code></p></li>
+<li>DO NOT UNDER ANY CIRCUMSTANCES INCLUDE EVIDENCE OF CLAUDE OR OTHER LMMS IN ANY GIT HISTORIES. THIS INCLUDES: 1) NO MENTIONS IN COMMIT MESSAGES (I.E., <code>Co-Authored-By: Claude Sonnet 4.6 &lt;noreply@anthropic.com&gt;</code>) 2) NO HIDDEN FOLDERS (<code>.claude/</code> or <code>.positai/</code>), AND 3) NO FILES (I.E., <code>CLAUDE.md</code>, <code>AGENTS.md</code>)<br>
+</li>
+<li>You should take a ‘leave absolutely no trace behind’ approach to any of the work you do<br>
+</li>
+<li>Be terse<br>
+</li>
+<li>No preamble</li>
+<li>Limit summaries to less than 150 words<br>
+</li>
+<li>Responses under 150 words unless complexity requires more</li>
+<li>No “I’ll now…” narration<br>
+</li>
+<li>Return only what was asked<br>
+</li>
+<li>Prefer code over explanation<br>
+</li>
+<li>No apologies<br>
+</li>
+<li>No filler<br>
+</li>
+<li>One-word confirmations when possible<br>
+</li>
+<li>When I say “fix”, change only what is broken<br>
+</li>
+<li>When I say “quick”, give me the shortest valid answers<br>
+</li>
+<li>Never use hyphens or em dashes (—)</li>
+<li>Limit your use of bullets</li>
 </ul>
 </section>
-<section id="overview" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.2</span> Overview</h2>
+<section id="skills-agents" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="skills-agents"><span class="header-section-number">1.2</span> Skills &amp; Agents</h2>
+<ul>
+<li>Local agents: <code>/Users/mjfrigaard/projects/agents/</code></li>
+<li>Local skills: <code>/Users/mjfrigaard/projects/skills/</code></li>
+</ul>
+</section>
+<section id="accompanying-packages" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="accompanying-packages"><span class="header-section-number">1.3</span> Accompanying packages</h2>
+<ul>
+<li>R package: <code>/Users/mjfrigaard/projects/pkgs/R/fmfinr</code></li>
+<li>Python package: <code>/Users/mjfrigaard/projects/pkgs/python/fmfinpy</code></li>
+</ul>
+</section>
+<section id="overview" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="overview"><span class="header-section-number">1.4</span> Overview</h2>
 <p>Development sandbox for “Personal Finance: a Field Manual”; a Quarto website teaching personal finance with dual R/Python code examples for general (non-technical) audiences.</p>
 <ul>
 <li><strong>Dev repo</strong>: This directory (test code, iterate on examples)</li>
@@ -298,8 +336,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p><strong>Pedagogical approach</strong>: Singapore Math Method: concrete (real-world scenarios) → pictorial (charts, Shiny dashboards) → abstract (formulas, code). Sequential building where earlier chapters enable later ones.</p>
 </section>
-<section id="quick-reference" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="quick-reference"><span class="header-section-number">1.3</span> Quick Reference</h2>
+<section id="quick-reference" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="quick-reference"><span class="header-section-number">1.5</span> Quick Reference</h2>
 <p>Build / render:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render              <span class="co"># full site</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render income.qmd   <span class="co"># single chapter</span></span>
@@ -309,15 +347,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">shiny</span> run <span class="at">--reload</span> _apps/Python/budgeting/app.py  <span class="co"># with auto-reload</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'shiny::runApp("_apps/R/budgeting")'</span>   <span class="co"># R from terminal</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="architecture" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="architecture"><span class="header-section-number">1.4</span> Architecture</h2>
+<section id="architecture" class="level2" data-number="1.6">
+<h2 data-number="1.6" class="anchored" data-anchor-id="architecture"><span class="header-section-number">1.6</span> Architecture</h2>
 <p><strong>Dual-language design</strong>: Every chapter uses both R (tidyverse + ggplot2) and Python (polars, numpy). Code examples appear side by side.</p>
 <p><strong>Shared utilities</strong> (<code>_common.R</code> / <code>_common.py</code>): <code>fmt_dollar()</code>, <code>fmt_pct()</code> (number formatting), <code>co_box()</code> (styled callout boxes).</p>
 <p><strong>Quarto config</strong>: <code>flatly</code> theme with <code>custom.scss</code> overrides, <code>freeze: auto</code> for caching, right TOC, numbered sections, code folding.</p>
 <p><strong>Shiny apps</strong> (<code>_apps/R/budgeting/app.R</code>, <code>_apps/Python/budgeting/app.py</code>): Interactive demonstrations of financial concepts.</p>
 </section>
-<section id="file-structure" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="file-structure"><span class="header-section-number">1.5</span> File Structure</h2>
+<section id="file-structure" class="level2" data-number="1.7">
+<h2 data-number="1.7" class="anchored" data-anchor-id="file-structure"><span class="header-section-number">1.7</span> File Structure</h2>
 <ul>
 <li><code>*.qmd</code> — Chapter files (source <code>_common.R</code> / <code>_common.py</code>)</li>
 <li><code>_quarto.yml</code> — Project config</li>
@@ -325,17 +363,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>_common.R</code>, <code>_common.py</code> — Shared utilities</li>
 <li><code>_apps/</code> — Shiny demos</li>
 <li><code>_site/</code>, <code>_freeze/</code> — Build artifacts (git-ignored)</li>
-<li><code>_assets_/</code> — Static assets (git-ignored)</li>
 </ul>
 </section>
-<section id="key-patterns" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="key-patterns"><span class="header-section-number">1.6</span> Key Patterns</h2>
+<section id="key-patterns" class="level2" data-number="1.8">
+<h2 data-number="1.8" class="anchored" data-anchor-id="key-patterns"><span class="header-section-number">1.8</span> Key Patterns</h2>
 <p><strong>Callouts</strong>: <code>co_box(color, header, contents)</code> with colors: <code>g</code> (tip), <code>b</code> (note), <code>r</code> (important), <code>o</code> (warning), <code>y</code> (caution).</p>
 <p><strong>Number formatting</strong>: Use <code>fmt_dollar()</code> and <code>fmt_pct()</code> for readable output.</p>
 <p><strong>Chapter structure</strong>: Minimal YAML (title only), then setup blocks sourcing <code>_common.R</code> and <code>_common.py</code>.</p>
 </section>
-<section id="workflow" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="workflow"><span class="header-section-number">1.7</span> Workflow</h2>
+<section id="workflow" class="level2" data-number="1.9">
+<h2 data-number="1.9" class="anchored" data-anchor-id="workflow"><span class="header-section-number">1.9</span> Workflow</h2>
 <ol type="1">
 <li>Edit chapter and test: <code>quarto render chapter.qmd</code></li>
 <li>Live preview: <code>quarto preview</code></li>
@@ -343,8 +380,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Commit and push to <code>/Users/mjfrigaard/projects/books/fm-finance</code></li>
 </ol>
 </section>
-<section id="notes" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="notes"><span class="header-section-number">1.8</span> Notes</h2>
+<section id="notes" class="level2" data-number="1.10">
+<h2 data-number="1.10" class="anchored" data-anchor-id="notes"><span class="header-section-number">1.10</span> Notes</h2>
 <ul>
 <li><strong>Audience</strong>: General readers, no financial jargon. Code supports learning, not the focus.</li>
 <li><strong>Caching</strong>: <code>freeze: auto</code> caches results; run <code>quarto render chapter.qmd</code> after code changes.</li>
