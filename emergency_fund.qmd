@@ -7,13 +7,537 @@ title: "Emergency Fund"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **What it is**: cash set aside for the unexpected so you never reach for credit; the target is 3 to 6 months of essential expenses, and it is Step 4 of the Financial Order of Operations
+- **Why it matters**: most derailments start with one surprise bill charged at 20 to 24% interest; Housel frames the fund as buying options, not earning a return
+- **Essential expenses baseline**: housing, groceries, utilities, transportation, health, and minimum debt payments; dining out and subscriptions do not count
+- **Adjusting for risk**: stable income with good coverage needs 3 to 4 months; dependents need 6 minimum; variable or self-employed income leans toward 6 to 9
+- **Starter fund first**: build \$1,000, clear high-interest debt, then fill the full 3 to 6 month fund
+- **Where to keep it**: a high-yield savings account, money market fund, or insured credit union; not checking, stocks, long-term CDs, or cash at home
+- **Why not the stock market**: job losses and market drops tend to arrive together; Felix treats the fund as a hedge on human capital
+- **Building it**: 12 to 24 months is typical; doubling the contribution roughly halves the time; automate a payday transfer and find money in small cuts
+- **Rebuilding**: a withdrawal is the fund doing its job; resume contributions immediately without pausing retirement savings
+- **Emergency fund math**: target amount, months to reach the target, contribution needed by a deadline, and what the fund earns while you build it
+
+## Your Target Amount
+
+Your target is your essential monthly expenses multiplied by the number of months you want to cover. Each extra month adds one more block of expenses.
+
+**Formula:** Target = Monthly Essential Expenses × Months of Coverage
+
+Book example: \$3,500/month in essential expenses × 4 months = \$14,000. The 3 and 6 month targets are \$10,500 and \$21,000.
+
+```{r}
+#| label: ef-target-bar-model
+#| echo: false
+#| fig-cap: "Emergency fund target at $3,500/month essential expenses"
+#| fig-asp: 0.50
+library(ggplot2)
+monthly_exp <- 3500
+months_vec  <- 1:6
+df_target   <- data.frame(
+  months = factor(paste0(months_vec, " mo"), levels = paste0(months_vec, " mo")),
+  target = monthly_exp * months_vec,
+  fill   = c("#86ddcd", "#86ddcd", "#0e9aa7", "#0e9aa7", "#48a56a", "#48a56a")
+)
+ggplot(df_target, aes(x = months, y = target, fill = months)) +
+  geom_col(width = 0.6) +
+  geom_text(aes(label = paste0("$", format(target, big.mark = ","))),
+            vjust = -0.4, fontface = "bold", size = 3.8) +
+  scale_fill_manual(values = setNames(df_target$fill, df_target$months)) +
+  scale_y_continuous(limits = c(0, monthly_exp * 7.5),
+                     labels = function(x) paste0("$", format(x, big.mark = ","))) +
+  labs(x = "Months of expenses covered", y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.major.x = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+::: panel-tabset
+
+## R
+
+`emergency_fund_target()` multiplies essential monthly expenses by the months you want covered.
+
+```{r}
+#| label: ef-target-r
+emergency_fund_target <- function(monthly_expenses, months = 3) {
+  monthly_expenses * months
+}
+
+emergency_fund_target(monthly_expenses = 3500, months = 3)
+emergency_fund_target(monthly_expenses = 3500, months = 4)
+emergency_fund_target(monthly_expenses = 3500, months = 6)
+```
+
+Build the essential expenses number from its parts first. These categories match the book's baseline table.
+
+```{r}
+#| label: ef-target-r-baseline
+essentials <- c(housing = 1600, groceries = 550, utilities = 300,
+                transportation = 600, health = 250, min_debt = 200)
+sum(essentials)
+```
+
+Different households land in different places on the risk chart. `outer()` shows every combination of expense level and months.
+
+```{r}
+#| label: ef-target-r-grid
+expenses <- c(2500, 3500, 5000)
+months   <- c(3, 4, 6, 9)
+grid <- outer(expenses, months, emergency_fund_target)
+dimnames(grid) <- list(paste0("$", expenses, "/mo"), paste(months, "mo"))
+grid
+```
+
+Sanity check: the \$1,000 starter fund covers well under one month of essentials, which is why it is a first step and not the finish line.
+
+```{r}
+#| label: ef-target-r-check
+1000 / 3500
+```
+
+How to read this: pick your row by essential expenses and your column by risk. A stable, single household spending \$3,500 might choose 4 months (\$14,000); a self-employed one might choose 9 (\$31,500).
+
+## Python
+
+The Python version of `emergency_fund_target()` works the same way.
+
+```{python}
+#| label: ef-target-py
+def emergency_fund_target(monthly_expenses, months=3):
+    return monthly_expenses * months
+
+print(emergency_fund_target(monthly_expenses=3500, months=3))
+print(emergency_fund_target(monthly_expenses=3500, months=4))
+print(emergency_fund_target(monthly_expenses=3500, months=6))
+```
+
+Build the essential expenses number from its parts first.
+
+```{python}
+#| label: ef-target-py-baseline
+essentials = {"housing": 1600, "groceries": 550, "utilities": 300,
+              "transportation": 600, "health": 250, "min_debt": 200}
+sum(essentials.values())
+```
+
+Every combination of expense level and months.
+
+```{python}
+#| label: ef-target-py-grid
+expenses = [2500, 3500, 5000]
+months = [3, 4, 6, 9]
+print("           " + "".join(f"{m:>9} mo" for m in months))
+for e in expenses:
+    row = "".join(f"{emergency_fund_target(e, m):>12,}" for m in months)
+    print(f"${e:,}/mo  {row}")
+```
+
+Sanity check: the \$1,000 starter fund covers well under one month of essentials.
+
+```{python}
+#| label: ef-target-py-check
+round(1000 / 3500, 2)
+```
+
+How to read this: pick your row by essential expenses and your column by risk. A stable, single household spending \$3,500 might choose 4 months (\$14,000); a self-employed one might choose 9 (\$31,500).
+
+## Excel
+
+Assuming essential monthly expenses are in cell `A2` and the number of months is in `B2`:
+
+``` swift
+=A2*B2
+```
+
+To build the baseline, list essential categories in `D2:D7` with amounts in `E2:E7`, and put `=SUM(E2:E7)` in `A2`.
+
+For a grid, put expense levels down `A5:A7` and months across `B4:E4`. In `B5`, enter the formula below and fill right and down:
+
+``` swift
+=$A5*B$4
+```
+
+:::
+
+## Months to Reach Your Target
+
+Given your current balance and a monthly contribution, how long until you reach the target? Part of the target bar is already filled; the monthly contributions close the gap.
+
+**Formula:** Months to Goal = (Target − Current Balance) ÷ Monthly Contribution
+
+Book example: a \$14,000 target with \$2,000 saved and \$500/month takes (14,000 − 2,000) ÷ 500 = 24 months.
+
+```{r}
+#| label: ef-months-bar-model
+#| echo: false
+#| fig-cap: "A $14,000 target with $2,000 saved: the $12,000 gap, filled $500 at a time"
+#| fig-asp: 0.25
+library(ggplot2)
+df_gap <- data.frame(
+  part   = factor(c("Already saved ($2,000)", "Still needed ($12,000 = 24 × $500)"),
+                  levels = c("Still needed ($12,000 = 24 × $500)", "Already saved ($2,000)")),
+  amount = c(2000, 12000),
+  bar    = "Target"
+)
+ggplot(df_gap, aes(x = amount, y = bar, fill = part)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_vline(xintercept = seq(2500, 13500, by = 500), colour = "white", linewidth = 0.3) +
+  scale_fill_manual(values = c("Already saved ($2,000)" = "#48a56a",
+                               "Still needed ($12,000 = 24 × $500)" = "#0e9aa7"),
+                    breaks = c("Already saved ($2,000)", "Still needed ($12,000 = 24 × $500)")) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+::: panel-tabset
+
+## R
+
+`months_to_ef_goal()` subtracts what you have saved from the target, divides by the contribution, and rounds up to whole months.
+
+```{r}
+#| label: ef-months-r
+months_to_ef_goal <- function(target, current_balance, monthly_contribution) {
+  remaining <- max(0, target - current_balance)
+  ceiling(remaining / monthly_contribution)
+}
+
+months_to_ef_goal(target = 14000, current_balance = 2000, monthly_contribution = 500)
+```
+
+Compare the three contribution levels from the book's building chart. `max()` is not vectorized over targets, but the contribution argument is, so this works directly.
+
+```{r}
+#| label: ef-months-r-table
+contributions <- c(300, 500, 750, 1000)
+data.frame(
+  contribution = contributions,
+  months       = months_to_ef_goal(14000, 2000, contributions)
+)
+```
+
+Edge cases: a fund that is already full needs 0 months, and a gap that does not divide evenly needs one extra, smaller final month.
+
+```{r}
+#| label: ef-months-r-edge
+months_to_ef_goal(14000, current_balance = 15000, monthly_contribution = 500)
+months_to_ef_goal(14000, current_balance = 1900, monthly_contribution = 500)
+```
+
+How to read this: going from \$500 to \$1,000 a month cuts 24 months to 12. Doubling the contribution halves the wait.
+
+## Python
+
+The Python version of `months_to_ef_goal()` works the same way.
+
+```{python}
+#| label: ef-months-py
+import math
+
+def months_to_ef_goal(target, current_balance, monthly_contribution):
+    remaining = max(0, target - current_balance)
+    return math.ceil(remaining / monthly_contribution)
+
+print(months_to_ef_goal(target=14000, current_balance=2000, monthly_contribution=500))
+```
+
+Compare several contribution levels.
+
+```{python}
+#| label: ef-months-py-table
+for c in [300, 500, 750, 1000]:
+    print(f"${c:>5,}/month -> {months_to_ef_goal(14000, 2000, c):>3} months")
+```
+
+Edge cases: a full fund needs 0 months, and an uneven gap needs one extra, smaller final month.
+
+```{python}
+#| label: ef-months-py-edge
+print(months_to_ef_goal(14000, 15000, 500))
+print(months_to_ef_goal(14000, 1900, 500))
+```
+
+How to read this: going from \$500 to \$1,000 a month cuts 24 months to 12. Doubling the contribution halves the wait.
+
+## Excel
+
+Assuming the target is in `A2`, your current balance is in `B2`, and your monthly contribution is in `C2`:
+
+``` swift
+=ROUNDUP(MAX(0, A2-B2)/C2, 0)
+```
+
+To compare contributions, keep the target in `A2` and balance in `B2`, list contributions down `C2:C5`, and in `D2` enter the formula below and fill down:
+
+``` swift
+=ROUNDUP(MAX(0, $A$2-$B$2)/C2, 0)
+```
+
+:::
+
+## Contribution Needed by a Deadline
+
+Working backwards: to reach the target by a set month, how much do you need to save each month? The number of slices is fixed, and the question is how wide each slice must be.
+
+**Formula:** Monthly Contribution = (Target − Current Balance) ÷ Months Remaining
+
+Book example: a \$14,000 fund in 18 months with \$2,000 saved needs (14,000 − 2,000) ÷ 18 = \$667/month.
+
+```{r}
+#| label: ef-contrib-bar-model
+#| echo: false
+#| fig-cap: "The same $12,000 gap, cut into 18 equal monthly slices"
+#| fig-asp: 0.25
+library(ggplot2)
+df_slices <- data.frame(
+  slice  = factor(c("saved", paste0("m", 1:18)), levels = rev(c("saved", paste0("m", 1:18)))),
+  amount = c(2000, rep(12000 / 18, 18)),
+  fill   = c("#48a56a", rep(c("#0e9aa7", "#86ddcd"), 9)),
+  bar    = "Target"
+)
+ggplot(df_slices, aes(x = amount, y = bar, fill = fill, group = slice)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.3) +
+  annotate("text", x = 1000, y = 1.55, label = "Saved $2,000", fontface = "bold", size = 3.2) +
+  annotate("text", x = 8000, y = 1.55, label = "18 slices of about $667", fontface = "bold", size = 3.2) +
+  scale_fill_identity() +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  scale_y_discrete(expand = expansion(add = c(0.4, 0.7))) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.y = element_blank())
+```
+
+::: panel-tabset
+
+## R
+
+`monthly_contribution_needed()` flips the question: given a deadline, it returns the monthly amount, rounded up to the next dollar.
+
+```{r}
+#| label: ef-contrib-r
+monthly_contribution_needed <- function(target, current_balance, months) {
+  remaining <- max(0, target - current_balance)
+  ceiling(remaining / months)
+}
+
+monthly_contribution_needed(target = 14000, current_balance = 2000, months = 18)
+```
+
+Compare a few deadlines.
+
+```{r}
+#| label: ef-contrib-r-table
+deadlines <- c(12, 18, 24, 36)
+data.frame(
+  months  = deadlines,
+  monthly = monthly_contribution_needed(14000, 2000, deadlines)
+)
+```
+
+Sanity check: rounding up means 18 payments of \$667 slightly overshoot the \$12,000 gap, so you finish on time.
+
+```{r}
+#| label: ef-contrib-r-check
+667 * 18
+ceiling(12000 / 667)
+```
+
+How to read this: if \$667 does not fit your budget, stretch the deadline. Moving from 18 to 24 months drops the payment to \$500.
+
+## Python
+
+The Python version of `monthly_contribution_needed()` works the same way.
+
+```{python}
+#| label: ef-contrib-py
+import math
+
+def monthly_contribution_needed(target, current_balance, months):
+    remaining = max(0, target - current_balance)
+    return math.ceil(remaining / months)
+
+print(monthly_contribution_needed(target=14000, current_balance=2000, months=18))
+```
+
+Compare a few deadlines.
+
+```{python}
+#| label: ef-contrib-py-table
+for m in [12, 18, 24, 36]:
+    print(f"{m:>2} months -> ${monthly_contribution_needed(14000, 2000, m):,}/month")
+```
+
+Sanity check: 18 payments of \$667 slightly overshoot the \$12,000 gap.
+
+```{python}
+#| label: ef-contrib-py-check
+print(667 * 18, math.ceil(12000 / 667))
+```
+
+How to read this: if \$667 does not fit your budget, stretch the deadline. Moving from 18 to 24 months drops the payment to \$500.
+
+## Excel
+
+Assuming the target is in `A2`, your current balance is in `B2`, and the number of months is in `C2`:
+
+``` swift
+=ROUNDUP(MAX(0, A2-B2)/C2, 0)
+```
+
+To compare deadlines, list months down `C2:C5` and in `D2` enter the formula below and fill down:
+
+``` swift
+=ROUNDUP(MAX(0, $A$2-$B$2)/C2, 0)
+```
+
+:::
+
+## What the Fund Earns While You Build It
+
+A fund in a high-yield savings account earns interest. It will not change your timeline much, but it is real money. Each month the balance is multiplied by (1 + the monthly rate).
+
+**Formula:** Future Value = Balance × (1 + monthly rate)\^months, where monthly rate = annual rate ÷ 12
+
+Book example: \$14,000 at 4.5%, untouched for 12 months, grows to about \$14,643.
+
+```{r}
+#| label: ef-growth-bar-model
+#| echo: false
+#| fig-cap: "$14,000 at 4.5% for 12 months: your balance plus interest"
+#| fig-asp: 0.25
+library(ggplot2)
+fv <- 14000 * (1 + 0.045 / 12)^12
+parts <- c("Your balance ($14,000)", sprintf("Interest ($%s)", round(fv - 14000)))
+df_int <- data.frame(
+  part   = factor(parts, levels = rev(parts)),
+  amount = c(14000, fv - 14000),
+  bar    = "After 12 months"
+)
+ggplot(df_int, aes(x = amount, y = bar, fill = part)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  scale_fill_manual(values = setNames(c("#0e9aa7", "#48a56a"), parts), breaks = parts) +
+  scale_x_continuous(limits = c(0, 15500),
+                     labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+::: panel-tabset
+
+## R
+
+`ef_growth()` grows a balance month by month at a given annual rate.
+
+```{r}
+#| label: ef-growth-r
+ef_growth <- function(balance, annual_rate, months) {
+  monthly_rate <- annual_rate / 12
+  balance * (1 + monthly_rate)^months
+}
+
+ef_growth(balance = 14000, annual_rate = 0.045, months = 12)
+```
+
+Where you park the fund matters. Compare a typical big bank savings rate with a high-yield account.
+
+```{r}
+#| label: ef-growth-r-table
+rates <- c(big_bank = 0.0001, hysa_low = 0.035, hysa = 0.045)
+interest <- ef_growth(14000, rates, 12) - 14000
+round(interest, 2)
+```
+
+Interest builds a little faster each month. Here is the running total at each quarter.
+
+```{r}
+#| label: ef-growth-r-months
+qtrs <- c(3, 6, 9, 12)
+data.frame(month = qtrs, interest = round(ef_growth(14000, 0.045, qtrs) - 14000, 2))
+```
+
+Sanity check: banks usually quote APY, which already includes compounding. If 4.5% is the APY, the year-end balance is simply \$14,000 × 1.045 = \$14,630. The formula above treats 4.5% as a rate compounded monthly, which gives about \$13 more.
+
+```{r}
+#| label: ef-growth-r-check
+14000 * 1.045
+```
+
+How to read this: roughly \$630 to \$645 a year is enough to cover a small car repair without touching the fund. At a big bank rate, the same money earns about \$1.
+
+## Python
+
+The Python version of `ef_growth()` works the same way.
+
+```{python}
+#| label: ef-growth-py
+def ef_growth(balance, annual_rate, months):
+    monthly_rate = annual_rate / 12
+    return balance * (1 + monthly_rate) ** months
+
+print(ef_growth(balance=14000, annual_rate=0.045, months=12))
+```
+
+Compare where you park the fund.
+
+```{python}
+#| label: ef-growth-py-table
+rates = {"big_bank": 0.0001, "hysa_low": 0.035, "hysa": 0.045}
+for name, r in rates.items():
+    print(f"{name:<9} ${ef_growth(14000, r, 12) - 14000:>7,.2f} interest")
+```
+
+The running total of interest at each quarter.
+
+```{python}
+#| label: ef-growth-py-months
+for m in [3, 6, 9, 12]:
+    print(f"month {m:>2}: ${ef_growth(14000, 0.045, m) - 14000:,.2f}")
+```
+
+Sanity check: if 4.5% is the APY, the year-end balance is simply \$14,000 × 1.045. Treating 4.5% as a monthly compounded rate gives about \$13 more.
+
+```{python}
+#| label: ef-growth-py-check
+print(round(14000 * 1.045, 2))
+```
+
+How to read this: roughly \$630 to \$645 a year is enough to cover a small car repair without touching the fund. At a big bank rate, the same money earns about \$1.
+
+## Excel
+
+Assuming the balance is in `A2`, the annual rate is in `B2` (as a decimal), and the number of months is in `C2`:
+
+``` swift
+=A2*(1+B2/12)^C2
+```
+
+Interest earned on its own is the future value minus the balance:
+
+``` swift
+=A2*(1+B2/12)^C2 - A2
+```
+
+If the bank quotes an APY in `B2` and you hold for a full year, this gives the exact year-end balance:
+
+``` swift
+=A2*(1+B2)
+```
+
+:::

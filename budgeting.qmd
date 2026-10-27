@@ -13,27 +13,27 @@ source("_common.R")
 ```{python}
 #| label: setup-py
 #| include: false
-def fmt_dollar(x, digits=2):
-    return f"${x:,.{digits}f}"
-
-def fmt_pct(x, digits=1):
-    return f"{x * 100:.{digits}f}%"
 ```
 
 ## Book Topics
 
-- **Mindset shift**: budgets are about *conscious allocation*, not restriction; "room for error" is the most underrated concept (Housel)
-- **Expense categories**: fixed (predictable), variable (fluctuate), periodic (annual/irregular); each requires a different strategy
-- **Sinking funds**: set aside 1/12 of annual periodic costs each month to avoid "budget emergencies"
-- **Zero-based budgeting**: every dollar gets a job; income − all allocations = 0; best for rebuilding from debt
-- **Percentage-based budgeting**: Sethi's Conscious Spending Plan (50–60% fixed, 10%+ investing, 20–35% guilt-free); low maintenance at steady income
-- **Best tool**: the one you'll actually use; automatic imports, easy categorization, and a summary view matter most
+- **Mindset shift**: a budget is intentional allocation, not restriction; reframe "I have to spend" as "my needs cost"; room for error is the most underrated concept (Housel)
+- **Expense categories**: fixed (lock in and automate), variable (category limits, not line by line tracking), periodic (set aside 1/12 of the annual cost each month)
+- **Sinking funds**: $1,200/year car insurance becomes $100/month; gifts $600 → $50, car maintenance $1,200 → $100, vacation $2,400 → $200
+- **Zero-based budgeting**: every dollar of a $5,000 paycheck gets a job and the remainder is $0; best for anyone rebuilding from debt or with irregular income
+- **Percentage-based budgeting**: Sethi's Conscious Spending Plan (fixed 50 to 60%, investments 10%+, savings 5 to 10%, guilt-free 20 to 35%) next to the 50/30/20 rule
+- **Recommendation**: zero-based for 2 to 3 months, then graduate to percentages with automation
+- **Tools**: a spreadsheet with tabs for income, fixed, variable, sinking funds, net worth, and a summary; the best tool is the one you will actually use
+- **Budgeting math**: percentages, annualizing and monthly-izing, opportunity cost, break-even
+- **Financial Order of Operations**: the budget shows how much is left over; Preston's FOO shows where it goes next
 
 ## Percentages
 
-The foundational budgeting calculation: what share of income does each expense represent?
+The foundational budgeting calculation: what share of income does each expense represent? Picture income as one bar and each expense as a slice of it.
 
 **Formula:** (Expense ÷ Income) × 100
+
+Book example: rent of \$1,500 on \$5,000 of take-home pay is 30% of income.
 
 ```{r}
 #| label: pct-bar-model
@@ -63,30 +63,91 @@ ggplot(df_pct, aes(x = "", y = amount, fill = label)) +
 
 ## R
 
-We can create a simple function to calculate the percentage of income that an expense represents. The `fmt_pct()` function formats the result as a percentage.
+`percent_of_income()` divides an expense by income and multiplies by 100.
+
 ```{r}
 #| label: percent-r
 percent_of_income <- function(expense, income) {
-    fmt_pct(expense / income)
+  (expense / income) * 100
 }
+
+percent_of_income(expense = 1500, income = 5000)
 ```
 
+The function is vectorized, so we can pass the whole zero-based budget from the book at once.
+
 ```{r}
-#| label: percent-r-apply
-percent_of_income(expense = 1500, income = 5000)
+#| label: percent-r-zero-based
+zero_based <- data.frame(
+  category = c("Rent", "Groceries", "Transport", "Investments",
+               "Savings", "Fun Money", "Other"),
+  amount   = c(1500, 500, 300, 1000, 500, 700, 500)
+)
+zero_based$pct <- percent_of_income(zero_based$amount, income = 5000)
+zero_based
+```
+
+Sanity check: in a zero-based budget, the dollars add up to income and the percentages add up to 100.
+
+```{r}
+#| label: percent-r-check
+sum(zero_based$amount)
+sum(zero_based$pct)
+```
+
+How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
+
+One edge case: an income of zero has no meaningful percentage. R returns `Inf` (or `NaN` for 0 ÷ 0) instead of an error.
+
+```{r}
+#| label: percent-r-edge
+percent_of_income(expense = 1500, income = 0)
 ```
 
 ## Python
 
-In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
+The Python version of `percent_of_income()` works the same way.
 
 ```{python}
 #| label: percent-py
 def percent_of_income(expense, income):
-    ratio = expense / income
-    return fmt_pct(ratio)
+    return (expense / income) * 100
 
 percent_of_income(expense=1500, income=5000)
+```
+
+Plain Python works one value at a time, so we loop over the zero-based budget from the book.
+
+```{python}
+#| label: percent-py-zero-based
+zero_based = {
+    "Rent": 1500, "Groceries": 500, "Transport": 300, "Investments": 1000,
+    "Savings": 500, "Fun Money": 700, "Other": 500,
+}
+for category, amount in zero_based.items():
+    print(f"{category:<12} ${amount:>6,}  {percent_of_income(amount, 5000):5.1f}%")
+```
+
+Sanity check: the dollars add up to income and the percentages add up to 100.
+
+```{python}
+#| label: percent-py-check
+total = sum(zero_based.values())
+print(total, percent_of_income(total, 5000))
+```
+
+How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
+
+One edge case: Python raises a `ZeroDivisionError` when income is zero, so guard against it.
+
+```{python}
+#| label: percent-py-edge
+def safe_percent_of_income(expense, income):
+    if income == 0:
+        return None
+    return percent_of_income(expense, income)
+
+print(safe_percent_of_income(1500, 0))
 ```
 
 ## Excel
@@ -103,19 +164,38 @@ Or, more simply, enter `=B2 / C2` and format the cell as a **Percentage** using 
 
 ![](img/budget_percent_of_income_format.png){width='100%' fig-align='center'}
 
+For the full zero-based budget, put category names in `A2:A8`, amounts in `B2:B8`, and income in `E1`. In `C2`, lock the income cell with `$` and fill down to `C8`:
+
+``` swift
+=B2 / $E$1
+```
+
+Check the totals in row 9. `B9` should equal income, and `C9` should read 100%:
+
+``` swift
+=SUM(B2:B8)
+=SUM(C2:C8)
+```
+
 :::
 
 ## Annualizing and Monthly-izing
 
-Scale any spending habit across time periods to see the true cost.
+Scale any spending habit across time periods to see the true cost. Each period is the shorter one multiplied by how many times it fits.
 
-**Annual → Monthly:** ÷ 12 
+**Formula:** Cost over a longer period = Cost per period × Number of periods it contains
 
-**Monthly → Annual:** × 12 
+**Daily → Weekly:** × 7
 
-**Weekly → Monthly:** × 4.33 
+**Weekly → Monthly:** × 4.33 (not 4)
+
+**Monthly → Annual:** × 12
 
 **Daily → Annual:** × 365
+
+**Annual → Monthly:** ÷ 12
+
+Book example: a \$5 daily coffee is \$5 × 365 = \$1,825 per year.
 
 ```{r}
 #| label: annual-bar-model
@@ -131,7 +211,8 @@ df_annual <- data.frame(
 )
 ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
   geom_col(width = 0.6) +
-  geom_text(aes(label = paste0("$", cost)), vjust = -0.4, fontface = "bold", size = 4) +
+  geom_text(aes(label = paste0("$", format(cost, big.mark = ","))),
+            vjust = -0.4, fontface = "bold", size = 4) +
   scale_fill_manual(values = setNames(df_annual$fill, as.character(df_annual$period))) +
   scale_y_continuous(limits = c(0, 2100), labels = function(x) paste0("$", x)) +
   labs(x = NULL, y = NULL) +
@@ -144,69 +225,121 @@ ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
 
 ## R
 
-Two of the most common conversions are annualizing daily, weekly, and  monthly amounts and converting annual, weekly, or daily amounts to a monthly equivalent. 
+`to_annual()` multiplies a recurring amount by how many times it happens in a year. `to_monthly()` converts any period to a monthly amount.
 
 ```{r}
-#| label: to_annual-r
-#| code-fold: false
+#| label: annualize-r
 to_annual <- function(amount, period = c("daily", "weekly", "monthly")) {
   period  <- match.arg(period)
   factors <- c(daily = 365, weekly = 52, monthly = 12)
-  fmt_dollar(amount * factors[[period]])
+  amount * factors[[period]]
 }
-```
 
-```{r}
-#| label: to_monthly-r
-#| code-fold: false
 to_monthly <- function(amount, period = c("daily", "weekly", "annual")) {
   period  <- match.arg(period)
   factors <- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)
-  fmt_dollar(amount * factors[[period]])
+  amount * factors[[period]]
 }
 ```
 
-```{r}
-#| label: to_annual-r-apply
-#| code-fold: false
-to_annual(amount = 5, period = "daily")
-```
+The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
 
 ```{r}
-#| label: to_monthly-r-apply
-#| code-fold: false
+#| label: annualize-r-apply
+to_annual(amount = 5, period = "daily")
 to_monthly(amount = 150, period = "weekly")
 ```
 
+Several habits side by side. `mapply()` runs both functions over each row.
+
+```{r}
+#| label: annualize-r-table
+habits <- data.frame(
+  habit  = c("Coffee", "Groceries", "Streaming"),
+  amount = c(5, 150, 15.99),
+  period = c("daily", "weekly", "monthly")
+)
+habits$annual  <- mapply(to_annual, habits$amount, habits$period)
+habits$monthly <- habits$annual / 12
+habits
+```
+
+The same math powers sinking funds. Divide each periodic cost from the book by 12 to get the monthly set aside.
+
+```{r}
+#| label: sinking-fund-r
+sinking <- data.frame(
+  expense = c("Car insurance", "Christmas/gifts", "Car maintenance", "Annual vacation"),
+  annual  = c(1200, 600, 1200, 2400)
+)
+sinking$monthly <- to_monthly(sinking$annual, period = "annual")
+sinking
+sum(sinking$monthly)
+```
+
+Sanity check: 4.33 weeks × 12 months is 51.96 weeks, a hair short of 52. That is why weekly → monthly → annual lands \$6 under weekly → annual for \$150/week.
+
+```{r}
+#| label: annualize-r-check
+to_annual(150, "weekly")
+to_monthly(150, "weekly") * 12
+```
+
+How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
+
 ## Python
+
+The Python versions use a dictionary of factors.
 
 ```{python}
 #| label: annualize-py
-#| code-fold: false
 def to_annual(amount, period="daily"):
     factors = {"daily": 365, "weekly": 52, "monthly": 12}
-    return fmt_dollar(amount * factors[period])
-```
+    return amount * factors[period]
 
-```{python}
-#| label: monthlyize-py
-#| code-fold: false
 def to_monthly(amount, period="daily"):
     factors = {"daily": 30.44, "weekly": 4.33, "annual": 1 / 12}
-    return fmt_dollar(amount * factors[period])
+    return amount * factors[period]
 ```
+
+The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
 
 ```{python}
 #| label: annualize-py-apply
-#| code-fold: false
 print(to_annual(amount=5, period="daily"))
-```
-
-```{python}
-#| label: monthlyize-py-apply
-#| code-fold: false
 print(to_monthly(amount=150, period="weekly"))
 ```
+
+Several habits side by side.
+
+```{python}
+#| label: annualize-py-table
+habits = [("Coffee", 5, "daily"), ("Groceries", 150, "weekly"), ("Streaming", 15.99, "monthly")]
+for habit, amount, period in habits:
+    annual = to_annual(amount, period)
+    print(f"{habit:<10} annual ${annual:>9,.2f}  monthly ${annual / 12:>7,.2f}")
+```
+
+The same math powers sinking funds. Divide each periodic cost from the book by 12.
+
+```{python}
+#| label: sinking-fund-py
+sinking = {"Car insurance": 1200, "Christmas/gifts": 600,
+           "Car maintenance": 1200, "Annual vacation": 2400}
+monthly = {k: to_monthly(v, period="annual") for k, v in sinking.items()}
+for k, v in monthly.items():
+    print(f"{k:<16} ${v:,.2f}/month")
+print(f"Total: ${sum(monthly.values()):,.2f}/month")
+```
+
+Sanity check: 4.33 × 12 = 51.96 weeks, so the two routes differ by about \$6 on \$150/week.
+
+```{python}
+#| label: annualize-py-check
+print(to_annual(150, "weekly"), round(to_monthly(150, "weekly") * 12, 2))
+```
+
+How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
 
 ## Excel
 
@@ -248,6 +381,12 @@ Format cells `A1` - `A3` as **Currency** or **Accounting**.
 
 ![](img/budget_weekly2yearly_formula.png){width='100%' fig-align='center'}
 
+For a sinking fund tab, put expense names in `A2:A5` and annual costs in `B2:B5`. In `C2`, enter the formula below and fill down, then total the column in `C6` with `=SUM(C2:C5)`:
+
+``` swift
+=B2 / 12
+```
+
 :::
 
 ## Opportunity Cost
@@ -256,10 +395,12 @@ Every dollar spent is also what that dollar could have become. The hidden cost o
 
 **Formula:** amount × (1 + r)\^n
 
+Book example: choosing a \$15,000 used car over a \$40,000 new one and investing the \$25,000 difference at 7% for 30 years gives \$25,000 × (1.07)\^30 ≈ \$190,000.
+
 ```{r}
 #| label: opp-cost-bar-model
 #| echo: false
-#| fig-cap: "$25,000 invested at 7% — value at each checkpoint"
+#| fig-cap: "$25,000 invested at 7%: value at each checkpoint"
 #| fig-asp: 0.50
 library(ggplot2)
 yrs  <- c(0, 5, 10, 20, 30)
@@ -280,36 +421,75 @@ ggplot(df_opp, aes(x = year, y = value)) +
 ```
 
 ::: panel-tabset
+
 ## R
+
+`opportunity_cost()` takes the dollar `amount`, the yearly `rate` of return, and the number of `years`.
 
 ```{r}
 #| label: opp-cost-r
 opportunity_cost <- function(amount, rate, years) {
-  (amount * (1 + rate)^years) |>
-    fmt_dollar()
+  amount * (1 + rate)^years
 }
-```
 
-```{r}
-#| label: opp-cost-r-apply
 opportunity_cost(amount = 25000, rate = 0.07, years = 30)
 ```
 
+Returns are never guaranteed, so compare a cautious, middle, and hopeful rate across several horizons. `outer()` builds the whole grid in one call.
+
+```{r}
+#| label: opp-cost-r-grid
+years <- c(5, 10, 20, 30)
+rates <- c(0.05, 0.07, 0.09)
+grid <- outer(years, rates, function(y, r) opportunity_cost(25000, r, y))
+dimnames(grid) <- list(paste(years, "yrs"), paste0(rates * 100, "%"))
+round(grid)
+```
+
+Sanity check: at 0% the money just sits there, and after 0 years nothing has grown.
+
+```{r}
+#| label: opp-cost-r-check
+opportunity_cost(25000, rate = 0, years = 30)
+opportunity_cost(25000, rate = 0.07, years = 0)
+```
+
+How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
+
 ## Python
 
-In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
+The Python version of `opportunity_cost()` works the same way.
 
 ```{python}
 #| label: opp-cost-py
 def opportunity_cost(amount, rate, years):
-    fv = amount * (1 + rate) ** years
-    return fmt_dollar(fv)
-```
+    return amount * (1 + rate) ** years
 
-```{python}
-#| label: opp-cost-py-apply
 opportunity_cost(amount=25000, rate=0.07, years=30)
 ```
+
+A grid of horizons and rates. numpy broadcasting fills every combination at once.
+
+```{python}
+#| label: opp-cost-py-grid
+import numpy as np
+
+years = np.array([5, 10, 20, 30])
+rates = np.array([0.05, 0.07, 0.09])
+grid = opportunity_cost(25000, rates[None, :], years[:, None])
+print("         " + "".join(f"{r:>10.0%}" for r in rates))
+for y, row in zip(years, grid):
+    print(f"{y:>2} yrs   " + "".join(f"{v:>10,.0f}" for v in row))
+```
+
+Sanity check: 0% growth or 0 years returns the original amount.
+
+```{python}
+#| label: opp-cost-py-check
+print(opportunity_cost(25000, 0, 30), opportunity_cost(25000, 0.07, 0))
+```
+
+How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
 
 ## Excel
 
@@ -321,13 +501,21 @@ Assuming the initial amount is in cell `A2`, the annual rate (as a decimal, e.g.
 
 ![](img/budget_opportunity_cost_formula.png){width='100%' fig-align='center'}
 
+For a grid, put the amount in `A1`, rates across `B2:D2` (0.05, 0.07, 0.09), and years down `A3:A6` (5, 10, 20, 30). In `B3`, enter the formula below and fill right and down. The `$` signs keep the amount, the rate row, and the years column locked:
+
+``` swift
+=$A$1*(1+B$2)^$A3
+```
+
 :::
 
 ## Break-Even
 
-Useful for evaluating memberships, refinances, or any purchase with an upfront cost and recurring savings.
+Useful for evaluating memberships, subscriptions, refinances, or any purchase with an upfront cost and recurring savings. Break-even is the first month cumulative savings meets the upfront cost.
 
 **Formula:** Upfront Cost ÷ Monthly Savings = months to break even
+
+Book example: a \$500 membership that saves \$60/month breaks even in \$500 ÷ \$60 = 8.3 months.
 
 ```{r}
 #| label: break-even-bar-model
@@ -353,36 +541,95 @@ ggplot(df_be, aes(x = month, y = saved, fill = reached)) +
 ```
 
 ::: panel-tabset
+
 ## R
+
+`months_to_break_even()` divides the upfront cost by the monthly savings.
 
 ```{r}
 #| label: break-even-r
-#| code-fold: false
 months_to_break_even <- function(upfront_cost, monthly_savings) {
   upfront_cost / monthly_savings
 }
-```
 
-```{r}
-#| label: break-even-r-apply
-#| code-fold: false
 months_to_break_even(upfront_cost = 500, monthly_savings = 60)
 ```
 
+Savings arrive in whole months, so round up to find the month you actually cross the line. That matches the first green bar in the chart.
+
+```{r}
+#| label: break-even-r-ceiling
+ceiling(months_to_break_even(500, 60))
+```
+
+Compare a few options at once.
+
+```{r}
+#| label: break-even-r-table
+options_df <- data.frame(
+  option  = c("Gym membership", "Warehouse club", "Refinance fee"),
+  upfront = c(500, 65, 3000),
+  savings = c(60, 15, 120)
+)
+options_df$months <- months_to_break_even(options_df$upfront, options_df$savings)
+options_df$whole_months <- ceiling(options_df$months)
+options_df
+```
+
+Edge case: if a purchase saves nothing (or costs more each month), it never breaks even. Check before dividing.
+
+```{r}
+#| label: break-even-r-edge
+months_to_break_even(500, 0)
+months_to_break_even(500, -10)
+```
+
+How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
+
 ## Python
+
+The Python version of `months_to_break_even()` works the same way.
 
 ```{python}
 #| label: break-even-py
-#| code-fold: false
 def months_to_break_even(upfront_cost, monthly_savings):
     return upfront_cost / monthly_savings
-```
 
-```{python}
-#| label: break-even-py-apply
-#| code-fold: false
 months_to_break_even(upfront_cost=500, monthly_savings=60)
 ```
+
+Round up to the month you actually cross the line.
+
+```{python}
+#| label: break-even-py-ceiling
+import math
+
+math.ceil(months_to_break_even(500, 60))
+```
+
+Compare a few options at once.
+
+```{python}
+#| label: break-even-py-table
+options = [("Gym membership", 500, 60), ("Warehouse club", 65, 15), ("Refinance fee", 3000, 120)]
+for option, upfront, savings in options:
+    m = months_to_break_even(upfront, savings)
+    print(f"{option:<15} {m:5.1f} months  (month {math.ceil(m)})")
+```
+
+Edge case: zero savings raises a `ZeroDivisionError` in Python, and negative savings gives a negative answer. Neither ever breaks even, so guard against both.
+
+```{python}
+#| label: break-even-py-edge
+def safe_break_even(upfront_cost, monthly_savings):
+    if monthly_savings <= 0:
+        return math.inf
+    return months_to_break_even(upfront_cost, monthly_savings)
+
+print(safe_break_even(500, 0), safe_break_even(500, -10))
+```
+
+How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
 
 ## Excel
 
@@ -393,4 +640,11 @@ Assuming the upfront cost is in cell `A2` and the monthly savings amount is in c
 ```
 
 ![](img/budget_break_even_formula.png){width='100%' fig-align='center'}
+
+To round up to whole months and flag purchases that never break even, use this in `C2` instead:
+
+``` swift
+=IF(B2 <= 0, "Never", ROUNDUP(A2 / B2, 0))
+```
+
 :::

@@ -17,22 +17,25 @@ source("_common.R")
 
 ## Book Topics
 
-- **Pay yourself first**: automate savings before anything else hits the checking account
-- **Savings rate**: the single most important financial metric; higher rate = faster wealth accumulation regardless of returns
-- **Benchmarks**: <10% danger zone; 10–20% average; 20–30% strong; 30%+ path to early financial independence
-- **Sinking funds**: pre-save for known future expenses (car insurance, vacation, gifts) so they don't hit as surprises
-- **Target**: save as much as you can *sustain*; a consistent 15% beats a sporadic 30%
+- **Savings rate**: the one number to track; it sets the speed of wealth building more than income does (a $40,000 earner saving 40% reaches $500k in 18 years, a $120,000 earner saving 10% takes 21)
+- **Benchmarks**: under 10% danger zone; 10 to 20% average; 20 to 30% strong; 30%+ path to financial independence within a decade or two
+- **Make savings automatic**: automate transfers the day after payday, use a separate bank, label each account by purpose, and track progress visually
+- **Savings and the FOO**: saving shows up at nearly every step of the Financial Order of Operations; the right rate is the one you can keep up for decades
+- **Account types**: high yield savings and money market accounts for emergency and sinking funds, CDs for known future goals, regular savings to avoid
+- **FDIC insurance**: covers up to $250,000 per account holder per bank; spread larger balances across banks
 
 ## Savings Rate
 
-The savings rate tells you how much of your income you're keeping, expressed as a percentage.
+The savings rate is the slice of your income bar that goes to savings. Every dollar goes to either spending or savings, so the rate measures how big the savings slice is.
 
 **Formula:** Savings Rate = (Income − Spending) ÷ Income × 100
+
+Example: you take home $5,000 and spend $3,500. (5,000 − 3,500) ÷ 5,000 = 30% savings rate.
 
 ```{r}
 #| label: savings-rate-bar-model
 #| echo: false
-#| fig-cap: "Annual dollars saved at four savings-rate tiers on a $60,000 income"
+#| fig-cap: "Savings slice as a percentage of income (same $60k income, different rates)"
 #| fig-asp: 0.50
 library(ggplot2)
 income <- 60000
@@ -63,30 +66,238 @@ ggplot(tiers, aes(x = label, y = saved, fill = label)) +
 ::: panel-tabset
 ## R
 
+`savings_rate()` subtracts spending from income and divides by income.
+
 ```{r}
 #| label: savings-rate-r
 savings_rate <- function(income, spending) {
   ((income - spending) / income) * 100
 }
 
+# $5,000 take-home, $3,500 spent
 savings_rate(income = 5000, spending = 3500)
 ```
 
+The function is vectorized, so we can check several spending levels at once and label each with its benchmark tier. The last row spends more than it earns, which gives a negative rate.
+
+```{r}
+#| label: savings-rate-r-tiers
+spending <- c(4700, 4250, 3750, 3250, 5200)
+rates <- savings_rate(income = 5000, spending = spending)
+data.frame(
+  spending = spending,
+  rate     = round(rates, 1),
+  tier     = cut(rates,
+                 breaks = c(-Inf, 10, 20, 30, Inf),
+                 labels = c("Danger zone", "Average", "Strong", "FI path"),
+                 right  = FALSE)
+)
+```
+
+Flip the formula to find the spending limit for a target rate: Spending = Income × (1 − Rate). Plugging it back in should return the rate we started with.
+
+```{r}
+#| label: savings-rate-r-check
+spending_limit <- function(income, target_rate) {
+  income * (1 - target_rate)
+}
+spending_limit(income = 5000, target_rate = 0.30)
+savings_rate(income = 5000, spending = spending_limit(5000, 0.30))
+```
+
 ## Python
+
+The Python version of `savings_rate()` works the same way.
 
 ```{python}
 #| label: savings-rate-py
 def savings_rate(income, spending):
     return ((income - spending) / income) * 100
 
+# $5,000 take-home, $3,500 spent
 savings_rate(income=5000, spending=3500)
+```
+
+Check several spending levels and label each with its benchmark tier. A negative rate means spending is higher than income.
+
+```{python}
+#| label: savings-rate-py-tiers
+def rate_tier(rate):
+    if rate < 10:
+        return "Danger zone"
+    elif rate < 20:
+        return "Average"
+    elif rate < 30:
+        return "Strong"
+    return "FI path"
+
+for spending in [4700, 4250, 3750, 3250, 5200]:
+    rate = savings_rate(income=5000, spending=spending)
+    print(f"${spending:>6,}  {rate:6.1f}%  {rate_tier(rate)}")
+```
+
+Flip the formula to find the spending limit for a target rate, then plug it back in as a check.
+
+```{python}
+#| label: savings-rate-py-check
+def spending_limit(income, target_rate):
+    return income * (1 - target_rate)
+
+limit = spending_limit(income=5000, target_rate=0.30)
+print(limit)
+print(savings_rate(income=5000, spending=limit))
 ```
 
 ## Excel
 
-With income in `A2` and spending in `B2`:
+Assuming `Income` is in cell `B2` and `Spending` is in cell `C2`, the savings rate goes in `D2`:
 
-```swift
-=((A2-B2)/A2)*100
+``` swift
+=((B2 - C2) / B2) * 100
+```
+
+To label the benchmark tier in `E2`:
+
+``` swift
+=IFS(D2 < 10, "Danger zone", D2 < 20, "Average", D2 < 30, "Strong", TRUE, "FI path")
+```
+
+To find the spending limit for a target rate (as a decimal) in `F2`:
+
+``` swift
+=B2 * (1 - F2)
 ```
 :::
+
+How to read this result: a 30% rate means 30 cents of every dollar you bring home stays with you. If the rate is negative, you are spending more than you earn and the gap is coming from savings or debt.
+
+## Years to a Savings Target
+
+The book compares two savers at a 7% return. One earns $40,000 and saves 40% ($16,000 a year). The other earns $120,000 and saves 10% ($12,000 a year). The bigger saver reaches $500,000 first. We can solve for the number of years directly.
+
+**Formula:** Years = ln(1 + Target × r ÷ Annual Savings) ÷ ln(1 + r)
+
+Example: ln(1 + 500,000 × 0.07 ÷ 16,000) ÷ ln(1.07) = 17.1 years, so the balance passes $500k during year 18. At $12,000 a year it takes 20.2 years, so year 21.
+
+```{r}
+#| label: years-target-bar-model
+#| echo: false
+#| fig-cap: "Years to reach $500,000 at a 7% return on a $60,000 income"
+#| fig-asp: 0.50
+library(ggplot2)
+yrs <- data.frame(
+  label = c("8% (danger zone)", "15% (average)", "25% (strong)", "35% (FI path)"),
+  rate  = c(0.08, 0.15, 0.25, 0.35),
+  fill  = c("#f44242", "#0e9aa7", "#48a56a", "#86ddcd")
+)
+yrs$years <- log(1 + 500000 * 0.07 / (60000 * yrs$rate)) / log(1.07)
+yrs$label <- factor(yrs$label, levels = rev(yrs$label))
+
+ggplot(yrs, aes(x = label, y = years, fill = label)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.3) +
+  geom_text(aes(label = paste0(round(years, 1), " years")), hjust = -0.1,
+            fontface = "bold", size = 3.5, colour = "#1C1C1E") +
+  coord_flip() +
+  scale_fill_manual(values = setNames(yrs$fill, yrs$label)) +
+  scale_y_continuous(limits = c(0, 38)) +
+  labs(x = NULL, y = "Years to $500,000") +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank())
+```
+
+::: panel-tabset
+## R
+
+`years_to_target()` solves the savings growth formula for time. `ceiling()` gives the year the balance actually passes the target.
+
+```{r}
+#| label: years-target-r
+years_to_target <- function(annual_savings, target, rate = 0.07) {
+  log(1 + target * rate / annual_savings) / log(1 + rate)
+}
+
+# $40k at 40% vs. $120k at 10%
+yrs <- years_to_target(annual_savings = c(16000, 12000), target = 500000)
+round(yrs, 1)
+ceiling(yrs)
+```
+
+Same $60,000 income, four savings rates. Saving nothing never gets there, so the last row returns `Inf`.
+
+```{r}
+#| label: years-target-r-rates
+rate <- c(0.08, 0.15, 0.25, 0.35, 0)
+data.frame(
+  rate   = rate,
+  saved  = 60000 * rate,
+  years  = round(years_to_target(60000 * rate, target = 500000), 1)
+)
+```
+
+Sanity check: grow $16,000 a year for 17 and 18 years. The balance should be just under $500k after 17 and over it after 18.
+
+```{r}
+#| label: years-target-r-check
+fv_annual <- function(annual_savings, years, rate = 0.07) {
+  annual_savings * ((1 + rate)^years - 1) / rate
+}
+round(fv_annual(16000, years = c(17, 18)))
+```
+
+## Python
+
+`years_to_target()` solves the savings growth formula for time. `math.ceil()` gives the year the balance passes the target.
+
+```{python}
+#| label: years-target-py
+import math
+
+def years_to_target(annual_savings, target, rate=0.07):
+    if annual_savings <= 0:
+        return math.inf
+    return math.log(1 + target * rate / annual_savings) / math.log(1 + rate)
+
+# $40k at 40% vs. $120k at 10%
+for saved in [16000, 12000]:
+    yrs = years_to_target(annual_savings=saved, target=500000)
+    print(f"${saved:,}/yr: {yrs:.1f} years (passes target in year {math.ceil(yrs)})")
+```
+
+Same $60,000 income, four savings rates. Saving nothing never reaches the target.
+
+```{python}
+#| label: years-target-py-rates
+for rate in [0.08, 0.15, 0.25, 0.35, 0]:
+    saved = 60000 * rate
+    print(f"{rate:4.0%}  ${saved:>7,.0f}/yr  {years_to_target(saved, 500000):5.1f} years")
+```
+
+Sanity check: the balance should be just under $500k after 17 years and over it after 18.
+
+```{python}
+#| label: years-target-py-check
+def fv_annual(annual_savings, years, rate=0.07):
+    return annual_savings * ((1 + rate) ** years - 1) / rate
+
+[round(fv_annual(16000, years)) for years in [17, 18]]
+```
+
+## Excel
+
+Assuming `Annual_Savings` is in cell `B2`, the return `Rate` is in `C2`, and the `Target` is in `D2`:
+
+``` swift
+=LN(1 + D2 * C2 / B2) / LN(1 + C2)
+```
+
+Excel's `NPER()` gives the same answer (savings entered as a negative cash flow):
+
+``` swift
+=NPER(C2, -B2, 0, D2)
+```
+
+Wrap either one in `ROUNDUP(..., 0)` to get the year the balance passes the target.
+:::
+
+How to read this result: the answer is the number of years of steady saving needed, not counting anything you already have. Raising the savings rate shortens the timeline much more at low rates than at high ones.

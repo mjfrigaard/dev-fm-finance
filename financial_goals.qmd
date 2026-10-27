@@ -7,13 +7,291 @@ title: "Financial Goals"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **Short, medium, and long goals**: when you need the money decides where it lives; under 3 years in high yield savings, 3 to 10 years in savings or a bond and stock mix, over 10 years in index funds inside retirement accounts
+- **Wish vs. goal**: a goal has a number, a date, and a monthly amount; give each goal its own named savings account and automate the transfer on payday
+- **Do you need a goal to save?**: Sethi and Preston give planned expenses their own step; Housel says savings with no goal attached buys flexibility; most people do best with both
+- **How much to save**: Sethi (about 10% of take home pay for investing plus 5% to 10% for goals), The Money Guy Show (25% of gross), 15% for retirement as a starting point; start with what you can and raise it with every raise
+- **Sequencing goals**: finish the Financial Order of Operations first, then fund goals one at a time or all at once; the last goal finishes on the same day either way
+- **Tracking progress**: check transfers monthly, compare balances every few months, add up net worth once a year, and notice when you hit a goal
+
+## Saving for a Goal with Interest
+
+Interest does part of the work, so you can save a little less each month than goal ÷ months. This formula works backward from the future value of a monthly deposit.
+
+**Formula:** Monthly amount = Goal × r ÷ ((1 + r)\^n − 1), where r = yearly rate ÷ 12 and n = number of months
+
+```{r}
+#| label: goal-bar-model
+#| echo: false
+#| fig-cap: "A $15,000 goal in 5 years at 4%: your deposits plus interest"
+#| fig-asp: 0.25
+library(ggplot2)
+r <- 0.04 / 12
+n <- 60
+pmt <- 15000 * r / ((1 + r)^n - 1)
+deposits <- pmt * n
+parts <- c(sprintf("Your deposits ($%s)", formatC(round(deposits), format = "d", big.mark = ",")),
+           sprintf("Interest ($%s)", formatC(round(15000 - deposits), format = "d", big.mark = ",")))
+df_goal <- data.frame(
+  part   = factor(parts, levels = rev(parts)),
+  amount = c(deposits, 15000 - deposits),
+  bar    = "$15,000 goal"
+)
+ggplot(df_goal, aes(x = amount, y = bar, fill = part)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  scale_fill_manual(values = setNames(c("#0e9aa7", "#48a56a"), parts), breaks = parts) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+Example: a $15,000 down payment in 5 years at 4% takes about $226 a month, $24 less than the $250 you'd need with no interest. Over five years, interest adds about $1,425.
+
+::: panel-tabset
+## R
+
+`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
+
+```{r}
+#| label: goal-r
+monthly_for_goal <- function(goal, annual_rate, months) {
+  r <- annual_rate / 12
+  if (r == 0) return(goal / months)
+  goal * r / ((1 + r)^months - 1)
+}
+
+# $15,000 in 5 years at 4%, compared to no interest
+monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
+monthly_for_goal(goal = 15000, annual_rate = 0, months = 60)
+```
+
+How much of the goal comes from interest? Multiply the deposit by the number of months and subtract from the goal.
+
+```{r}
+#| label: goal-r-interest
+pmt <- monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
+c(deposits = pmt * 60, interest = 15000 - pmt * 60)
+```
+
+Same goal, different rates and deadlines. A longer runway lowers the monthly amount far more than a higher rate does.
+
+```{r}
+#| label: goal-r-grid
+grid <- expand.grid(annual_rate = c(0, 0.02, 0.04, 0.05), years = c(3, 5, 7))
+grid$monthly <- round(mapply(monthly_for_goal, goal = 15000,
+                             annual_rate = grid$annual_rate,
+                             months = grid$years * 12))
+grid
+```
+
+Sanity check: growing $226.25 a month at 4% for 60 months should land back on $15,000.
+
+```{r}
+#| label: goal-r-check
+r <- 0.04 / 12
+pmt * ((1 + r)^60 - 1) / r
+```
+
+## Python
+
+`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
+
+```{python}
+#| label: goal-py
+def monthly_for_goal(goal, annual_rate, months):
+    r = annual_rate / 12
+    if r == 0:
+        return goal / months
+    return goal * r / ((1 + r) ** months - 1)
+
+# $15,000 in 5 years at 4%, compared to no interest
+print(monthly_for_goal(goal=15000, annual_rate=0.04, months=60))
+print(monthly_for_goal(goal=15000, annual_rate=0, months=60))
+```
+
+How much of the goal comes from interest?
+
+```{python}
+#| label: goal-py-interest
+pmt = monthly_for_goal(goal=15000, annual_rate=0.04, months=60)
+print(f"deposits: {pmt * 60:,.2f}  interest: {15000 - pmt * 60:,.2f}")
+```
+
+Same goal, different rates and deadlines:
+
+```{python}
+#| label: goal-py-grid
+print(f"{'rate':>6} {'3 yrs':>7} {'5 yrs':>7} {'7 yrs':>7}")
+for rate in [0, 0.02, 0.04, 0.05]:
+    row = [monthly_for_goal(15000, rate, y * 12) for y in [3, 5, 7]]
+    print(f"{rate:>6.0%} " + " ".join(f"{m:>7,.0f}" for m in row))
+```
+
+Sanity check: the deposits should grow back to $15,000.
+
+```{python}
+#| label: goal-py-check
+r = 0.04 / 12
+print(round(pmt * ((1 + r) ** 60 - 1) / r, 2))
+```
+
+## Excel
+
+Assuming the goal is in `B2`, the yearly rate is in `C2`, and the number of months is in `D2`, the monthly amount goes in `E2`:
+
+```swift
+=PMT(C2 / 12, D2, 0, -B2)
+```
+
+Interest earned goes in `F2`:
+
+```swift
+=B2 - E2 * D2
+```
+
+To check the answer, `FV()` should return the goal:
+
+```swift
+=FV(C2 / 12, D2, -E2)
+```
+:::
+
+How to read this result: the monthly amount is your payday transfer. If it doesn't fit your budget, push the date out before you lower the goal; an extra two years cuts the monthly amount by about 30%.
+
+## One Goal at a Time vs. All at Once
+
+When several goals share one monthly savings amount, the order changes when the first goal finishes. It never changes when the last one finishes.
+
+**Formula:** Months to finish all goals = Total of all goals ÷ Monthly savings; Months to finish the first goal = First goal ÷ Amount going to it each month
+
+```{r}
+#| label: sequence-bar-model
+#| echo: false
+#| fig-cap: "Two goals funded with $600/month: one at a time vs. split evenly"
+#| fig-asp: 0.40
+library(ggplot2)
+df_seq <- data.frame(
+  plan = factor(rep(c("One at a time", "Split evenly"), each = 2),
+                levels = c("Split evenly", "One at a time")),
+  goal = factor(rep(c("Trip ($3,000)", "Car ($9,000)"), 2),
+                levels = c("Trip ($3,000)", "Car ($9,000)")),
+  done = c(5, 20, 10, 20)
+)
+ggplot(df_seq, aes(x = done, y = plan, fill = goal)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6,
+           colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0("Month ", done)),
+            position = position_dodge(width = 0.7),
+            hjust = -0.15, fontface = "bold", size = 3.4, colour = "#1C1C1E") +
+  scale_fill_manual(values = c("Trip ($3,000)" = "#86ddcd", "Car ($9,000)" = "#0e9aa7")) +
+  scale_x_continuous(limits = c(0, 24), breaks = seq(0, 24, 4)) +
+  labs(x = "Months", y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+Example: with $600 a month for a $3,000 trip and a $9,000 car, both goals are done in ($3,000 + $9,000) ÷ $600 = 20 months either way. The trip takes 5 months one at a time, or 10 months split evenly.
+
+::: panel-tabset
+## R
+
+`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
+
+```{r}
+#| label: sequence-r
+months_to_fund <- function(goal, monthly) {
+  ceiling(goal / monthly)
+}
+
+# one at a time: trip first, then car
+months_to_fund(3000, 600)
+months_to_fund(3000 + 9000, 600)
+
+# split evenly: trip gets half until it's done
+months_to_fund(3000, 300)
+months_to_fund(3000 + 9000, 600)
+```
+
+Try other splits. The more you send to the trip, the sooner it's done. The car always finishes at month 20, as long as every dollar keeps going to some goal.
+
+```{r}
+#| label: sequence-r-splits
+trip_share <- c(1, 0.75, 0.5, 0.25)
+data.frame(
+  trip_share  = trip_share,
+  trip_month  = months_to_fund(3000, 600 * trip_share),
+  all_done    = months_to_fund(3000 + 9000, 600)
+)
+```
+
+Edge case: rounding up matters. A $1,000 goal at $300 a month takes 4 months, not 3.3.
+
+```{r}
+#| label: sequence-r-edge
+months_to_fund(1000, 300)
+```
+
+## Python
+
+`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
+
+```{python}
+#| label: sequence-py
+import math
+
+def months_to_fund(goal, monthly):
+    return math.ceil(goal / monthly)
+
+# one at a time: trip first, then car
+print(months_to_fund(3000, 600), months_to_fund(3000 + 9000, 600))
+
+# split evenly: trip gets half until it's done
+print(months_to_fund(3000, 300), months_to_fund(3000 + 9000, 600))
+```
+
+Try other splits:
+
+```{python}
+#| label: sequence-py-splits
+print(f"{'trip share':>10} {'trip month':>10} {'all done':>9}")
+for share in [1, 0.75, 0.5, 0.25]:
+    print(f"{share:>10.0%} {months_to_fund(3000, 600 * share):>10} "
+          f"{months_to_fund(3000 + 9000, 600):>9}")
+```
+
+Edge case: rounding up matters.
+
+```{python}
+#| label: sequence-py-edge
+print(months_to_fund(1000, 300))
+```
+
+## Excel
+
+Assuming the goal is in `B2` and the monthly amount going to it is in `C2`:
+
+```swift
+=ROUNDUP(B2 / C2, 0)
+```
+
+For the finish line on all goals, put the goals in `B2:B3` and total monthly savings in `D2`:
+
+```swift
+=ROUNDUP(SUM(B2:B3) / D2, 0)
+```
+:::
+
+How to read this result: the order is a choice about which goal you want first, not about saving time overall. Put a fixed date goal (a wedding, a car on its last legs) first, or give it the bigger share.

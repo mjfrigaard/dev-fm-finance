@@ -127,3 +127,57 @@ co_box <- function(
     stop("Invalid `type`", call. = FALSE)
   )
 }
+# dark mode plots ----
+# Chunks that build a ggplot render twice: the original plot (light) and a
+# terminal styled copy (dark). Quarto's `renderings` shows the one that
+# matches the reader's color scheme.
+theme_fm_dark <- function() {
+  ggplot2::theme(
+    plot.background   = ggplot2::element_rect(fill = "#000000", colour = NA),
+    panel.background  = ggplot2::element_rect(fill = "#000000", colour = NA),
+    legend.background = ggplot2::element_rect(fill = "#000000", colour = NA),
+    legend.key        = ggplot2::element_rect(fill = "#000000", colour = NA),
+    strip.background  = ggplot2::element_rect(fill = "#0d0d0d", colour = NA),
+    panel.grid.major  = ggplot2::element_line(colour = "#2b2b2b"),
+    panel.grid.minor  = ggplot2::element_line(colour = "#1a1a1a"),
+    text              = ggplot2::element_text(colour = "#e2dccf"),
+    axis.text         = ggplot2::element_text(colour = "#9a9488"),
+    plot.title        = ggplot2::element_text(colour = "#ffa028"),
+    strip.text        = ggplot2::element_text(colour = "#ffa028"),
+    geom              = ggplot2::element_geom(ink = "#e2dccf", paper = "#000000")
+  )
+}
+
+fm_dark <- function(p) {
+  dark_ink <- c("#1C1C1E", "#1c1c1e", "black", "#000000")
+  for (i in seq_along(p$layers)) {
+    lyr <- p$layers[[i]]
+    is_text <- inherits(lyr$geom, c("GeomText", "GeomLabel"))
+    if (!is_text && isTRUE(lyr$aes_params$colour %in% dark_ink)) {
+      lyr <- structure(rlang::env_clone(lyr), class = class(lyr))
+      lyr$aes_params$colour <- "#9a9488"
+      p$layers[[i]] <- lyr
+    }
+  }
+  p + theme_fm_dark()
+}
+
+registerS3method(
+  "knit_print", "ggplot",
+  function(x, options, ...) {
+    print(x)
+    if (!is.null(options$renderings)) print(fm_dark(x))
+    invisible()
+  },
+  envir = asNamespace("knitr")
+)
+
+knitr::opts_chunk$set(dark_plots = TRUE)
+knitr::opts_hooks$set(dark_plots = function(options) {
+  if (isTRUE(options$dark_plots) && is.null(options$renderings) &&
+      any(grepl("ggplot(", options$code, fixed = TRUE))) {
+    options$renderings <- c("light", "dark")
+    options$fig.show <- "hold"
+  }
+  options
+})

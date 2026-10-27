@@ -7,13 +7,254 @@ title: "Estate Planning"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **Why it matters young**: at 18 your parents lose the right to act for you; set up a plan while you're thinking clearly, since people tend to miss their own cognitive decline
+- **Beneficiary designations**: the ten minute task; name a primary and contingent beneficiary on retirement plans, IRAs, HSAs, life insurance, and bank (POD) and brokerage (TOD) accounts; these forms override your will
+- **Financial power of attorney**: a durable POA names an agent to handle your money if you can't
+- **Healthcare directive and HIPAA release**: a healthcare proxy and living will (often one advance directive), plus a HIPAA form so doctors can share information
+- **Will and trust**: a will covers what has no beneficiary, names an executor, and names a guardian for children; without one, state intestate succession decides; most people starting out don't need a trust
+- **Paperwork and parents**: store originals safely, keep an account list (no passwords), set up password manager emergency access, and ask your parents about their plan
+
+## What You Own and What You Owe
+
+Your estate starts with your net worth: everything you own minus everything you owe.
+
+**Formula:** Net worth = Total assets − Total debts
+
+```{r}
+#| label: networth-bar-model
+#| echo: false
+#| fig-cap: "Assets, debts, and net worth for a 25 year old"
+#| fig-asp: 0.40
+library(ggplot2)
+parts <- c("401(k)", "Roth IRA", "Savings", "Car", "Car loan", "Credit card")
+df_nw <- data.frame(
+  side   = factor(rep(c("What you own", "What you owe"), c(4, 2)),
+                  levels = c("What you owe", "What you own")),
+  part   = factor(parts, levels = rev(parts)),
+  amount = c(12000, 6000, 8000, 9000, 6000, 1000)
+)
+ends <- ave(df_nw$amount, df_nw$side, FUN = cumsum)
+df_lab <- data.frame(
+  side  = df_nw$side,
+  x     = ifelse(df_nw$part == "Credit card", ends + 300, ends - df_nw$amount / 2),
+  hjust = ifelse(df_nw$part == "Credit card", 0, 0.5),
+  label = paste0(df_nw$part, "\n$", formatC(df_nw$amount, format = "d", big.mark = ","))
+)
+ggplot(df_nw, aes(x = amount, y = side, fill = side, group = part)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(data = df_lab, aes(x = x, y = side, label = label, hjust = hjust),
+            inherit.aes = FALSE, fontface = "bold", size = 2.9, colour = "#1C1C1E") +
+  scale_fill_manual(values = c("What you own" = "#86ddcd", "What you owe" = "#f44242")) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank())
+```
+
+Example: ($12,000 + $6,000 + $8,000 + $9,000) − ($6,000 + $1,000) = $35,000 − $7,000 = a net worth of $28,000.
+
+::: panel-tabset
+## R
+
+`net_worth()` takes two named vectors, so you can see each item and the total.
+
+```{r}
+#| label: networth-r
+net_worth <- function(assets, debts) {
+  sum(assets) - sum(debts)
+}
+
+assets <- c(k401 = 12000, roth_ira = 6000, savings = 8000, car = 9000)
+debts  <- c(car_loan = 6000, credit_card = 1000)
+net_worth(assets, debts)
+```
+
+Sanity check: paying off the credit card from savings doesn't change net worth. Cash goes down by $1,000 and so does debt.
+
+```{r}
+#| label: networth-r-check
+assets_after <- replace(assets, "savings", 8000 - 1000)
+debts_after  <- replace(debts, "credit_card", 0)
+net_worth(assets_after, debts_after)
+```
+
+Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that's common.
+
+```{r}
+#| label: networth-r-edge
+net_worth(assets = c(savings = 3000, car = 5000),
+          debts  = c(student_loans = 30000))
+```
+
+## Python
+
+`net_worth()` takes two dictionaries, so you can see each item and the total.
+
+```{python}
+#| label: networth-py
+def net_worth(assets, debts):
+    return sum(assets.values()) - sum(debts.values())
+
+assets = {"401k": 12000, "roth_ira": 6000, "savings": 8000, "car": 9000}
+debts = {"car_loan": 6000, "credit_card": 1000}
+print(net_worth(assets, debts))
+```
+
+Sanity check: paying off the credit card from savings doesn't change net worth.
+
+```{python}
+#| label: networth-py-check
+assets_after = {**assets, "savings": 8000 - 1000}
+debts_after = {**debts, "credit_card": 0}
+print(net_worth(assets_after, debts_after))
+```
+
+Edge case: net worth can be negative.
+
+```{python}
+#| label: networth-py-edge
+print(net_worth({"savings": 3000, "car": 5000}, {"student_loans": 30000}))
+```
+
+## Excel
+
+Assuming assets are listed in `B2:B5` and debts in `C2:C3`:
+
+```swift
+=SUM(B2:B5) - SUM(C2:C3)
+```
+:::
+
+How to read this result: net worth is the yearly check in on your progress. It's also roughly what your estate would be worth today, before adding any life insurance.
+
+## How Much Your Beneficiary Forms Control
+
+Life insurance isn't part of net worth while you're alive, but it pays out when you die. Add it, then split the estate by what decides who gets each piece.
+
+**Formula:** Share controlled by beneficiary forms = Assets with a named beneficiary ÷ Total estate
+
+```{r}
+#| label: beneficiary-bar-model
+#| echo: false
+#| fig-cap: "What decides who gets each part of the estate"
+#| fig-asp: 0.30
+library(ggplot2)
+groups <- c("Beneficiary forms ($63,000)", "Savings with POD ($8,000)", "Your will or state law ($9,000)")
+df_ben <- data.frame(
+  group  = factor(groups, levels = rev(groups)),
+  amount = c(12000 + 6000 + 45000, 8000, 9000),
+  bar    = "Estate"
+)
+ggplot(df_ben, aes(x = amount, y = bar, fill = group)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  scale_fill_manual(values = c("Beneficiary forms ($63,000)" = "#0e9aa7",
+                               "Savings with POD ($8,000)" = "#86ddcd",
+                               "Your will or state law ($9,000)" = "#f44242"),
+                    breaks = groups) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", legend.direction = "vertical",
+        panel.grid.major.y = element_blank(), panel.grid.minor = element_blank(),
+        axis.text.y = element_blank())
+```
+
+Example: ($12,000 + $6,000 + $45,000 + $8,000) ÷ $80,000 = about 89% of the estate, decided by forms that take minutes to fill out. That's why beneficiary designations come before a will for most young people.
+
+::: panel-tabset
+## R
+
+`beneficiary_share()` divides what the forms control by the whole estate.
+
+```{r}
+#| label: beneficiary-r
+beneficiary_share <- function(with_beneficiary, without_beneficiary) {
+  sum(with_beneficiary) / (sum(with_beneficiary) + sum(without_beneficiary))
+}
+
+with_beneficiary    <- c(k401 = 12000, roth_ira = 6000, life_insurance = 45000, savings_pod = 8000)
+without_beneficiary <- c(car = 9000)
+beneficiary_share(with_beneficiary, without_beneficiary)
+```
+
+What if some forms are blank? A blank form moves that account into the "will or state law" pile. Each scenario below starts from the same $80,000 estate.
+
+```{r}
+#| label: beneficiary-r-scenarios
+all_assets <- c(k401 = 12000, roth_ira = 6000, life_insurance = 45000,
+                savings = 8000, car = 9000)
+scenarios <- list(
+  "all forms filled"   = c("k401", "roth_ira", "life_insurance", "savings"),
+  "no POD on savings"  = c("k401", "roth_ira", "life_insurance"),
+  "only the 401(k)"    = c("k401"),
+  "no forms at all"    = character(0)
+)
+data.frame(
+  scenario     = names(scenarios),
+  forms_share  = sapply(scenarios, function(s)
+    beneficiary_share(all_assets[s], all_assets[!names(all_assets) %in% s])),
+  through_will = sapply(scenarios, function(s) sum(all_assets[!names(all_assets) %in% s])),
+  row.names    = NULL
+)
+```
+
+## Python
+
+`beneficiary_share()` divides what the forms control by the whole estate.
+
+```{python}
+#| label: beneficiary-py
+def beneficiary_share(with_beneficiary, without_beneficiary):
+    named = sum(with_beneficiary.values())
+    return named / (named + sum(without_beneficiary.values()))
+
+with_beneficiary = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000, "savings_pod": 8000}
+without_beneficiary = {"car": 9000}
+print(beneficiary_share(with_beneficiary, without_beneficiary))
+```
+
+What if some forms are blank?
+
+```{python}
+#| label: beneficiary-py-scenarios
+all_assets = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000,
+              "savings": 8000, "car": 9000}
+scenarios = {
+    "all forms filled": ["401k", "roth_ira", "life_insurance", "savings"],
+    "no POD on savings": ["401k", "roth_ira", "life_insurance"],
+    "only the 401(k)": ["401k"],
+    "no forms at all": [],
+}
+for name, named in scenarios.items():
+    yes = {k: v for k, v in all_assets.items() if k in named}
+    no = {k: v for k, v in all_assets.items() if k not in named}
+    print(f"{name:<18} {beneficiary_share(yes, no):>5.0%}  through will: ${sum(no.values()):,}")
+```
+
+## Excel
+
+Assuming assets with a named beneficiary are in `B2:B5` and assets without one are in `C2`:
+
+```swift
+=SUM(B2:B5) / (SUM(B2:B5) + SUM(C2))
+```
+
+To test blank forms, list every asset in `B2:B6` with `Yes` or `No` in `C2:C6` for "has a beneficiary," then:
+
+```swift
+=SUMIF(C2:C6, "Yes", B2:B6) / SUM(B2:B6)
+```
+:::
+
+How to read this result: the higher the share, the less your will has to do. With every form filled in, a will only decides the car. With no forms, all $80,000 goes through probate.

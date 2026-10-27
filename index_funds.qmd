@@ -7,13 +7,223 @@ title: "Index Funds"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **What an index fund is**: an index is a list of companies (like the S&P 500); an index fund buys everything on the list, weighted by company size (market cap), with no manager picking winners (passive vs. active)
+- **Why index funds win**: SPIVA shows 79% of large US active funds trailed the S&P 500 in 2025 and about 9 in 10 over 15 years; Bogle's math says the average investor earns the market return minus costs
+- **Expense ratios**: a yearly fee taken out quietly; 0.04% vs. 1% is $4 vs. $100 on $10,000; look for funds under 0.10%
+- **Total market vs. S&P 500 vs. international**: the first two move almost together; experts disagree on how much international to hold (Bogle and Collins little or none, Felix anywhere from 10% to 60% home country)
+- **ETFs vs. mutual funds**: same holdings, different packaging; ETFs trade all day and are a little more tax efficient, mutual funds make automatic investing easier
+- **How to pick one**: go broad, check the expense ratio, look for "index" in the 401(k) list (or a target date fund), automate, and leave it alone
+
+## The Fee This Year
+
+Every year, the fund takes a slice of your balance as its fee.
+
+**Formula:** Yearly fee = Balance × Expense ratio
+
+Example: $10,000 × 0.0004 = $4. $10,000 × 0.01 = $100, or 25 times as much.
+
+```{r}
+#| label: fee-bar-model
+#| echo: false
+#| fig-cap: "One year of fees on $10,000"
+#| fig-asp: 0.30
+library(ggplot2)
+df_fee <- data.frame(
+  fund = factor(c("Index fund (0.04%)", "Active fund (1%)"),
+                levels = c("Active fund (1%)", "Index fund (0.04%)")),
+  fee  = c(10000 * 0.0004, 10000 * 0.01),
+  fill = c("#0e9aa7", "#f44242")
+)
+ggplot(df_fee, aes(x = fee, y = fund, fill = fill)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0("$", fee)), hjust = -0.3, fontface = "bold", size = 3.5) +
+  scale_fill_identity() +
+  scale_x_continuous(limits = c(0, 120), labels = function(x) paste0("$", x)) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.y = element_blank(), panel.grid.minor = element_blank())
+```
+
+The second example uses a table of typical expense ratios across a few balances. The fee grows with your balance, so a fee that costs pocket change at $10,000 costs real money at $250,000.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: fee-r
+yearly_fee <- function(balance, expense_ratio) {
+  balance * expense_ratio
+}
+
+# $10,000 in an index fund vs. an active fund
+yearly_fee(balance = 10000, expense_ratio = c(0.0004, 0.01))
+
+# several funds across several balances
+ratios   <- c(index = 0.0004, target_date = 0.0010, active = 0.01)
+balances <- c(10000, 50000, 250000)
+fees <- outer(balances, ratios, yearly_fee)
+data.frame(balance = balances, fees)
+
+# sanity check: how many times as expensive?
+0.01 / 0.0004
+```
+
+## Python
+
+```{python}
+#| label: fee-py
+import numpy as np
+
+def yearly_fee(balance, expense_ratio):
+    return balance * expense_ratio
+
+# $10,000 in an index fund vs. an active fund
+print(yearly_fee(balance=10000, expense_ratio=np.array([0.0004, 0.01])))
+
+# several funds across several balances
+ratios = {"index": 0.0004, "target_date": 0.0010, "active": 0.01}
+for bal in [10000, 50000, 250000]:
+    fees = ", ".join(f"{k} ${yearly_fee(bal, v):,.0f}" for k, v in ratios.items())
+    print(f"${bal:,}: {fees}")
+
+# sanity check: how many times as expensive?
+print(0.01 / 0.0004)
+```
+
+## Excel
+
+With `Balance` in `B2` and `Expense ratio` in `C2`:
+
+```swift
+=B2 * C2
+```
+
+For a table, put balances down column `A` (`A3:A5`) and ratios across row 2 (`B2:D2`), then fill `B3` across and down:
+
+```swift
+=$A3 * B$2
+```
+:::
+
+Read the fee as dollars you never see. The active fund costs $2,500 a year on $250,000, and the index fund costs $100.
+
+## What Fees Cost Over a Lifetime
+
+The fee comes out of the return, so subtract it from the return before you compound.
+
+**Formula:** FV = PMT × \[((1 + r)\^n − 1) ÷ r\], where r = (return − expense ratio) ÷ 12
+
+Example: $300/month for 40 years at 7%. The index fund (0.04%) grows to about $778,655 and the active fund (1%) to about $597,447. Both people put in the same $144,000. The 1% fee cost $181,207, about 23% of what the index fund investor ended up with.
+
+```{r}
+#| label: fee-drag-bar-model
+#| echo: false
+#| fig-cap: "$300/month at 7%, with a 0.04% fee vs. a 1% fee"
+#| fig-asp: 0.55
+library(ggplot2)
+fv_series <- function(pmt, r, n) pmt * (((1 + r)^n - 1) / r)
+yrs  <- c(10, 20, 30, 40)
+low  <- fv_series(300, (0.07 - 0.0004) / 12, yrs * 12)
+high <- fv_series(300, (0.07 - 0.01) / 12, yrs * 12)
+df_drag <- data.frame(
+  year  = factor(rep(paste0("Year ", yrs), 2), levels = paste0("Year ", yrs)),
+  fund  = factor(rep(c("Index fund (0.04%)", "Active fund (1%)"), each = length(yrs)),
+                 levels = c("Index fund (0.04%)", "Active fund (1%)")),
+  value = c(low, high)
+)
+ggplot(df_drag, aes(x = year, y = value, fill = fund)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.65,
+           colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = paste0("$", round(value / 1000), "k")),
+            position = position_dodge(width = 0.7),
+            vjust = -0.4, fontface = "bold", size = 3.2) +
+  scale_fill_manual(values = c("Index fund (0.04%)" = "#0e9aa7",
+                               "Active fund (1%)"   = "#f44242")) +
+  scale_y_continuous(limits = c(0, max(low) * 1.12),
+                     labels = function(x) paste0("$", round(x / 1000), "k")) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
+        legend.position = "top")
+```
+
+The second example tries several expense ratios over 40 years and reports the share of the low cost result each one loses. The edge case is a 0% fee, which is just the plain annuity from Investing Basics.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: fee-drag-r
+future_value_after_fees <- function(contribution, annual_return, expense_ratio, years) {
+  rate    <- (annual_return - expense_ratio) / 12
+  periods <- years * 12
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+
+# $300/month for 40 years at 7%, index fund vs. active fund
+index_fund  <- future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund <- future_value_after_fees(300, 0.07, 0.01, 40)
+c(index_fund = index_fund, active_fund = active_fund,
+  cost_of_fees = index_fund - active_fund)
+
+# share of the index fund result lost to the 1% fee
+(index_fund - active_fund) / index_fund
+
+# several expense ratios over 40 years
+er <- c(0, 0.0004, 0.001, 0.005, 0.01, 0.015)
+fv <- future_value_after_fees(300, 0.07, er, 40)
+data.frame(
+  expense_ratio_pct = er * 100,
+  ending_balance    = round(fv),
+  lost_vs_index_pct = round(100 * (1 - fv / index_fund), 1)
+)
+```
+
+## Python
+
+```{python}
+#| label: fee-drag-py
+import numpy as np
+
+def future_value_after_fees(contribution, annual_return, expense_ratio, years):
+    rate = (annual_return - expense_ratio) / 12
+    periods = years * 12
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+
+# $300/month for 40 years at 7%, index fund vs. active fund
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund = future_value_after_fees(300, 0.07, 0.01, 40)
+print(round(index_fund), round(active_fund), round(index_fund - active_fund))
+
+# share of the index fund result lost to the 1% fee
+print((index_fund - active_fund) / index_fund)
+
+# several expense ratios over 40 years
+er = np.array([0, 0.0004, 0.001, 0.005, 0.01, 0.015])
+fv = future_value_after_fees(300, 0.07, er, 40)
+for e, v in zip(er, fv):
+    print(f"{e:.2%}: ${v:,.0f} ({1 - v / index_fund:+.1%} vs. index)")
+```
+
+## Excel
+
+With `Contribution` in `B2`, `Return` in `C2`, `Expense ratio` in `D2`, and `Years` in `E2`:
+
+```swift
+=FV((C2 - D2) / 12, E2 * 12, -B2)
+```
+
+Copy the row down with different expense ratios in column `D` to build the comparison table.
+:::
+
+Read the lifetime cost as a share, not a dollar amount. A 1% fee takes about 23% of the ending balance, which is why the book says close to a quarter. A negative "lost" number means that fund beat the 0.04% index fund (only possible here with a lower fee).
