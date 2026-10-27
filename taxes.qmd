@@ -7,13 +7,303 @@ title: "Taxes"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **Where your paycheck goes**: withholding for federal income tax, Social Security (6.2%), Medicare (1.45%), and state tax; FICA (7.65%) starts at the first dollar (about $3,443 on $45,000); 401(k) contributions are your money, not a tax
+- **Tax brackets**: 2026 single filer brackets (10% to 37%); only dollars above each line get the higher rate, so a raise always leaves you with more; marginal rate vs. effective rate
+- **Deductions vs. credits**: the 2026 standard deduction is $16,100; credits cut tax dollar for dollar (Saver's Credit up to $1,000 for income up to $40,250, American Opportunity, Earned Income)
+- **The W-4 and your refund**: a big refund is an interest free loan to the government; aim for a small refund or small bill; side income needs 25% to 30% set aside for taxes (self employment tax of about 15.3%)
+- **Filing**: due around April 15; IRS Free File, VITA, Free File Fillable Forms (Direct File is not available for 2026)
+- **Tax loss harvesting**: only matters in a taxable account, and mostly delays taxes rather than avoiding them
+- **When to hire a pro**: side income, rentals or a business, big life changes, IRS letters, large taxable sales
+
+## Your Tax Bill, Bracket by Bracket
+
+Each slice of taxable income is taxed at its own rate. The standard deduction comes off the top first, so those dollars are taxed at 0%.
+
+**Formula:** Tax = Σ (Rate × Income in that bracket), and Effective rate = Tax ÷ Income
+
+```{r}
+#| label: bracket-bar-model
+#| echo: false
+#| fig-cap: "A $45,000 salary, sliced by the standard deduction and 2026 tax brackets"
+#| fig-asp: 0.30
+library(ggplot2)
+slices <- c("Standard deduction (0%)", "10% bracket", "12% bracket")
+df_br <- data.frame(
+  slice  = factor(slices, levels = rev(slices)),
+  amount = c(16100, 12400, 16500),
+  bar    = "$45,000 salary"
+)
+df_br$label <- paste0("$", formatC(df_br$amount, format = "d", big.mark = ","),
+                      "\n", c("$0 tax", "$1,240 tax", "$1,980 tax"))
+ggplot(df_br, aes(x = amount, y = bar, fill = slice)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5),
+            fontface = "bold", size = 3.3, colour = "#1C1C1E") +
+  scale_fill_manual(
+    values = c("Standard deduction (0%)" = "#86ddcd",
+               "10% bracket" = "#0e9aa7",
+               "12% bracket" = "#48a56a"),
+    breaks = slices
+  ) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+On $45,000, the tax is ($12,400 × 10%) + ($16,500 × 12%) = $3,220. That is an effective rate of about 7.2%, even though the top bracket is 12%.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: bracket-r
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+
+marginal_rate <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  if (taxable == 0) return(0)
+  rate[max(which(taxable > lower))]
+}
+
+# 2026 federal income tax on a $45,000 salary (single filer)
+tax <- income_tax(income = 45000)
+tax
+tax / 45000
+
+# compare several salaries
+salaries <- c(15000, 30000, 45000, 66000, 100000, 150000)
+data.frame(
+  salary    = salaries,
+  tax       = sapply(salaries, income_tax),
+  effective = round(sapply(salaries, income_tax) / salaries, 3),
+  marginal  = sapply(salaries, marginal_rate)
+)
+```
+
+The effective rate is always below the marginal rate. A $15,000 salary owes no federal income tax at all, because it is smaller than the standard deduction.
+
+## Python
+
+```{python}
+#| label: bracket-py
+import numpy as np
+
+LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
+RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
+
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    upper = np.append(LOWER[1:], np.inf)
+    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
+
+def marginal_rate(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    if taxable == 0:
+        return 0.0
+    return float(RATE[LOWER < taxable][-1])
+
+# 2026 federal income tax on a $45,000 salary (single filer)
+tax = income_tax(income=45000)
+print(tax)
+print(round(tax / 45000, 4))
+
+# compare several salaries
+for s in [15000, 30000, 45000, 66000, 100000, 150000]:
+    t = income_tax(s)
+    print(f"{s:>7,}  tax ${t:>9,.0f}  effective {t / s:5.1%}  marginal {marginal_rate(s):.0%}")
+```
+
+## Excel
+
+Put income in `B2`. Put the bracket lower limits (0, 12400, 50400, 105700, 201775, 256225, 640600) in `E2:E8`, the full rates (10%, 12%, 22%, 24%, 32%, 35%, 37%) in `F2:F8`, and the extra rate each bracket adds over the one below it (10%, 2%, 10%, 2%, 8%, 3%, 2%) in `G2:G8`.
+
+Tax in `C2`:
+
+```swift
+=SUMPRODUCT(--(MAX(B2-16100,0)>E2:E8), MAX(B2-16100,0)-E2:E8, G2:G8)
+```
+
+Effective rate in `D2`:
+
+```swift
+=IF(B2>0, C2/B2, 0)
+```
+
+Marginal rate in `H2`:
+
+```swift
+=IF(B2<=16100, 0, LOOKUP(MAX(B2-16100,0)-0.01, E2:E8, F2:F8))
+```
+
+Copy row 2 down to compare several salaries.
+:::
+
+```{r}
+#| label: effective-vs-marginal
+#| echo: false
+#| fig-cap: "Marginal rate (steps) vs. effective rate (smooth curve), 2026 single filer"
+#| fig-asp: 0.55
+library(ggplot2)
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+inc <- seq(1000, 250000, by = 500)
+df_rates <- rbind(
+  data.frame(income = inc, rate = sapply(inc, income_tax) / inc, type = "Effective rate"),
+  data.frame(income = inc,
+             rate = (sapply(inc + 1, income_tax) - sapply(inc, income_tax)),
+             type = "Marginal rate")
+)
+ggplot(df_rates, aes(x = income, y = rate, colour = type)) +
+  geom_line(linewidth = 1.1) +
+  geom_vline(xintercept = 45000, colour = "#1C1C1E", linetype = "dashed") +
+  annotate("text", x = 47000, y = 0.30, label = "$45,000:\n12% marginal\n7.2% effective",
+           hjust = 0, colour = "#1C1C1E", size = 3.3) +
+  scale_colour_manual(values = c("Effective rate" = "#0e9aa7", "Marginal rate" = "#f44242")) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  scale_y_continuous(labels = function(x) paste0(round(x * 100), "%")) +
+  labs(x = "Salary", y = NULL, colour = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.minor = element_blank())
+```
+
+How to read this result: the marginal rate tells you what happens to your next dollar. The effective rate tells you what share of your whole salary went to federal income tax. Use the marginal rate for decisions (like a Traditional 401(k) contribution) and the effective rate for budgeting.
+
+## How Much of a Raise You Keep
+
+The tax on a raise is the tax on the new income minus the tax on the old income. Only the part of the raise above a bracket line gets the higher rate.
+
+**Formula:** Tax on raise = Tax(new income) − Tax(old income), and Amount kept = Raise − Tax on raise
+
+```{r}
+#| label: raise-bar-model
+#| echo: false
+#| fig-cap: "A $2,000 raise on a $66,000 salary that crosses into the 22% bracket"
+#| fig-asp: 0.30
+library(ggplot2)
+parts <- c("You keep ($1,610)", "Tax at 12% ($60)", "Tax at 22% ($330)")
+df_raise <- data.frame(
+  part   = factor(parts, levels = rev(parts)),
+  amount = c(1610, 60, 330),
+  bar    = "$2,000 raise"
+)
+ggplot(df_raise, aes(x = amount, y = bar, fill = part)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  scale_fill_manual(
+    values = c("You keep ($1,610)" = "#0e9aa7",
+               "Tax at 12% ($60)" = "#86ddcd",
+               "Tax at 22% ($330)" = "#f44242"),
+    breaks = parts
+  ) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "top", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+On $66,000, taxable income goes from $49,900 to $51,900. The first $500 fills the 12% bracket and the last $1,500 is taxed at 22%. The tax rises from $5,740 to $6,130, so you keep $1,610 of the $2,000 (before FICA and state tax).
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: raise-r
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+
+raise_kept <- function(old_income, raise) {
+  raise - (income_tax(old_income + raise) - income_tax(old_income))
+}
+
+# $2,000 raise on a $66,000 salary
+income_tax(66000)
+income_tax(68000)
+raise_kept(old_income = 66000, raise = 2000)
+
+# the same $2,000 raise at different salaries
+old <- c(30000, 45000, 66000, 100000, 150000)
+kept <- sapply(old, raise_kept, raise = 2000)
+data.frame(old_income = old, kept = kept, share_kept = round(kept / 2000, 3))
+
+# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
+all(sapply(seq(1, 5000, by = 1), raise_kept, old_income = 66000) > 0)
+```
+
+## Python
+
+```{python}
+#| label: raise-py
+import numpy as np
+
+LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
+RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
+
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    upper = np.append(LOWER[1:], np.inf)
+    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
+
+def raise_kept(old_income, raise_amount):
+    return raise_amount - (income_tax(old_income + raise_amount) - income_tax(old_income))
+
+# $2,000 raise on a $66,000 salary
+print(income_tax(66000), income_tax(68000))
+print(raise_kept(old_income=66000, raise_amount=2000))
+
+# the same $2,000 raise at different salaries
+for old in [30000, 45000, 66000, 100000, 150000]:
+    kept = raise_kept(old, 2000)
+    print(f"{old:>7,}  keep ${kept:,.0f} ({kept / 2000:.1%})")
+
+# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
+print(all(raise_kept(66000, r) > 0 for r in range(1, 5001)))
+```
+
+## Excel
+
+Using the tax formula above, put the old income in `B2` and its tax in `C2`, the new income in `B3` and its tax in `C3`, and the raise in `D2`.
+
+Amount kept:
+
+```swift
+=D2-(C3-C2)
+```
+
+Share of the raise kept:
+
+```swift
+=(D2-(C3-C2))/D2
+```
+:::
+
+How to read this result: the share you keep can never drop below 63% (100% minus the top 37% rate). A raise that stays inside one bracket keeps exactly 1 minus that rate. A raise that crosses a line lands somewhere in between.

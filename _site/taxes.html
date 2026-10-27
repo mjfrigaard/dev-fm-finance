@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -37,10 +72,17 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +114,169 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -206,6 +410,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -214,11 +419,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#your-tax-bill-bracket-by-bracket" id="toc-your-tax-bill-bracket-by-bracket" class="nav-link" data-scroll-target="#your-tax-bill-bracket-by-bracket"><span class="header-section-number">2</span> Your Tax Bill, Bracket by Bracket</a></li>
+  <li><a href="#how-much-of-a-raise-you-keep" id="toc-how-much-of-a-raise-you-keep" class="nav-link" data-scroll-target="#how-much-of-a-raise-you-keep"><span class="header-section-number">3</span> How Much of a Raise You Keep</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -239,12 +453,302 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Where your paycheck goes</strong>: withholding for federal income tax, Social Security (6.2%), Medicare (1.45%), and state tax; FICA (7.65%) starts at the first dollar (about $3,443 on $45,000); 401(k) contributions are your money, not a tax</li>
+<li><strong>Tax brackets</strong>: 2026 single filer brackets (10% to 37%); only dollars above each line get the higher rate, so a raise always leaves you with more; marginal rate vs.&nbsp;effective rate</li>
+<li><strong>Deductions vs.&nbsp;credits</strong>: the 2026 standard deduction is $16,100; credits cut tax dollar for dollar (Saver’s Credit up to $1,000 for income up to $40,250, American Opportunity, Earned Income)</li>
+<li><strong>The W-4 and your refund</strong>: a big refund is an interest free loan to the government; aim for a small refund or small bill; side income needs 25% to 30% set aside for taxes (self employment tax of about 15.3%)</li>
+<li><strong>Filing</strong>: due around April 15; IRS Free File, VITA, Free File Fillable Forms (Direct File is not available for 2026)</li>
+<li><strong>Tax loss harvesting</strong>: only matters in a taxable account, and mostly delays taxes rather than avoiding them</li>
+<li><strong>When to hire a pro</strong>: side income, rentals or a business, big life changes, IRS letters, large taxable sales</li>
+</ul>
+</section>
+<section id="your-tax-bill-bracket-by-bracket" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="your-tax-bill-bracket-by-bracket"><span class="header-section-number">2</span> Your Tax Bill, Bracket by Bracket</h2>
+<p>Each slice of taxable income is taxed at its own rate. The standard deduction comes off the top first, so those dollars are taxed at 0%.</p>
+<p><strong>Formula:</strong> Tax = Σ (Rate × Income in that bracket), and Effective rate = Tax ÷ Income</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/bracket-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A $45,000 salary, sliced by the standard deduction and 2026 tax brackets"><img src="taxes_files/figure-html/bracket-bar-model-1.png" class="img-fluid figure-img" width="576" alt="A $45,000 salary, sliced by the standard deduction and 2026 tax brackets"></a></p>
+<figcaption>A $45,000 salary, sliced by the standard deduction and 2026 tax brackets</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/bracket-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A $45,000 salary, sliced by the standard deduction and 2026 tax brackets"><img src="taxes_files/figure-html/bracket-bar-model-2.png" class="img-fluid figure-img" width="576" alt="A $45,000 salary, sliced by the standard deduction and 2026 tax brackets"></a></p>
+<figcaption>A $45,000 salary, sliced by the standard deduction and 2026 tax brackets</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>On $45,000, the tax is ($12,400 × 10%) + ($16,500 × 12%) = $3,220. That is an effective rate of about 7.2%, even though the top bracket is 12%.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>income_tax <span class="ot">&lt;-</span> <span class="cf">function</span>(income, <span class="at">deduction =</span> <span class="dv">16100</span>) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  taxable <span class="ot">&lt;-</span> <span class="fu">max</span>(income <span class="sc">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  lower <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">12400</span>, <span class="dv">50400</span>, <span class="dv">105700</span>, <span class="dv">201775</span>, <span class="dv">256225</span>, <span class="dv">640600</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  upper <span class="ot">&lt;-</span> <span class="fu">c</span>(lower[<span class="sc">-</span><span class="dv">1</span>], <span class="cn">Inf</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  rate  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.35</span>, <span class="fl">0.37</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(rate <span class="sc">*</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(taxable, upper) <span class="sc">-</span> lower, <span class="dv">0</span>))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>marginal_rate <span class="ot">&lt;-</span> <span class="cf">function</span>(income, <span class="at">deduction =</span> <span class="dv">16100</span>) {</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  taxable <span class="ot">&lt;-</span> <span class="fu">max</span>(income <span class="sc">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  lower <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">12400</span>, <span class="dv">50400</span>, <span class="dv">105700</span>, <span class="dv">201775</span>, <span class="dv">256225</span>, <span class="dv">640600</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  rate  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.35</span>, <span class="fl">0.37</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (taxable <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="dv">0</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  rate[<span class="fu">max</span>(<span class="fu">which</span>(taxable <span class="sc">&gt;</span> lower))]</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2026 federal income tax on a $45,000 salary (single filer)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>tax <span class="ot">&lt;-</span> <span class="fu">income_tax</span>(<span class="at">income =</span> <span class="dv">45000</span>)</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>tax</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3220</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>tax <span class="sc">/</span> <span class="dv">45000</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.07155556</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># compare several salaries</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>salaries <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15000</span>, <span class="dv">30000</span>, <span class="dv">45000</span>, <span class="dv">66000</span>, <span class="dv">100000</span>, <span class="dv">150000</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">salary    =</span> salaries,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">tax       =</span> <span class="fu">sapply</span>(salaries, income_tax),</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">effective =</span> <span class="fu">round</span>(<span class="fu">sapply</span>(salaries, income_tax) <span class="sc">/</span> salaries, <span class="dv">3</span>),</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal  =</span> <span class="fu">sapply</span>(salaries, marginal_rate)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 4</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   salary   tax effective marginal</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  15000     0     0         0   </span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  30000  1420     0.047     0.12</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  45000  3220     0.072     0.12</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  66000  5740     0.087     0.12</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 100000 13170     0.132     0.22</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 150000 24734     0.165     0.24</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The effective rate is always below the marginal rate. A $15,000 salary owes no federal income tax at all, because it is smaller than the standard deduction.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>LOWER <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">12400</span>, <span class="dv">50400</span>, <span class="dv">105700</span>, <span class="dv">201775</span>, <span class="dv">256225</span>, <span class="dv">640600</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>RATE  <span class="op">=</span> np.array([<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.35</span>, <span class="fl">0.37</span>])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> income_tax(income, deduction<span class="op">=</span><span class="dv">16100</span>):</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    taxable <span class="op">=</span> <span class="bu">max</span>(income <span class="op">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> np.append(LOWER[<span class="dv">1</span>:], np.inf)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(np.<span class="bu">sum</span>(RATE <span class="op">*</span> np.clip(np.minimum(taxable, upper) <span class="op">-</span> LOWER, <span class="dv">0</span>, <span class="va">None</span>)))</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> marginal_rate(income, deduction<span class="op">=</span><span class="dv">16100</span>):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    taxable <span class="op">=</span> <span class="bu">max</span>(income <span class="op">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> taxable <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="fl">0.0</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(RATE[LOWER <span class="op">&lt;</span> taxable][<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 2026 federal income tax on a $45,000 salary (single filer)</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>tax <span class="op">=</span> income_tax(income<span class="op">=</span><span class="dv">45000</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tax)</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3220.0</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(tax <span class="op">/</span> <span class="dv">45000</span>, <span class="dv">4</span>))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.0716</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co"># compare several salaries</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> s <span class="kw">in</span> [<span class="dv">15000</span>, <span class="dv">30000</span>, <span class="dv">45000</span>, <span class="dv">66000</span>, <span class="dv">100000</span>, <span class="dv">150000</span>]:</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> income_tax(s)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>s<span class="sc">:&gt;7,}</span><span class="ss">  tax $</span><span class="sc">{</span>t<span class="sc">:&gt;9,.0f}</span><span class="ss">  effective </span><span class="sc">{</span>t <span class="op">/</span> s<span class="sc">:5.1%}</span><span class="ss">  marginal </span><span class="sc">{</span>marginal_rate(s)<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  15,000  tax $        0  effective  0.0%  marginal 0%</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  30,000  tax $    1,420  effective  4.7%  marginal 12%</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  45,000  tax $    3,220  effective  7.2%  marginal 12%</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  66,000  tax $    5,740  effective  8.7%  marginal 12%</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 100,000  tax $   13,170  effective 13.2%  marginal 22%</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 150,000  tax $   24,734  effective 16.5%  marginal 24%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Put income in <code>B2</code>. Put the bracket lower limits (0, 12400, 50400, 105700, 201775, 256225, 640600) in <code>E2:E8</code>, the full rates (10%, 12%, 22%, 24%, 32%, 35%, 37%) in <code>F2:F8</code>, and the extra rate each bracket adds over the one below it (10%, 2%, 10%, 2%, 8%, 3%, 2%) in <code>G2:G8</code>.</p>
+<p>Tax in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUMPRODUCT<span class="op">(--(</span>MAX<span class="op">(</span>B2<span class="op">-</span><span class="dv">16100</span><span class="op">,</span><span class="dv">0</span><span class="op">)&gt;</span>E2<span class="op">:</span>E8<span class="op">),</span> MAX<span class="op">(</span>B2<span class="op">-</span><span class="dv">16100</span><span class="op">,</span><span class="dv">0</span><span class="op">)-</span>E2<span class="op">:</span>E8<span class="op">,</span> G2<span class="op">:</span>G8<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Effective rate in <code>D2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>IF<span class="op">(</span>B2<span class="op">&gt;</span><span class="dv">0</span><span class="op">,</span> C2<span class="op">/</span>B2<span class="op">,</span> <span class="dv">0</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Marginal rate in <code>H2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>IF<span class="op">(</span>B2<span class="op">&lt;=</span><span class="dv">16100</span><span class="op">,</span> <span class="dv">0</span><span class="op">,</span> LOOKUP<span class="op">(</span>MAX<span class="op">(</span>B2<span class="op">-</span><span class="dv">16100</span><span class="op">,</span><span class="dv">0</span><span class="op">)-</span><span class="fl">0.01</span><span class="op">,</span> E2<span class="op">:</span>E8<span class="op">,</span> F2<span class="op">:</span>F8<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Copy row 2 down to compare several salaries.</p>
+</div>
+</div>
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/effective-vs-marginal-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer"><img src="taxes_files/figure-html/effective-vs-marginal-1.png" class="img-fluid figure-img" width="576" alt="Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer"></a></p>
+<figcaption>Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/effective-vs-marginal-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer"><img src="taxes_files/figure-html/effective-vs-marginal-2.png" class="img-fluid figure-img" width="576" alt="Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer"></a></p>
+<figcaption>Marginal rate (steps) vs.&nbsp;effective rate (smooth curve), 2026 single filer</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>How to read this result: the marginal rate tells you what happens to your next dollar. The effective rate tells you what share of your whole salary went to federal income tax. Use the marginal rate for decisions (like a Traditional 401(k) contribution) and the effective rate for budgeting.</p>
+</section>
+<section id="how-much-of-a-raise-you-keep" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="how-much-of-a-raise-you-keep"><span class="header-section-number">3</span> How Much of a Raise You Keep</h2>
+<p>The tax on a raise is the tax on the new income minus the tax on the old income. Only the part of the raise above a bracket line gets the higher rate.</p>
+<p><strong>Formula:</strong> Tax on raise = Tax(new income) − Tax(old income), and Amount kept = Raise − Tax on raise</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/raise-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="A $2,000 raise on a $66,000 salary that crosses into the 22% bracket"><img src="taxes_files/figure-html/raise-bar-model-1.png" class="img-fluid figure-img" width="576" alt="A $2,000 raise on a $66,000 salary that crosses into the 22% bracket"></a></p>
+<figcaption>A $2,000 raise on a $66,000 salary that crosses into the 22% bracket</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="taxes_files/figure-html/raise-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="A $2,000 raise on a $66,000 salary that crosses into the 22% bracket"><img src="taxes_files/figure-html/raise-bar-model-2.png" class="img-fluid figure-img" width="576" alt="A $2,000 raise on a $66,000 salary that crosses into the 22% bracket"></a></p>
+<figcaption>A $2,000 raise on a $66,000 salary that crosses into the 22% bracket</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>On $66,000, taxable income goes from $49,900 to $51,900. The first $500 fills the 12% bracket and the last $1,500 is taxed at 22%. The tax rises from $5,740 to $6,130, so you keep $1,610 of the $2,000 (before FICA and state tax).</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>income_tax <span class="ot">&lt;-</span> <span class="cf">function</span>(income, <span class="at">deduction =</span> <span class="dv">16100</span>) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  taxable <span class="ot">&lt;-</span> <span class="fu">max</span>(income <span class="sc">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  lower <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">12400</span>, <span class="dv">50400</span>, <span class="dv">105700</span>, <span class="dv">201775</span>, <span class="dv">256225</span>, <span class="dv">640600</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  upper <span class="ot">&lt;-</span> <span class="fu">c</span>(lower[<span class="sc">-</span><span class="dv">1</span>], <span class="cn">Inf</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  rate  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.35</span>, <span class="fl">0.37</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(rate <span class="sc">*</span> <span class="fu">pmax</span>(<span class="fu">pmin</span>(taxable, upper) <span class="sc">-</span> lower, <span class="dv">0</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>raise_kept <span class="ot">&lt;-</span> <span class="cf">function</span>(old_income, raise) {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  raise <span class="sc">-</span> (<span class="fu">income_tax</span>(old_income <span class="sc">+</span> raise) <span class="sc">-</span> <span class="fu">income_tax</span>(old_income))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># $2,000 raise on a $66,000 salary</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">income_tax</span>(<span class="dv">66000</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5740</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="fu">income_tax</span>(<span class="dv">68000</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 6130</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="fu">raise_kept</span>(<span class="at">old_income =</span> <span class="dv">66000</span>, <span class="at">raise =</span> <span class="dv">2000</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1610</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># the same $2,000 raise at different salaries</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>old <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">30000</span>, <span class="dv">45000</span>, <span class="dv">66000</span>, <span class="dv">100000</span>, <span class="dv">150000</span>)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>kept <span class="ot">&lt;-</span> <span class="fu">sapply</span>(old, raise_kept, <span class="at">raise =</span> <span class="dv">2000</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">old_income =</span> old, <span class="at">kept =</span> kept, <span class="at">share_kept =</span> <span class="fu">round</span>(kept <span class="sc">/</span> <span class="dv">2000</span>, <span class="dv">3</span>))</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 3</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   old_income  kept share_kept</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1      30000  1760      0.88 </span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2      45000  1760      0.88 </span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3      66000  1610      0.805</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4     100000  1560      0.78 </span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5     150000  1520      0.76</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: no raise from $1 to $5,000 ever lowers your after tax income</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="fu">all</span>(<span class="fu">sapply</span>(<span class="fu">seq</span>(<span class="dv">1</span>, <span class="dv">5000</span>, <span class="at">by =</span> <span class="dv">1</span>), raise_kept, <span class="at">old_income =</span> <span class="dv">66000</span>) <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>LOWER <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">12400</span>, <span class="dv">50400</span>, <span class="dv">105700</span>, <span class="dv">201775</span>, <span class="dv">256225</span>, <span class="dv">640600</span>])</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>RATE  <span class="op">=</span> np.array([<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>, <span class="fl">0.32</span>, <span class="fl">0.35</span>, <span class="fl">0.37</span>])</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> income_tax(income, deduction<span class="op">=</span><span class="dv">16100</span>):</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    taxable <span class="op">=</span> <span class="bu">max</span>(income <span class="op">-</span> deduction, <span class="dv">0</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    upper <span class="op">=</span> np.append(LOWER[<span class="dv">1</span>:], np.inf)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">float</span>(np.<span class="bu">sum</span>(RATE <span class="op">*</span> np.clip(np.minimum(taxable, upper) <span class="op">-</span> LOWER, <span class="dv">0</span>, <span class="va">None</span>)))</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> raise_kept(old_income, raise_amount):</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> raise_amount <span class="op">-</span> (income_tax(old_income <span class="op">+</span> raise_amount) <span class="op">-</span> income_tax(old_income))</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># $2,000 raise on a $66,000 salary</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(income_tax(<span class="dv">66000</span>), income_tax(<span class="dv">68000</span>))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5740.0 6130.0</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(raise_kept(old_income<span class="op">=</span><span class="dv">66000</span>, raise_amount<span class="op">=</span><span class="dv">2000</span>))</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1610.0</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co"># the same $2,000 raise at different salaries</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> old <span class="kw">in</span> [<span class="dv">30000</span>, <span class="dv">45000</span>, <span class="dv">66000</span>, <span class="dv">100000</span>, <span class="dv">150000</span>]:</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    kept <span class="op">=</span> raise_kept(old, <span class="dv">2000</span>)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>old<span class="sc">:&gt;7,}</span><span class="ss">  keep $</span><span class="sc">{</span>kept<span class="sc">:,.0f}</span><span class="ss"> (</span><span class="sc">{</span>kept <span class="op">/</span> <span class="dv">2000</span><span class="sc">:.1%}</span><span class="ss">)"</span>)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  30,000  keep $1,760 (88.0%)</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  45,000  keep $1,760 (88.0%)</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  66,000  keep $1,610 (80.5%)</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 100,000  keep $1,560 (78.0%)</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 150,000  keep $1,520 (76.0%)</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: no raise from $1 to $5,000 ever lowers your after tax income</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">all</span>(raise_kept(<span class="dv">66000</span>, r) <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">for</span> r <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">5001</span>)))</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; True</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Using the tax formula above, put the old income in <code>B2</code> and its tax in <code>C2</code>, the new income in <code>B3</code> and its tax in <code>C3</code>, and the raise in <code>D2</code>.</p>
+<p>Amount kept:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>D2<span class="op">-(</span>C3<span class="op">-</span>C2<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Share of the raise kept:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>D2<span class="op">-(</span>C3<span class="op">-</span>C2<span class="op">))/</span>D2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>How to read this result: the share you keep can never drop below 63% (100% minus the top 37% rate). A raise that stays inside one bracket keeps exactly 1 minus that rate. A raise that crosses a line lands somewhere in between.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -316,7 +820,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -683,6 +1187,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -37,10 +72,17 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +114,169 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -206,6 +410,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -214,11 +419,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#saving-for-a-goal-with-interest" id="toc-saving-for-a-goal-with-interest" class="nav-link" data-scroll-target="#saving-for-a-goal-with-interest"><span class="header-section-number">2</span> Saving for a Goal with Interest</a></li>
+  <li><a href="#one-goal-at-a-time-vs.-all-at-once" id="toc-one-goal-at-a-time-vs.-all-at-once" class="nav-link" data-scroll-target="#one-goal-at-a-time-vs.-all-at-once"><span class="header-section-number">3</span> One Goal at a Time vs.&nbsp;All at Once</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -239,12 +453,319 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Short, medium, and long goals</strong>: when you need the money decides where it lives; under 3 years in high yield savings, 3 to 10 years in savings or a bond and stock mix, over 10 years in index funds inside retirement accounts</li>
+<li><strong>Wish vs.&nbsp;goal</strong>: a goal has a number, a date, and a monthly amount; give each goal its own named savings account and automate the transfer on payday</li>
+<li><strong>Do you need a goal to save?</strong>: Sethi and Preston give planned expenses their own step; Housel says savings with no goal attached buys flexibility; most people do best with both</li>
+<li><strong>How much to save</strong>: Sethi (about 10% of take home pay for investing plus 5% to 10% for goals), The Money Guy Show (25% of gross), 15% for retirement as a starting point; start with what you can and raise it with every raise</li>
+<li><strong>Sequencing goals</strong>: finish the Financial Order of Operations first, then fund goals one at a time or all at once; the last goal finishes on the same day either way</li>
+<li><strong>Tracking progress</strong>: check transfers monthly, compare balances every few months, add up net worth once a year, and notice when you hit a goal</li>
+</ul>
+</section>
+<section id="saving-for-a-goal-with-interest" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="saving-for-a-goal-with-interest"><span class="header-section-number">2</span> Saving for a Goal with Interest</h2>
+<p>Interest does part of the work, so you can save a little less each month than goal ÷ months. This formula works backward from the future value of a monthly deposit.</p>
+<p><strong>Formula:</strong> Monthly amount = Goal × r ÷ ((1 + r)^n − 1), where r = yearly rate ÷ 12 and n = number of months</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="financial_goals_files/figure-html/goal-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="A $15,000 goal in 5 years at 4%: your deposits plus interest"><img src="financial_goals_files/figure-html/goal-bar-model-1.png" class="img-fluid figure-img" width="576" alt="A $15,000 goal in 5 years at 4%: your deposits plus interest"></a></p>
+<figcaption>A $15,000 goal in 5 years at 4%: your deposits plus interest</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="financial_goals_files/figure-html/goal-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="A $15,000 goal in 5 years at 4%: your deposits plus interest"><img src="financial_goals_files/figure-html/goal-bar-model-2.png" class="img-fluid figure-img" width="576" alt="A $15,000 goal in 5 years at 4%: your deposits plus interest"></a></p>
+<figcaption>A $15,000 goal in 5 years at 4%: your deposits plus interest</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Example: a $15,000 down payment in 5 years at 4% takes about $226 a month, $24 less than the $250 you’d need with no interest. Over five years, interest adds about $1,425.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><code>monthly_for_goal()</code> returns the monthly deposit. A rate of zero falls back to plain division.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>monthly_for_goal <span class="ot">&lt;-</span> <span class="cf">function</span>(goal, annual_rate, months) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> annual_rate <span class="sc">/</span> <span class="dv">12</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (r <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(goal <span class="sc">/</span> months)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  goal <span class="sc">*</span> r <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>months <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># $15,000 in 5 years at 4%, compared to no interest</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">monthly_for_goal</span>(<span class="at">goal =</span> <span class="dv">15000</span>, <span class="at">annual_rate =</span> <span class="fl">0.04</span>, <span class="at">months =</span> <span class="dv">60</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 226.2478</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">monthly_for_goal</span>(<span class="at">goal =</span> <span class="dv">15000</span>, <span class="at">annual_rate =</span> <span class="dv">0</span>, <span class="at">months =</span> <span class="dv">60</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 250</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>How much of the goal comes from interest? Multiply the deposit by the number of months and subtract from the goal.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pmt <span class="ot">&lt;-</span> <span class="fu">monthly_for_goal</span>(<span class="at">goal =</span> <span class="dv">15000</span>, <span class="at">annual_rate =</span> <span class="fl">0.04</span>, <span class="at">months =</span> <span class="dv">60</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">deposits =</span> pmt <span class="sc">*</span> <span class="dv">60</span>, <span class="at">interest =</span> <span class="dv">15000</span> <span class="sc">-</span> pmt <span class="sc">*</span> <span class="dv">60</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; deposits interest </span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 13574.87  1425.13</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Same goal, different rates and deadlines. A longer runway lowers the monthly amount far more than a higher rate does.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>grid <span class="ot">&lt;-</span> <span class="fu">expand.grid</span>(<span class="at">annual_rate =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.02</span>, <span class="fl">0.04</span>, <span class="fl">0.05</span>), <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>grid<span class="sc">$</span>monthly <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">mapply</span>(monthly_for_goal, <span class="at">goal =</span> <span class="dv">15000</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">annual_rate =</span> grid<span class="sc">$</span>annual_rate,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                             <span class="at">months =</span> grid<span class="sc">$</span>years <span class="sc">*</span> <span class="dv">12</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>grid</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 12 × 3</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    annual_rate years monthly</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1        0        3     417</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2        0.02     3     405</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3        0.04     3     393</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4        0.05     3     387</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5        0        5     250</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6        0.02     5     238</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7        0.04     5     226</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8        0.05     5     221</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9        0        7     179</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10        0.02     7     167</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 11        0.04     7     155</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 12        0.05     7     150</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Sanity check: growing $226.25 a month at 4% for 60 months should land back on $15,000.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fl">0.04</span> <span class="sc">/</span> <span class="dv">12</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>pmt <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span><span class="dv">60</span> <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> r</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 15000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><code>monthly_for_goal()</code> returns the monthly deposit. A rate of zero falls back to plain division.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> monthly_for_goal(goal, annual_rate, months):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    r <span class="op">=</span> annual_rate <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> r <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> goal <span class="op">/</span> months</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> goal <span class="op">*</span> r <span class="op">/</span> ((<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> months <span class="op">-</span> <span class="dv">1</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># $15,000 in 5 years at 4%, compared to no interest</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monthly_for_goal(goal<span class="op">=</span><span class="dv">15000</span>, annual_rate<span class="op">=</span><span class="fl">0.04</span>, months<span class="op">=</span><span class="dv">60</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 226.24783082898958</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(monthly_for_goal(goal<span class="op">=</span><span class="dv">15000</span>, annual_rate<span class="op">=</span><span class="dv">0</span>, months<span class="op">=</span><span class="dv">60</span>))</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 250.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>How much of the goal comes from interest?</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pmt <span class="op">=</span> monthly_for_goal(goal<span class="op">=</span><span class="dv">15000</span>, annual_rate<span class="op">=</span><span class="fl">0.04</span>, months<span class="op">=</span><span class="dv">60</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"deposits: </span><span class="sc">{</span>pmt <span class="op">*</span> <span class="dv">60</span><span class="sc">:,.2f}</span><span class="ss">  interest: </span><span class="sc">{</span><span class="dv">15000</span> <span class="op">-</span> pmt <span class="op">*</span> <span class="dv">60</span><span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; deposits: 13,574.87  interest: 1,425.13</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Same goal, different rates and deadlines:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'rate'</span><span class="sc">:&gt;6}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'3 yrs'</span><span class="sc">:&gt;7}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'5 yrs'</span><span class="sc">:&gt;7}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'7 yrs'</span><span class="sc">:&gt;7}</span><span class="ss">"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   rate   3 yrs   5 yrs   7 yrs</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> rate <span class="kw">in</span> [<span class="dv">0</span>, <span class="fl">0.02</span>, <span class="fl">0.04</span>, <span class="fl">0.05</span>]:</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    row <span class="op">=</span> [monthly_for_goal(<span class="dv">15000</span>, rate, y <span class="op">*</span> <span class="dv">12</span>) <span class="cf">for</span> y <span class="kw">in</span> [<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>]]</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>rate<span class="sc">:&gt;6.0%}</span><span class="ss"> "</span> <span class="op">+</span> <span class="st">" "</span>.join(<span class="ss">f"</span><span class="sc">{</span>m<span class="sc">:&gt;7,.0f}</span><span class="ss">"</span> <span class="cf">for</span> m <span class="kw">in</span> row))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     0%     417     250     179</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     2%     405     238     167</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     4%     393     226     155</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     5%     387     221     150</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Sanity check: the deposits should grow back to $15,000.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fl">0.04</span> <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(pmt <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> r) <span class="op">**</span> <span class="dv">60</span> <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> r, <span class="dv">2</span>))</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15000.0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Assuming the goal is in <code>B2</code>, the yearly rate is in <code>C2</code>, and the number of months is in <code>D2</code>, the monthly amount goes in <code>E2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>PMT<span class="op">(</span>C2 <span class="op">/</span> <span class="dv">12</span><span class="op">,</span> D2<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="op">-</span>B2<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Interest earned goes in <code>F2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">-</span> E2 <span class="op">*</span> D2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To check the answer, <code>FV()</code> should return the goal:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span>C2 <span class="op">/</span> <span class="dv">12</span><span class="op">,</span> D2<span class="op">,</span> <span class="op">-</span>E2<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>How to read this result: the monthly amount is your payday transfer. If it doesn’t fit your budget, push the date out before you lower the goal; an extra two years cuts the monthly amount by about 30%.</p>
+</section>
+<section id="one-goal-at-a-time-vs.-all-at-once" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="one-goal-at-a-time-vs.-all-at-once"><span class="header-section-number">3</span> One Goal at a Time vs.&nbsp;All at Once</h2>
+<p>When several goals share one monthly savings amount, the order changes when the first goal finishes. It never changes when the last one finishes.</p>
+<p><strong>Formula:</strong> Months to finish all goals = Total of all goals ÷ Monthly savings; Months to finish the first goal = First goal ÷ Amount going to it each month</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="financial_goals_files/figure-html/sequence-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Two goals funded with $600/month: one at a time vs.&nbsp;split evenly"><img src="financial_goals_files/figure-html/sequence-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Two goals funded with $600/month: one at a time vs.&nbsp;split evenly"></a></p>
+<figcaption>Two goals funded with $600/month: one at a time vs.&nbsp;split evenly</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="financial_goals_files/figure-html/sequence-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Two goals funded with $600/month: one at a time vs.&nbsp;split evenly"><img src="financial_goals_files/figure-html/sequence-bar-model-2.png" class="img-fluid figure-img" width="576" alt="Two goals funded with $600/month: one at a time vs.&nbsp;split evenly"></a></p>
+<figcaption>Two goals funded with $600/month: one at a time vs.&nbsp;split evenly</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Example: with $600 a month for a $3,000 trip and a $9,000 car, both goals are done in ($3,000 + $9,000) ÷ $600 = 20 months either way. The trip takes 5 months one at a time, or 10 months split evenly.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p><code>months_to_fund()</code> rounds up, since a goal isn’t done until the last dollar is in.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>months_to_fund <span class="ot">&lt;-</span> <span class="cf">function</span>(goal, monthly) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ceiling</span>(goal <span class="sc">/</span> monthly)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># one at a time: trip first, then car</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_fund</span>(<span class="dv">3000</span>, <span class="dv">600</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 5</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_fund</span>(<span class="dv">3000</span> <span class="sc">+</span> <span class="dv">9000</span>, <span class="dv">600</span>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># split evenly: trip gets half until it's done</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_fund</span>(<span class="dv">3000</span>, <span class="dv">300</span>)</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_fund</span>(<span class="dv">3000</span> <span class="sc">+</span> <span class="dv">9000</span>, <span class="dv">600</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Try other splits. The more you send to the trip, the sooner it’s done. The car always finishes at month 20, as long as every dollar keeps going to some goal.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>trip_share <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">trip_share  =</span> trip_share,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">trip_month  =</span> <span class="fu">months_to_fund</span>(<span class="dv">3000</span>, <span class="dv">600</span> <span class="sc">*</span> trip_share),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">all_done    =</span> <span class="fu">months_to_fund</span>(<span class="dv">3000</span> <span class="sc">+</span> <span class="dv">9000</span>, <span class="dv">600</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   trip_share trip_month all_done</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1       1             5       20</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2       0.75          7       20</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3       0.5          10       20</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       0.25         20       20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Edge case: rounding up matters. A $1,000 goal at $300 a month takes 4 months, not 3.3.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">months_to_fund</span>(<span class="dv">1000</span>, <span class="dv">300</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p><code>months_to_fund()</code> rounds up, since a goal isn’t done until the last dollar is in.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> months_to_fund(goal, monthly):</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.ceil(goal <span class="op">/</span> monthly)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co"># one at a time: trip first, then car</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(months_to_fund(<span class="dv">3000</span>, <span class="dv">600</span>), months_to_fund(<span class="dv">3000</span> <span class="op">+</span> <span class="dv">9000</span>, <span class="dv">600</span>))</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 20</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co"># split evenly: trip gets half until it's done</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(months_to_fund(<span class="dv">3000</span>, <span class="dv">300</span>), months_to_fund(<span class="dv">3000</span> <span class="op">+</span> <span class="dv">9000</span>, <span class="dv">600</span>))</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Try other splits:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'trip share'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'trip month'</span><span class="sc">:&gt;10}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'all done'</span><span class="sc">:&gt;9}</span><span class="ss">"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; trip share trip month  all done</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> share <span class="kw">in</span> [<span class="dv">1</span>, <span class="fl">0.75</span>, <span class="fl">0.5</span>, <span class="fl">0.25</span>]:</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>share<span class="sc">:&gt;10.0%}</span><span class="ss"> </span><span class="sc">{</span>months_to_fund(<span class="dv">3000</span>, <span class="dv">600</span> <span class="op">*</span> share)<span class="sc">:&gt;10}</span><span class="ss"> "</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"</span><span class="sc">{</span>months_to_fund(<span class="dv">3000</span> <span class="op">+</span> <span class="dv">9000</span>, <span class="dv">600</span>)<span class="sc">:&gt;9}</span><span class="ss">"</span>)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       100%          5        20</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        75%          7        20</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        50%         10        20</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        25%         20        20</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Edge case: rounding up matters.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(months_to_fund(<span class="dv">1000</span>, <span class="dv">300</span>))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Assuming the goal is in <code>B2</code> and the monthly amount going to it is in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>ROUNDUP<span class="op">(</span>B2 <span class="op">/</span> C2<span class="op">,</span> <span class="dv">0</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For the finish line on all goals, put the goals in <code>B2:B3</code> and total monthly savings in <code>D2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>ROUNDUP<span class="op">(</span>SUM<span class="op">(</span>B2<span class="op">:</span>B3<span class="op">)</span> <span class="op">/</span> D2<span class="op">,</span> <span class="dv">0</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>How to read this result: the order is a choice about which goal you want first, not about saving time overall. Put a fixed date goal (a wedding, a car on its last legs) first, or give it the bigger share.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -316,7 +837,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -683,6 +1204,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

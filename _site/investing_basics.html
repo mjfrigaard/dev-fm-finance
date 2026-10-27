@@ -72,10 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -110,7 +114,169 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -244,6 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -258,7 +425,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
-  <li><a href="#future-value-compounding" id="toc-future-value-compounding" class="nav-link" data-scroll-target="#future-value-compounding"><span class="header-section-number">2</span> Future Value (Compounding)</a></li>
+  <li><a href="#future-value-and-the-rule-of-72" id="toc-future-value-and-the-rule-of-72" class="nav-link" data-scroll-target="#future-value-and-the-rule-of-72"><span class="header-section-number">2</span> Future Value and the Rule of 72</a></li>
   <li><a href="#future-value-of-regular-contributions" id="toc-future-value-of-regular-contributions" class="nav-link" data-scroll-target="#future-value-of-regular-contributions"><span class="header-section-number">3</span> Future Value of Regular Contributions</a></li>
   <li><a href="#real-inflation-adjusted-return" id="toc-real-inflation-adjusted-return" class="nav-link" data-scroll-target="#real-inflation-adjusted-return"><span class="header-section-number">4</span> Real (Inflation-Adjusted) Return</a></li>
   </ul>
@@ -266,6 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -289,26 +457,39 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="book-topics" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
 <ul>
-<li><strong>Compounding</strong>: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %</li>
-<li><strong>Risk vs.&nbsp;return</strong>: higher expected return = higher volatility; choose a level you can <em>stick with</em> through downturns</li>
-<li><strong>Diversification</strong>: don’t bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)</li>
-<li><strong>Real vs.&nbsp;nominal return</strong>: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms</li>
+<li><strong>Compounding</strong>: interest earning interest; the Rule of 72 says years to double ≈ 72 ÷ annual return % (about 10 years at 7%, about 7 years at 10%); $10,000 at 7% for 40 years</li>
+<li><strong>The core portfolio</strong>: stocks (70 to 90% with 20+ years), bonds (10 to 30%), and cash (the emergency fund, kept separate); a simple default is 80% total stock market and 20% total bond market index funds, rebalanced once a year for about 0.03% in fees</li>
+<li><strong>Risk vs.&nbsp;return</strong>: 100% stocks might average 10% but drop 40% in a bad year; 60/40 averages about 7% and drops about 20%; pick the split you can stick with through a bear market</li>
+<li><strong>Diversification</strong>: one dollar in a total market fund owns thousands of companies, so one failure barely matters</li>
+<li><strong>Tax-advantaged accounts</strong>: 2026 limits for the 401(k)/403(b) ($24,500), Roth and Traditional IRA ($7,500), HSA ($4,400 self), and taxable accounts; fill them in order (401(k) to the match, Roth IRA or HSA, max the 401(k), then taxable); $10,000 at 7% for 30 years grows to about $76,000, saving about $13,200 in taxes in a Roth</li>
+<li><strong>Common mistakes</strong>: timing the market, chasing past performance, paying high fees (1% over 30 years costs about 25%), holding too much cash, and selling in a panic</li>
 </ul>
 </section>
-<section id="future-value-compounding" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="future-value-compounding"><span class="header-section-number">2</span> Future Value (Compounding)</h2>
-<p>A single lump sum growing at a constant rate.</p>
+<section id="future-value-and-the-rule-of-72" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="future-value-and-the-rule-of-72"><span class="header-section-number">2</span> Future Value and the Rule of 72</h2>
+<p>Each year’s growth is applied to a bigger base, so the balance curves upward instead of rising in a straight line.</p>
 <p><strong>Formula:</strong> FV = PV × (1 + r)^n</p>
-<div class="cell">
-<div class="cell-output-display">
+<p><strong>Rule of 72:</strong> Years to double ≈ 72 ÷ annual return %</p>
+<p>Example: $10,000 at 7% for 10 years grows to about $19,672, and at 7% money doubles roughly every 10 years.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="investing_basics_files/figure-html/compound-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="$10,000 growing at 7% — value at each checkpoint"><img src="investing_basics_files/figure-html/compound-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$10,000 growing at 7% — value at each checkpoint"></a></p>
-<figcaption>$10,000 growing at 7% — value at each checkpoint</figcaption>
+<p><a href="investing_basics_files/figure-html/compound-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="$10,000 growing at 7%: value at each checkpoint"><img src="investing_basics_files/figure-html/compound-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$10,000 growing at 7%: value at each checkpoint"></a></p>
+<figcaption>$10,000 growing at 7%: value at each checkpoint</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="investing_basics_files/figure-html/compound-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="$10,000 growing at 7%: value at each checkpoint"><img src="investing_basics_files/figure-html/compound-bar-model-2.png" class="img-fluid figure-img" width="576" alt="$10,000 growing at 7%: value at each checkpoint"></a></p>
+<figcaption>$10,000 growing at 7%: value at each checkpoint</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>The Rule of 72 is a shortcut. The exact doubling time is log(2) ÷ log(1 + r). The shortcut is very close for returns between about 4% and 12%, and drifts further off at the extremes.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -324,23 +505,43 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="dv">72</span> <span class="sc">/</span> annual_return_pct</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">future_value</span>(<span class="at">present_value =</span> <span class="dv">10000</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">10</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 19671.51</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">rule_of_72</span>(<span class="at">annual_return_pct =</span> <span class="dv">7</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10.28571</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># vectorized across multiple horizons</span></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>),</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">future_value</span>(<span class="dv">10000</span>, <span class="fl">0.07</span>, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>))</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 2</span></span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   years  value</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     5 14026.</span></span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    10 19672.</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    20 38697.</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    30 76123.</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># $10,000 at 7% for 10 years</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">future_value</span>(<span class="at">present_value =</span> <span class="dv">10000</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">10</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 19671.51</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co"># years to double at 7%</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rule_of_72</span>(<span class="at">annual_return_pct =</span> <span class="dv">7</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10.28571</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co"># the same $10,000 across several horizons (40 years matches the book's line chart)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">years =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">round</span>(<span class="fu">future_value</span>(<span class="dv">10000</span>, <span class="fl">0.07</span>, <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>)))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 2</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   years  value</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1     5  14026</span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    10  19672</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    20  38697</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4    30  76123</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5    40 149745</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: Rule of 72 vs. the exact doubling time</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>rates <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.02</span>, <span class="fl">0.04</span>, <span class="fl">0.07</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">return_pct =</span> rates <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">rule_of_72 =</span> <span class="fu">round</span>(<span class="fu">rule_of_72</span>(rates <span class="sc">*</span> <span class="dv">100</span>), <span class="dv">1</span>),</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">exact      =</span> <span class="fu">round</span>(<span class="fu">log</span>(<span class="dv">2</span>) <span class="sc">/</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> rates), <span class="dv">1</span>)</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 3</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   return_pct rule_of_72 exact</span></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1          2       36    35  </span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2          4       18    17.7</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          7       10.3  10.2</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4         10        7.2   7.3</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5         15        4.8   5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -356,40 +557,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rule_of_72(annual_return_pct):</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">72</span> <span class="op">/</span> annual_return_pct</span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(future_value(present_value<span class="op">=</span><span class="dv">10000</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">10</span>))</span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19671.513572895663</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rule_of_72(annual_return_pct<span class="op">=</span><span class="dv">7</span>))</span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10.285714285714286</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>horizons <span class="op">=</span> np.array([<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>])</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>future_value(present_value<span class="op">=</span><span class="dv">10000</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span>horizons)</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; array([14025.517307  , 19671.5135729 , 38696.84462486, 76122.55042662])</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># $10,000 at 7% for 10 years</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(future_value(present_value<span class="op">=</span><span class="dv">10000</span>, rate<span class="op">=</span><span class="fl">0.07</span>, years<span class="op">=</span><span class="dv">10</span>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 19671.513572895663</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co"># years to double at 7%</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rule_of_72(annual_return_pct<span class="op">=</span><span class="dv">7</span>))</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10.285714285714286</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># the same $10,000 across several horizons</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>horizons <span class="op">=</span> np.array([<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">30</span>, <span class="dv">40</span>])</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(np.<span class="bu">round</span>(future_value(<span class="dv">10000</span>, <span class="fl">0.07</span>, horizons)))</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [ 14026.  19672.  38697.  76123. 149745.]</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: Rule of 72 vs. the exact doubling time</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>rates <span class="op">=</span> np.array([<span class="fl">0.02</span>, <span class="fl">0.04</span>, <span class="fl">0.07</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>])</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r, rule, exact <span class="kw">in</span> <span class="bu">zip</span>(rates, rule_of_72(rates <span class="op">*</span> <span class="dv">100</span>), np.log(<span class="dv">2</span>) <span class="op">/</span> np.log(<span class="dv">1</span> <span class="op">+</span> rates)):</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>r<span class="sc">:.0%}</span><span class="ss">: rule </span><span class="sc">{</span>rule<span class="sc">:.1f}</span><span class="ss"> yrs, exact </span><span class="sc">{</span>exact<span class="sc">:.1f}</span><span class="ss"> yrs"</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2%: rule 36.0 yrs, exact 35.0 yrs</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4%: rule 18.0 yrs, exact 17.7 yrs</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7%: rule 10.3 yrs, exact 10.2 yrs</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10%: rule 7.2 yrs, exact 7.3 yrs</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 15%: rule 4.8 yrs, exact 5.0 yrs</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>With present value in <code>A2</code>, rate in <code>B2</code>, years in <code>C2</code>:</p>
+<p>With present value in <code>A2</code>, rate in <code>B2</code> (as a decimal), and years in <code>C2</code>:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)^</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Rule of 72 (rate as a percent in <code>A2</code>):</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span><span class="dv">72</span><span class="op">/</span>A2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The built-in function gives the same number:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span>B2<span class="op">,</span> C2<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="op">-</span>A2<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Rule of 72 with the return as a whole number (<code>7</code>) in <code>E2</code>, and the exact doubling time with the decimal rate in <code>B2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span><span class="dv">72</span><span class="op">/</span>E2</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>NPER<span class="op">(</span>B2<span class="op">,</span> <span class="dv">0</span><span class="op">,</span> <span class="op">-</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>List several horizons down column <code>C</code> and copy the first formula down to compare them.</p>
 </div>
 </div>
 </div>
+<p>Read the result as “what one deposit becomes if you leave it alone.” At 7%, the Rule of 72 says 10.3 years and the exact answer is 10.2 years, so the shortcut is good enough for planning.</p>
 </section>
 <section id="future-value-of-regular-contributions" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="future-value-of-regular-contributions"><span class="header-section-number">3</span> Future Value of Regular Contributions</h2>
-<p>Monthly investing builds wealth two ways: the money contributed and the returns on all prior contributions.</p>
+<p>Investing a fixed amount every month builds wealth two ways: the money you put in, and the growth on everything you put in before.</p>
 <p><strong>Formula:</strong> FV = PMT × [((1 + r)^n − 1) ÷ r]</p>
-<div class="cell">
-<div class="cell-output-display">
+<p>Example: $500/month for 30 years (360 months) at a 7% annual return (about 0.583% per month) grows to about $610,000, and only $180,000 of that is money you put in.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="investing_basics_files/figure-html/fv-series-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="$500/month contributions at 7% — contributed vs.&nbsp;gains"><img src="investing_basics_files/figure-html/fv-series-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$500/month contributions at 7% — contributed vs.&nbsp;gains"></a></p>
-<figcaption>$500/month contributions at 7% — contributed vs.&nbsp;gains</figcaption>
+<p><a href="investing_basics_files/figure-html/fv-series-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="$500/month contributions at 7%: contributed vs.&nbsp;gains"><img src="investing_basics_files/figure-html/fv-series-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$500/month contributions at 7%: contributed vs.&nbsp;gains"></a></p>
+<figcaption>$500/month contributions at 7%: contributed vs.&nbsp;gains</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="investing_basics_files/figure-html/fv-series-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="$500/month contributions at 7%: contributed vs.&nbsp;gains"><img src="investing_basics_files/figure-html/fv-series-bar-model-2.png" class="img-fluid figure-img" width="576" alt="$500/month contributions at 7%: contributed vs.&nbsp;gains"></a></p>
+<figcaption>$500/month contributions at 7%: contributed vs.&nbsp;gains</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>Starting earlier matters more than putting in more. The second example compares the same $500/month started at 25, 35, and 45, all ending at 65. The book’s recap number ($50/month for 30 years is about $61,000) is the same math at one tenth the size.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -397,13 +627,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>future_value_series <span class="ot">&lt;-</span> <span class="cf">function</span>(contribution, rate, periods) {</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  contribution <span class="sc">*</span> (((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>periods <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $500/month for 30 years at 7% annual (monthly rate = 0.07/12)</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">future_value_series</span>(<span class="at">contribution =</span> <span class="dv">500</span>, <span class="at">rate =</span> <span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>, <span class="at">periods =</span> <span class="dv">30</span> <span class="sc">*</span> <span class="dv">12</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 609985.5</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>future_value_series <span class="ot">&lt;-</span> <span class="cf">function</span>(contribution, rate, periods) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  contribution <span class="sc">*</span> (((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>periods <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">future_value_series</span>(<span class="at">contribution =</span> <span class="dv">500</span>, <span class="at">rate =</span> <span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>, <span class="at">periods =</span> <span class="dv">30</span> <span class="sc">*</span> <span class="dv">12</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 609985.5</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># the recap example: $50/month for 30 years</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">future_value_series</span>(<span class="at">contribution =</span> <span class="dv">50</span>, <span class="at">rate =</span> <span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>, <span class="at">periods =</span> <span class="dv">30</span> <span class="sc">*</span> <span class="dv">12</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 60998.55</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># start age comparison: $500/month until 65</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>start_age <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>years     <span class="ot">&lt;-</span> <span class="dv">65</span> <span class="sc">-</span> start_age</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>total     <span class="ot">&lt;-</span> <span class="fu">future_value_series</span>(<span class="dv">500</span>, <span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>, years <span class="sc">*</span> <span class="dv">12</span>)</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  start_age,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  years,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">contributed =</span> <span class="dv">500</span> <span class="sc">*</span> <span class="dv">12</span> <span class="sc">*</span> years,</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">total       =</span> <span class="fu">round</span>(total),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">pct_growth  =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> (<span class="dv">500</span> <span class="sc">*</span> <span class="dv">12</span> <span class="sc">*</span> years) <span class="sc">/</span> total))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 5</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   start_age years contributed   total pct_growth</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1        25    40      240000 1312407         82</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2        35    30      180000  609985         70</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3        45    20      120000  260463         54</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -411,40 +663,67 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> future_value_series(contribution, rate, periods):</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> contribution <span class="op">*</span> (((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> periods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>future_value_series(contribution<span class="op">=</span><span class="dv">500</span>, rate<span class="op">=</span><span class="fl">0.07</span> <span class="op">/</span> <span class="dv">12</span>, periods<span class="op">=</span><span class="dv">30</span> <span class="op">*</span> <span class="dv">12</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 609985.4978879723</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> future_value_series(contribution, rate, periods):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> contribution <span class="op">*</span> (((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> periods <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># $500/month for 30 years at a 7% annual return</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(future_value_series(contribution<span class="op">=</span><span class="dv">500</span>, rate<span class="op">=</span><span class="fl">0.07</span> <span class="op">/</span> <span class="dv">12</span>, periods<span class="op">=</span><span class="dv">30</span> <span class="op">*</span> <span class="dv">12</span>))</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 609985.4978879723</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># the recap example: $50/month for 30 years</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(future_value_series(contribution<span class="op">=</span><span class="dv">50</span>, rate<span class="op">=</span><span class="fl">0.07</span> <span class="op">/</span> <span class="dv">12</span>, periods<span class="op">=</span><span class="dv">30</span> <span class="op">*</span> <span class="dv">12</span>))</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 60998.54978879723</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># start age comparison: $500/month until 65</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>start_age <span class="op">=</span> np.array([<span class="dv">25</span>, <span class="dv">35</span>, <span class="dv">45</span>])</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>years <span class="op">=</span> <span class="dv">65</span> <span class="op">-</span> start_age</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> future_value_series(<span class="dv">500</span>, <span class="fl">0.07</span> <span class="op">/</span> <span class="dv">12</span>, years <span class="op">*</span> <span class="dv">12</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>contributed <span class="op">=</span> <span class="dv">500</span> <span class="op">*</span> <span class="dv">12</span> <span class="op">*</span> years</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> a, c, t <span class="kw">in</span> <span class="bu">zip</span>(start_age, contributed, total):</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"start </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">: put in $</span><span class="sc">{</span>c<span class="sc">:,.0f}</span><span class="ss">, ends with $</span><span class="sc">{</span>t<span class="sc">:,.0f}</span><span class="ss"> (</span><span class="sc">{</span><span class="dv">1</span> <span class="op">-</span> c <span class="op">/</span> t<span class="sc">:.0%}</span><span class="ss"> growth)"</span>)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; start 25: put in $240,000, ends with $1,312,407 (82% growth)</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; start 35: put in $180,000, ends with $609,985 (70% growth)</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; start 45: put in $120,000, ends with $260,463 (54% growth)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>Use the built-in <code>FV()</code> function: <code>FV(rate, nper, pmt)</code></p>
-<ul>
-<li><code>rate</code>: monthly = <code>7%/12</code></li>
-<li><code>nper</code>: months = <code>30*12</code></li>
-<li><code>pmt</code>: monthly contribution as negative = <code>-500</code></li>
-</ul>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span><span class="dv">7</span><span class="op">%/</span><span class="dv">12</span><span class="op">,</span> <span class="dv">30</span><span class="op">*</span><span class="dv">12</span><span class="op">,</span> <span class="op">-</span><span class="dv">500</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With the monthly contribution in <code>A2</code>, the annual rate in <code>B2</code> (as a decimal), and the number of years in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>A2<span class="op">*(((</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">/</span><span class="dv">12</span><span class="op">)^(</span>C2<span class="op">*</span><span class="dv">12</span><span class="op">)-</span><span class="dv">1</span><span class="op">)/(</span>B2<span class="op">/</span><span class="dv">12</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The built-in <code>FV()</code> function gives the same answer:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span>B2<span class="op">/</span><span class="dv">12</span><span class="op">,</span> C2<span class="op">*</span><span class="dv">12</span><span class="op">,</span> <span class="op">-</span>A2<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Money contributed is <code>=A2*12*C2</code>; subtract it from the <code>FV()</code> result to get the growth.</p>
 </div>
 </div>
 </div>
+<p>Read the result as two layers. At 30 years, about 70% of the $610,000 is growth, not deposits. Starting at 25 instead of 45 more than quadruples the ending balance while only doubling what you put in.</p>
 </section>
 <section id="real-inflation-adjusted-return" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="real-inflation-adjusted-return"><span class="header-section-number">4</span> Real (Inflation-Adjusted) Return</h2>
-<p>Nominal returns overstate purchasing power gains; inflation takes its slice every year.</p>
+<p>Inflation shrinks what each dollar buys, so the return that matters is what’s left after inflation.</p>
 <p><strong>Formula:</strong> Real Return = (1 + nominal) ÷ (1 + inflation) − 1</p>
-<div class="cell">
-<div class="cell-output-display">
+<p>Example: (1.07 ÷ 1.03) − 1 = about 3.88%, a little less than the 4% you’d get by simple subtraction.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="investing_basics_files/figure-html/real-return-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Nominal return, inflation, and real return"><img src="investing_basics_files/figure-html/real-return-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Nominal return, inflation, and real return"></a></p>
+<p><a href="investing_basics_files/figure-html/real-return-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Nominal return, inflation, and real return"><img src="investing_basics_files/figure-html/real-return-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Nominal return, inflation, and real return"></a></p>
+<figcaption>Nominal return, inflation, and real return</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="investing_basics_files/figure-html/real-return-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Nominal return, inflation, and real return"><img src="investing_basics_files/figure-html/real-return-bar-model-2.png" class="img-fluid figure-img" width="576" alt="Nominal return, inflation, and real return"></a></p>
 <figcaption>Nominal return, inflation, and real return</figcaption>
 </figure>
 </div>
 </div>
 </div>
+<p>The second example compares several investments against 3% inflation. Cash earning 4% (one of the book’s common mistakes) barely beats inflation, and cash earning less than inflation has a negative real return. The last line shows what $76,123 (the book’s 30 year example) is worth in today’s dollars.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
@@ -452,12 +731,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>real_return <span class="ot">&lt;-</span> <span class="cf">function</span>(nominal, inflation) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span> <span class="sc">+</span> nominal) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> inflation) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">real_return</span>(<span class="at">nominal =</span> <span class="fl">0.07</span>, <span class="at">inflation =</span> <span class="fl">0.03</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.03883495</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>real_return <span class="ot">&lt;-</span> <span class="cf">function</span>(nominal, inflation) {</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  (<span class="dv">1</span> <span class="sc">+</span> nominal) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> inflation) <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 7% nominal return against 3% inflation</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">real_return</span>(<span class="at">nominal =</span> <span class="fl">0.07</span>, <span class="at">inflation =</span> <span class="fl">0.03</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.03883495</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="co"># several investments against 3% inflation</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">investment  =</span> <span class="fu">c</span>(<span class="st">"Cash (1%)"</span>, <span class="st">"High yield savings (4%)"</span>, <span class="st">"60/40 (7%)"</span>, <span class="st">"Stocks (10%)"</span>),</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">nominal     =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.04</span>, <span class="fl">0.07</span>, <span class="fl">0.10</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">simple      =</span> <span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.04</span>, <span class="fl">0.07</span>, <span class="fl">0.10</span>) <span class="sc">-</span> <span class="fl">0.03</span>,</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">real        =</span> <span class="fu">round</span>(<span class="fu">real_return</span>(<span class="fu">c</span>(<span class="fl">0.01</span>, <span class="fl">0.04</span>, <span class="fl">0.07</span>, <span class="fl">0.10</span>), <span class="fl">0.03</span>), <span class="dv">4</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 4</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   investment              nominal simple    real</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                     &lt;dbl&gt;  &lt;dbl&gt;   &lt;dbl&gt;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Cash (1%)                  0.01  -0.02 -0.0194</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 High yield savings (4%)    0.04   0.01  0.0097</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 60/40 (7%)                 0.07   0.04  0.0388</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 Stocks (10%)               0.1    0.07  0.068</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a><span class="co"># $10,000 at 7% for 30 years, in today's dollars</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a><span class="dv">10000</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">30</span> <span class="sc">/</span> <span class="fl">1.03</span><span class="sc">^</span><span class="dv">30</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 31361.48</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="dv">10000</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">real_return</span>(<span class="fl">0.07</span>, <span class="fl">0.03</span>))<span class="sc">^</span><span class="dv">30</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 31361.48</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
@@ -465,20 +766,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> real_return(nominal, inflation):</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">+</span> nominal) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> inflation) <span class="op">-</span> <span class="dv">1</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>real_return(nominal<span class="op">=</span><span class="fl">0.07</span>, inflation<span class="op">=</span><span class="fl">0.03</span>)</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.03883495145631066</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> real_return(nominal, inflation):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="dv">1</span> <span class="op">+</span> nominal) <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> inflation) <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 7% nominal return against 3% inflation</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(real_return(nominal<span class="op">=</span><span class="fl">0.07</span>, inflation<span class="op">=</span><span class="fl">0.03</span>))</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.03883495145631066</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># several investments against 3% inflation</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, nominal <span class="kw">in</span> [(<span class="st">"Cash"</span>, <span class="fl">0.01</span>), (<span class="st">"High yield savings"</span>, <span class="fl">0.04</span>),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>                      (<span class="st">"60/40"</span>, <span class="fl">0.07</span>), (<span class="st">"Stocks"</span>, <span class="fl">0.10</span>)]:</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss"> (</span><span class="sc">{</span>nominal<span class="sc">:.0%}</span><span class="ss">): simple </span><span class="sc">{</span>nominal <span class="op">-</span> <span class="fl">0.03</span><span class="sc">:.2%}</span><span class="ss">, real </span><span class="sc">{</span>real_return(nominal, <span class="fl">0.03</span>)<span class="sc">:.2%}</span><span class="ss">"</span>)</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Cash (1%): simple -2.00%, real -1.94%</span></span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; High yield savings (4%): simple 1.00%, real 0.97%</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 60/40 (7%): simple 4.00%, real 3.88%</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Stocks (10%): simple 7.00%, real 6.80%</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="co"># $10,000 at 7% for 30 years, in today's dollars</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">10000</span> <span class="op">*</span> <span class="fl">1.07</span> <span class="op">**</span> <span class="dv">30</span> <span class="op">/</span> <span class="fl">1.03</span> <span class="op">**</span> <span class="dv">30</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 31361.482876349524</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<p>With nominal rate in <code>A2</code> and inflation in <code>B2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span><span class="dv">1</span><span class="op">+</span>A2<span class="op">)/(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)-</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>With nominal return in <code>A2</code> and inflation in <code>B2</code> (both as decimals):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span><span class="dv">1</span><span class="op">+</span>A2<span class="op">)/(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)-</span><span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To turn a future balance in <code>C2</code> into today’s dollars over <code>D2</code> years:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>C2<span class="op">/(</span><span class="dv">1</span><span class="op">+</span>B2<span class="op">)^</span>D2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 </div>
+<p>Read a negative real return as “losing buying power, even though the balance went up.” The $76,123 in 30 years buys about what $31,400 buys today, which is why the book says to think in real terms.</p>
 
 
 </section>
@@ -486,6 +804,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -557,7 +888,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

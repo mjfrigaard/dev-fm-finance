@@ -17,21 +17,27 @@ source("_common.R")
 
 ## Book Topics
 
-- **Compounding**: interest earning interest; does the heavy lifting over long horizons; Rule of 72 — years to double ≈ 72 ÷ annual return %
-- **Risk vs. return**: higher expected return = higher volatility; choose a level you can *stick with* through downturns
-- **Diversification**: don't bet on one company, sector, or country; broad index funds make diversification nearly free (Bogle)
-- **Real vs. nominal return**: inflation silently erodes purchasing power; always think in real (inflation-adjusted) terms
+- **Compounding**: interest earning interest; the Rule of 72 says years to double ≈ 72 ÷ annual return % (about 10 years at 7%, about 7 years at 10%); $10,000 at 7% for 40 years
+- **The core portfolio**: stocks (70 to 90% with 20+ years), bonds (10 to 30%), and cash (the emergency fund, kept separate); a simple default is 80% total stock market and 20% total bond market index funds, rebalanced once a year for about 0.03% in fees
+- **Risk vs. return**: 100% stocks might average 10% but drop 40% in a bad year; 60/40 averages about 7% and drops about 20%; pick the split you can stick with through a bear market
+- **Diversification**: one dollar in a total market fund owns thousands of companies, so one failure barely matters
+- **Tax-advantaged accounts**: 2026 limits for the 401(k)/403(b) ($24,500), Roth and Traditional IRA ($7,500), HSA ($4,400 self), and taxable accounts; fill them in order (401(k) to the match, Roth IRA or HSA, max the 401(k), then taxable); $10,000 at 7% for 30 years grows to about $76,000, saving about $13,200 in taxes in a Roth
+- **Common mistakes**: timing the market, chasing past performance, paying high fees (1% over 30 years costs about 25%), holding too much cash, and selling in a panic
 
-## Future Value (Compounding)
+## Future Value and the Rule of 72
 
-A single lump sum growing at a constant rate.
+Each year's growth is applied to a bigger base, so the balance curves upward instead of rising in a straight line.
 
 **Formula:** FV = PV × (1 + r)\^n
+
+**Rule of 72:** Years to double ≈ 72 ÷ annual return %
+
+Example: $10,000 at 7% for 10 years grows to about $19,672, and at 7% money doubles roughly every 10 years.
 
 ```{r}
 #| label: compound-bar-model
 #| echo: false
-#| fig-cap: "$10,000 growing at 7% — value at each checkpoint"
+#| fig-cap: "$10,000 growing at 7%: value at each checkpoint"
 #| fig-asp: 0.50
 library(ggplot2)
 yrs  <- c(0, 5, 10, 20, 30)
@@ -54,6 +60,8 @@ ggplot(df_fv, aes(x = year, y = value, fill = fill)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
 ```
 
+The Rule of 72 is a shortcut. The exact doubling time is log(2) ÷ log(1 + r). The shortcut is very close for returns between about 4% and 12%, and drifts further off at the extremes.
+
 ::: panel-tabset
 ## R
 
@@ -67,13 +75,24 @@ rule_of_72 <- function(annual_return_pct) {
   72 / annual_return_pct
 }
 
+# $10,000 at 7% for 10 years
 future_value(present_value = 10000, rate = 0.07, years = 10)
+
+# years to double at 7%
 rule_of_72(annual_return_pct = 7)
 
-# vectorized across multiple horizons
+# the same $10,000 across several horizons (40 years matches the book's line chart)
 data.frame(
-  years = c(5, 10, 20, 30),
-  value = future_value(10000, 0.07, c(5, 10, 20, 30))
+  years = c(5, 10, 20, 30, 40),
+  value = round(future_value(10000, 0.07, c(5, 10, 20, 30, 40)))
+)
+
+# sanity check: Rule of 72 vs. the exact doubling time
+rates <- c(0.02, 0.04, 0.07, 0.10, 0.15)
+data.frame(
+  return_pct = rates * 100,
+  rule_of_72 = round(rule_of_72(rates * 100), 1),
+  exact      = round(log(2) / log(1 + rates), 1)
 )
 ```
 
@@ -89,44 +108,66 @@ def future_value(present_value, rate, years):
 def rule_of_72(annual_return_pct):
     return 72 / annual_return_pct
 
+# $10,000 at 7% for 10 years
 print(future_value(present_value=10000, rate=0.07, years=10))
+
+# years to double at 7%
 print(rule_of_72(annual_return_pct=7))
 
-horizons = np.array([5, 10, 20, 30])
-future_value(present_value=10000, rate=0.07, years=horizons)
+# the same $10,000 across several horizons
+horizons = np.array([5, 10, 20, 30, 40])
+print(np.round(future_value(10000, 0.07, horizons)))
+
+# sanity check: Rule of 72 vs. the exact doubling time
+rates = np.array([0.02, 0.04, 0.07, 0.10, 0.15])
+for r, rule, exact in zip(rates, rule_of_72(rates * 100), np.log(2) / np.log(1 + rates)):
+    print(f"{r:.0%}: rule {rule:.1f} yrs, exact {exact:.1f} yrs")
 ```
 
 ## Excel
 
-With present value in `A2`, rate in `B2`, years in `C2`:
+With present value in `A2`, rate in `B2` (as a decimal), and years in `C2`:
 
 ```swift
 =A2*(1+B2)^C2
 ```
 
-Rule of 72 (rate as a percent in `A2`):
+The built-in function gives the same number:
 
 ```swift
-=72/A2
+=FV(B2, C2, 0, -A2)
 ```
+
+Rule of 72 with the return as a whole number (`7`) in `E2`, and the exact doubling time with the decimal rate in `B2`:
+
+```swift
+=72/E2
+=NPER(B2, 0, -1, 2)
+```
+
+List several horizons down column `C` and copy the first formula down to compare them.
 :::
+
+Read the result as "what one deposit becomes if you leave it alone." At 7%, the Rule of 72 says 10.3 years and the exact answer is 10.2 years, so the shortcut is good enough for planning.
 
 ## Future Value of Regular Contributions
 
-Monthly investing builds wealth two ways: the money contributed and the returns on all prior contributions.
+Investing a fixed amount every month builds wealth two ways: the money you put in, and the growth on everything you put in before.
 
 **Formula:** FV = PMT × \[((1 + r)\^n − 1) ÷ r\]
+
+Example: $500/month for 30 years (360 months) at a 7% annual return (about 0.583% per month) grows to about $610,000, and only $180,000 of that is money you put in.
 
 ```{r}
 #| label: fv-series-bar-model
 #| echo: false
-#| fig-cap: "$500/month contributions at 7% — contributed vs. gains"
+#| fig-cap: "$500/month contributions at 7%: contributed vs. gains"
 #| fig-asp: 0.50
 library(ggplot2)
-yrs_vec    <- c(10, 20, 30)
-annual_pmt <- 500 * 12
-contributed <- annual_pmt * yrs_vec
-total       <- annual_pmt * ((1.07^yrs_vec - 1) / 0.07)
+yrs_vec     <- c(10, 20, 30)
+r_m         <- 0.07 / 12
+contributed <- 500 * 12 * yrs_vec
+total       <- 500 * (((1 + r_m)^(yrs_vec * 12) - 1) / r_m)
 gains       <- total - contributed
 df_long <- data.frame(
   year   = rep(factor(paste0("Year ", yrs_vec), levels = paste0("Year ", yrs_vec)), 2),
@@ -136,7 +177,7 @@ df_long <- data.frame(
 )
 totals_lab <- data.frame(
   year  = factor(paste0("Year ", yrs_vec), levels = paste0("Year ", yrs_vec)),
-  total = contributed + gains
+  total = total
 )
 ggplot(df_long, aes(x = year, y = amount, fill = layer)) +
   geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
@@ -145,13 +186,15 @@ ggplot(df_long, aes(x = year, y = amount, fill = layer)) +
             inherit.aes = FALSE, vjust = -0.4, fontface = "bold", size = 3.5) +
   scale_fill_manual(values = c("Money contributed" = "#0e9aa7",
                                "Investment gains"  = "#86ddcd")) +
-  scale_y_continuous(limits = c(0, max(contributed + gains) * 1.15),
+  scale_y_continuous(limits = c(0, max(total) * 1.15),
                      labels = function(x) paste0("$", round(x / 1000), "k")) +
   labs(x = NULL, y = NULL, fill = NULL) +
   theme_minimal(base_size = 12) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
         legend.position = "top")
 ```
+
+Starting earlier matters more than putting in more. The second example compares the same $500/month started at 25, 35, and 45, all ending at 65. The book's recap number ($50/month for 30 years is about $61,000) is the same math at one tenth the size.
 
 ::: panel-tabset
 ## R
@@ -162,38 +205,75 @@ future_value_series <- function(contribution, rate, periods) {
   contribution * (((1 + rate)^periods - 1) / rate)
 }
 
-# $500/month for 30 years at 7% annual (monthly rate = 0.07/12)
+# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
 future_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)
+
+# the recap example: $50/month for 30 years
+future_value_series(contribution = 50, rate = 0.07 / 12, periods = 30 * 12)
+
+# start age comparison: $500/month until 65
+start_age <- c(25, 35, 45)
+years     <- 65 - start_age
+total     <- future_value_series(500, 0.07 / 12, years * 12)
+data.frame(
+  start_age,
+  years,
+  contributed = 500 * 12 * years,
+  total       = round(total),
+  pct_growth  = round(100 * (1 - (500 * 12 * years) / total))
+)
 ```
 
 ## Python
 
 ```{python}
 #| label: fv-series-py
+import numpy as np
+
 def future_value_series(contribution, rate, periods):
     return contribution * (((1 + rate) ** periods - 1) / rate)
 
-future_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12)
+# $500/month for 30 years at a 7% annual return
+print(future_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12))
+
+# the recap example: $50/month for 30 years
+print(future_value_series(contribution=50, rate=0.07 / 12, periods=30 * 12))
+
+# start age comparison: $500/month until 65
+start_age = np.array([25, 35, 45])
+years = 65 - start_age
+total = future_value_series(500, 0.07 / 12, years * 12)
+contributed = 500 * 12 * years
+for a, c, t in zip(start_age, contributed, total):
+    print(f"start {a}: put in ${c:,.0f}, ends with ${t:,.0f} ({1 - c / t:.0%} growth)")
 ```
 
 ## Excel
 
-Use the built-in `FV()` function: `FV(rate, nper, pmt)`
-
-- `rate`: monthly = `7%/12`
-- `nper`: months = `30*12`
-- `pmt`: monthly contribution as negative = `-500`
+With the monthly contribution in `A2`, the annual rate in `B2` (as a decimal), and the number of years in `C2`:
 
 ```swift
-=FV(7%/12, 30*12, -500)
+=A2*(((1+B2/12)^(C2*12)-1)/(B2/12))
 ```
+
+The built-in `FV()` function gives the same answer:
+
+```swift
+=FV(B2/12, C2*12, -A2)
+```
+
+Money contributed is `=A2*12*C2`; subtract it from the `FV()` result to get the growth.
 :::
+
+Read the result as two layers. At 30 years, about 70% of the $610,000 is growth, not deposits. Starting at 25 instead of 45 more than quadruples the ending balance while only doubling what you put in.
 
 ## Real (Inflation-Adjusted) Return
 
-Nominal returns overstate purchasing power gains; inflation takes its slice every year.
+Inflation shrinks what each dollar buys, so the return that matters is what's left after inflation.
 
 **Formula:** Real Return = (1 + nominal) ÷ (1 + inflation) − 1
+
+Example: (1.07 ÷ 1.03) − 1 = about 3.88%, a little less than the 4% you'd get by simple subtraction.
 
 ```{r}
 #| label: real-return-bar-model
@@ -218,6 +298,8 @@ ggplot(df_rr, aes(x = label, y = value, fill = fill)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
 ```
 
+The second example compares several investments against 3% inflation. Cash earning 4% (one of the book's common mistakes) barely beats inflation, and cash earning less than inflation has a negative real return. The last line shows what $76,123 (the book's 30 year example) is worth in today's dollars.
+
 ::: panel-tabset
 ## R
 
@@ -227,7 +309,20 @@ real_return <- function(nominal, inflation) {
   (1 + nominal) / (1 + inflation) - 1
 }
 
+# 7% nominal return against 3% inflation
 real_return(nominal = 0.07, inflation = 0.03)
+
+# several investments against 3% inflation
+data.frame(
+  investment  = c("Cash (1%)", "High yield savings (4%)", "60/40 (7%)", "Stocks (10%)"),
+  nominal     = c(0.01, 0.04, 0.07, 0.10),
+  simple      = c(0.01, 0.04, 0.07, 0.10) - 0.03,
+  real        = round(real_return(c(0.01, 0.04, 0.07, 0.10), 0.03), 4)
+)
+
+# $10,000 at 7% for 30 years, in today's dollars
+10000 * 1.07^30 / 1.03^30
+10000 * (1 + real_return(0.07, 0.03))^30
 ```
 
 ## Python
@@ -237,14 +332,31 @@ real_return(nominal = 0.07, inflation = 0.03)
 def real_return(nominal, inflation):
     return (1 + nominal) / (1 + inflation) - 1
 
-real_return(nominal=0.07, inflation=0.03)
+# 7% nominal return against 3% inflation
+print(real_return(nominal=0.07, inflation=0.03))
+
+# several investments against 3% inflation
+for name, nominal in [("Cash", 0.01), ("High yield savings", 0.04),
+                      ("60/40", 0.07), ("Stocks", 0.10)]:
+    print(f"{name} ({nominal:.0%}): simple {nominal - 0.03:.2%}, real {real_return(nominal, 0.03):.2%}")
+
+# $10,000 at 7% for 30 years, in today's dollars
+print(10000 * 1.07 ** 30 / 1.03 ** 30)
 ```
 
 ## Excel
 
-With nominal rate in `A2` and inflation in `B2`:
+With nominal return in `A2` and inflation in `B2` (both as decimals):
 
 ```swift
 =(1+A2)/(1+B2)-1
 ```
+
+To turn a future balance in `C2` into today's dollars over `D2` years:
+
+```swift
+=C2/(1+B2)^D2
+```
 :::
+
+Read a negative real return as "losing buying power, even though the balance went up." The $76,123 in 30 years buys about what $31,400 buys today, which is why the book says to think in real terms.

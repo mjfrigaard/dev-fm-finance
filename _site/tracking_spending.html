@@ -72,10 +72,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -110,7 +114,169 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -244,6 +410,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -260,12 +427,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
   <li><a href="#bank-statement-data" id="toc-bank-statement-data" class="nav-link" data-scroll-target="#bank-statement-data"><span class="header-section-number">2</span> Bank Statement Data</a></li>
   <li><a href="#categorizing-transactions" id="toc-categorizing-transactions" class="nav-link" data-scroll-target="#categorizing-transactions"><span class="header-section-number">3</span> Categorizing Transactions</a></li>
-  <li><a href="#subscription-opportunity-cost" id="toc-subscription-opportunity-cost" class="nav-link" data-scroll-target="#subscription-opportunity-cost"><span class="header-section-number">4</span> Subscription Opportunity Cost</a></li>
+  <li><a href="#answering-tracking-questions" id="toc-answering-tracking-questions" class="nav-link" data-scroll-target="#answering-tracking-questions"><span class="header-section-number">4</span> Answering Tracking Questions</a></li>
+  <li><a href="#the-subscription-audit-math" id="toc-the-subscription-audit-math" class="nav-link" data-scroll-target="#the-subscription-audit-math"><span class="header-section-number">5</span> The Subscription Audit Math</a></li>
   </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -289,11 +458,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="book-topics" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
 <ul>
+<li><strong>Tracking vs.&nbsp;budgeting</strong>: tracking records where money actually went; budgeting allocates where it should go; comparing the two creates a feedback loop</li>
 <li><strong>Capture methods</strong>: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month</li>
-<li><strong>Bank statement exports</strong>: <code>Date</code>, <code>Description</code>, <code>Amount</code> columns; you add the <code>Category</code></li>
-<li><strong>Categorization</strong>: 6–10 stable buckets; use “Other” when in doubt; only promote a new category after seeing it 3 months running</li>
-<li><strong>Monthly review</strong>: pull statements → categorize → compare to budget → pick <em>one</em> change; repeat 12× per year</li>
-<li><strong>Subscriptions</strong>: average household spends $200–$300/month without realizing it; audit every 90 days</li>
+<li><strong>Categorizing</strong>: start with about 10 stable buckets (housing, transportation, groceries, dining out, subscriptions, personal, health, gifts, fun money, other); when in doubt use “Other”, and only promote a new category after seeing it three months in a row</li>
+<li><strong>Using spreadsheets</strong>: bank exports have <code>Date</code>, <code>Description</code>, and <code>Amount</code> columns; a keyword lookup adds the <code>Category</code> column in one pass</li>
+<li><strong>Monthly review</strong>: pull, categorize, compare to budget, and pick <em>one</em> change for next month</li>
+<li><strong>Online subscriptions</strong>: Americans spend about $219/month on subscriptions and underestimate it by $133; audit every quarter and cancel anything unused in 30 days</li>
+<li><strong>Math</strong>: the subscription audit, the opportunity cost of a $20/month subscription invested at 7% for 30 years (about $22,700)</li>
 </ul>
 </section>
 <section id="bank-statement-data" class="level2" data-number="2">
@@ -960,63 +1131,529 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="subscription-opportunity-cost" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="subscription-opportunity-cost"><span class="header-section-number">4</span> Subscription Opportunity Cost</h2>
-<p>A small recurring subscription has a large long-run cost when you account for what the money could have earned.</p>
-<p><strong>Formula:</strong> Monthly Cost × 12 × ((1 + r)^n − 1) ÷ r</p>
-<div class="cell">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><a href="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Future value of a $20/month subscription’s annual cost if invested at 7%"><img src="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Future value of a $20/month subscription’s annual cost if invested at 7%"></a></p>
-<figcaption>Future value of a $20/month subscription’s annual cost if invested at 7%</figcaption>
-</figure>
-</div>
-</div>
-</div>
+<section id="answering-tracking-questions" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="answering-tracking-questions"><span class="header-section-number">4</span> Answering Tracking Questions</h2>
+<p>Once every row has a category, the book’s three tracking questions take one short pipeline each: what did subscriptions cost, what share of income went to fixed costs, and which variable category was biggest?</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<p>Note the rate is given as a decimal and the order of operations.</p>
+<p>Totals by category, spending only (negative amounts), largest first:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_cost, years, <span class="at">rate =</span> <span class="fl">0.07</span>) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="ot">&lt;-</span> monthly_cost <span class="sc">*</span> <span class="dv">12</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  op_cost <span class="ot">&lt;-</span> (annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_dollar</span>(op_cost)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>income <span class="ot">&lt;-</span> <span class="fu">sum</span>(r_bank_statement<span class="sc">$</span>Amount[r_bank_statement<span class="sc">$</span>Amount <span class="sc">&gt;</span> <span class="dv">0</span>])</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>category_totals <span class="ot">&lt;-</span> r_bank_statement <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Amount <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">group_by</span>(Category) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">summarise</span>(<span class="at">Total =</span> <span class="sc">-</span><span class="fu">sum</span>(Amount), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(dplyr<span class="sc">::</span><span class="fu">desc</span>(Total)) <span class="sc">|&gt;</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">mutate</span>(<span class="at">Share =</span> <span class="fu">fmt_pct</span>(Total <span class="sc">/</span> income))</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>category_totals <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Category</th>
+<th style="text-align: right;">Total</th>
+<th style="text-align: left;">Share</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Housing</td>
+<td style="text-align: right;">1500.00</td>
+<td style="text-align: left;">62.5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Groceries</td>
+<td style="text-align: right;">303.35</td>
+<td style="text-align: left;">12.6%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Utilities</td>
+<td style="text-align: right;">302.30</td>
+<td style="text-align: left;">12.6%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Insurance</td>
+<td style="text-align: right;">125.00</td>
+<td style="text-align: left;">5.2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Transportation</td>
+<td style="text-align: right;">88.00</td>
+<td style="text-align: left;">3.7%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Subscriptions</td>
+<td style="text-align: right;">83.97</td>
+<td style="text-align: left;">3.5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dining</td>
+<td style="text-align: right;">21.25</td>
+<td style="text-align: left;">0.9%</td>
+</tr>
+</tbody>
+</table>
 </div>
+</div>
+<p>Total spent on subscriptions:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$22,670.59"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>category_totals<span class="sc">$</span>Total[category_totals<span class="sc">$</span>Category <span class="sc">==</span> <span class="st">"Subscriptions"</span>] <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$83.97"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+<p>Share of income going to fixed costs (housing, utilities, and insurance):</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fixed <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Housing"</span>, <span class="st">"Utilities"</span>, <span class="st">"Insurance"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fixed_total <span class="ot">&lt;-</span> <span class="fu">sum</span>(category_totals<span class="sc">$</span>Total[category_totals<span class="sc">$</span>Category <span class="sc">%in%</span> fixed])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_dollar</span>(fixed_total)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$1,927.30"</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_pct</span>(fixed_total <span class="sc">/</span> income)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "80.3%"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The biggest variable category:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>category_totals <span class="sc">|&gt;</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Category <span class="sc">%nin%</span> <span class="fu">c</span>(fixed, <span class="st">"Subscriptions"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">slice_max</span>(Total, <span class="at">n =</span> <span class="dv">1</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 1 × 3</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Category  Total Share</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 Groceries  303. 12.6%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>How to read this result: this statement covers only half a month and one $2,400 paycheck, but the full month’s rent. That is why fixed costs look like 80% of income. Always compare a full month of spending against a full month of income before drawing conclusions.</p>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<p>Note the exponential is indicated with <code>**</code> (not <code>^</code>). In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.</p>
+<p>The same three answers with <code>polars</code>:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    op_cost <span class="op">=</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fmt_dollar(op_cost) <span class="co"># format the result as a dollar amount</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>income <span class="op">=</span> py_bank_statement.<span class="bu">filter</span>(pl.col(<span class="st">"Amount"</span>) <span class="op">&gt;</span> <span class="dv">0</span>)[<span class="st">"Amount"</span>].<span class="bu">sum</span>()</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>category_totals <span class="op">=</span> (</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    py_bank_statement</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(pl.col(<span class="st">"Amount"</span>) <span class="op">&lt;</span> <span class="dv">0</span>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"Category"</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    .agg((<span class="op">-</span>pl.col(<span class="st">"Amount"</span>).<span class="bu">sum</span>()).alias(<span class="st">"Total"</span>))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    .sort(<span class="st">"Total"</span>, descending<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    .with_columns((pl.col(<span class="st">"Total"</span>) <span class="op">/</span> income).alias(<span class="st">"Share"</span>))</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>category_totals</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (7, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Category</th>
+<th data-quarto-table-cell-role="th">Total</th>
+<th data-quarto-table-cell-role="th">Share</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Housing"</td>
+<td>1500.0</td>
+<td>0.625</td>
+</tr>
+<tr class="even">
+<td>"Groceries"</td>
+<td>303.35</td>
+<td>0.126396</td>
+</tr>
+<tr class="odd">
+<td>"Utilities"</td>
+<td>302.3</td>
+<td>0.125958</td>
+</tr>
+<tr class="even">
+<td>"Insurance"</td>
+<td>125.0</td>
+<td>0.052083</td>
+</tr>
+<tr class="odd">
+<td>"Transportation"</td>
+<td>88.0</td>
+<td>0.036667</td>
+</tr>
+<tr class="even">
+<td>"Subscriptions"</td>
+<td>83.97</td>
+<td>0.034988</td>
+</tr>
+<tr class="odd">
+<td>"Dining"</td>
+<td>21.25</td>
+<td>0.008854</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Total spent on subscriptions:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>subs <span class="op">=</span> category_totals.<span class="bu">filter</span>(pl.col(<span class="st">"Category"</span>) <span class="op">==</span> <span class="st">"Subscriptions"</span>)[<span class="st">"Total"</span>][<span class="dv">0</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>fmt_dollar(subs)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$83.97'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
+<p>Share of income going to fixed costs:</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$22,670.59'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fixed <span class="op">=</span> [<span class="st">"Housing"</span>, <span class="st">"Utilities"</span>, <span class="st">"Insurance"</span>]</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>fixed_total <span class="op">=</span> category_totals.<span class="bu">filter</span>(pl.col(<span class="st">"Category"</span>).is_in(fixed))[<span class="st">"Total"</span>].<span class="bu">sum</span>()</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(fixed_total), fmt_pct(fixed_total <span class="op">/</span> income))</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $1,927.30 80.3%</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
+</div>
+<p>The biggest variable category:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    category_totals</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(<span class="op">~</span>pl.col(<span class="st">"Category"</span>).is_in(fixed <span class="op">+</span> [<span class="st">"Subscriptions"</span>]))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    .head(<span class="dv">1</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (1, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Category</th>
+<th data-quarto-table-cell-role="th">Total</th>
+<th data-quarto-table-cell-role="th">Share</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Groceries"</td>
+<td>303.35</td>
+<td>0.126396</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
+<p>With <code>Date</code> in <code>A</code>, <code>Description</code> in <code>B</code>, <code>Amount</code> in <code>C</code>, and <code>Category</code> in <code>D</code>, the <a href="https://support.microsoft.com/en-us/excel/sumif-function"><code>SUMIF()</code> function</a> adds up one category. Total spent on subscriptions:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="op">=-</span>SUMIF<span class="op">(</span>D<span class="op">:</span>D<span class="op">,</span> <span class="st">"Subscriptions"</span><span class="op">,</span> C<span class="op">:</span>C<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The minus sign turns the negative spending total into a positive number. Fixed costs as a share of income (format the cell as a percentage):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="op">=-(</span>SUMIF<span class="op">(</span>D<span class="op">:</span>D<span class="op">,</span><span class="st">"Housing"</span><span class="op">,</span>C<span class="op">:</span>C<span class="op">)+</span>SUMIF<span class="op">(</span>D<span class="op">:</span>D<span class="op">,</span><span class="st">"Utilities"</span><span class="op">,</span>C<span class="op">:</span>C<span class="op">)+</span>SUMIF<span class="op">(</span>D<span class="op">:</span>D<span class="op">,</span><span class="st">"Insurance"</span><span class="op">,</span>C<span class="op">:</span>C<span class="op">))/</span>SUMIF<span class="op">(</span>C<span class="op">:</span>C<span class="op">,</span><span class="st">"&gt;0"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>For every category at once, select the data and use <strong>Insert → PivotTable</strong>, with <code>Category</code> in Rows and <code>Amount</code> in Values.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="the-subscription-audit-math" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="the-subscription-audit-math"><span class="header-section-number">5</span> The Subscription Audit Math</h2>
+<p>A $20/month subscription feels trivial. Cancel it and invest the $240 a year instead, and the chart below shows what that money grows into at each checkpoint, split into the money you put in and the growth it earned.</p>
+<p><strong>Formula:</strong> Annual cost × ((1 + r)^n − 1) ÷ r = Opportunity cost in <em>n</em> years</p>
+<p>With the book’s 7% real return (the return after inflation), <em>r</em> = 0.07.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="$240 a year invested at 7% instead of a $20/month subscription"><img src="tracking_spending_files/figure-html/subscription-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$240 a year invested at 7% instead of a $20/month subscription"></a></p>
+<figcaption>$240 a year invested at 7% instead of a $20/month subscription</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="tracking_spending_files/figure-html/subscription-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="$240 a year invested at 7% instead of a $20/month subscription"><img src="tracking_spending_files/figure-html/subscription-bar-model-2.png" class="img-fluid figure-img" width="576" alt="$240 a year invested at 7% instead of a $20/month subscription"></a></p>
+<figcaption>$240 a year invested at 7% instead of a $20/month subscription</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Each bar adds another year’s $240 to everything saved so far, and the whole pile grows by 7%. After 30 years you put in $7,200, and growth added about $15,500.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-2" role="tab" aria-controls="tabset-4-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-4-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-3" role="tab" aria-controls="tabset-4-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>subscription_opportunity_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_cost, years, <span class="at">rate =</span> <span class="fl">0.07</span>) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="ot">&lt;-</span> monthly_cost <span class="sc">*</span> <span class="dv">12</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  annual_cost <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> rate</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>A $20/month subscription for 30 years at 7%:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="at">monthly_cost =</span> <span class="dv">20</span>, <span class="at">years =</span> <span class="dv">30</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$22,670.59"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Sanity check: money put in vs.&nbsp;growth.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>oc <span class="ot">&lt;-</span> <span class="fu">subscription_opportunity_cost</span>(<span class="dv">20</span>, <span class="dv">30</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>put_in <span class="ot">&lt;-</span> <span class="dv">20</span> <span class="sc">*</span> <span class="dv">12</span> <span class="sc">*</span> <span class="dv">30</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">put_in =</span> put_in, <span class="at">growth =</span> <span class="fu">round</span>(oc <span class="sc">-</span> put_in))</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; put_in growth </span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   7200  15471</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Now audit the four subscriptions in the bank statement above. The function is vectorized, so one call prices them all:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>subs <span class="ot">&lt;-</span> r_bank_statement <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(Category <span class="sc">==</span> <span class="st">"Subscriptions"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">transmute</span>(Description, <span class="at">monthly =</span> <span class="sc">-</span>Amount)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>subs<span class="sc">$</span>after_10 <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">subscription_opportunity_cost</span>(subs<span class="sc">$</span>monthly, <span class="dv">10</span>))</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>subs<span class="sc">$</span>after_30 <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">subscription_opportunity_cost</span>(subs<span class="sc">$</span>monthly, <span class="dv">30</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>subs <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Description</th>
+<th style="text-align: right;">monthly</th>
+<th style="text-align: right;">after_10</th>
+<th style="text-align: right;">after_30</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Netflix</td>
+<td style="text-align: right;">15.99</td>
+<td style="text-align: right;">2651</td>
+<td style="text-align: right;">18125</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Spotify</td>
+<td style="text-align: right;">10.99</td>
+<td style="text-align: right;">1822</td>
+<td style="text-align: right;">12457</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NYTimes Digital</td>
+<td style="text-align: right;">17.00</td>
+<td style="text-align: right;">2819</td>
+<td style="text-align: right;">19270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">24 Hour Fitness</td>
+<td style="text-align: right;">39.99</td>
+<td style="text-align: right;">6630</td>
+<td style="text-align: right;">45330</td>
+</tr>
+</tbody>
+</table>
+</div>
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fmt_dollar</span>(<span class="fu">sum</span>(subs<span class="sc">$</span>after_30))</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$95,182.00"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>How to read this result: the $83.97 a month in this statement is a $95,000 decision over 30 years. The gym membership alone is nearly half of it.</p>
+<p>The book’s survey figure of $219/month uses monthly deposits. The audit formula above uses yearly deposits, which comes out a little lower:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># yearly deposits (the audit formula)</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="dv">219</span>, <span class="dv">30</span>) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$248,242.95"</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># monthly deposits (the book's ~$267,000)</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>(<span class="dv">219</span> <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">+</span> <span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>)<span class="sc">^</span>(<span class="dv">30</span> <span class="sc">*</span> <span class="dv">12</span>) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (<span class="fl">0.07</span> <span class="sc">/</span> <span class="dv">12</span>)) <span class="sc">|&gt;</span> <span class="fu">fmt_dollar</span>()</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] "$267,173.65"</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Edge case: a rate of 0 divides by zero and returns <code>NaN</code>. With no growth, the opportunity cost is just the money you would have spent.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">subscription_opportunity_cost</span>(<span class="dv">20</span>, <span class="dv">30</span>, <span class="at">rate =</span> <span class="dv">0</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] NaN</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="dv">20</span> <span class="sc">*</span> <span class="dv">12</span> <span class="sc">*</span> <span class="dv">30</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 7200</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> subscription_opportunity_cost(monthly_cost, years, rate<span class="op">=</span><span class="fl">0.07</span>):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    annual_cost <span class="op">=</span> monthly_cost <span class="op">*</span> <span class="dv">12</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> annual_cost <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> rate) <span class="op">**</span> years <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> rate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>A $20/month subscription for 30 years at 7%:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>fmt_dollar(subscription_opportunity_cost(monthly_cost<span class="op">=</span><span class="dv">20</span>, years<span class="op">=</span><span class="dv">30</span>))</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$22,670.59'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Sanity check: money put in vs.&nbsp;growth.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>oc <span class="op">=</span> subscription_opportunity_cost(<span class="dv">20</span>, <span class="dv">30</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>put_in <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> <span class="dv">12</span> <span class="op">*</span> <span class="dv">30</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(put_in, <span class="dv">0</span>), fmt_dollar(oc <span class="op">-</span> put_in, <span class="dv">0</span>))</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $7,200 $15,471</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Audit the four subscriptions in the bank statement. <code>polars</code> expressions are vectorized, so the formula runs on every row:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>subs <span class="op">=</span> (</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>    py_bank_statement</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    .<span class="bu">filter</span>(pl.col(<span class="st">"Category"</span>) <span class="op">==</span> <span class="st">"Subscriptions"</span>)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    .select(<span class="st">"Description"</span>, (<span class="op">-</span>pl.col(<span class="st">"Amount"</span>)).alias(<span class="st">"monthly"</span>))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>        subscription_opportunity_cost(pl.col(<span class="st">"monthly"</span>), <span class="dv">10</span>).<span class="bu">round</span>(<span class="dv">0</span>).alias(<span class="st">"after_10"</span>),</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>        subscription_opportunity_cost(pl.col(<span class="st">"monthly"</span>), <span class="dv">30</span>).<span class="bu">round</span>(<span class="dv">0</span>).alias(<span class="st">"after_30"</span>),</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>subs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (4, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Description</th>
+<th data-quarto-table-cell-role="th">monthly</th>
+<th data-quarto-table-cell-role="th">after_10</th>
+<th data-quarto-table-cell-role="th">after_30</th>
+</tr>
+<tr class="even">
+<td>str</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"Netflix"</td>
+<td>15.99</td>
+<td>2651.0</td>
+<td>18125.0</td>
+</tr>
+<tr class="even">
+<td>"Spotify"</td>
+<td>10.99</td>
+<td>1822.0</td>
+<td>12457.0</td>
+</tr>
+<tr class="odd">
+<td>"NYTimes Digital"</td>
+<td>17.0</td>
+<td>2819.0</td>
+<td>19270.0</td>
+</tr>
+<tr class="even">
+<td>"24 Hour Fitness"</td>
+<td>39.99</td>
+<td>6630.0</td>
+<td>45330.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>fmt_dollar(subs[<span class="st">"after_30"</span>].<span class="bu">sum</span>())</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; '$95,182.00'</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>The survey’s $219/month with yearly deposits vs.&nbsp;monthly deposits:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>monthly_rate <span class="op">=</span> <span class="fl">0.07</span> <span class="op">/</span> <span class="dv">12</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(subscription_opportunity_cost(<span class="dv">219</span>, <span class="dv">30</span>)))</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $248,242.95</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(fmt_dollar(<span class="dv">219</span> <span class="op">*</span> ((<span class="dv">1</span> <span class="op">+</span> monthly_rate) <span class="op">**</span> <span class="dv">360</span> <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> monthly_rate))</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $267,173.65</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Edge case: a rate of 0 raises a <code>ZeroDivisionError</code> in Python, so fall back to the money you would have spent:</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="cf">try</span>:</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    subscription_opportunity_cost(<span class="dv">20</span>, <span class="dv">30</span>, rate<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="cf">except</span> <span class="pp">ZeroDivisionError</span>:</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"No growth:"</span>, fmt_dollar(<span class="dv">20</span> <span class="op">*</span> <span class="dv">12</span> <span class="op">*</span> <span class="dv">30</span>))</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; No growth: $7,200.00</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-4-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-4-3-tab">
 <p>In Excel, create a new sheet with the inputs:</p>
 <table class="caption-top table">
 <colgroup>
@@ -1042,36 +1679,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>The formula (given this setup) is below:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>A2*12</code> converts the monthly cost to annual; the rest is the future-value-of-an-annuity formula using the rate in <code>C2</code> and the horizon in <code>B2</code>. The formula (given this setup) is below:</p>
+<p>The formula (given this setup) in <code>D2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)*((</span><span class="dv">1</span><span class="op">+</span>C2<span class="op">)^</span>B2<span class="op">-</span><span class="dv">1</span><span class="op">)/</span>C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>A2*12</code> converts the monthly cost to annual; the rest is the future value formula for regular deposits, using the rate in <code>C2</code> and the time horizon in <code>B2</code>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/tracking_spending-opportunity_cost.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Opportunity Cost in Excel"><img src="img/tracking_spending-opportunity_cost.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost in Excel"></a></p>
+<p><a href="img/tracking_spending-opportunity_cost.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Opportunity Cost in Excel"><img src="img/tracking_spending-opportunity_cost.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost in Excel"></a></p>
 </figure>
 </div>
 <figcaption>Opportunity Cost in Excel</figcaption>
 </figure>
 </div>
-<p>Note that if we had the data arranged differently, we’d have to adjust the formula accordingly:</p>
+<p><code>FV()</code> gives the same answer, $22,670.59:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>FV<span class="op">(</span>C2<span class="op">,</span> B2<span class="op">,</span> <span class="op">-</span>A2<span class="op">*</span><span class="dv">12</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To audit several subscriptions, list each monthly cost in <code>A2:A5</code> (15.99, 10.99, 17.00, 39.99), keep the years and rate in <code>B</code> and <code>C</code>, fill <code>D2</code> down, and total them with <code>=SUM(D2:D5)</code>.</p>
+<p>If the data is arranged differently, adjust the cell references accordingly:</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/tracking_spending-opportunity_cost2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Opportunity Cost 2 in Excel"><img src="img/tracking_spending-opportunity_cost2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost 2 in Excel"></a></p>
+<p><a href="img/tracking_spending-opportunity_cost2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Opportunity Cost 2 in Excel"><img src="img/tracking_spending-opportunity_cost2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost 2 in Excel"></a></p>
 </figure>
 </div>
 <figcaption>Opportunity Cost 2 in Excel</figcaption>
 </figure>
 </div>
-<p>Both will work, and for straightforward formulas like this, you can pick whichever one you prefer. Later, we’ll discuss how to arrange data in excel so it can be easily analyzed.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><a href="img/tracking_spending-opportunity_cost_layouts.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Opportunity Cost Layouts in Excel"><img src="img/tracking_spending-opportunity_cost_layouts.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost Layouts in Excel"></a></p>
+<p><a href="img/tracking_spending-opportunity_cost_layouts.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Opportunity Cost Layouts in Excel"><img src="img/tracking_spending-opportunity_cost_layouts.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Opportunity Cost Layouts in Excel"></a></p>
 </figure>
 </div>
 <figcaption>Opportunity Cost Layouts in Excel</figcaption>
@@ -1093,6 +1732,19 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {

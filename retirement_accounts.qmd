@@ -7,13 +7,289 @@ title: "Retirement Accounts"
 #| message: false
 #| warning: false
 #| include: false
-library(tidyverse)
-reticulate::py_require(c("numpy", "polars"))
+source("_common.R")
 ```
 
 ```{python}
 #| label: setup-py
 #| include: false
-import polars as pl
-import numpy as np
 ```
+
+## Book Topics
+
+- **What a retirement account is**: a container, not an investment; it decides how the investments inside get taxed; early withdrawals before 59 and a half usually cost a 10% penalty plus income tax
+- **2026 limits**: 401(k)/403(b)/TSP $24,500; Traditional and Roth IRA $7,500 (one shared limit); HSA $4,400 (self); taxable brokerage has no limit
+- **The plan at work**: contributions come out of each paycheck; a common match is "50% of the first 6%"; watch vesting and don't settle for the automatic enrollment rate
+- **Traditional vs. Roth**: pay tax later or pay it now; the only thing that matters is whether your tax rate is lower now or later, so Roth is the usual default early in a career
+- **The IRA**: opened at a brokerage, yours no matter where you work; Roth contributions (not earnings) can come out any time; Roth income limit is $153,000 to $168,000 (single)
+- **The HSA**: needs an HSA eligible (high deductible) plan; tax free going in, growing, and coming out for medical costs
+- **Which account first**: deductible cash, full match, high interest debt, emergency fund, HSA and Roth IRA, more 401(k), then taxable; aim for 15% of income including the match
+- **Changing jobs**: roll the old plan over directly; cashing out $5,000 at 22 leaves about $3,900 instead of about $100,000 by 67
+
+## The Employer Match
+
+Your employer adds money on top of what you put in, up to a limit.
+
+**Formula:** Match = Salary × min(Your %, Match limit %) × Match rate
+
+Example: $45,000 × min(6%, 6%) × 50% = $1,350 a year in free money. At 3%, you'd only get $675.
+
+```{r}
+#| label: match-bar-model
+#| echo: false
+#| fig-cap: "6% of a $45,000 salary, plus a 50% employer match"
+#| fig-asp: 0.25
+library(ggplot2)
+df_match <- data.frame(
+  part   = factor(c("Your contribution ($2,700)", "Employer match ($1,350)"),
+                  levels = c("Employer match ($1,350)", "Your contribution ($2,700)")),
+  amount = c(2700, 1350),
+  bar    = "401(k) deposits"
+)
+ggplot(df_match, aes(x = amount, y = bar, fill = part)) +
+  geom_col(width = 0.5, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = part), position = position_stack(vjust = 0.5),
+            fontface = "bold", size = 3.5, colour = "#1C1C1E") +
+  scale_fill_manual(values = c("Your contribution ($2,700)" = "#0e9aa7",
+                               "Employer match ($1,350)"    = "#48a56a")) +
+  scale_x_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ","))) +
+  labs(x = NULL, y = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(legend.position = "none", panel.grid.major.y = element_blank(),
+        panel.grid.minor = element_blank(), axis.text.y = element_blank())
+```
+
+The second example runs the same job across several contribution rates. Past 6%, your own deposits keep growing but the match stops. The last example shows what one year of the full match becomes if it stays invested for 40 years at 7%.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: match-r
+employer_match <- function(salary, contribution_pct, match_limit_pct, match_rate) {
+  salary * pmin(contribution_pct, match_limit_pct) * match_rate
+}
+
+# $45,000 salary, 6% contribution, 50% match on the first 6%
+employer_match(salary = 45000, contribution_pct = 0.06,
+               match_limit_pct = 0.06, match_rate = 0.50)
+
+# same job, but only contributing 3%
+employer_match(salary = 45000, contribution_pct = 0.03,
+               match_limit_pct = 0.06, match_rate = 0.50)
+
+# several contribution rates
+pct <- c(0, 0.03, 0.06, 0.10, 0.15)
+data.frame(
+  your_pct     = pct * 100,
+  you_put_in   = 45000 * pct,
+  match        = employer_match(45000, pct, 0.06, 0.50),
+  match_missed = 1350 - employer_match(45000, pct, 0.06, 0.50)
+)
+
+# one year of the full match, invested for 40 years at 7%
+1350 * 1.07^40
+```
+
+## Python
+
+```{python}
+#| label: match-py
+def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
+    return salary * min(contribution_pct, match_limit_pct) * match_rate
+
+# $45,000 salary, 6% contribution, 50% match on the first 6%
+print(employer_match(salary=45000, contribution_pct=0.06,
+                     match_limit_pct=0.06, match_rate=0.50))
+
+# same job, but only contributing 3%
+print(employer_match(salary=45000, contribution_pct=0.03,
+                     match_limit_pct=0.06, match_rate=0.50))
+
+# several contribution rates
+for pct in [0, 0.03, 0.06, 0.10, 0.15]:
+    m = employer_match(45000, pct, 0.06, 0.50)
+    print(f"{pct:>4.0%}: you ${45000 * pct:>6,.0f}, match ${m:>5,.0f}, missed ${1350 - m:>5,.0f}")
+
+# one year of the full match, invested for 40 years at 7%
+print(1350 * 1.07 ** 40)
+```
+
+## Excel
+
+With `Salary` in `B2`, `Your %` in `C2`, `Match limit %` in `D2`, and `Match rate` in `E2`:
+
+```swift
+=B2 * MIN(C2, D2) * E2
+```
+
+List several rates down column `C` and copy the formula down to see where the match stops growing.
+:::
+
+Read the match as a 50% return the day you deposit. Contributing 3% instead of 6% leaves $675 a year on the table, and one year of the full match grows to about $20,200 over 40 years at 7%.
+
+## Traditional vs. Roth
+
+Roth takes the tax out first, then the rest grows. Traditional lets the whole amount grow, then takes the tax out at the end.
+
+**Formula:** Amount you keep = Contribution × (1 − tax rate) × (1 + r)\^n
+
+For Roth, use today's tax rate. For Traditional, use your tax rate in retirement.
+
+Example: $1,000 for 40 years at 7%. With 12% now and 12% later, both accounts leave you about $13,178. If your rate in retirement is 22% instead, the Traditional account leaves you about $11,680.
+
+```{r}
+#| label: roth-bar-model
+#| echo: false
+#| fig-cap: "$1,000 after 40 years at 7%, with a 12% tax rate now and later"
+#| fig-asp: 0.50
+library(ggplot2)
+grow       <- 1.07^40
+roth_keep  <- 1000 * (1 - 0.12) * grow
+trad_total <- 1000 * grow
+trad_tax   <- trad_total * 0.12
+lv_acct  <- c("Roth (tax now)", "Traditional (tax later)")
+lv_layer <- c("Taxes (plus the growth they would have earned)", "Yours to spend")
+df_rt <- data.frame(
+  account = factor(rep(lv_acct, each = 2), levels = lv_acct),
+  layer   = factor(rep(lv_layer, 2), levels = lv_layer),
+  amount  = c(trad_total - roth_keep, roth_keep, trad_tax, trad_total - trad_tax)
+)
+totals_rt <- data.frame(
+  account = factor(lv_acct, levels = lv_acct),
+  keep    = c(roth_keep, trad_total - trad_tax),
+  top     = c(trad_total, trad_total)
+)
+ggplot(df_rt, aes(x = account, y = amount, fill = layer)) +
+  geom_col(width = 0.55, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(data = totals_rt,
+            aes(x = account, y = top,
+                label = paste0("$", formatC(round(keep), format = "d", big.mark = ","), " yours")),
+            inherit.aes = FALSE, vjust = -0.4, fontface = "bold", size = 3.5) +
+  scale_fill_manual(values = c("Taxes (plus the growth they would have earned)" = "#f44242",
+                               "Yours to spend" = "#0e9aa7")) +
+  scale_y_continuous(limits = c(0, trad_total * 1.15),
+                     labels = function(x) paste0("$", round(x / 1000), "k")) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(),
+        legend.position = "top")
+```
+
+Multiplying by (1 − tax rate) gives the same answer whether you do it first or last. So the second example holds today's rate at 12% and tries several retirement rates. The edge case is a retirement rate lower than today's, where Traditional wins.
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: roth-r
+after_tax_value <- function(contribution, tax_rate, rate, years) {
+  contribution * (1 - tax_rate) * (1 + rate)^years
+}
+
+# Roth: taxed at today's 12% rate
+after_tax_value(contribution = 1000, tax_rate = 0.12, rate = 0.07, years = 40)
+
+# Traditional: taxed at a 22% rate in retirement
+after_tax_value(contribution = 1000, tax_rate = 0.22, rate = 0.07, years = 40)
+
+# sanity check: same rate now and later gives the same answer
+all.equal(1000 * (1 - 0.12) * 1.07^40, 1000 * 1.07^40 * (1 - 0.12))
+
+# today's rate is 12%; try several retirement rates
+later <- c(0.10, 0.12, 0.22, 0.24)
+roth  <- after_tax_value(1000, 0.12, 0.07, 40)
+trad  <- after_tax_value(1000, later, 0.07, 40)
+data.frame(
+  retirement_rate = later * 100,
+  roth            = round(roth),
+  traditional     = round(trad),
+  winner          = ifelse(abs(roth - trad) < 1, "tie",
+                           ifelse(roth > trad, "Roth", "Traditional"))
+)
+```
+
+## Python
+
+```{python}
+#| label: roth-py
+def after_tax_value(contribution, tax_rate, rate, years):
+    return contribution * (1 - tax_rate) * (1 + rate) ** years
+
+# Roth: taxed at today's 12% rate
+print(after_tax_value(contribution=1000, tax_rate=0.12, rate=0.07, years=40))
+
+# Traditional: taxed at a 22% rate in retirement
+print(after_tax_value(contribution=1000, tax_rate=0.22, rate=0.07, years=40))
+
+# today's rate is 12%; try several retirement rates
+roth = after_tax_value(1000, 0.12, 0.07, 40)
+for later in [0.10, 0.12, 0.22, 0.24]:
+    trad = after_tax_value(1000, later, 0.07, 40)
+    winner = "tie" if abs(roth - trad) < 1 else ("Roth" if roth > trad else "Traditional")
+    print(f"retire at {later:.0%}: Roth ${roth:,.0f}, Traditional ${trad:,.0f} -> {winner}")
+```
+
+## Excel
+
+With `Contribution` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+
+```swift
+=B2 * (1 - C2) * (1 + D2) ^ E2
+```
+
+Put today's rate in one row and the retirement rate in the next; the row with the larger result wins.
+:::
+
+Read the result as a contest between two tax rates. Growth and years don't pick the winner. Roth wins when today's rate is lower than your rate in retirement, and Traditional wins when it's higher.
+
+## Cashing Out vs. Rolling Over
+
+The book's job change example: cash out $5,000 at 22, or leave it invested until 67.
+
+**Formula:** Cash in hand = Balance × (1 − tax rate − penalty); Left invested = Balance × (1 + r)\^n
+
+Example: $5,000 × (1 − 0.12 − 0.10) = $3,900 today, vs. $5,000 × 1.07\^45 ≈ $105,000 at 67 (the book rounds to about $100,000).
+
+::: panel-tabset
+## R
+
+```{r}
+#| label: cash-out-r
+cash_out <- function(balance, tax_rate, penalty = 0.10) {
+  balance * (1 - tax_rate - penalty)
+}
+
+cash_out(balance = 5000, tax_rate = 0.12)
+5000 * 1.07^(67 - 22)
+
+# several balances
+bal <- c(2000, 5000, 20000)
+data.frame(balance = bal, cash_now = cash_out(bal, 0.12), at_67 = round(bal * 1.07^45))
+```
+
+## Python
+
+```{python}
+#| label: cash-out-py
+def cash_out(balance, tax_rate, penalty=0.10):
+    return balance * (1 - tax_rate - penalty)
+
+print(cash_out(balance=5000, tax_rate=0.12))
+print(5000 * 1.07 ** (67 - 22))
+
+for bal in [2000, 5000, 20000]:
+    print(f"${bal:,}: cash now ${cash_out(bal, 0.12):,.0f}, at 67 ${bal * 1.07 ** 45:,.0f}")
+```
+
+## Excel
+
+With `Balance` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+
+```swift
+=B2 * (1 - C2 - 0.10)
+=B2 * (1 + D2) ^ E2
+```
+:::
+
+Read it as a trade: $3,900 now costs you about $100,000 later.

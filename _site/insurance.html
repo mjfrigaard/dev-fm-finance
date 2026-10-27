@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -37,10 +72,17 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +114,169 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -206,6 +410,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -214,11 +419,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#choosing-a-deductible" id="toc-choosing-a-deductible" class="nav-link" data-scroll-target="#choosing-a-deductible"><span class="header-section-number">2</span> Choosing a Deductible</a></li>
+  <li><a href="#comparing-two-health-plans" id="toc-comparing-two-health-plans" class="nav-link" data-scroll-target="#comparing-two-health-plans"><span class="header-section-number">3</span> Comparing Two Health Plans</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -239,12 +453,321 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>The rule</strong>: insure losses you can’t absorb; cover small ones from your emergency fund (leave room for error)</li>
+<li><strong>Insurance words</strong>: premium, deductible, claim, coverage limit, liability; premiums and deductibles move in opposite directions</li>
+<li><strong>Health insurance</strong>: never go without; stay on a parent’s plan until 26, get it through work, or use the marketplace; copay, coinsurance, and the out of pocket maximum (your worst case, capped at $10,600 in 2026); high deductible plans qualify for an HSA with a deductible of at least $1,700 and an out of pocket maximum of no more than $8,500</li>
+<li><strong>Auto insurance</strong>: liability of at least 100/300/100; consider dropping collision and comprehensive on a cheap car</li>
+<li><strong>Renters insurance</strong>: about $13 to $23 a month; choose replacement cost over actual cash value</li>
+<li><strong>Disability insurance</strong>: about 1 in 4 of today’s 20 year olds will become disabled before retirement age; take employer long term disability (about 60% of pay)</li>
+<li><strong>Life insurance</strong>: only if someone depends on your income; buy term, about 10 times yearly income; skip whole life</li>
+<li><strong>Umbrella insurance</strong>: $1 million or more of extra liability; revisit as net worth grows</li>
+<li><strong>What to skip</strong>: extended warranties, phone insurance, life insurance with no dependents, single event policies</li>
+</ul>
+</section>
+<section id="choosing-a-deductible" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="choosing-a-deductible"><span class="header-section-number">2</span> Choosing a Deductible</h2>
+<p>A higher deductible lowers your premium but costs more on each claim. The break even point is how many years of premium savings it takes to cover the extra deductible.</p>
+<p><strong>Formula:</strong> Break even years = (Higher deductible − Lower deductible) ÷ Yearly premium savings</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/deductible-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year"><img src="insurance_files/figure-html/deductible-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year"></a></p>
+<figcaption>Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/deductible-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year"><img src="insurance_files/figure-html/deductible-bar-model-2.png" class="img-fluid figure-img" width="576" alt="Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year"></a></p>
+<figcaption>Savings from a $1,000 deductible vs.&nbsp;a $500 deductible, year by year</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Car insurance costs $1,500 a year with a $500 deductible, or $1,350 with a $1,000 deductible. ($1,000 − $500) ÷ $150 = about 3.3 years. If you file a claim less often than that, the higher deductible comes out ahead.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>break_even_years <span class="ot">&lt;-</span> <span class="cf">function</span>(high_deductible, low_deductible, yearly_savings) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  (high_deductible <span class="sc">-</span> low_deductible) <span class="sc">/</span> yearly_savings</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $1,000 vs. $500 deductible, saving $150 a year</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">break_even_years</span>(<span class="at">high_deductible =</span> <span class="dv">1000</span>, <span class="at">low_deductible =</span> <span class="dv">500</span>, <span class="at">yearly_savings =</span> <span class="dv">150</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3.333333</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co"># other quotes you might see</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>quotes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">high    =</span> <span class="fu">c</span>(<span class="dv">1000</span>, <span class="dv">1000</span>, <span class="dv">1000</span>, <span class="dv">2000</span>, <span class="dv">2000</span>),</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">low     =</span> <span class="fu">c</span>(<span class="dv">500</span>, <span class="dv">500</span>, <span class="dv">500</span>, <span class="dv">500</span>, <span class="dv">1000</span>),</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">savings =</span> <span class="fu">c</span>(<span class="dv">50</span>, <span class="dv">150</span>, <span class="dv">300</span>, <span class="dv">250</span>, <span class="dv">120</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>quotes<span class="sc">$</span>break_even <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">break_even_years</span>(quotes<span class="sc">$</span>high, quotes<span class="sc">$</span>low, quotes<span class="sc">$</span>savings), <span class="dv">1</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>quotes</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 4</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    high   low savings break_even</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1  1000   500      50       10  </span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2  1000   500     150        3.3</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3  1000   500     300        1.7</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4  2000   500     250        6  </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5  2000  1000     120        8.3</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># expected yearly gain from the higher deductible if you file one claim every k years</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>claim_every <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">claim_every_years =</span> claim_every,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">yearly_gain       =</span> <span class="dv">150</span> <span class="sc">-</span> (<span class="dv">1000</span> <span class="sc">-</span> <span class="dv">500</span>) <span class="sc">/</span> claim_every</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 2</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   claim_every_years yearly_gain</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;               &lt;dbl&gt;       &lt;dbl&gt;</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1                 2      -100  </span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2                 3       -16.7</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3                 5        50  </span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4                10       100</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>A break even under one year means the higher deductible pays for itself almost at once. A break even of 10 years means the savings are too small to bother.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> break_even_years(high_deductible, low_deductible, yearly_savings):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (high_deductible <span class="op">-</span> low_deductible) <span class="op">/</span> yearly_savings</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># $1,000 vs. $500 deductible, saving $150 a year</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">round</span>(break_even_years(high_deductible<span class="op">=</span><span class="dv">1000</span>, low_deductible<span class="op">=</span><span class="dv">500</span>, yearly_savings<span class="op">=</span><span class="dv">150</span>), <span class="dv">2</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3.33</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># other quotes you might see</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>quotes <span class="op">=</span> [(<span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">50</span>), (<span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">150</span>), (<span class="dv">1000</span>, <span class="dv">500</span>, <span class="dv">300</span>), (<span class="dv">2000</span>, <span class="dv">500</span>, <span class="dv">250</span>), (<span class="dv">2000</span>, <span class="dv">1000</span>, <span class="dv">120</span>)]</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> high, low, savings <span class="kw">in</span> quotes:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"$</span><span class="sc">{</span>high<span class="sc">:,}</span><span class="ss"> vs $</span><span class="sc">{</span>low<span class="sc">:,}</span><span class="ss">, save $</span><span class="sc">{</span>savings<span class="sc">}</span><span class="ss">/yr: </span><span class="sc">{</span>break_even_years(high, low, savings)<span class="sc">:.1f}</span><span class="ss"> years"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $1,000 vs $500, save $50/yr: 10.0 years</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $1,000 vs $500, save $150/yr: 3.3 years</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $1,000 vs $500, save $300/yr: 1.7 years</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $2,000 vs $500, save $250/yr: 6.0 years</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $2,000 vs $1,000, save $120/yr: 8.3 years</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># expected yearly gain from the higher deductible if you file one claim every k years</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> k <span class="kw">in</span> [<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>]:</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"claim every </span><span class="sc">{</span>k<span class="sc">:&gt;2}</span><span class="ss"> years: </span><span class="sc">{</span><span class="dv">150</span> <span class="op">-</span> (<span class="dv">1000</span> <span class="op">-</span> <span class="dv">500</span>) <span class="op">/</span> k<span class="sc">:+.0f}</span><span class="ss"> per year"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claim every  2 years: -100 per year</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claim every  3 years: -17 per year</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claim every  5 years: +50 per year</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; claim every 10 years: +100 per year</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>Put the higher deductible in <code>B2</code>, the lower deductible in <code>C2</code>, and the yearly savings in <code>D2</code>.</p>
+<p>Break even years in <code>E2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=(</span>B2<span class="op">-</span>C2<span class="op">)/</span>D2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Yearly gain if you file one claim every <code>F2</code> years:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>D2<span class="op">-(</span>B2<span class="op">-</span>C2<span class="op">)/</span>F2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Copy row 2 down to compare several quotes.</p>
+</div>
+</div>
+</div>
+<p>How to read this result: a positive yearly gain means the higher deductible saves money on average. The gain turns negative only if you claim more often than the break even. Either way, pick the higher deductible only if your emergency fund can cover it.</p>
+</section>
+<section id="comparing-two-health-plans" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="comparing-two-health-plans"><span class="header-section-number">3</span> Comparing Two Health Plans</h2>
+<p>A health plan’s real yearly cost is its premiums plus your share of medical bills, minus any money your employer puts in your HSA. Your share can never go above the out of pocket maximum.</p>
+<p><strong>Formula:</strong> Yearly cost = (Monthly premium × 12) + min(Medical bills, Out of pocket max) − Employer HSA money</p>
+<p>This simple version assumes you pay all medical bills up to the out of pocket maximum, so it slightly overstates plans with coinsurance.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/health-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Total yearly cost of two health plans in a healthy year and the worst year"><img src="insurance_files/figure-html/health-bar-model-1.png" class="img-fluid figure-img" width="576" alt="Total yearly cost of two health plans in a healthy year and the worst year"></a></p>
+<figcaption>Total yearly cost of two health plans in a healthy year and the worst year</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/health-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Total yearly cost of two health plans in a healthy year and the worst year"><img src="insurance_files/figure-html/health-bar-model-2.png" class="img-fluid figure-img" width="576" alt="Total yearly cost of two health plans in a healthy year and the worst year"></a></p>
+<figcaption>Total yearly cost of two health plans in a healthy year and the worst year</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Plan A has a $100 monthly premium and a $3,000 out of pocket maximum. Plan B has a $40 monthly premium, a $5,000 out of pocket maximum, and $500 a year from your employer in the HSA. In a healthy year ($300 of care), Plan A costs $1,500 and Plan B costs $280. In the worst year, Plan A costs $4,200 and Plan B costs $4,980.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>plan_cost <span class="ot">&lt;-</span> <span class="cf">function</span>(monthly_premium, medical_cost, oop_max, <span class="at">employer_hsa =</span> <span class="dv">0</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  monthly_premium <span class="sc">*</span> <span class="dv">12</span> <span class="sc">+</span> <span class="fu">pmin</span>(medical_cost, oop_max) <span class="sc">-</span> employer_hsa</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Plan A vs. Plan B in a healthy year ($300 of care) and the worst year</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">year   =</span> <span class="fu">c</span>(<span class="st">"healthy"</span>, <span class="st">"worst"</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">plan_a =</span> <span class="fu">plan_cost</span>(<span class="dv">100</span>, <span class="fu">c</span>(<span class="dv">300</span>, <span class="cn">Inf</span>), <span class="at">oop_max =</span> <span class="dv">3000</span>),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">plan_b =</span> <span class="fu">plan_cost</span>(<span class="dv">40</span>, <span class="fu">c</span>(<span class="dv">300</span>, <span class="cn">Inf</span>), <span class="at">oop_max =</span> <span class="dv">5000</span>, <span class="at">employer_hsa =</span> <span class="dv">500</span>)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 3</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   year    plan_a plan_b</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 healthy   1500    280</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 worst     4200   4980</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co"># a range of medical years</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>bills <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">300</span>, <span class="dv">1500</span>, <span class="dv">3000</span>, <span class="dv">4000</span>, <span class="dv">4220</span>, <span class="dv">4500</span>, <span class="dv">5000</span>, <span class="cn">Inf</span>)</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>tbl <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">medical_bills =</span> bills,</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">plan_a        =</span> <span class="fu">plan_cost</span>(<span class="dv">100</span>, bills, <span class="at">oop_max =</span> <span class="dv">3000</span>),</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">plan_b        =</span> <span class="fu">plan_cost</span>(<span class="dv">40</span>, bills, <span class="at">oop_max =</span> <span class="dv">5000</span>, <span class="at">employer_hsa =</span> <span class="dv">500</span>)</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>tbl<span class="sc">$</span>cheaper <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(tbl<span class="sc">$</span>plan_b <span class="sc">&lt;</span> tbl<span class="sc">$</span>plan_a, <span class="st">"B"</span>,</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">ifelse</span>(tbl<span class="sc">$</span>plan_b <span class="sc">&gt;</span> tbl<span class="sc">$</span>plan_a, <span class="st">"A"</span>, <span class="st">"tie"</span>))</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>tbl</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 9 × 4</span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   medical_bills plan_a plan_b cheaper</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;           &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;  </span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1             0   1200    -20 B      </span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2           300   1500    280 B      </span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3          1500   2700   1480 B      </span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4          3000   4200   2980 B      </span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5          4000   4200   3980 B      </span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6          4220   4200   4200 tie    </span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7          4500   4200   4480 A      </span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 8          5000   4200   4980 A      </span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 9           Inf   4200   4980 A</span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="co"># how many healthy years of Plan B savings cover one worst year?</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>(<span class="dv">4980</span> <span class="sc">-</span> <span class="dv">4200</span>) <span class="sc">/</span> (<span class="dv">1500</span> <span class="sc">-</span> <span class="dv">280</span>)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.6393443</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Plan B is cheaper in every year with less than $4,220 of medical bills. One healthy year of savings ($1,220) more than covers the $780 extra in a worst year.</p>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plan_cost(monthly_premium, medical_cost, oop_max, employer_hsa<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> monthly_premium <span class="op">*</span> <span class="dv">12</span> <span class="op">+</span> <span class="bu">min</span>(medical_cost, oop_max) <span class="op">-</span> employer_hsa</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Plan A vs. Plan B in a healthy year ($300 of care) and the worst year</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pl.DataFrame({</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"year"</span>: [<span class="st">"healthy"</span>, <span class="st">"worst"</span>],</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"plan_a"</span>: [plan_cost(<span class="dv">100</span>, c, oop_max<span class="op">=</span><span class="dv">3000</span>) <span class="cf">for</span> c <span class="kw">in</span> (<span class="dv">300</span>, <span class="bu">float</span>(<span class="st">"inf"</span>))],</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"plan_b"</span>: [plan_cost(<span class="dv">40</span>, c, oop_max<span class="op">=</span><span class="dv">5000</span>, employer_hsa<span class="op">=</span><span class="dv">500</span>) <span class="cf">for</span> c <span class="kw">in</span> (<span class="dv">300</span>, <span class="bu">float</span>(<span class="st">"inf"</span>))],</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; shape: (2, 3)</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ┌─────────┬────────┬────────┐</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ year    ┆ plan_a ┆ plan_b │</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ ---     ┆ ---    ┆ ---    │</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ str     ┆ i64    ┆ i64    │</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ╞═════════╪════════╪════════╡</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ healthy ┆ 1500   ┆ 280    │</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ worst   ┆ 4200   ┆ 4980   │</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; └─────────┴────────┴────────┘</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="co"># a range of medical years</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>bills <span class="op">=</span> [<span class="fl">0.0</span>, <span class="fl">300.0</span>, <span class="fl">1500.0</span>, <span class="fl">3000.0</span>, <span class="fl">4000.0</span>, <span class="fl">4220.0</span>, <span class="fl">4500.0</span>, <span class="fl">5000.0</span>, <span class="bu">float</span>(<span class="st">"inf"</span>)]</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>tbl <span class="op">=</span> pl.DataFrame({</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="st">"medical_bills"</span>: bills,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="st">"plan_a"</span>: [plan_cost(<span class="dv">100</span>, b, oop_max<span class="op">=</span><span class="dv">3000</span>) <span class="cf">for</span> b <span class="kw">in</span> bills],</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="st">"plan_b"</span>: [plan_cost(<span class="dv">40</span>, b, oop_max<span class="op">=</span><span class="dv">5000</span>, employer_hsa<span class="op">=</span><span class="dv">500</span>) <span class="cf">for</span> b <span class="kw">in</span> bills],</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>}).with_columns(</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    pl.when(pl.col(<span class="st">"plan_b"</span>) <span class="op">&lt;</span> pl.col(<span class="st">"plan_a"</span>)).then(pl.lit(<span class="st">"B"</span>))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>      .when(pl.col(<span class="st">"plan_b"</span>) <span class="op">&gt;</span> pl.col(<span class="st">"plan_a"</span>)).then(pl.lit(<span class="st">"A"</span>))</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>      .otherwise(pl.lit(<span class="st">"tie"</span>)).alias(<span class="st">"cheaper"</span>)</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tbl)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; shape: (9, 4)</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ┌───────────────┬────────┬────────┬─────────┐</span></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ medical_bills ┆ plan_a ┆ plan_b ┆ cheaper │</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ ---           ┆ ---    ┆ ---    ┆ ---     │</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ f64           ┆ f64    ┆ f64    ┆ str     │</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ╞═══════════════╪════════╪════════╪═════════╡</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 0.0           ┆ 1200.0 ┆ -20.0  ┆ B       │</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 300.0         ┆ 1500.0 ┆ 280.0  ┆ B       │</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 1500.0        ┆ 2700.0 ┆ 1480.0 ┆ B       │</span></span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 3000.0        ┆ 4200.0 ┆ 2980.0 ┆ B       │</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 4000.0        ┆ 4200.0 ┆ 3980.0 ┆ B       │</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 4220.0        ┆ 4200.0 ┆ 4200.0 ┆ tie     │</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 4500.0        ┆ 4200.0 ┆ 4480.0 ┆ A       │</span></span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 5000.0        ┆ 4200.0 ┆ 4980.0 ┆ A       │</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ inf           ┆ 4200.0 ┆ 4980.0 ┆ A       │</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; └───────────────┴────────┴────────┴─────────┘</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a><span class="co"># how many healthy years of Plan B savings cover one worst year?</span></span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>((<span class="dv">4980</span> <span class="op">-</span> <span class="dv">4200</span>) <span class="op">/</span> (<span class="dv">1500</span> <span class="op">-</span> <span class="dv">280</span>))</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 0.639344262295082</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>Put the monthly premium in <code>B2</code>, medical bills in <code>C2</code>, the out of pocket maximum in <code>D2</code>, and employer HSA money in <code>E2</code>. Put Plan A in row 2 and Plan B in row 3.</p>
+<p>Yearly cost in <code>F2</code> (copy to <code>F3</code>):</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2<span class="op">*</span><span class="dv">12</span><span class="op">+</span>MIN<span class="op">(</span>C2<span class="op">,</span>D2<span class="op">)-</span>E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Cheaper plan for these medical bills:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>IF<span class="op">(</span>F3<span class="op">&lt;</span>F2<span class="op">,</span><span class="st">"Plan B"</span><span class="op">,</span>IF<span class="op">(</span>F3<span class="op">&gt;</span>F2<span class="op">,</span><span class="st">"Plan A"</span><span class="op">,</span><span class="st">"Tie"</span><span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Change <code>C2:C3</code> together to test a healthy year, a bad year, or the worst year (use a large number like 999999).</p>
+</div>
+</div>
+</div>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/health-cost-curve-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Yearly cost of each plan as medical bills grow"><img src="insurance_files/figure-html/health-cost-curve-1.png" class="img-fluid figure-img" width="576" alt="Yearly cost of each plan as medical bills grow"></a></p>
+<figcaption>Yearly cost of each plan as medical bills grow</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="insurance_files/figure-html/health-cost-curve-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Yearly cost of each plan as medical bills grow"><img src="insurance_files/figure-html/health-cost-curve-2.png" class="img-fluid figure-img" width="576" alt="Yearly cost of each plan as medical bills grow"></a></p>
+<figcaption>Yearly cost of each plan as medical bills grow</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>How to read this result: the gap between the lines is what you save (or lose) with Plan B. Below $4,220 of bills, Plan B wins by up to $1,220. Above it, Plan A wins by at most $780. If you put Plan B’s savings into the HSA, one healthy year covers the difference.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -316,7 +839,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -683,6 +1206,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -37,10 +72,17 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-db586ddaf19a050b8b3e8c37e51ac373.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-5e8bd2bf388322d90269705ec9b46115.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-563fd8c6e55da3b9c4e808de38b3f4a4.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-5f969caa128361f9d028ae9c395b14e3.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-90d754ca0e147d9396897222558cc8d2.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +114,169 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-fixed quarto-light">
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -206,6 +410,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
 </div>
       </div> <!-- /container-fluid -->
     </nav>
@@ -214,11 +419,20 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Contents</h2>
+   
+  <ul>
+  <li><a href="#book-topics" id="toc-book-topics" class="nav-link active" data-scroll-target="#book-topics"><span class="header-section-number">1</span> Book Topics</a></li>
+  <li><a href="#good-years-and-bad-years" id="toc-good-years-and-bad-years" class="nav-link" data-scroll-target="#good-years-and-bad-years"><span class="header-section-number">2</span> Good Years and Bad Years</a></li>
+  <li><a href="#how-much-to-move-when-you-rebalance" id="toc-how-much-to-move-when-you-rebalance" class="nav-link" data-scroll-target="#how-much-to-move-when-you-rebalance"><span class="header-section-number">3</span> How Much to Move When You Rebalance</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
+
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -239,12 +453,331 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
+<section id="book-topics" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="book-topics"><span class="header-section-number">1</span> Book Topics</h2>
+<ul>
+<li><strong>Stocks, bonds, and cash</strong>: stocks grow most but can drop 30% to 50%; bonds grow slower and fall less; cash is the emergency fund and sits outside the investment split</li>
+<li><strong>How much in stocks when you’re young</strong>: everyone agrees on mostly stocks; Bogle (roughly your age in bonds, later 80 to 85% stocks), Sethi (80 to 90%), Collins (100% while building), Felix on the Cederburg research (100% stocks, global), Housel (extra cash for peace of mind); 80 to 90% is a reasonable start</li>
+<li><strong>US vs.&nbsp;international</strong>: 60/40 to 80/20 (US/international) is common; the Cederburg research goes to about one third US</li>
+<li><strong>Target date funds</strong>: one fund that sets the split and follows a glide path toward bonds; check the fee and don’t mix it with other funds</li>
+<li><strong>The three fund portfolio</strong>: total US stocks, total international stocks, total US bonds for about 0.05% (for example 60/30/10)</li>
+<li><strong>Rebalancing</strong>: check once a year and act when any part drifts more than about 5 percentage points; send new money to whatever is below target</li>
+</ul>
+</section>
+<section id="good-years-and-bad-years" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="good-years-and-bad-years"><span class="header-section-number">2</span> Good Years and Bad Years</h2>
+<p>A portfolio’s return is a weighted average of what each part earns.</p>
+<p><strong>Formula:</strong> Portfolio return = (Stock % × Stock return) + (Bond % × Bond return)</p>
+<p>Example (stocks +10% average, −40% bad; bonds +4% average, 0% bad): an 80/20 split in a bad year is (0.80 × −40%) + (0.20 × 0%) = −32%, or −$3,200 on $10,000. In an average year it’s (0.80 × 10%) + (0.20 × 4%) = 8.8%, or +$880.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="asset_allocation_files/figure-html/mix-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="$10,000 in an average year and a bad year, by stock/bond split"><img src="asset_allocation_files/figure-html/mix-bar-model-1.png" class="img-fluid figure-img" width="576" alt="$10,000 in an average year and a bad year, by stock/bond split"></a></p>
+<figcaption>$10,000 in an average year and a bad year, by stock/bond split</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="asset_allocation_files/figure-html/mix-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="$10,000 in an average year and a bad year, by stock/bond split"><img src="asset_allocation_files/figure-html/mix-bar-model-2.png" class="img-fluid figure-img" width="576" alt="$10,000 in an average year and a bad year, by stock/bond split"></a></p>
+<figcaption>$10,000 in an average year and a bad year, by stock/bond split</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The second example adds more splits and two columns compared with 100/0: the average year gain you give up and the bad year loss you avoid. The third uses the real 2008 numbers from the book (stocks about −37%, bonds about +5%), where bonds actually went up.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>portfolio_return <span class="ot">&lt;-</span> <span class="cf">function</span>(stock_pct, stock_return, bond_return) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  stock_pct <span class="sc">*</span> stock_return <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> stock_pct) <span class="sc">*</span> bond_return</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 100/0, 80/20, and 60/40 in an average year and a bad year</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>splits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">stocks  =</span> splits,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">average =</span> <span class="fu">portfolio_return</span>(splits, <span class="at">stock_return =</span> <span class="fl">0.10</span>, <span class="at">bond_return =</span> <span class="fl">0.04</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">bad     =</span> <span class="fu">portfolio_return</span>(splits, <span class="at">stock_return =</span> <span class="sc">-</span><span class="fl">0.40</span>, <span class="at">bond_return =</span> <span class="dv">0</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   stocks average   bad</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    1     0.1   -0.4 </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    0.8   0.088 -0.32</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3    0.6   0.076 -0.24</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># more splits, in dollars on $10,000</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>splits <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="dv">0</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>avg <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="sc">*</span> <span class="fu">portfolio_return</span>(splits, <span class="fl">0.10</span>, <span class="fl">0.04</span>)</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>bad <span class="ot">&lt;-</span> <span class="dv">10000</span> <span class="sc">*</span> <span class="fu">portfolio_return</span>(splits, <span class="sc">-</span><span class="fl">0.40</span>, <span class="dv">0</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">split       =</span> <span class="fu">paste0</span>(splits <span class="sc">*</span> <span class="dv">100</span>, <span class="st">"/"</span>, (<span class="dv">1</span> <span class="sc">-</span> splits) <span class="sc">*</span> <span class="dv">100</span>),</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">average     =</span> avg,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">bad         =</span> bad,</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  <span class="at">gain_given_up =</span> <span class="dv">1000</span> <span class="sc">-</span> avg,</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">loss_avoided  =</span> bad <span class="sc">-</span> (<span class="sc">-</span><span class="dv">4000</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 6 × 5</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   split average   bad gain_given_up loss_avoided</span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;         &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 100/0    1000 -4000           0             0 </span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 90/10     940 -3600          60.0         400.</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 80/20     880 -3200         120.          800 </span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 60/40     760 -2400         240          1600 </span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5 40/60     640 -1600         360          2400 </span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 6 0/100     400     0         600          4000</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 2008: stocks about -37%, bonds about +5%</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">portfolio_return</span>(splits, <span class="at">stock_return =</span> <span class="sc">-</span><span class="fl">0.37</span>, <span class="at">bond_return =</span> <span class="fl">0.05</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -0.370 -0.328 -0.286 -0.202 -0.118  0.050</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> portfolio_return(stock_pct, stock_return, bond_return):</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> stock_pct <span class="op">*</span> stock_return <span class="op">+</span> (<span class="dv">1</span> <span class="op">-</span> stock_pct) <span class="op">*</span> bond_return</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 100/0, 80/20, and 60/40 in an average year and a bad year</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pl.DataFrame({<span class="st">"stocks"</span>: [<span class="fl">1.0</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>]}).with_columns(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    average<span class="op">=</span>portfolio_return(pl.col(<span class="st">"stocks"</span>), <span class="fl">0.10</span>, <span class="fl">0.04</span>),</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    bad<span class="op">=</span>portfolio_return(pl.col(<span class="st">"stocks"</span>), <span class="op">-</span><span class="fl">0.40</span>, <span class="fl">0.0</span>),</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; shape: (3, 3)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ┌────────┬─────────┬───────┐</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ stocks ┆ average ┆ bad   │</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ ---    ┆ ---     ┆ ---   │</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ f64    ┆ f64     ┆ f64   │</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; ╞════════╪═════════╪═══════╡</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 1.0    ┆ 0.1     ┆ -0.4  │</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 0.8    ┆ 0.088   ┆ -0.32 │</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; │ 0.6    ┆ 0.076   ┆ -0.24 │</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; └────────┴─────────┴───────┘</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co"># more splits, in dollars on $10,000, plus 2008</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>pl.DataFrame({<span class="st">"stocks"</span>: [<span class="fl">1.0</span>, <span class="fl">0.9</span>, <span class="fl">0.8</span>, <span class="fl">0.6</span>, <span class="fl">0.4</span>, <span class="fl">0.0</span>]}).with_columns(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    average<span class="op">=</span><span class="dv">10000</span> <span class="op">*</span> portfolio_return(pl.col(<span class="st">"stocks"</span>), <span class="fl">0.10</span>, <span class="fl">0.04</span>),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    bad<span class="op">=</span><span class="dv">10000</span> <span class="op">*</span> portfolio_return(pl.col(<span class="st">"stocks"</span>), <span class="op">-</span><span class="fl">0.40</span>, <span class="fl">0.0</span>),</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    y2008<span class="op">=</span><span class="dv">10000</span> <span class="op">*</span> portfolio_return(pl.col(<span class="st">"stocks"</span>), <span class="op">-</span><span class="fl">0.37</span>, <span class="fl">0.05</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (6, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">stocks</th>
+<th data-quarto-table-cell-role="th">average</th>
+<th data-quarto-table-cell-role="th">bad</th>
+<th data-quarto-table-cell-role="th">y2008</th>
+</tr>
+<tr class="even">
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+<td>f64</td>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1.0</td>
+<td>1000.0</td>
+<td>-4000.0</td>
+<td>-3700.0</td>
+</tr>
+<tr class="even">
+<td>0.9</td>
+<td>940.0</td>
+<td>-3600.0</td>
+<td>-3280.0</td>
+</tr>
+<tr class="odd">
+<td>0.8</td>
+<td>880.0</td>
+<td>-3200.0</td>
+<td>-2860.0</td>
+</tr>
+<tr class="even">
+<td>0.6</td>
+<td>760.0</td>
+<td>-2400.0</td>
+<td>-2020.0</td>
+</tr>
+<tr class="odd">
+<td>0.4</td>
+<td>640.0</td>
+<td>-1600.0</td>
+<td>-1180.0</td>
+</tr>
+<tr class="even">
+<td>0.0</td>
+<td>400.0</td>
+<td>0.0</td>
+<td>500.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>With <code>Stock %</code> in <code>B2</code>, <code>Stock return</code> in <code>C2</code>, and <code>Bond return</code> in <code>D2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> C2 <span class="op">+</span> <span class="op">(</span><span class="dv">1</span> <span class="op">-</span> B2<span class="op">)</span> <span class="op">*</span> D2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Put splits down column <code>B</code> and copy the formula down. Multiply by your balance for dollars.</p>
+</div>
+</div>
+</div>
+<p>Read the two columns together. Going from 100/0 to 60/40 gives up $240 in an average year but cuts the bad year loss from $4,000 to $2,400. Each step toward bonds trades a little growth for a softer fall.</p>
+</section>
+<section id="how-much-to-move-when-you-rebalance" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="how-much-to-move-when-you-rebalance"><span class="header-section-number">3</span> How Much to Move When You Rebalance</h2>
+<p>When one part grows or shrinks, move just enough to get back to the target split.</p>
+<p><strong>Formula:</strong> Amount to move = (Target % × Total) − Current amount</p>
+<p>Example: $10,000 at 80/20, then stocks drop 30%. Stocks are $5,600, bonds $2,000, total $7,600 (stocks about 74%). (0.80 × $7,600) − $5,600 = $480 moved from bonds into stocks.</p>
+<div class="cell" data-renderings="[&quot;light&quot;,&quot;dark&quot;]">
+<div class="light-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="asset_allocation_files/figure-html/rebalance-bar-model-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing"><img src="asset_allocation_files/figure-html/rebalance-bar-model-1.png" class="img-fluid figure-img" width="576" alt="An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing"></a></p>
+<figcaption>An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing</figcaption>
+</figure>
+</div>
+</div>
+<div class="dark-content">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="asset_allocation_files/figure-html/rebalance-bar-model-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing"><img src="asset_allocation_files/figure-html/rebalance-bar-model-2.png" class="img-fluid figure-img" width="576" alt="An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing"></a></p>
+<figcaption>An 80/20 portfolio before a 30% stock drop, after it, and after rebalancing</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The second example runs several stock moves, up and down, and applies the book’s 5 percentage point rule to decide whether to act at all. A negative amount means sell stocks and buy bonds. The last example rebalances with new money only, so nothing gets sold.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rebalance_amount <span class="ot">&lt;-</span> <span class="cf">function</span>(target_pct, total, current_amount) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  target_pct <span class="sc">*</span> total <span class="sc">-</span> current_amount</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $5,600 in stocks and $2,000 in bonds after a 30% stock drop</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rebalance_amount</span>(<span class="at">target_pct =</span> <span class="fl">0.80</span>, <span class="at">total =</span> <span class="dv">5600</span> <span class="sc">+</span> <span class="dv">2000</span>, <span class="at">current_amount =</span> <span class="dv">5600</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 480</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># several stock moves on an 80/20, $10,000 portfolio</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>move   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.30</span>, <span class="sc">-</span><span class="fl">0.10</span>, <span class="sc">-</span><span class="fl">0.05</span>, <span class="fl">0.10</span>, <span class="fl">0.30</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>stocks <span class="ot">&lt;-</span> <span class="dv">8000</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> move)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>bonds  <span class="ot">&lt;-</span> <span class="dv">2000</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>total  <span class="ot">&lt;-</span> stocks <span class="sc">+</span> bonds</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">stock_move  =</span> move <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">stock_share =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> stocks <span class="sc">/</span> total, <span class="dv">1</span>),</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">drift_pts   =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> stocks <span class="sc">/</span> total <span class="sc">-</span> <span class="dv">80</span>, <span class="dv">1</span>),</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">rebalance   =</span> <span class="fu">abs</span>(<span class="dv">100</span> <span class="sc">*</span> stocks <span class="sc">/</span> total <span class="sc">-</span> <span class="dv">80</span>) <span class="sc">&gt;</span> <span class="dv">5</span>,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">move_amount =</span> <span class="fu">round</span>(<span class="fu">rebalance_amount</span>(<span class="fl">0.80</span>, total, stocks))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 5</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   stock_move stock_share drift_pts rebalance</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;lgl&gt;    </span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1        -30        73.7      -6.3 TRUE     </span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2        -10        78.3      -1.7 FALSE    </span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3         -5        79.2      -0.8 FALSE    </span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4         10        81.5       1.5 FALSE    </span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5         30        83.9       3.9 FALSE    </span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ℹ 1 more variable: move_amount &lt;dbl&gt;</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co"># rebalance with new money: how much of a new deposit goes to stocks?</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co"># (only works if the deposit is big enough; otherwise put it all in stocks)</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>new_money <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="fu">min</span>(new_money, <span class="fu">rebalance_amount</span>(<span class="fl">0.80</span>, <span class="dv">7600</span> <span class="sc">+</span> new_money, <span class="dv">5600</span>))</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rebalance_amount(target_pct, total, current_amount):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> target_pct <span class="op">*</span> total <span class="op">-</span> current_amount</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># $5,600 in stocks and $2,000 in bonds after a 30% stock drop</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rebalance_amount(target_pct<span class="op">=</span><span class="fl">0.80</span>, total<span class="op">=</span><span class="dv">5600</span> <span class="op">+</span> <span class="dv">2000</span>, current_amount<span class="op">=</span><span class="dv">5600</span>))</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 480.0</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># several stock moves on an 80/20, $10,000 portfolio</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> move <span class="kw">in</span> [<span class="op">-</span><span class="fl">0.30</span>, <span class="op">-</span><span class="fl">0.10</span>, <span class="op">-</span><span class="fl">0.05</span>, <span class="fl">0.10</span>, <span class="fl">0.30</span>]:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    stocks <span class="op">=</span> <span class="dv">8000</span> <span class="op">*</span> (<span class="dv">1</span> <span class="op">+</span> move)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    total <span class="op">=</span> stocks <span class="op">+</span> <span class="dv">2000</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    drift <span class="op">=</span> <span class="dv">100</span> <span class="op">*</span> stocks <span class="op">/</span> total <span class="op">-</span> <span class="dv">80</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    amt <span class="op">=</span> rebalance_amount(<span class="fl">0.80</span>, total, stocks)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"stocks </span><span class="sc">{</span>move<span class="sc">:+.0%}</span><span class="ss">: share </span><span class="sc">{</span>stocks <span class="op">/</span> total<span class="sc">:.1%}</span><span class="ss">, drift </span><span class="sc">{</span>drift<span class="sc">:+.1f}</span><span class="ss"> pts, "</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"rebalance </span><span class="sc">{</span><span class="bu">abs</span>(drift) <span class="op">&gt;</span> <span class="dv">5</span><span class="sc">}</span><span class="ss">, move $</span><span class="sc">{</span>amt<span class="sc">:,.0f}</span><span class="ss">"</span>)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stocks -30%: share 73.7%, drift -6.3 pts, rebalance True, move $480</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stocks -10%: share 78.3%, drift -1.7 pts, rebalance False, move $160</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stocks -5%: share 79.2%, drift -0.8 pts, rebalance False, move $80</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stocks +10%: share 81.5%, drift +1.5 pts, rebalance False, move $-160</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; stocks +30%: share 83.9%, drift +3.9 pts, rebalance False, move $-480</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="co"># rebalance with new money</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>new_money <span class="op">=</span> <span class="dv">1000</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">min</span>(new_money, rebalance_amount(<span class="fl">0.80</span>, <span class="dv">7600</span> <span class="op">+</span> new_money, <span class="dv">5600</span>)))</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>With <code>Target %</code> in <code>B2</code>, <code>Stocks</code> in <code>C2</code>, and <code>Bonds</code> in <code>D2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span>C2 <span class="op">+</span> D2<span class="op">)</span> <span class="op">-</span> C2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To flag whether the drift is more than 5 points:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>ABS<span class="op">(</span>C2<span class="op">/(</span>C2<span class="op">+</span>D2<span class="op">)</span> <span class="op">-</span> B2<span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0.05</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</div>
+<p>Read a positive answer as “buy that much stock,” and a negative answer as “sell that much stock.” A 10% drop only moves the split about 2 points, so the 5 point rule says wait. With $1,000 of new money after the 30% drop, the full $1,000 goes to stocks and the gap closes from $480 to under $300 without selling anything.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -316,7 +849,7 @@ ul.task-list li input[type="checkbox"] {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/mjfrigaard\.github\.io\/dev-fm-finance\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -683,6 +1216,38 @@ ul.task-list li input[type="checkbox"] {
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 

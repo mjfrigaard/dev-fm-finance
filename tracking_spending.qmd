@@ -25,11 +25,13 @@ def fmt_pct(x, digits=1):
 
 ## Book Topics
 
+- **Tracking vs. budgeting**: tracking records where money actually went; budgeting allocates where it should go; comparing the two creates a feedback loop
 - **Capture methods**: spending journal, checkbook register, cash envelopes, bank statements; pick one and run it for a full month
-- **Bank statement exports**: `Date`, `Description`, `Amount` columns; you add the `Category`
-- **Categorization**: 6–10 stable buckets; use "Other" when in doubt; only promote a new category after seeing it 3 months running
-- **Monthly review**: pull statements → categorize → compare to budget → pick *one* change; repeat 12× per year
-- **Subscriptions**: average household spends $200–$300/month without realizing it; audit every 90 days
+- **Categorizing**: start with about 10 stable buckets (housing, transportation, groceries, dining out, subscriptions, personal, health, gifts, fun money, other); when in doubt use "Other", and only promote a new category after seeing it three months in a row
+- **Using spreadsheets**: bank exports have `Date`, `Description`, and `Amount` columns; a keyword lookup adds the `Category` column in one pass
+- **Monthly review**: pull, categorize, compare to budget, and pick *one* change for next month
+- **Online subscriptions**: Americans spend about $219/month on subscriptions and underestimate it by $133; audit every quarter and cancel anything unused in 30 days
+- **Math**: the subscription audit, the opportunity cost of a $20/month subscription invested at 7% for 30 years (about $22,700)
 
 ## Bank Statement Data
 
@@ -106,8 +108,6 @@ py_bank_statement
 We can simply copy and paste the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 
 ![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
-
-
 
 :::
 
@@ -220,99 +220,328 @@ In Excel, we can also use the *Format as Table* feature to make the data easier 
 
 :::
 
-## Subscription Opportunity Cost
+## Answering Tracking Questions
 
-A small recurring subscription has a large long-run cost when you account for what the money could have earned.
-
-**Formula:** Monthly Cost × 12 × ((1 + r)\^n − 1) ÷ r
-
-```{r}
-#| label: subscription-bar-model
-#| echo: false
-#| fig-cap: "Future value of a $20/month subscription's annual cost if invested at 7%"
-#| fig-asp: 0.50
-library(ggplot2)
-years <- c(0, 5, 10, 20, 30)
-values <- c(240, 240 * ((1.07^5  - 1) / 0.07), 240 * ((1.07^10 - 1) / 0.07),
-            240 * ((1.07^20 - 1) / 0.07), 240 * ((1.07^30 - 1) / 0.07))
-df_sub <- data.frame(
-  year  = factor(paste0("Year ", years), levels = paste0("Year ", years)),
-  value = values,
-  fill  = c(rep("#0e9aa7", 4), "#f44242")
-)
-ggplot(df_sub, aes(x = year, y = value, fill = fill)) +
-  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
-  geom_text(aes(label = paste0("$", formatC(round(value), format = "d", big.mark = ","))),
-            vjust = -0.4, fontface = "bold", size = 3.5, colour = "#1C1C1E") +
-  scale_fill_identity() +
-  scale_y_continuous(labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ",")),
-                     expand = expansion(mult = c(0, 0.12))) +
-  labs(x = "Checkpoint", y = "Accumulated value (7% annual return)") +
-  theme_minimal(base_size = 12) +
-  theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
-```
+Once every row has a category, the book's three tracking questions take one short pipeline each: what did subscriptions cost, what share of income went to fixed costs, and which variable category was biggest?
 
 ::: panel-tabset
 
 ## R
 
-Note the rate is given as a decimal and the order of operations. 
+Totals by category, spending only (negative amounts), largest first:
+
+```{r}
+#| label: category-totals-r
+income <- sum(r_bank_statement$Amount[r_bank_statement$Amount > 0])
+
+category_totals <- r_bank_statement |>
+  dplyr::filter(Amount < 0) |>
+  dplyr::group_by(Category) |>
+  dplyr::summarise(Total = -sum(Amount), .groups = "drop") |>
+  dplyr::arrange(dplyr::desc(Total)) |>
+  dplyr::mutate(Share = fmt_pct(Total / income))
+
+category_totals |> knitr::kable()
+```
+
+Total spent on subscriptions:
+
+```{r}
+#| label: subscription-total-r
+category_totals$Total[category_totals$Category == "Subscriptions"] |> fmt_dollar()
+```
+
+Share of income going to fixed costs (housing, utilities, and insurance):
+
+```{r}
+#| label: fixed-share-r
+fixed <- c("Housing", "Utilities", "Insurance")
+fixed_total <- sum(category_totals$Total[category_totals$Category %in% fixed])
+fmt_dollar(fixed_total)
+fmt_pct(fixed_total / income)
+```
+
+The biggest variable category:
+
+```{r}
+#| label: biggest-variable-r
+category_totals |>
+  dplyr::filter(Category %nin% c(fixed, "Subscriptions")) |>
+  dplyr::slice_max(Total, n = 1)
+```
+
+How to read this result: this statement covers only half a month and one \$2,400 paycheck, but the full month's rent. That is why fixed costs look like 80% of income. Always compare a full month of spending against a full month of income before drawing conclusions.
+
+## Python
+
+The same three answers with `polars`:
+
+```{python}
+#| label: category-totals-py
+income = py_bank_statement.filter(pl.col("Amount") > 0)["Amount"].sum()
+
+category_totals = (
+    py_bank_statement
+    .filter(pl.col("Amount") < 0)
+    .group_by("Category")
+    .agg((-pl.col("Amount").sum()).alias("Total"))
+    .sort("Total", descending=True)
+    .with_columns((pl.col("Total") / income).alias("Share"))
+)
+
+category_totals
+```
+
+Total spent on subscriptions:
+
+```{python}
+#| label: subscription-total-py
+subs = category_totals.filter(pl.col("Category") == "Subscriptions")["Total"][0]
+fmt_dollar(subs)
+```
+
+Share of income going to fixed costs:
+
+```{python}
+#| label: fixed-share-py
+fixed = ["Housing", "Utilities", "Insurance"]
+fixed_total = category_totals.filter(pl.col("Category").is_in(fixed))["Total"].sum()
+print(fmt_dollar(fixed_total), fmt_pct(fixed_total / income))
+```
+
+The biggest variable category:
+
+```{python}
+#| label: biggest-variable-py
+(
+    category_totals
+    .filter(~pl.col("Category").is_in(fixed + ["Subscriptions"]))
+    .head(1)
+)
+```
+
+## Excel
+
+With `Date` in `A`, `Description` in `B`, `Amount` in `C`, and `Category` in `D`, the [`SUMIF()` function](https://support.microsoft.com/en-us/excel/sumif-function) adds up one category. Total spent on subscriptions:
+
+```swift
+=-SUMIF(D:D, "Subscriptions", C:C)
+```
+
+The minus sign turns the negative spending total into a positive number. Fixed costs as a share of income (format the cell as a percentage):
+
+```swift
+=-(SUMIF(D:D,"Housing",C:C)+SUMIF(D:D,"Utilities",C:C)+SUMIF(D:D,"Insurance",C:C))/SUMIF(C:C,">0")
+```
+
+For every category at once, select the data and use **Insert → PivotTable**, with `Category` in Rows and `Amount` in Values.
+
+:::
+
+## The Subscription Audit Math
+
+A \$20/month subscription feels trivial. Cancel it and invest the \$240 a year instead, and the chart below shows what that money grows into at each checkpoint, split into the money you put in and the growth it earned.
+
+**Formula:** Annual cost × ((1 + r)\^n − 1) ÷ r = Opportunity cost in *n* years
+
+With the book's 7% real return (the return after inflation), *r* = 0.07.
+
+```{r}
+#| label: subscription-bar-model
+#| echo: false
+#| fig-cap: "$240 a year invested at 7% instead of a $20/month subscription"
+#| fig-asp: 0.50
+library(ggplot2)
+years  <- c(1, 5, 10, 20, 30)
+values <- 240 * ((1.07^years - 1) / 0.07)
+put_in <- 240 * years
+df_sub <- data.frame(
+  year   = factor(rep(paste0("Year ", years), 2), levels = paste0("Year ", years)),
+  layer  = factor(rep(c("Growth", "Money put in"), each = length(years)),
+                  levels = c("Growth", "Money put in")),
+  amount = c(values - put_in, put_in)
+)
+ggplot(df_sub, aes(x = year, y = amount, fill = layer)) +
+  geom_col(width = 0.6, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(
+    data = data.frame(year = factor(paste0("Year ", years), levels = paste0("Year ", years)),
+                      total = values),
+    aes(x = year, y = total, label = paste0("$", formatC(round(total), format = "d", big.mark = ","))),
+    inherit.aes = FALSE, vjust = -0.4, fontface = "bold", size = 3.5, colour = "#1C1C1E"
+  ) +
+  scale_fill_manual(values = c("Money put in" = "#0e9aa7", "Growth" = "#f44242")) +
+  scale_y_continuous(
+    labels = function(x) paste0("$", formatC(x, format = "d", big.mark = ",")),
+    expand = expansion(mult = c(0, 0.12))
+  ) +
+  labs(x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 12) +
+  theme(
+    legend.position    = "top",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor   = element_blank()
+  )
+```
+
+Each bar adds another year's \$240 to everything saved so far, and the whole pile grows by 7%. After 30 years you put in \$7,200, and growth added about \$15,500.
+
+::: panel-tabset
+
+## R
+
 ```{r}
 #| label: subscription-opp-cost-r
 subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
   annual_cost <- monthly_cost * 12
-  op_cost <- (annual_cost * ((1 + rate)^years - 1) / rate)
-  fmt_dollar(op_cost)
+  annual_cost * ((1 + rate)^years - 1) / rate
 }
 ```
 
+A \$20/month subscription for 30 years at 7%:
+
 ```{r}
 #| label: subscription-opp-cost-r-apply
-subscription_opportunity_cost(monthly_cost = 20, years = 30)
+subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
+```
+
+Sanity check: money put in vs. growth.
+
+```{r}
+#| label: subscription-opp-cost-r-check
+oc <- subscription_opportunity_cost(20, 30)
+put_in <- 20 * 12 * 30
+c(put_in = put_in, growth = round(oc - put_in))
+```
+
+Now audit the four subscriptions in the bank statement above. The function is vectorized, so one call prices them all:
+
+```{r}
+#| label: subscription-audit-r
+subs <- r_bank_statement |>
+  dplyr::filter(Category == "Subscriptions") |>
+  dplyr::transmute(Description, monthly = -Amount)
+
+subs$after_10 <- round(subscription_opportunity_cost(subs$monthly, 10))
+subs$after_30 <- round(subscription_opportunity_cost(subs$monthly, 30))
+subs |> knitr::kable()
+fmt_dollar(sum(subs$after_30))
+```
+
+How to read this result: the \$83.97 a month in this statement is a \$95,000 decision over 30 years. The gym membership alone is nearly half of it.
+
+The book's survey figure of \$219/month uses monthly deposits. The audit formula above uses yearly deposits, which comes out a little lower:
+
+```{r}
+#| label: subscription-survey-r
+# yearly deposits (the audit formula)
+subscription_opportunity_cost(219, 30) |> fmt_dollar()
+# monthly deposits (the book's ~$267,000)
+(219 * ((1 + 0.07 / 12)^(30 * 12) - 1) / (0.07 / 12)) |> fmt_dollar()
+```
+
+Edge case: a rate of 0 divides by zero and returns `NaN`. With no growth, the opportunity cost is just the money you would have spent.
+
+```{r}
+#| label: subscription-opp-cost-r-edge
+subscription_opportunity_cost(20, 30, rate = 0)
+20 * 12 * 30
 ```
 
 ## Python
-
-Note the exponential is indicated with `**` (not `^`). In Python, we store intermediate values explicitly before formatting; this makes the calculation steps transparent and easier to debug.
 
 ```{python}
 #| label: subscription-opp-cost-py
 def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
     annual_cost = monthly_cost * 12
-    op_cost = annual_cost * ((1 + rate) ** years - 1) / rate
-    return fmt_dollar(op_cost) # format the result as a dollar amount
+    return annual_cost * ((1 + rate) ** years - 1) / rate
 ```
+
+A \$20/month subscription for 30 years at 7%:
 
 ```{python}
 #| label: subscription-opp-cost-py-apply
-subscription_opportunity_cost(monthly_cost=20, years=30)
+fmt_dollar(subscription_opportunity_cost(monthly_cost=20, years=30))
+```
+
+Sanity check: money put in vs. growth.
+
+```{python}
+#| label: subscription-opp-cost-py-check
+oc = subscription_opportunity_cost(20, 30)
+put_in = 20 * 12 * 30
+print(fmt_dollar(put_in, 0), fmt_dollar(oc - put_in, 0))
+```
+
+Audit the four subscriptions in the bank statement. `polars` expressions are vectorized, so the formula runs on every row:
+
+```{python}
+#| label: subscription-audit-py
+subs = (
+    py_bank_statement
+    .filter(pl.col("Category") == "Subscriptions")
+    .select("Description", (-pl.col("Amount")).alias("monthly"))
+    .with_columns(
+        subscription_opportunity_cost(pl.col("monthly"), 10).round(0).alias("after_10"),
+        subscription_opportunity_cost(pl.col("monthly"), 30).round(0).alias("after_30"),
+    )
+)
+subs
+```
+
+```{python}
+#| label: subscription-audit-py-total
+fmt_dollar(subs["after_30"].sum())
+```
+
+The survey's \$219/month with yearly deposits vs. monthly deposits:
+
+```{python}
+#| label: subscription-survey-py
+monthly_rate = 0.07 / 12
+print(fmt_dollar(subscription_opportunity_cost(219, 30)))
+print(fmt_dollar(219 * ((1 + monthly_rate) ** 360 - 1) / monthly_rate))
+```
+
+Edge case: a rate of 0 raises a `ZeroDivisionError` in Python, so fall back to the money you would have spent:
+
+```{python}
+#| label: subscription-opp-cost-py-edge
+try:
+    subscription_opportunity_cost(20, 30, rate=0)
+except ZeroDivisionError:
+    print("No growth:", fmt_dollar(20 * 12 * 30))
 ```
 
 ## Excel
 
-In Excel, create a new sheet with the inputs: 
+In Excel, create a new sheet with the inputs:
 
 | Monthly cost | Number of Years | Annual Return (as decimal) | Opportunity Cost |
 | ------------ | --------------- | -------------------------- | ---------------- |
 | $20          | 30              | 0.07                       | *Formula below*  |
 
-The formula (given this setup) is below:
+The formula (given this setup) in `D2`:
 
 ```swift
 =(A2*12)*((1+C2)^B2-1)/C2
 ```
 
-`A2*12` converts the monthly cost to annual; the rest is the future-value-of-an-annuity formula using the rate in `C2` and the horizon in `B2`. The formula (given this setup) is below:
+`A2*12` converts the monthly cost to annual; the rest is the future value formula for regular deposits, using the rate in `C2` and the time horizon in `B2`.
 
 ![Opportunity Cost in Excel](img/tracking_spending-opportunity_cost.png){width='100%' fig-align='center'}
 
-Note that if we had the data arranged differently, we'd have to adjust the formula accordingly: 
+`FV()` gives the same answer, \$22,670.59:
+
+```swift
+=FV(C2, B2, -A2*12)
+```
+
+To audit several subscriptions, list each monthly cost in `A2:A5` (15.99, 10.99, 17.00, 39.99), keep the years and rate in `B` and `C`, fill `D2` down, and total them with `=SUM(D2:D5)`.
+
+If the data is arranged differently, adjust the cell references accordingly:
 
 ![Opportunity Cost 2 in Excel](img/tracking_spending-opportunity_cost2.png){width='100%' fig-align='center'}
 
-Both will work, and for straightforward formulas like this, you can pick whichever one you prefer. Later, we'll discuss how to arrange data in excel so it can be easily analyzed. 
-
 ![Opportunity Cost Layouts in Excel](img/tracking_spending-opportunity_cost_layouts.png){width='100%' fig-align='center'}
-
 
 :::

@@ -15,19 +15,20 @@ source("_common.R")
 #| include: false
 ```
 
+
 ## Book Topics
 
-- **Renting vs. buying**: "renting is throwing money away" is a myth; unrecoverable costs of owning run ~5% of home value per year (Felix's 5% Rule)
-- **5% Rule components**: property tax (~1%) + maintenance (~1%) + cost of capital (~3%) = ~5%/year; divide by 12 to get monthly equivalent
-- **When to buy**: plan to stay 7+ years; stable income; won't be "house poor" (housing <28–30% of gross income)
-- **Mortgage amortization**: early payments are mostly interest (~75–80% in year 1 on a 30-year loan); moving every 5 years means you've barely touched principal
-- **Cars**: depreciating assets; 20/4/10 rule (20% down, ≤4-year term, ≤10% gross income on transportation); buy used 2–4 years old
+- **Renting vs. buying**: "renting is throwing money away" is a myth; you pay for shelter either way, and Ben Felix's research shows renting and investing the difference often matches or beats owning
+- **True cost of owning**: mortgage interest, property tax (1% to 2%), maintenance (about 1%), insurance, closing costs (3% to 5%), and the opportunity cost of the down payment
+- **Felix's 5% rule**: unrecoverable costs run about 5% of home value per year (property tax ~1% + maintenance ~1% + cost of capital ~3%); divide by 12 and compare to rent
+- **When to buy or rent**: buy if you'll stay 7+ years, have stable income and an emergency fund, and keep housing under 28% to 30% of gross income; rent if you may move within 5 to 7 years or need flexibility; a decision flowchart ties it together
+- **Front loaded interest**: on a 30 year mortgage at 6%, more than 80% of the first year's payments go to interest, so moving every 5 years means barely touching principal
 
-## Rent vs. Buy Threshold (Felix's 5% Rule)
+## The Rent-vs-Buy 5% Rule
 
-Multiply home value by 5%, divide by 12. If you can rent an equivalent home for less, renting and investing the difference is likely the better financial choice.
+The 5% rule adds up three costs every owner pays and never gets back. Divide by 12 and you have a monthly rent to compare against.
 
-**Formula:** Monthly ownership cost ≈ (Home Value × 0.05) ÷ 12
+**Formula:** Monthly cost of owning ≈ (Home Value × 0.05) ÷ 12
 
 ```{r}
 #| label: rent-buy-bar-model
@@ -35,25 +36,21 @@ Multiply home value by 5%, divide by 12. If you can rent an equivalent home for 
 #| fig-cap: "The three components of the 5% rule on a $500,000 home"
 #| fig-asp: 0.50
 library(ggplot2)
+lvls <- c("Cost of Capital (~3%)\n~$15,000/yr", "Maintenance (~1%)\n~$5,000/yr",
+          "Property Tax (~1%)\n~$5,000/yr")
 df_5pct <- data.frame(
-  component = factor(
-    c("Property Tax (~1%)\n~$5,000/yr", "Maintenance (~1%)\n~$5,000/yr",
-      "Cost of Capital (~3%)\n~$15,000/yr"),
-    levels = c("Cost of Capital (~3%)\n~$15,000/yr",
-               "Maintenance (~1%)\n~$5,000/yr",
-               "Property Tax (~1%)\n~$5,000/yr")
-  ),
-  amount = c(5000, 5000, 15000)
+  component = factor(rev(lvls), levels = lvls),
+  label     = c("Property Tax\n(~1%)\n~$5,000/yr", "Maintenance\n(~1%)\n~$5,000/yr",
+                "Cost of Capital (~3%)\n~$15,000/yr"),
+  amount    = c(5000, 5000, 15000)
 )
 ggplot(df_5pct, aes(x = "", y = amount, fill = component)) +
-  geom_col(width = 0.5) +
-  geom_text(aes(label = component), position = position_stack(vjust = 0.5),
-            colour = "#F5F2E8", fontface = "bold", size = 3.5) +
+  geom_col(width = 0.5, colour = "#1C1C1E", linewidth = 0.4) +
+  geom_text(aes(label = label), position = position_stack(vjust = 0.5),
+            colour = "#1C1C1E", fontface = "bold", size = 3.5) +
   coord_flip() +
-  scale_fill_manual(values = c("Property Tax (~1%)\n~$5,000/yr" = "#f44242",
-                               "Maintenance (~1%)\n~$5,000/yr"  = "#0e9aa7",
-                               "Cost of Capital (~3%)\n~$15,000/yr" = "#8b1a1a")) +
-  scale_y_continuous(breaks = c(0, 5000, 10000, 15000, 20000, 25000),
+  scale_fill_manual(values = setNames(c("#f44242", "#0e9aa7", "#86ddcd"), lvls)) +
+  scale_y_continuous(breaks = seq(0, 25000, 5000),
                      labels = function(x) paste0("$", format(x, big.mark = ","))) +
   labs(x = NULL, y = "Annual unrecoverable cost (Total = $25,000/yr = $2,083/mo)") +
   theme_minimal(base_size = 12) +
@@ -61,8 +58,12 @@ ggplot(df_5pct, aes(x = "", y = amount, fill = component)) +
         axis.ticks.y = element_blank(), panel.grid.minor = element_blank())
 ```
 
+Example: a $500,000 home → (500,000 × 0.05) ÷ 12 = $2,083 a month. Rent below that, and renting and investing the difference tends to win.
+
 ::: panel-tabset
 ## R
+
+`rent_buy_threshold()` turns the 5% rule into a monthly rent figure.
 
 ```{r}
 #| label: rent-buy-r
@@ -70,60 +71,134 @@ rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
   (home_value * unrecoverable_rate) / 12
 }
 
-rent_buy_threshold(home_value = 600000)
+# $500,000 home at the standard 5% unrecoverable rate
+rent_buy_threshold(home_value = 500000)
+```
+
+The 5% is a sum of parts. Splitting it shows which part drives the total.
+
+```{r}
+#| label: rent-buy-r-parts
+yearly <- 500000 * c(property_tax = 0.01, maintenance = 0.01, cost_of_capital = 0.03)
+c(yearly, total = sum(yearly), monthly = sum(yearly) / 12)
+```
+
+Compare several homes to a $2,000 rent. The function works on a whole vector of prices at once.
+
+```{r}
+#| label: rent-buy-r-compare
+homes <- data.frame(home_value = c(300000L, 400000L, 500000L, 600000L))
+homes$threshold <- round(rent_buy_threshold(homes$home_value))
+homes$rent      <- 2000
+homes$verdict   <- ifelse(homes$rent < homes$threshold, "rent and invest", "buying competes")
+homes
+```
+
+Edge case: the 3% cost of capital depends on interest rates and expected returns. In a low rate era a 4% total is closer; with high rates, 6% may fit better.
+
+```{r}
+#| label: rent-buy-r-rates
+round(sapply(c(0.04, 0.05, 0.06), rent_buy_threshold, home_value = 500000))
 ```
 
 ## Python
+
+`rent_buy_threshold()` turns the 5% rule into a monthly rent figure.
 
 ```{python}
 #| label: rent-buy-py
 def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
     return (home_value * unrecoverable_rate) / 12
 
-rent_buy_threshold(home_value=600000)
+# $500,000 home at the standard 5% unrecoverable rate
+print(rent_buy_threshold(home_value=500000))
+```
+
+The 5% split into its parts:
+
+```{python}
+#| label: rent-buy-py-parts
+parts = {"property_tax": 0.01, "maintenance": 0.01, "cost_of_capital": 0.03}
+yearly = {k: 500000 * v for k, v in parts.items()}
+print(yearly, "total:", sum(yearly.values()), "monthly:", round(sum(yearly.values()) / 12, 2))
+```
+
+Compare several homes to a $2,000 rent:
+
+```{python}
+#| label: rent-buy-py-compare
+rent = 2000
+for home in [300000, 400000, 500000, 600000]:
+    t = rent_buy_threshold(home)
+    verdict = "rent and invest" if rent < t else "buying competes"
+    print(f"${home:>9,}  threshold ${t:>7,.0f}  {verdict}")
+```
+
+Edge case: try other unrecoverable rates.
+
+```{python}
+#| label: rent-buy-py-rates
+print([round(rent_buy_threshold(500000, rate)) for rate in [0.04, 0.05, 0.06]])
 ```
 
 ## Excel
 
-With home value in `A2`:
+Assuming the home value is in `A2` and the unrecoverable rate (`0.05`) is in `B2`, the threshold goes in `C2`:
 
 ```swift
-=(A2*0.05)/12
+=(A2*B2)/12
+```
+
+With a comparable rent in `D2`, the verdict goes in `E2`:
+
+```swift
+=IF(D2 < C2, "rent and invest", "buying competes")
 ```
 :::
 
-## Monthly Mortgage Payment
+How to read this result: the threshold is the rent at which renting and owning cost about the same. It's a quick filter, not a final answer; your plans to stay and your local rents still matter.
 
-The standard amortization formula; shorter terms mean higher payments but much less total interest.
+## The Monthly Mortgage Payment
 
-**Formula:** M = P × \[r(1 + r)\^n\] ÷ \[(1 + r)\^n − 1\]
+The standard amortization formula spreads the loan plus all future interest into equal monthly payments. Shorter terms mean higher payments but far less total interest.
+
+**Formula:** M = P × \[r(1 + r)\^n\] ÷ \[(1 + r)\^n − 1\], where P = loan principal, r = annual rate ÷ 12, n = years × 12
 
 ```{r}
 #| label: mortgage-payment-bar-model
 #| echo: false
-#| fig-cap: "Monthly payment on a $400,000 loan at 6.5% across three terms"
+#| fig-cap: "Monthly payment on a $480,000 loan at 6% across three terms"
 #| fig-asp: 0.50
 library(ggplot2)
-P <- 400000; r <- 0.065 / 12; terms <- c(15, 20, 30); n_vals <- terms * 12
+P <- 480000
+r <- 0.06 / 12
+terms <- c(15, 20, 30)
+n_vals <- terms * 12
 payments <- round(P * (r * (1 + r)^n_vals) / ((1 + r)^n_vals - 1))
-df_mort <- data.frame(term = factor(paste0(terms, "-Year"), levels = paste0(terms, "-Year")),
-                      payment = payments)
+df_mort <- data.frame(
+  term    = factor(paste0(terms, "-Year"), levels = paste0(terms, "-Year")),
+  payment = payments
+)
 ggplot(df_mort, aes(x = term, y = payment, fill = term)) +
   geom_col(width = 0.55) +
   geom_text(aes(label = paste0("$", format(payment, big.mark = ","))),
-            vjust = -0.4, fontface = "bold", size = 4) +
+            vjust = -0.4, fontface = "bold", size = 4, colour = "#1C1C1E") +
   scale_fill_manual(values = c("15-Year" = "#f44242", "20-Year" = "#0e9aa7",
                                "30-Year" = "#48a56a")) +
   scale_y_continuous(limits = c(0, max(payments) * 1.18),
                      labels = function(x) paste0("$", format(x, big.mark = ","))) +
-  labs(x = NULL, y = "Monthly payment ($400,000 loan at 6.5%)") +
+  labs(x = NULL, y = "Monthly payment ($480,000 loan at 6%)") +
   theme_minimal(base_size = 12) +
   theme(legend.position = "none", panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank())
 ```
 
+Example: a $480,000 loan (a $600,000 home with 20% down) at 6% for 30 years → about $2,878 a month.
+
 ::: panel-tabset
 ## R
+
+`mortgage_payment()` implements the amortization formula.
 
 ```{r}
 #| label: mortgage-payment-r
@@ -137,7 +212,34 @@ mortgage_payment <- function(principal, annual_rate, years) {
 mortgage_payment(principal = 480000, annual_rate = 0.06, years = 30)
 ```
 
+The bar chart shows the payment; the total interest is the bigger story. A 15 year loan costs about $1,170 more a month but saves over $300,000 in interest.
+
+```{r}
+#| label: mortgage-payment-r-terms
+terms <- data.frame(years = c(15, 20, 30))
+terms$payment        <- round(mortgage_payment(480000, 0.06, terms$years))
+terms$total_interest <- round(mortgage_payment(480000, 0.06, terms$years) * terms$years * 12 - 480000)
+terms
+```
+
+Rates matter too. Each point on a 30 year loan moves the payment by roughly $300 a month.
+
+```{r}
+#| label: mortgage-payment-r-rates
+round(sapply(c(0.05, 0.06, 0.07), mortgage_payment, principal = 480000, years = 30))
+```
+
+Edge case: at a 0% rate the formula divides zero by zero, so R returns `NaN`. The payment is then just principal ÷ months.
+
+```{r}
+#| label: mortgage-payment-r-edge
+mortgage_payment(480000, 0, 30)
+480000 / 360
+```
+
 ## Python
+
+`mortgage_payment()` implements the amortization formula.
 
 ```{python}
 #| label: mortgage-payment-py
@@ -146,105 +248,252 @@ def mortgage_payment(principal, annual_rate, years):
     n = years * 12
     return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
 
-mortgage_payment(principal=480000, annual_rate=0.06, years=30)
+# $480,000 loan at 6% over 30 years
+print(mortgage_payment(principal=480000, annual_rate=0.06, years=30))
+```
+
+Payment and total interest by term:
+
+```{python}
+#| label: mortgage-payment-py-terms
+for years in [15, 20, 30]:
+    pmt = mortgage_payment(480000, 0.06, years)
+    print(f"{years} yrs  payment ${pmt:,.0f}  total interest ${pmt * years * 12 - 480000:,.0f}")
+```
+
+Payments at three rates on a 30 year loan:
+
+```{python}
+#| label: mortgage-payment-py-rates
+print([round(mortgage_payment(480000, rate, 30)) for rate in [0.05, 0.06, 0.07]])
+```
+
+Edge case: at a 0% rate the formula divides by zero (Python raises `ZeroDivisionError`), so the payment is just principal ÷ months.
+
+```{python}
+#| label: mortgage-payment-py-edge
+print(480000 / 360)
 ```
 
 ## Excel
 
-Use the built-in `PMT()` function: `PMT(rate, nper, pv)`
-
-- `rate`: monthly = `6%/12`
-- `nper`: months = `30*12`
-- `pv`: loan amount as negative = `-480000`
+Assuming the loan amount is in `A2`, the annual rate is in `B2` (as a decimal), and the years are in `C2`, the payment goes in `D2`:
 
 ```swift
-=PMT(6%/12, 30*12, -480000)
+=A2*((B2/12)*(1+B2/12)^(C2*12))/((1+B2/12)^(C2*12)-1)
+```
+
+Excel's built in `PMT()` does the same job (flip the sign, since Excel treats the payment as money going out):
+
+```swift
+=-PMT(B2/12, C2*12, A2)
+```
+
+Total interest goes in `E2`:
+
+```swift
+=D2*C2*12-A2
 ```
 :::
 
-## First-Month Interest vs. Principal Split
+How to read this result: the monthly payment is only part of the cost. Before choosing a term, check that the payment plus property tax and insurance stays under 28% to 30% of gross income.
 
-Early mortgage payments are mostly interest; only the remainder reduces the balance.
+## Where the First Year's Payments Go
 
-**Formulas:**
+In month one, interest is the balance times the monthly rate. Only what's left over reduces the principal.
 
-- First-month interest = Principal × (annual rate ÷ 12)
-- First-month principal = Monthly Payment − First-month interest
+**Formula:** First month interest = Principal × (annual rate ÷ 12); First month principal = Monthly payment − First month interest
 
 ```{r}
 #| label: first-payment-bar-model
 #| echo: false
-#| fig-cap: "Interest vs. principal split at three points on a $400,000 / 6.5% / 30-yr mortgage"
+#| fig-cap: "Interest vs. principal split at three points on a $480,000 / 6% / 30-yr mortgage"
 #| fig-asp: 0.50
 library(ggplot2)
+P <- 480000
+r <- 0.06 / 12
+n <- 360
+pmt <- P * (r * (1 + r)^n) / ((1 + r)^n - 1)
+months <- c(1, 180, 348)
+balance <- P * (1 + r)^(months - 1) - pmt * ((1 + r)^(months - 1) - 1) / r
+interest <- balance * r
+principal <- pmt - interest
+pct <- function(x) paste0(round(x / pmt * 100), "%")
+money <- function(x) paste0("$", format(round(x), big.mark = ",", trim = TRUE))
 df_amort <- data.frame(
-  month  = factor(c("Month 1\n(Year 1)", "Month 180\n(Year 15)", "Month 348\n(Year 29)"),
-                  levels = c("Month 1\n(Year 1)", "Month 180\n(Year 15)", "Month 348\n(Year 29)")),
+  month  = factor(
+    rep(c("Month 1\n(Year 1)", "Month 180\n(Year 15)", "Month 348\n(Year 29)"), each = 2),
+    levels = c("Month 1\n(Year 1)", "Month 180\n(Year 15)", "Month 348\n(Year 29)")
+  ),
   type   = rep(c("Interest", "Principal"), times = 3),
-  amount = c(2167, 361, 1380, 1148, 82, 2446),
-  label  = c("$2,167\n(86%)", "$361\n(14%)", "$1,380\n(55%)",
-             "$1,148\n(45%)", "$82\n(3%)", "$2,446\n(97%)")
+  amount = as.vector(rbind(interest, principal)),
+  share  = as.vector(rbind(interest, principal)) / pmt
+)
+df_amort$label <- ifelse(
+  df_amort$share < 0.25,
+  paste0(money(df_amort$amount), " (", pct(df_amort$amount), ")"),
+  paste0(money(df_amort$amount), "\n(", pct(df_amort$amount), ")")
 )
 ggplot(df_amort, aes(x = month, y = amount, fill = type)) +
   geom_col(width = 0.55, position = "stack") +
-  geom_text(aes(label = label), position = position_stack(vjust = 0.5),
+  geom_text(aes(label = ifelse(share < 0.10, "", label)),
+            position = position_stack(vjust = 0.5),
             colour = "#F5F2E8", fontface = "bold", size = 3.5) +
+  geom_text(data = subset(df_amort, share < 0.10),
+            aes(y = pmt, label = paste(type, label)),
+            vjust = -0.6, colour = "#f44242", fontface = "bold", size = 3.5) +
   scale_fill_manual(values = c("Interest" = "#f44242", "Principal" = "#48a56a")) +
-  scale_y_continuous(limits = c(0, 2900),
-                     labels = function(x) paste0("$", format(x, big.mark = ","))) +
-  labs(x = NULL, y = "Monthly payment (~$2,528)", fill = NULL) +
+  scale_y_continuous(limits = c(0, pmt * 1.12),
+                     labels = function(x) paste0("$", format(x, big.mark = ",", trim = TRUE))) +
+  labs(x = NULL, y = paste0("Monthly payment (~", money(pmt), ")"), fill = NULL) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "bottom", panel.grid.major.x = element_blank(),
         panel.grid.minor = element_blank())
 ```
 
+Example: on that $480,000 loan, month one interest is $2,400 of the $2,878 payment, about 83% interest, leaving only about $478 toward principal.
+
 ::: panel-tabset
 ## R
 
+`first_payment_split()` reuses `mortgage_payment()` from the section above, so it's repeated here to keep this tab self contained.
+
 ```{r}
 #| label: first-payment-r
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+
 first_payment_split <- function(principal, annual_rate, years) {
   payment  <- mortgage_payment(principal, annual_rate, years)
   interest <- principal * (annual_rate / 12)
   data.frame(
-    payment      = round(payment, 2),
-    interest     = round(interest, 2),
-    principal    = round(payment - interest, 2),
-    pct_interest = round((interest / payment) * 100, 1)
+    payment      = payment,
+    interest     = interest,
+    principal    = payment - interest,
+    pct_interest = (interest / payment) * 100
   )
 }
 
+# first payment on a $480,000 loan at 6% over 30 years
 first_payment_split(principal = 480000, annual_rate = 0.06, years = 30)
+```
+
+One month is a snapshot. Walking the loan month by month and adding up each year shows how slowly the split changes. The first year is about 83% interest, and interest doesn't drop below half until year 19.
+
+```{r}
+#| label: first-payment-r-schedule
+amortize <- function(principal, annual_rate, years) {
+  r   <- annual_rate / 12
+  pmt <- mortgage_payment(principal, annual_rate, years)
+  interest <- numeric(years * 12)
+  balance  <- principal
+  for (m in seq_along(interest)) {
+    interest[m] <- balance * r
+    balance     <- balance - (pmt - interest[m])
+  }
+  data.frame(year = rep(seq_len(years), each = 12), interest = interest,
+             principal = pmt - interest)
+}
+
+sched  <- amortize(480000, 0.06, 30)
+by_yr  <- aggregate(cbind(interest, principal) ~ year, data = sched, FUN = sum)
+by_yr$pct_interest <- round(by_yr$interest / (by_yr$interest + by_yr$principal) * 100, 1)
+by_yr[by_yr$year %in% c(1, 5, 10, 15, 19, 20, 25, 30), ]
+```
+
+Why moving every 5 years hurts: after 60 payments, only about 7% of the loan is paid off.
+
+```{r}
+#| label: first-payment-r-five
+paid_5yr <- sum(sched$principal[1:60])
+c(principal_paid = round(paid_5yr), pct_of_loan = round(paid_5yr / 480000 * 100, 1),
+  interest_paid = round(sum(sched$interest[1:60])))
 ```
 
 ## Python
 
+`first_payment_split()` reuses `mortgage_payment()`, repeated here to keep this tab self contained.
+
 ```{python}
 #| label: first-payment-py
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+
 def first_payment_split(principal, annual_rate, years):
     payment = mortgage_payment(principal, annual_rate, years)
     interest = principal * (annual_rate / 12)
     return {
-        "payment":      round(payment, 2),
-        "interest":     round(interest, 2),
-        "principal":    round(payment - interest, 2),
-        "pct_interest": round((interest / payment) * 100, 1),
+        "payment": payment,
+        "interest": interest,
+        "principal": payment - interest,
+        "pct_interest": (interest / payment) * 100,
     }
 
-first_payment_split(principal=480000, annual_rate=0.06, years=30)
+# first payment on a $480,000 loan at 6% over 30 years
+print(first_payment_split(principal=480000, annual_rate=0.06, years=30))
+```
+
+The share of interest by year:
+
+```{python}
+#| label: first-payment-py-schedule
+def amortize(principal, annual_rate, years):
+    r = annual_rate / 12
+    pmt = mortgage_payment(principal, annual_rate, years)
+    balance, rows = principal, []
+    for m in range(years * 12):
+        interest = balance * r
+        balance -= pmt - interest
+        rows.append((m // 12 + 1, interest, pmt - interest))
+    return rows
+
+sched = amortize(480000, 0.06, 30)
+for year in [1, 5, 10, 15, 19, 20, 25, 30]:
+    i = sum(row[1] for row in sched if row[0] == year)
+    p = sum(row[2] for row in sched if row[0] == year)
+    print(f"year {year:>2}  {i / (i + p):.1%} interest")
+```
+
+Principal paid after 5 years:
+
+```{python}
+#| label: first-payment-py-five
+paid_5yr = sum(row[2] for row in sched[:60])
+print(f"${paid_5yr:,.0f} paid off, {paid_5yr / 480000:.1%} of the loan")
 ```
 
 ## Excel
 
-With loan amount in `A2`, annual rate in `B2`, and monthly payment (from `PMT()`) in `C2`:
+Assuming the loan amount is in `A2`, the annual rate is in `B2`, and the years are in `C2`, the monthly payment goes in `D2`:
 
-First-month interest:
 ```swift
-=A2*(B2/12)
+=-PMT(B2/12, C2*12, A2)
 ```
 
-First-month principal:
+The first month's interest goes in `E2`, the principal in `F2`, and the percent interest in `G2` (format as a Percentage):
+
 ```swift
-=C2-A2*(B2/12)
+=A2*B2/12
+=D2-E2
+=E2/D2
+```
+
+For any year, `CUMIPMT()` and `CUMPRINC()` add up the interest and principal between two payment numbers. Year 1 interest, for example:
+
+```swift
+=-CUMIPMT(B2/12, C2*12, A2, 1, 12, 0)
+```
+
+Principal paid after 5 years:
+
+```swift
+=-CUMPRINC(B2/12, C2*12, A2, 1, 60, 0)
 ```
 :::
+
+How to read this result: early on, your payment mostly rents money from the bank. Equity builds slowly at first and quickly at the end, so selling within a few years leaves little principal paid down.
