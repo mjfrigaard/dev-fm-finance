@@ -1,6 +1,15 @@
 ---
 title: "Tracking Spending"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -22,6 +31,12 @@ def fmt_dollar(x, digits=2):
 def fmt_pct(x, digits=1):
     return f"{x * 100:.{digits}f}%"
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -113,228 +128,779 @@ We can view the bank statement in R using `knitr::kable()`.
 
 ## Categorizing Transactions
 
-Map description keywords to budget buckets in a single pass.
+A bank export only says *where* the money went (`Description`). Adding a `Category` column turns a list of merchants into budget buckets. In R, `dplyr::case_when()` checks each rule in order and the first match wins; in Python, `numpy.select()` does the same with a list of conditions and a list of labels; in Excel, `IFS()` does it one cell at a time. Anything that matches no rule falls into "Other".
+
+### Level 1: Guided
+
+Fill in the blanks so grocery stores (Trader Joe's, Whole Foods, Costco) become "Groceries" and everything without a rule becomes "Other". How many transactions are groceries?
 
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-In Excel, the [`IFS()` function](https://support.microsoft.com/en-US/Excel/IFS-function) is the direct analog of `case_when()`/`when().then()`. 
+With `Description` in column `B`, write an `IFS()` formula in `D2` that labels subscriptions, groceries, and "Other", then fill it down and count the groceries.
 
-- `IFS()` takes a list of conditions and corresponding values, evaluated top to bottom, with the first match winning
+::: {.callout-note collapse="true"}
+## Solution
 
-- `SEARCH()` returns the position of a keyword in a cell (or `#VALUE!` if not found)
-
-- Wrapping it in `ISNUMBER()` turns that into a true/false test
-
-  - For categories with several rows/transactions, wrap the tests in `OR()`
-
-- The final `TRUE, "Other"` arm is the equivalent of `dplyr`'s `TRUE ~ "Other"` and `polars`'s `.otherwise(...)`; it catches anything that didn't match an earlier pattern.
+`SEARCH()` finds a keyword in a cell, `ISNUMBER()` turns that into true/false, and `OR()` joins several keywords. The final `TRUE, "Other"` catches everything else.
 
 ```swift
 =IFS(
-  ISNUMBER(SEARCH("Payroll",B2)), "Income",
-  ISNUMBER(SEARCH("Rent",B2)), "Housing",
-  OR(ISNUMBER(SEARCH("Comcast",B2)),ISNUMBER(SEARCH("PG&E",B2)),ISNUMBER(SEARCH("AT&T",B2))), "Utilities",
-  OR(ISNUMBER(SEARCH("Trader Joe",B2)),ISNUMBER(SEARCH("Whole Foods",B2)),ISNUMBER(SEARCH("Costco",B2))), "Groceries",
-  ISNUMBER(SEARCH("Shell",B2)), "Transportation",
-  OR(ISNUMBER(SEARCH("Starbucks",B2)),ISNUMBER(SEARCH("Chipotle",B2))), "Dining",
   OR(ISNUMBER(SEARCH("Netflix",B2)),ISNUMBER(SEARCH("Spotify",B2)),ISNUMBER(SEARCH("NYTimes",B2)),ISNUMBER(SEARCH("24 Hour Fitness",B2))), "Subscriptions",
-  ISNUMBER(SEARCH("Geico",B2)), "Insurance",
+  OR(ISNUMBER(SEARCH("Trader Joe",B2)),ISNUMBER(SEARCH("Whole Foods",B2)),ISNUMBER(SEARCH("Costco",B2))), "Groceries",
   TRUE, "Other"
 )
 ```
 
-If the statement is laid out with `Date` in column `A`, `Description` in column `B`, and `Amount` in column `C`, type `Category` in cell `D1`, then paste the formula below into `D2`:
-
 ![`IFS()` in Excel](img/tracking_spending-ifs.png){width='100%' fig-align='center'}
 
-Then copy `D2` down through every transaction row (select `D2`, double-click the small square in the bottom-right corner, or use `Ctrl+D` after selecting `D2:D{last_row}`).
+Then count them with `=COUNTIF(D:D, "Groceries")`. The answer is 3.
+:::
 
-* To add a new merchant when one shows up: edit the formula in `D2`, then re-fill down. Keep the new merchant near the bottom of its category group so the existing patterns still resolve first.
+#### Python
 
-In Excel, we can also use the *Format as Table* feature to make the data easier to read.[^excel-tables] You can select a color/style for your table and it will automatically update the data. 
-
-![Format as table](img/tracking_spending-format-as-table.png){width='100%' fig-align='center'}
-
-[^excel-tables]: Read the [Overview of Excel tables](https://support.microsoft.com/en-us/excel/overview-of-excel-tables) on the Microsoft documentation. 
-
-## Python
-
-`polars` is similar to `dplyr`, but:
-
-- `with_columns()` is the `mutate()` analog
-
-  - a chain of `pl.when().then()` calls is the `case_when()` analog
-
-- `pl.col("Description").str.contains(...)` does the keyword test
-
-  - regex by default and the `|` between merchants is alternation
-
-```{python}
-#| label: categorize-py
-py_bank_statement = py_bank_statement.with_columns(
-    Category = pl.when(pl.col("Description").str.contains("Payroll")).then(pl.lit("Income"))
-        .when(pl.col("Description").str.contains("Rent")).then(pl.lit("Housing"))
-        .when(pl.col("Description").str.contains("Comcast|PG&E|AT&T")).then(pl.lit("Utilities"))
-        .when(pl.col("Description").str.contains("Trader Joe|Whole Foods|Costco")).then(pl.lit("Groceries"))
-        .when(pl.col("Description").str.contains("Shell")).then(pl.lit("Transportation"))
-        .when(pl.col("Description").str.contains("Starbucks|Chipotle")).then(pl.lit("Dining"))
-        .when(pl.col("Description").str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness")).then(pl.lit("Subscriptions"))
-        .when(pl.col("Description").str.contains("Geico")).then(pl.lit("Insurance"))
-        .otherwise(pl.lit("Other"))
-)
-
-py_bank_statement
+```{pyodide}
+#| exercise: cat_1_py
+#| setup: true
+import numpy as np
+import pandas as pd
+statement = pd.DataFrame({
+    "Description": [
+        "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+        "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+        "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+        "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
+        "24 Hour Fitness"],
+    "Amount": [
+         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+         -42.80, -156.78, -39.99]
+})
 ```
 
-## R
+```{pyodide}
+#| exercise: cat_1_py
+desc = statement["Description"]
+statement["Category"] = np.select(
+    [desc.str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness"),
+     desc.str.contains(______)],
+    ["Subscriptions", "Groceries"],
+    default=______
+)
+(statement["Category"] == "Groceries").sum()
+```
 
-In R, we can use `dplyr` to do the following:
+::: {.hint exercise="cat_1_py"}
+Separate the store names with `|` (it means "or"): `"Trader Joe|Whole Foods|Costco"`. The default label is `"Other"`.
+:::
 
-- `dplyr::case_when()` evaluates each pattern in order and assigns the matching category
+::: {.solution exercise="cat_1_py"}
+```python
+desc = statement["Description"]
+statement["Category"] = np.select(
+    [desc.str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness"),
+     desc.str.contains("Trader Joe|Whole Foods|Costco")],
+    ["Subscriptions", "Groceries"],
+    default="Other"
+)
+(statement["Category"] == "Groceries").sum()
+```
+:::
 
-  - `grepl()` does the keyword test against `Description`
+```{pyodide}
+#| exercise: cat_1_py
+#| check: true
+if result == 3:
+    feedback = {"correct": True, "message": "Right: Trader Joe's, Whole Foods, and Costco."}
+else:
+    feedback = {"correct": False, "message": "Not quite. List all three stores, separated by |."}
+feedback
+```
 
-- The final `TRUE` arm catches everything that didn't match and labels it `"Other"`
-```{r}
-#| label: categorize-r
-r_bank_statement <- r_bank_statement |>
-  dplyr::mutate(
-    Category = dplyr::case_when(
-      grepl("Payroll", Description) ~ "Income",
-      grepl("Rent", Description) ~ "Housing",
-      grepl("Comcast|PG&E|AT&T", Description) ~ "Utilities",
-      grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
-      grepl("Shell", Description) ~ "Transportation",
-      grepl("Starbucks|Chipotle", Description) ~ "Dining",
-      grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
-      grepl("Geico", Description) ~ "Insurance",
-      TRUE ~ "Other"
-    )
-  )
+#### R
 
-r_bank_statement |> 
-  knitr::kable()
+```{webr}
+#| exercise: cat_1_r
+#| setup: true
+library(dplyr)
+statement <- data.frame(
+  Description = c(
+    "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+    "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+    "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+    "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
+    "24 Hour Fitness"),
+  Amount = c(
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99)
+)
+```
+
+```{webr}
+#| exercise: cat_1_r
+statement |>
+  mutate(Category = case_when(
+    grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
+    grepl(______, Description) ~ "Groceries",
+    TRUE ~ ______
+  )) |>
+  filter(Category == "Groceries") |>
+  nrow()
+```
+
+::: {.hint exercise="cat_1_r"}
+Separate the store names with `|` (it means "or"): `"Trader Joe|Whole Foods|Costco"`. The last rule's label is `"Other"`.
+:::
+
+::: {.solution exercise="cat_1_r"}
+```r
+statement |>
+  mutate(Category = case_when(
+    grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
+    grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
+    TRUE ~ "Other"
+  )) |>
+  filter(Category == "Groceries") |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: cat_1_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 3))) {
+  list(correct = TRUE, message = "Right: Trader Joe's, Whole Foods, and Costco.")
+} else {
+  list(correct = FALSE, message = "Not quite. List all three stores, separated by |.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+Next month's export has three new merchants: Safeway (groceries), Hulu (a subscription), and Uber (transportation). The rules below don't know them yet, so they land in "Other". Update the rules so no transaction is left in "Other".
+
+::: panel-tabset
+
+#### Excel
+
+Your `IFS()` formula labels the new month's Safeway, Hulu, and Uber rows as "Other". Edit it so `=COUNTIF(D:D, "Other")` returns 0.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Add each new merchant to its group with another `ISNUMBER(SEARCH(...))` inside the `OR()`, and add a Transportation rule:
+
+```swift
+OR(..., ISNUMBER(SEARCH("Safeway",B2))), "Groceries",
+OR(..., ISNUMBER(SEARCH("Hulu",B2))), "Subscriptions",
+OR(ISNUMBER(SEARCH("Shell",B2)),ISNUMBER(SEARCH("Uber",B2))), "Transportation",
+```
+
+Re-fill the formula down after editing it.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: cat_2_py
+#| setup: true
+import numpy as np
+import pandas as pd
+statement = pd.DataFrame({
+    "Description": ["Employer Payroll", "Rent", "Safeway", "Hulu",
+                    "Netflix", "Uber Trip", "Shell Gas", "Chipotle"],
+    "Amount": [2400.00, -1500.00, -71.20, -17.99, -15.99, -23.40, -44.10, -13.25]
+})
+```
+
+```{pyodide}
+#| exercise: cat_2_py
+desc = statement["Description"]
+statement["Category"] = np.select(
+    [desc.str.contains("Payroll"),
+     desc.str.contains("Rent"),
+     desc.str.contains("Trader Joe|Whole Foods|Costco"),
+     desc.str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness"),
+     desc.str.contains("Shell"),
+     desc.str.contains("Starbucks|Chipotle")],
+    ["Income", "Housing", "Groceries", "Subscriptions", "Transportation", "Dining"],
+    default="Other"
+)
+(statement["Category"] == "Other").sum()
+```
+
+::: {.hint exercise="cat_2_py"}
+Add each new merchant to the pattern for its group, separated by `|`. For example, `"Shell|Uber"`.
+:::
+
+::: {.solution exercise="cat_2_py"}
+```python
+desc = statement["Description"]
+statement["Category"] = np.select(
+    [desc.str.contains("Payroll"),
+     desc.str.contains("Rent"),
+     desc.str.contains("Trader Joe|Whole Foods|Costco|Safeway"),
+     desc.str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness|Hulu"),
+     desc.str.contains("Shell|Uber"),
+     desc.str.contains("Starbucks|Chipotle")],
+    ["Income", "Housing", "Groceries", "Subscriptions", "Transportation", "Dining"],
+    default="Other"
+)
+(statement["Category"] == "Other").sum()
+```
+:::
+
+```{pyodide}
+#| exercise: cat_2_py
+#| check: true
+if result == 0:
+    feedback = {"correct": True, "message": "Right: every transaction has a home."}
+else:
+    feedback = {"correct": False, "message": f"{result} transaction(s) are still 'Other'. Check Safeway, Hulu, and Uber."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: cat_2_r
+#| setup: true
+library(dplyr)
+statement <- data.frame(
+  Description = c("Employer Payroll", "Rent", "Safeway", "Hulu",
+                  "Netflix", "Uber Trip", "Shell Gas", "Chipotle"),
+  Amount = c(2400.00, -1500.00, -71.20, -17.99, -15.99, -23.40, -44.10, -13.25)
+)
+```
+
+```{webr}
+#| exercise: cat_2_r
+statement |>
+  mutate(Category = case_when(
+    grepl("Payroll", Description) ~ "Income",
+    grepl("Rent", Description) ~ "Housing",
+    grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
+    grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
+    grepl("Shell", Description) ~ "Transportation",
+    grepl("Starbucks|Chipotle", Description) ~ "Dining",
+    TRUE ~ "Other"
+  )) |>
+  filter(Category == "Other") |>
+  nrow()
+```
+
+::: {.hint exercise="cat_2_r"}
+Add each new merchant to the pattern for its group, separated by `|`. For example, `"Shell|Uber"`.
+:::
+
+::: {.solution exercise="cat_2_r"}
+```r
+statement |>
+  mutate(Category = case_when(
+    grepl("Payroll", Description) ~ "Income",
+    grepl("Rent", Description) ~ "Housing",
+    grepl("Trader Joe|Whole Foods|Costco|Safeway", Description) ~ "Groceries",
+    grepl("Netflix|Spotify|NYTimes|24 Hour Fitness|Hulu", Description) ~ "Subscriptions",
+    grepl("Shell|Uber", Description) ~ "Transportation",
+    grepl("Starbucks|Chipotle", Description) ~ "Dining",
+    TRUE ~ "Other"
+  )) |>
+  filter(Category == "Other") |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: cat_2_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 0))) {
+  list(correct = TRUE, message = "Right: every transaction has a home.")
+} else {
+  list(correct = FALSE, message = paste(.result, "transaction(s) are still 'Other'. Check Safeway, Hulu, and Uber."))
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Real bank exports are messy: the same merchant can show up as `NETFLIX.COM`, `Netflix`, or `netflix`. The rule below only matches the exact capitalization, so it finds just 1 of the 3 subscriptions. Change the code so capitalization doesn't matter, and count the subscriptions again.
+
+::: panel-tabset
+
+#### Excel
+
+Does the `IFS()` and `SEARCH()` formula need any change for `NETFLIX.COM`?
+
+::: {.callout-note collapse="true"}
+## Solution
+
+No. `SEARCH()` ignores capitalization, so `SEARCH("Netflix", "NETFLIX.COM")` already finds a match. (Its case-sensitive cousin is `FIND()`.)
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: cat_3_py
+#| setup: true
+import pandas as pd
+messy = pd.DataFrame({
+    "Description": ["NETFLIX.COM", "Spotify USA", "nytimes digital",
+                    "SHELL OIL 1234", "Whole Foods #102"],
+    "Amount": [-15.99, -10.99, -17.00, -45.20, -64.12]
+})
+```
+
+```{pyodide}
+#| exercise: cat_3_py
+is_sub = messy["Description"].str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness")
+is_sub.sum()
+```
+
+::: {.hint exercise="cat_3_py"}
+`str.contains()` has a `case` argument. Look at what `case=False` does.
+:::
+
+::: {.solution exercise="cat_3_py"}
+```python
+is_sub = messy["Description"].str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness", case=False)
+is_sub.sum()
+```
+:::
+
+```{pyodide}
+#| exercise: cat_3_py
+#| check: true
+if result == 3:
+    feedback = {"correct": True, "message": "Right: all three subscriptions, whatever the capitalization."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Make the match ignore capitalization."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: cat_3_r
+#| setup: true
+library(dplyr)
+messy <- data.frame(
+  Description = c("NETFLIX.COM", "Spotify USA", "nytimes digital",
+                  "SHELL OIL 1234", "Whole Foods #102"),
+  Amount = c(-15.99, -10.99, -17.00, -45.20, -64.12)
+)
+```
+
+```{webr}
+#| exercise: cat_3_r
+messy |>
+  filter(grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description)) |>
+  nrow()
+```
+
+::: {.hint exercise="cat_3_r"}
+`grepl()` has an `ignore.case` argument.
+:::
+
+::: {.solution exercise="cat_3_r"}
+```r
+messy |>
+  filter(grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description, ignore.case = TRUE)) |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: cat_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 3))) {
+  list(correct = TRUE, message = "Right: all three subscriptions, whatever the capitalization.")
+} else {
+  list(correct = FALSE, message = "Not quite. Make the match ignore capitalization.")
+}
 ```
 
 :::
 
 ## Answering Tracking Questions
 
-Once every row has a category, the book's three tracking questions take one short pipeline each: what did subscriptions cost, what share of income went to fixed costs, and which variable category was biggest?
+Once every row has a category, the book's three tracking questions take one short pipeline each: what did subscriptions cost, what share of income went to fixed costs, and which variable category was biggest? Spending is stored as negative numbers, so a minus sign turns a spending total positive.
+
+### Level 1: Guided
+
+What did the four subscriptions cost this month?
 
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-With `Date` in `A`, `Description` in `B`, `Amount` in `C`, and `Category` in `D`, the [`SUMIF()` function](https://support.microsoft.com/en-us/excel/sumif-function) adds up one category. Total spent on subscriptions:
+With `Amount` in `C` and `Category` in `D`, total the subscriptions as a positive number.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =-SUMIF(D:D, "Subscriptions", C:C)
 ```
 
-The minus sign turns the negative spending total into a positive number. Fixed costs as a share of income (format the cell as a percentage):
+This returns \$83.97.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: q_1_py
+#| setup: true
+import pandas as pd
+statement = pd.DataFrame({
+    "Description": [
+        "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+        "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+        "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+        "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
+        "24 Hour Fitness"],
+    "Amount": [
+         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+         -42.80, -156.78, -39.99],
+    "Category": [
+        "Income", "Housing", "Utilities", "Groceries", "Transportation",
+        "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+        "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+        "Groceries", "Subscriptions"]
+})
+```
+
+```{pyodide}
+#| exercise: q_1_py
+-statement.loc[statement["Category"] == ______, "Amount"].sum()
+```
+
+::: {.hint exercise="q_1_py"}
+Pick the rows whose `Category` is `"Subscriptions"`.
+:::
+
+::: {.solution exercise="q_1_py"}
+```python
+-statement.loc[statement["Category"] == "Subscriptions", "Amount"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: q_1_py
+#| check: true
+if result is not None and abs(result - 83.97) < 0.01:
+    feedback = {"correct": True, "message": "Right: $83.97 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Filter to Subscriptions and keep the minus sign."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: q_1_r
+#| setup: true
+library(dplyr)
+statement <- data.frame(
+  Description = c(
+    "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+    "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+    "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+    "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
+    "24 Hour Fitness"),
+  Amount = c(
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99),
+  Category = c(
+    "Income", "Housing", "Utilities", "Groceries", "Transportation",
+    "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+    "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+    "Groceries", "Subscriptions")
+)
+```
+
+```{webr}
+#| exercise: q_1_r
+statement |>
+  filter(Category == ______) |>
+  summarise(total = -sum(Amount)) |>
+  pull(total)
+```
+
+::: {.hint exercise="q_1_r"}
+Keep the rows whose `Category` is `"Subscriptions"`.
+:::
+
+::: {.solution exercise="q_1_r"}
+```r
+statement |>
+  filter(Category == "Subscriptions") |>
+  summarise(total = -sum(Amount)) |>
+  pull(total)
+```
+:::
+
+```{webr}
+#| exercise: q_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 83.97))) {
+  list(correct = TRUE, message = "Right: $83.97 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Filter to Subscriptions and keep the minus sign.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+Fixed costs are housing, utilities, and insurance. What share of income went to fixed costs? Give the answer as a decimal (for example, 0.25 for 25%).
+
+::: panel-tabset
+
+#### Excel
+
+Total the three fixed categories and divide by income (the positive amounts).
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =-(SUMIF(D:D,"Housing",C:C)+SUMIF(D:D,"Utilities",C:C)+SUMIF(D:D,"Insurance",C:C))/SUMIF(C:C,">0")
 ```
 
-For every category at once, select the data and use **Insert → PivotTable**, with `Category` in Rows and `Amount` in Values.
+This returns 0.803, or about 80%.
+:::
 
-## Python
+#### Python
 
-The same three answers with `polars`:
-
-```{python}
-#| label: category-totals-py
-income = py_bank_statement.filter(pl.col("Amount") > 0)["Amount"].sum()
-
-category_totals = (
-    py_bank_statement
-    .filter(pl.col("Amount") < 0)
-    .group_by("Category")
-    .agg((-pl.col("Amount").sum()).alias("Total"))
-    .sort("Total", descending=True)
-    .with_columns((pl.col("Total") / income).alias("Share"))
-)
-
-category_totals
+```{pyodide}
+#| exercise: q_2_py
+#| setup: true
+import pandas as pd
+statement = pd.DataFrame({
+    "Amount": [
+         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+         -42.80, -156.78, -39.99],
+    "Category": [
+        "Income", "Housing", "Utilities", "Groceries", "Transportation",
+        "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+        "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+        "Groceries", "Subscriptions"]
+})
 ```
 
-Total spent on subscriptions:
-
-```{python}
-#| label: subscription-total-py
-subs = category_totals.filter(pl.col("Category") == "Subscriptions")["Total"][0]
-fmt_dollar(subs)
-```
-
-Share of income going to fixed costs:
-
-```{python}
-#| label: fixed-share-py
+```{pyodide}
+#| exercise: q_2_py
 fixed = ["Housing", "Utilities", "Insurance"]
-fixed_total = category_totals.filter(pl.col("Category").is_in(fixed))["Total"].sum()
-print(fmt_dollar(fixed_total), fmt_pct(fixed_total / income))
+income = statement.loc[statement["Amount"] > 0, "Amount"].sum()
+fixed_total = ______
+fixed_total / income
 ```
 
-The biggest variable category:
+::: {.hint exercise="q_2_py"}
+`statement["Category"].isin(fixed)` picks the fixed-cost rows. Sum their `Amount` and flip the sign.
+:::
 
-```{python}
-#| label: biggest-variable-py
-(
-    category_totals
-    .filter(~pl.col("Category").is_in(fixed + ["Subscriptions"]))
-    .head(1)
+::: {.solution exercise="q_2_py"}
+```python
+fixed = ["Housing", "Utilities", "Insurance"]
+income = statement.loc[statement["Amount"] > 0, "Amount"].sum()
+fixed_total = -statement.loc[statement["Category"].isin(fixed), "Amount"].sum()
+fixed_total / income
+```
+:::
+
+```{pyodide}
+#| exercise: q_2_py
+#| check: true
+if result is not None and abs(result - 0.8030) < 0.001:
+    feedback = {"correct": True, "message": "Right: about 80%. This statement has the full month's rent but only one paycheck."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Total housing, utilities, and insurance as a positive number."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: q_2_r
+#| setup: true
+library(dplyr)
+statement <- data.frame(
+  Amount = c(
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99),
+  Category = c(
+    "Income", "Housing", "Utilities", "Groceries", "Transportation",
+    "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+    "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+    "Groceries", "Subscriptions")
 )
 ```
 
-## R
-
-Totals by category, spending only (negative amounts), largest first:
-
-```{r}
-#| label: category-totals-r
-income <- sum(r_bank_statement$Amount[r_bank_statement$Amount > 0])
-
-category_totals <- r_bank_statement |>
-  dplyr::filter(Amount < 0) |>
-  dplyr::group_by(Category) |>
-  dplyr::summarise(Total = -sum(Amount), .groups = "drop") |>
-  dplyr::arrange(dplyr::desc(Total)) |>
-  dplyr::mutate(Share = fmt_pct(Total / income))
-
-category_totals |> knitr::kable()
-```
-
-Total spent on subscriptions:
-
-```{r}
-#| label: subscription-total-r
-category_totals$Total[category_totals$Category == "Subscriptions"] |> fmt_dollar()
-```
-
-Share of income going to fixed costs (housing, utilities, and insurance):
-
-```{r}
-#| label: fixed-share-r
+```{webr}
+#| exercise: q_2_r
 fixed <- c("Housing", "Utilities", "Insurance")
-fixed_total <- sum(category_totals$Total[category_totals$Category %in% fixed])
-fmt_dollar(fixed_total)
-fmt_pct(fixed_total / income)
+income <- statement |> filter(Amount > 0) |> pull(Amount) |> sum()
+fixed_total <- ______
+fixed_total / income
 ```
 
-The biggest variable category:
+::: {.hint exercise="q_2_r"}
+`filter(Category %in% fixed)` keeps the fixed-cost rows; then `summarise(total = -sum(Amount))` and `pull(total)`.
+:::
 
-```{r}
-#| label: biggest-variable-r
-category_totals |>
-  dplyr::filter(Category %nin% c(fixed, "Subscriptions")) |>
-  dplyr::slice_max(Total, n = 1)
+::: {.solution exercise="q_2_r"}
+```r
+fixed <- c("Housing", "Utilities", "Insurance")
+income <- statement |> filter(Amount > 0) |> pull(Amount) |> sum()
+fixed_total <- statement |> filter(Category %in% fixed) |> summarise(total = -sum(Amount)) |> pull(total)
+fixed_total / income
+```
+:::
+
+```{webr}
+#| exercise: q_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 0.8030417, tolerance = 1e-4))) {
+  list(correct = TRUE, message = "Right: about 80%. This statement has the full month's rent but only one paycheck.")
+} else {
+  list(correct = FALSE, message = "Not quite. Total housing, utilities, and insurance as a positive number.")
+}
 ```
 
-How to read this result: this statement covers only half a month and one \$2,400 paycheck, but the full month's rent. That is why fixed costs look like 80% of income. Always compare a full month of spending against a full month of income before drawing conclusions.
+:::
+
+### Level 3: Challenge
+
+Leaving out income, fixed costs, and subscriptions, which category had the most spending? Return its name.
+
+::: panel-tabset
+
+#### Excel
+
+Find the biggest variable category without scrolling through the rows.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Select the data and use **Insert → PivotTable** with `Category` in Rows and `Amount` in Values, then sort smallest to largest (spending is negative). Or list the variable categories in `F2:F4` (Groceries, Transportation, Dining), total each in `G2` with `=-SUMIF(D:D, F2, C:C)`, fill down, and use:
+
+```swift
+=INDEX(F2:F4, MATCH(MAX(G2:G4), G2:G4, 0))
+```
+
+The answer is Groceries (\$303.35).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: q_3_py
+#| setup: true
+import pandas as pd
+statement = pd.DataFrame({
+    "Amount": [
+         2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+        -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+         -42.80, -156.78, -39.99],
+    "Category": [
+        "Income", "Housing", "Utilities", "Groceries", "Transportation",
+        "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+        "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+        "Groceries", "Subscriptions"]
+})
+```
+
+```{pyodide}
+#| exercise: q_3_py
+skip = ["Income", "Housing", "Utilities", "Insurance", "Subscriptions"]
+# total spending by category, then return the name of the biggest
+
+```
+
+::: {.hint exercise="q_3_py"}
+Filter out the `skip` categories with `~statement["Category"].isin(skip)`, then `groupby("Category")["Amount"].sum()`. Spending is negative, so the biggest is `.idxmin()`.
+:::
+
+::: {.solution exercise="q_3_py"}
+```python
+skip = ["Income", "Housing", "Utilities", "Insurance", "Subscriptions"]
+variable = statement[~statement["Category"].isin(skip)]
+variable.groupby("Category")["Amount"].sum().idxmin()
+```
+:::
+
+```{pyodide}
+#| exercise: q_3_py
+#| check: true
+if result == "Groceries":
+    feedback = {"correct": True, "message": "Right: Groceries, at $303.35."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Spending is negative, so the biggest total is the most negative."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: q_3_r
+#| setup: true
+library(dplyr)
+statement <- data.frame(
+  Amount = c(
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99),
+  Category = c(
+    "Income", "Housing", "Utilities", "Groceries", "Transportation",
+    "Subscriptions", "Dining", "Utilities", "Utilities", "Subscriptions",
+    "Groceries", "Dining", "Insurance", "Subscriptions", "Transportation",
+    "Groceries", "Subscriptions")
+)
+```
+
+```{webr}
+#| exercise: q_3_r
+skip <- c("Income", "Housing", "Utilities", "Insurance", "Subscriptions")
+# total spending by category, then return the name of the biggest
+
+```
+
+::: {.hint exercise="q_3_r"}
+`filter(!Category %in% skip)`, then `group_by(Category)` and `summarise(Total = -sum(Amount))`. Finish with `slice_max(Total, n = 1)` and `pull(Category)`.
+:::
+
+::: {.solution exercise="q_3_r"}
+```r
+skip <- c("Income", "Housing", "Utilities", "Insurance", "Subscriptions")
+statement |>
+  filter(!Category %in% skip) |>
+  group_by(Category) |>
+  summarise(Total = -sum(Amount)) |>
+  slice_max(Total, n = 1) |>
+  pull(Category)
+```
+:::
+
+```{webr}
+#| exercise: q_3_r
+#| check: true
+if (identical(as.character(.result), "Groceries")) {
+  list(correct = TRUE, message = "Right: Groceries, at $303.35.")
+} else {
+  list(correct = FALSE, message = "Not quite. Return the category name with the largest spending total.")
+}
+```
 
 :::
 
@@ -385,163 +951,301 @@ ggplot(df_sub, aes(x = year, y = amount, fill = layer)) +
 
 Each bar adds another year's \$240 to everything saved so far, and the whole pile grows by 7%. After 30 years you put in \$7,200, and growth added about \$15,500.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `subscription_opportunity_cost()`, then find what a \$20/month subscription costs over 30 years at 7%.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-In Excel, create a new sheet with the inputs:
+Put the monthly cost in `A2` (20), the years in `B2` (30), and the return in `C2` (0.07). In `D2`, write the opportunity cost.
 
-| Monthly cost | Number of Years | Annual Return (as decimal) | Opportunity Cost |
-| ------------ | --------------- | -------------------------- | ---------------- |
-| $20          | 30              | 0.07                       | *Formula below*  |
-
-The formula (given this setup) in `D2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =(A2*12)*((1+C2)^B2-1)/C2
 ```
 
-`A2*12` converts the monthly cost to annual; the rest is the future value formula for regular deposits, using the rate in `C2` and the time horizon in `B2`.
+`A2*12` turns the monthly cost into a yearly one. `=FV(C2, B2, -A2*12)` gives the same \$22,670.59.
 
 ![Opportunity Cost in Excel](img/tracking_spending-opportunity_cost.png){width='100%' fig-align='center'}
+:::
 
-`FV()` gives the same answer, \$22,670.59:
+#### Python
 
-```swift
-=FV(C2, B2, -A2*12)
+```{pyodide}
+#| exercise: audit_1_py
+def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
+    annual_cost = monthly_cost * ______
+    return annual_cost * ((1 + rate) ** ______ - 1) / rate
+
+subscription_opportunity_cost(20, 30)
 ```
 
-To audit several subscriptions, list each monthly cost in `A2:A5` (15.99, 10.99, 17.00, 39.99), keep the years and rate in `B` and `C`, fill `D2` down, and total them with `=SUM(D2:D5)`.
+::: {.hint exercise="audit_1_py"}
+A year has 12 monthly payments. The growth factor is raised to the number of years.
+:::
 
-If the data is arranged differently, adjust the cell references accordingly:
-
-![Opportunity Cost 2 in Excel](img/tracking_spending-opportunity_cost2.png){width='100%' fig-align='center'}
-
-![Opportunity Cost Layouts in Excel](img/tracking_spending-opportunity_cost_layouts.png){width='100%' fig-align='center'}
-
-## Python
-
-```{python}
-#| label: subscription-opp-cost-py
+::: {.solution exercise="audit_1_py"}
+```python
 def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
     annual_cost = monthly_cost * 12
     return annual_cost * ((1 + rate) ** years - 1) / rate
+
+subscription_opportunity_cost(20, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: audit_1_py
+#| check: true
+if result is not None and abs(result - 22670.59) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $22,700, from $7,200 put in."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check the 12 and the exponent."}
+feedback
 ```
 
-A \$20/month subscription for 30 years at 7%:
+#### R
 
-```{python}
-#| label: subscription-opp-cost-py-apply
-fmt_dollar(subscription_opportunity_cost(monthly_cost=20, years=30))
+```{webr}
+#| exercise: audit_1_r
+subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  annual_cost <- monthly_cost * ______
+  annual_cost * ((1 + rate)^______ - 1) / rate
+}
+subscription_opportunity_cost(20, 30)
 ```
 
-Sanity check: money put in vs. growth.
+::: {.hint exercise="audit_1_r"}
+A year has 12 monthly payments. The growth factor is raised to the number of years.
+:::
 
-```{python}
-#| label: subscription-opp-cost-py-check
-oc = subscription_opportunity_cost(20, 30)
-put_in = 20 * 12 * 30
-print(fmt_dollar(put_in, 0), fmt_dollar(oc - put_in, 0))
-```
-
-Audit the four subscriptions in the bank statement. `polars` expressions are vectorized, so the formula runs on every row:
-
-```{python}
-#| label: subscription-audit-py
-subs = (
-    py_bank_statement
-    .filter(pl.col("Category") == "Subscriptions")
-    .select("Description", (-pl.col("Amount")).alias("monthly"))
-    .with_columns(
-        subscription_opportunity_cost(pl.col("monthly"), 10).round(0).alias("after_10"),
-        subscription_opportunity_cost(pl.col("monthly"), 30).round(0).alias("after_30"),
-    )
-)
-subs
-```
-
-```{python}
-#| label: subscription-audit-py-total
-fmt_dollar(subs["after_30"].sum())
-```
-
-The survey's \$219/month with yearly deposits vs. monthly deposits:
-
-```{python}
-#| label: subscription-survey-py
-monthly_rate = 0.07 / 12
-print(fmt_dollar(subscription_opportunity_cost(219, 30)))
-print(fmt_dollar(219 * ((1 + monthly_rate) ** 360 - 1) / monthly_rate))
-```
-
-Edge case: a rate of 0 raises a `ZeroDivisionError` in Python, so fall back to the money you would have spent:
-
-```{python}
-#| label: subscription-opp-cost-py-edge
-try:
-    subscription_opportunity_cost(20, 30, rate=0)
-except ZeroDivisionError:
-    print("No growth:", fmt_dollar(20 * 12 * 30))
-```
-
-## R
-
-```{r}
-#| label: subscription-opp-cost-r
+::: {.solution exercise="audit_1_r"}
+```r
 subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
   annual_cost <- monthly_cost * 12
   annual_cost * ((1 + rate)^years - 1) / rate
 }
+subscription_opportunity_cost(20, 30)
+```
+:::
+
+```{webr}
+#| exercise: audit_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 22670.59, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $22,700, from $7,200 put in.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check the 12 and the exponent.")
+}
 ```
 
-A \$20/month subscription for 30 years at 7%:
+:::
 
-```{r}
-#| label: subscription-opp-cost-r-apply
-subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
+### Level 2: Practice
+
+Audit all four subscriptions from the bank statement (Netflix \$15.99, Spotify \$10.99, NYTimes \$17.00, 24 Hour Fitness \$39.99). What is their combined opportunity cost over 30 years?
+
+::: panel-tabset
+
+#### Excel
+
+List the four monthly costs in `A2:A5`, keep 30 and 0.07 in `B` and `C`, fill the `D2` formula down, and total the column.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUM(D2:D5)
 ```
 
-Sanity check: money put in vs. growth.
+This returns \$95,182.47. The gym membership alone is \$45,330 of it.
+:::
 
-```{r}
-#| label: subscription-opp-cost-r-check
-oc <- subscription_opportunity_cost(20, 30)
-put_in <- 20 * 12 * 30
-c(put_in = put_in, growth = round(oc - put_in))
+#### Python
+
+```{pyodide}
+#| exercise: audit_2_py
+#| setup: true
+import pandas as pd
+def subscription_opportunity_cost(monthly_cost, years, rate=0.07):
+    annual_cost = monthly_cost * 12
+    return annual_cost * ((1 + rate) ** years - 1) / rate
+
+subs = pd.DataFrame({
+    "Description": ["Netflix", "Spotify", "NYTimes Digital", "24 Hour Fitness"],
+    "monthly": [15.99, 10.99, 17.00, 39.99]
+})
 ```
 
-Now audit the four subscriptions in the bank statement above. The function is vectorized, so one call prices them all:
-
-```{r}
-#| label: subscription-audit-r
-subs <- r_bank_statement |>
-  dplyr::filter(Category == "Subscriptions") |>
-  dplyr::transmute(Description, monthly = -Amount)
-
-subs$after_10 <- round(subscription_opportunity_cost(subs$monthly, 10))
-subs$after_30 <- round(subscription_opportunity_cost(subs$monthly, 30))
-subs |> knitr::kable()
-fmt_dollar(sum(subs$after_30))
+```{pyodide}
+#| exercise: audit_2_py
+subs["after_30"] = ______
+subs["after_30"].sum()
 ```
 
-How to read this result: the \$83.97 a month in this statement is a \$95,000 decision over 30 years. The gym membership alone is nearly half of it.
+::: {.hint exercise="audit_2_py"}
+The function works on a whole column at once: pass `subs["monthly"]` and `30`.
+:::
 
-The book's survey figure of \$219/month uses monthly deposits. The audit formula above uses yearly deposits, which comes out a little lower:
+::: {.solution exercise="audit_2_py"}
+```python
+subs["after_30"] = subscription_opportunity_cost(subs["monthly"], 30)
+subs["after_30"].sum()
+```
+:::
 
-```{r}
-#| label: subscription-survey-r
-# yearly deposits (the audit formula)
-subscription_opportunity_cost(219, 30) |> fmt_dollar()
-# monthly deposits (the book's ~$267,000)
-(219 * ((1 + 0.07 / 12)^(30 * 12) - 1) / (0.07 / 12)) |> fmt_dollar()
+```{pyodide}
+#| exercise: audit_2_py
+#| check: true
+if result is not None and abs(result - 95182.47) < 0.01:
+    feedback = {"correct": True, "message": "Right: $83.97 a month is a $95,000 decision over 30 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Price every row for 30 years, then add them up."}
+feedback
 ```
 
-Edge case: a rate of 0 divides by zero and returns `NaN`. With no growth, the opportunity cost is just the money you would have spent.
+#### R
 
-```{r}
-#| label: subscription-opp-cost-r-edge
-subscription_opportunity_cost(20, 30, rate = 0)
-20 * 12 * 30
+```{webr}
+#| exercise: audit_2_r
+#| setup: true
+library(dplyr)
+subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  annual_cost <- monthly_cost * 12
+  annual_cost * ((1 + rate)^years - 1) / rate
+}
+subs <- data.frame(
+  Description = c("Netflix", "Spotify", "NYTimes Digital", "24 Hour Fitness"),
+  monthly = c(15.99, 10.99, 17.00, 39.99)
+)
+```
+
+```{webr}
+#| exercise: audit_2_r
+subs |>
+  mutate(after_30 = ______) |>
+  summarise(total = sum(after_30)) |>
+  pull(total)
+```
+
+::: {.hint exercise="audit_2_r"}
+The function is vectorized: pass the whole `monthly` column and `30`.
+:::
+
+::: {.solution exercise="audit_2_r"}
+```r
+subs |>
+  mutate(after_30 = subscription_opportunity_cost(monthly, 30)) |>
+  summarise(total = sum(after_30)) |>
+  pull(total)
+```
+:::
+
+```{webr}
+#| exercise: audit_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 95182.47, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: $83.97 a month is a $95,000 decision over 30 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Price every row for 30 years, then add them up.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The audit formula adds money once a year. Subscriptions are really paid monthly. Write `monthly_opportunity_cost(monthly_cost, years, rate = 0.07)` that invests every month (use a monthly rate and the number of months), then price the survey's \$219/month over 30 years.
+
+::: panel-tabset
+
+#### Excel
+
+Find the 30-year value of \$219 invested every month at 7%.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=FV(7%/12, 30*12, -219)
+```
+
+This returns \$267,173.65, about \$12,000 more than yearly deposits because each month's money starts growing sooner.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: audit_3_py
+def monthly_opportunity_cost(monthly_cost, years, rate=0.07):
+    # your code here
+    pass
+
+monthly_opportunity_cost(219, 30)
+```
+
+::: {.hint exercise="audit_3_py"}
+Use `monthly_rate = rate / 12` and `periods = years * 12`, then the same formula with `monthly_cost` in place of the yearly amount.
+:::
+
+::: {.solution exercise="audit_3_py"}
+```python
+def monthly_opportunity_cost(monthly_cost, years, rate=0.07):
+    monthly_rate = rate / 12
+    periods = years * 12
+    return monthly_cost * ((1 + monthly_rate) ** periods - 1) / monthly_rate
+
+monthly_opportunity_cost(219, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: audit_3_py
+#| check: true
+if result is not None and abs(result - 267173.65) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $267,000, the book's figure."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the rate by 12 and multiply the years by 12."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: audit_3_r
+monthly_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  # your code here
+}
+monthly_opportunity_cost(219, 30)
+```
+
+::: {.hint exercise="audit_3_r"}
+Use `monthly_rate <- rate / 12` and `periods <- years * 12`, then the same formula with `monthly_cost` in place of the yearly amount.
+:::
+
+::: {.solution exercise="audit_3_r"}
+```r
+monthly_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  monthly_rate <- rate / 12
+  periods      <- years * 12
+  monthly_cost * ((1 + monthly_rate)^periods - 1) / monthly_rate
+}
+monthly_opportunity_cost(219, 30)
+```
+:::
+
+```{webr}
+#| exercise: audit_3_r
+#| check: true
+if (isTRUE(all.equal(.result, 267173.65, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $267,000, the book's figure.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the rate by 12 and multiply the years by 12.")
+}
 ```
 
 :::

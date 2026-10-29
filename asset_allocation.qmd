@@ -1,6 +1,15 @@
 ---
 title: "Asset Allocation"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -67,75 +82,284 @@ ggplot(df_mix, aes(x = mix, y = change, fill = year)) +
 
 The second example adds more splits and two columns compared with 100/0: the average year gain you give up and the bad year loss you avoid. The third uses the real 2008 numbers from the book (stocks about −37%, bonds about +5%), where bonds actually went up.
 
-::: panel-tabset
-## Excel
+Read the two columns together. Going from 100/0 to 60/40 gives up $240 in an average year but cuts the bad year loss from $4,000 to $2,400. Each step toward bonds trades a little growth for a softer fall.
 
-With `Stock %` in `B2`, `Stock return` in `C2`, and `Bond return` in `D2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `portfolio_return()`, then find the return of an 80/20 portfolio in a bad year (stocks −40%, bonds 0%). Give a decimal.
+
+::: panel-tabset
+
+#### Excel
+
+Put the stock share in `A2` (0.8), the stock return in `B2` (-0.40), and the bond return in `C2` (0). Find the portfolio return in `D2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2 * C2 + (1 - B2) * D2
+=A2*B2 + (1-A2)*C2
 ```
 
-Put splits down column `B` and copy the formula down. Multiply by your balance for dollars.
+This returns -0.32, a loss of \$3,200 on \$10,000.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: mix-py
-import polars as pl
+```{pyodide}
+#| exercise: mix_1_py
+def portfolio_return(stock_pct, stock_return, bond_return):
+    return stock_pct * stock_return + (1 - ______) * ______
 
+portfolio_return(0.80, -0.40, 0)
+```
+
+::: {.hint exercise="mix_1_py"}
+Whatever isn't in stocks is in bonds, and earns the bond return.
+:::
+
+::: {.solution exercise="mix_1_py"}
+```python
 def portfolio_return(stock_pct, stock_return, bond_return):
     return stock_pct * stock_return + (1 - stock_pct) * bond_return
 
-# 100/0, 80/20, and 60/40 in an average year and a bad year
-print(pl.DataFrame({"stocks": [1.0, 0.8, 0.6]}).with_columns(
-    average=portfolio_return(pl.col("stocks"), 0.10, 0.04),
-    bad=portfolio_return(pl.col("stocks"), -0.40, 0.0),
-))
+portfolio_return(0.80, -0.40, 0)
+```
+:::
 
-# more splits, in dollars on $10,000, plus 2008
-pl.DataFrame({"stocks": [1.0, 0.9, 0.8, 0.6, 0.4, 0.0]}).with_columns(
-    average=10000 * portfolio_return(pl.col("stocks"), 0.10, 0.04),
-    bad=10000 * portfolio_return(pl.col("stocks"), -0.40, 0.0),
-    y2008=10000 * portfolio_return(pl.col("stocks"), -0.37, 0.05),
-)
+```{pyodide}
+#| exercise: mix_1_py
+#| check: true
+if result is not None and abs(result - -0.32) < 1e-09:
+    feedback = {"correct": True, "message": "Right: -32%. Bonds softened a -40% year."}
+else:
+    feedback = {"correct": False, "message": "Not quite. The bond share is 1 - stock_pct."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: mix-r
+```{webr}
+#| exercise: mix_1_r
+portfolio_return <- function(stock_pct, stock_return, bond_return) {
+  stock_pct * stock_return + (1 - ______) * ______
+}
+portfolio_return(0.80, -0.40, 0)
+```
+
+::: {.hint exercise="mix_1_r"}
+Whatever isn't in stocks is in bonds, and earns the bond return.
+:::
+
+::: {.solution exercise="mix_1_r"}
+```r
 portfolio_return <- function(stock_pct, stock_return, bond_return) {
   stock_pct * stock_return + (1 - stock_pct) * bond_return
 }
+portfolio_return(0.80, -0.40, 0)
+```
+:::
 
-# 100/0, 80/20, and 60/40 in an average year and a bad year
-splits <- c(1, 0.8, 0.6)
-data.frame(
-  stocks  = splits,
-  average = portfolio_return(splits, stock_return = 0.10, bond_return = 0.04),
-  bad     = portfolio_return(splits, stock_return = -0.40, bond_return = 0)
-)
-
-# more splits, in dollars on $10,000
-splits <- c(1, 0.9, 0.8, 0.6, 0.4, 0)
-avg <- 10000 * portfolio_return(splits, 0.10, 0.04)
-bad <- 10000 * portfolio_return(splits, -0.40, 0)
-data.frame(
-  split       = paste0(splits * 100, "/", (1 - splits) * 100),
-  average     = avg,
-  bad         = bad,
-  gain_given_up = 1000 - avg,
-  loss_avoided  = bad - (-4000)
-)
-
-# 2008: stocks about -37%, bonds about +5%
-portfolio_return(splits, stock_return = -0.37, bond_return = 0.05)
+```{webr}
+#| exercise: mix_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - -0.32) < 1e-09)) {
+  list(correct = TRUE, message = "Right: -32%. Bonds softened a -40% year.")
+} else {
+  list(correct = FALSE, message = "Not quite. The bond share is 1 - stock_pct.")
+}
 ```
 
 :::
 
-Read the two columns together. Going from 100/0 to 60/40 gives up $240 in an average year but cuts the bad year loss from $4,000 to $2,400. Each step toward bonds trades a little growth for a softer fall.
+### Level 2: Practice
+
+A 60/40 portfolio of \$10,000 has an average year (stocks +10%, bonds +4%). How many dollars does it gain?
+
+::: panel-tabset
+
+#### Excel
+
+Change `A2` to 0.6, `B2` to 0.10, and `C2` to 0.04, then turn the return into dollars.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=10000 * (A2*B2 + (1-A2)*C2)
+```
+
+This returns \$760, versus \$1,000 for all stocks.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: mix_2_py
+#| setup: true
+def portfolio_return(stock_pct, stock_return, bond_return):
+    return stock_pct * stock_return + (1 - stock_pct) * bond_return
+```
+
+```{pyodide}
+#| exercise: mix_2_py
+10000 * portfolio_return(______)
+```
+
+::: {.hint exercise="mix_2_py"}
+Stock share 0.60, stock return 0.10, bond return 0.04.
+:::
+
+::: {.solution exercise="mix_2_py"}
+```python
+10000 * portfolio_return(0.60, 0.10, 0.04)
+```
+:::
+
+```{pyodide}
+#| exercise: mix_2_py
+#| check: true
+if result is not None and abs(result - 760) < 0.01:
+    feedback = {"correct": True, "message": "Right: $760, giving up $240 of an average year for a smaller bad year."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 0.60, 0.10, and 0.04."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: mix_2_r
+#| setup: true
+portfolio_return <- function(stock_pct, stock_return, bond_return) {
+  stock_pct * stock_return + (1 - stock_pct) * bond_return
+}
+```
+
+```{webr}
+#| exercise: mix_2_r
+10000 * portfolio_return(______)
+```
+
+::: {.hint exercise="mix_2_r"}
+Stock share 0.60, stock return 0.10, bond return 0.04.
+:::
+
+::: {.solution exercise="mix_2_r"}
+```r
+10000 * portfolio_return(0.60, 0.10, 0.04)
+```
+:::
+
+```{webr}
+#| exercise: mix_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 760) < 0.01)) {
+  list(correct = TRUE, message = "Right: $760, giving up $240 of an average year for a smaller bad year.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 0.60, 0.10, and 0.04.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+In 2008, stocks fell about 37% and bonds rose about 5%. Of the splits 100/0, 90/10, 80/20, 60/40, 40/60, and 0/100, what is the highest stock share that kept the 2008 loss to 15% or less? Give a decimal.
+
+::: panel-tabset
+
+#### Excel
+
+Put the stock shares in `A2:A7`, the 2008 return in `B`, and find the largest share with a return of -15% or better.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=A2*-0.37 + (1-A2)*0.05`. Then:
+
+```swift
+=MAXIFS(A2:A7, B2:B7, ">=-0.15")
+```
+
+The answer is 0.4 (a 40/60 portfolio lost 11.8%).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: mix_3_py
+#| setup: true
+def portfolio_return(stock_pct, stock_return, bond_return):
+    return stock_pct * stock_return + (1 - stock_pct) * bond_return
+```
+
+```{pyodide}
+#| exercise: mix_3_py
+splits = [1, 0.9, 0.8, 0.6, 0.4, 0]
+# highest stock share with a 2008 return of -0.15 or better
+```
+
+::: {.hint exercise="mix_3_py"}
+Use `max(s for s in splits if portfolio_return(s, -0.37, 0.05) >= -0.15)`.
+:::
+
+::: {.solution exercise="mix_3_py"}
+```python
+splits = [1, 0.9, 0.8, 0.6, 0.4, 0]
+max(s for s in splits if portfolio_return(s, -0.37, 0.05) >= -0.15)
+```
+:::
+
+```{pyodide}
+#| exercise: mix_3_py
+#| check: true
+if result is not None and abs(result - 0.4) < 1e-09:
+    feedback = {"correct": True, "message": "Right: 40/60. Even 60/40 lost about 20% in 2008."}
+else:
+    feedback = {"correct": False, "message": "Not quite. A loss of 15% or less means a return of -0.15 or higher."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: mix_3_r
+#| setup: true
+portfolio_return <- function(stock_pct, stock_return, bond_return) {
+  stock_pct * stock_return + (1 - stock_pct) * bond_return
+}
+```
+
+```{webr}
+#| exercise: mix_3_r
+splits <- c(1, 0.9, 0.8, 0.6, 0.4, 0)
+# highest stock share with a 2008 return of -0.15 or better
+```
+
+::: {.hint exercise="mix_3_r"}
+`portfolio_return()` is vectorized: pass all splits, then `max(splits[...])`.
+:::
+
+::: {.solution exercise="mix_3_r"}
+```r
+splits <- c(1, 0.9, 0.8, 0.6, 0.4, 0)
+returns <- portfolio_return(splits, -0.37, 0.05)
+max(splits[returns >= -0.15])
+```
+:::
+
+```{webr}
+#| exercise: mix_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.4) < 1e-09)) {
+  list(correct = TRUE, message = "Right: 40/60. Even 60/40 lost about 20% in 2008.")
+} else {
+  list(correct = FALSE, message = "Not quite. A loss of 15% or less means a return of -0.15 or higher.")
+}
+```
+
+:::
 
 ## How Much to Move When You Rebalance
 
@@ -174,75 +398,275 @@ ggplot(df_rb, aes(x = amount, y = stage, fill = asset)) +
 
 The second example runs several stock moves, up and down, and applies the book's 5 percentage point rule to decide whether to act at all. A negative amount means sell stocks and buy bonds. The last example rebalances with new money only, so nothing gets sold.
 
+Read a positive answer as "buy that much stock," and a negative answer as "sell that much stock." A 10% drop only moves the split about 2 points, so the 5 point rule says wait. With $1,000 of new money after the 30% drop, the full $1,000 goes to stocks and the gap closes from $480 to under $300 without selling anything.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `rebalance_amount()`. A \$10,000 80/20 portfolio has \$5,600 in stocks and \$2,000 in bonds after a 30% stock drop. How much should move into stocks?
+
 ::: panel-tabset
-## Excel
 
-With `Target %` in `B2`, `Stocks` in `C2`, and `Bonds` in `D2`:
+#### Excel
 
-```swift
-=B2 * (C2 + D2) - C2
-```
+Put the target in `A2` (0.8), stocks in `B2` (5600), and bonds in `C2` (2000). Find the amount to move in `D2`.
 
-To flag whether the drift is more than 5 points:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=ABS(C2/(C2+D2) - B2) > 0.05
+=A2*(B2+C2) - B2
 ```
 
-## Python
+This returns \$480: sell \$480 of bonds and buy stocks.
+:::
 
-```{python}
-#| label: rebalance-py
+#### Python
+
+```{pyodide}
+#| exercise: rebal_1_py
+def rebalance_amount(target_pct, total, current_amount):
+    return ______ * total - ______
+
+rebalance_amount(0.80, 5600 + 2000, 5600)
+```
+
+::: {.hint exercise="rebal_1_py"}
+Where you should be (target × total) minus where you are.
+:::
+
+::: {.solution exercise="rebal_1_py"}
+```python
 def rebalance_amount(target_pct, total, current_amount):
     return target_pct * total - current_amount
 
-# $5,600 in stocks and $2,000 in bonds after a 30% stock drop
-print(rebalance_amount(target_pct=0.80, total=5600 + 2000, current_amount=5600))
+rebalance_amount(0.80, 5600 + 2000, 5600)
+```
+:::
 
-# several stock moves on an 80/20, $10,000 portfolio
-for move in [-0.30, -0.10, -0.05, 0.10, 0.30]:
-    stocks = 8000 * (1 + move)
-    total = stocks + 2000
-    drift = 100 * stocks / total - 80
-    amt = rebalance_amount(0.80, total, stocks)
-    print(f"stocks {move:+.0%}: share {stocks / total:.1%}, drift {drift:+.1f} pts, "
-          f"rebalance {abs(drift) > 5}, move ${amt:,.0f}")
-
-# rebalance with new money
-new_money = 1000
-print(min(new_money, rebalance_amount(0.80, 7600 + new_money, 5600)))
+```{pyodide}
+#| exercise: rebal_1_py
+#| check: true
+if result is not None and abs(result - 480) < 0.01:
+    feedback = {"correct": True, "message": "Right: move $480 from bonds into stocks, buying low."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Target share times total, minus what's in stocks now."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: rebalance-r
+```{webr}
+#| exercise: rebal_1_r
+rebalance_amount <- function(target_pct, total, current_amount) {
+  ______ * total - ______
+}
+rebalance_amount(0.80, 5600 + 2000, 5600)
+```
+
+::: {.hint exercise="rebal_1_r"}
+Where you should be (target × total) minus where you are.
+:::
+
+::: {.solution exercise="rebal_1_r"}
+```r
 rebalance_amount <- function(target_pct, total, current_amount) {
   target_pct * total - current_amount
 }
+rebalance_amount(0.80, 5600 + 2000, 5600)
+```
+:::
 
-# $5,600 in stocks and $2,000 in bonds after a 30% stock drop
-rebalance_amount(target_pct = 0.80, total = 5600 + 2000, current_amount = 5600)
-
-# several stock moves on an 80/20, $10,000 portfolio
-move   <- c(-0.30, -0.10, -0.05, 0.10, 0.30)
-stocks <- 8000 * (1 + move)
-bonds  <- 2000
-total  <- stocks + bonds
-data.frame(
-  stock_move  = move * 100,
-  stock_share = round(100 * stocks / total, 1),
-  drift_pts   = round(100 * stocks / total - 80, 1),
-  rebalance   = abs(100 * stocks / total - 80) > 5,
-  move_amount = round(rebalance_amount(0.80, total, stocks))
-)
-
-# rebalance with new money: how much of a new deposit goes to stocks?
-# (only works if the deposit is big enough; otherwise put it all in stocks)
-new_money <- 1000
-min(new_money, rebalance_amount(0.80, 7600 + new_money, 5600))
+```{webr}
+#| exercise: rebal_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 480) < 0.01)) {
+  list(correct = TRUE, message = "Right: move $480 from bonds into stocks, buying low.")
+} else {
+  list(correct = FALSE, message = "Not quite. Target share times total, minus what's in stocks now.")
+}
 ```
 
 :::
 
-Read a positive answer as "buy that much stock," and a negative answer as "sell that much stock." A 10% drop only moves the split about 2 points, so the 5 point rule says wait. With $1,000 of new money after the 30% drop, the full $1,000 goes to stocks and the gap closes from $480 to under $300 without selling anything.
+### Level 2: Practice
+
+Now stocks rise 30% instead: \$10,400 in stocks and \$2,000 in bonds. How much should move? (A negative answer means sell stocks.)
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 10400.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns -\$480: sell \$480 of stocks and buy bonds, selling high.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: rebal_2_py
+#| setup: true
+def rebalance_amount(target_pct, total, current_amount):
+    return target_pct * total - current_amount
+```
+
+```{pyodide}
+#| exercise: rebal_2_py
+rebalance_amount(______)
+```
+
+::: {.hint exercise="rebal_2_py"}
+The total is 10400 + 2000, and the current stock amount is 10400.
+:::
+
+::: {.solution exercise="rebal_2_py"}
+```python
+rebalance_amount(0.80, 10400 + 2000, 10400)
+```
+:::
+
+```{pyodide}
+#| exercise: rebal_2_py
+#| check: true
+if result is not None and abs(result - -480) < 0.01:
+    feedback = {"correct": True, "message": "Right: sell $480 of stocks. Rebalancing sells high as well as buying low."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Total is 12,400; stocks are 10,400."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: rebal_2_r
+#| setup: true
+rebalance_amount <- function(target_pct, total, current_amount) {
+  target_pct * total - current_amount
+}
+```
+
+```{webr}
+#| exercise: rebal_2_r
+rebalance_amount(______)
+```
+
+::: {.hint exercise="rebal_2_r"}
+The total is 10400 + 2000, and the current stock amount is 10400.
+:::
+
+::: {.solution exercise="rebal_2_r"}
+```r
+rebalance_amount(0.80, 10400 + 2000, 10400)
+```
+:::
+
+```{webr}
+#| exercise: rebal_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - -480) < 0.01)) {
+  list(correct = TRUE, message = "Right: sell $480 of stocks. Rebalancing sells high as well as buying low.")
+} else {
+  list(correct = FALSE, message = "Not quite. Total is 12,400; stocks are 10,400.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The book's rule: only rebalance when stocks drift more than 5 percentage points from the 80% target. Starting from \$8,000 stocks and \$2,000 bonds, stocks move −30%, −10%, −5%, +10%, or +30%. In how many of those cases should you rebalance?
+
+::: panel-tabset
+
+#### Excel
+
+Put the moves in `A2:A6`. Find stocks, the stock share, and the drift, then count drifts over 5 points.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Stocks in `B2`: `=8000*(1+A2)`. Share in `C2`: `=B2/(B2+2000)*100`. Drift in `D2`: `=ABS(C2-80)`. Fill down, then `=COUNTIF(D2:D6, ">5")` returns 1. Only the 30% drop (73.7% stocks) crosses the band.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: rebal_3_py
+#| setup: true
+import pandas as pd
+moves = pd.DataFrame({"stock_move": [-0.30, -0.10, -0.05, 0.10, 0.30]})
+```
+
+```{pyodide}
+#| exercise: rebal_3_py
+# add stocks, share, and drift columns, then count drifts over 5 points
+```
+
+::: {.hint exercise="rebal_3_py"}
+`stocks = 8000 * (1 + stock_move)`, share is `100 * stocks / (stocks + 2000)`, drift is `(share - 80).abs()`.
+:::
+
+::: {.solution exercise="rebal_3_py"}
+```python
+moves["stocks"] = 8000 * (1 + moves["stock_move"])
+moves["share"] = 100 * moves["stocks"] / (moves["stocks"] + 2000)
+moves["drift"] = (moves["share"] - 80).abs()
+(moves["drift"] > 5).sum()
+```
+:::
+
+```{pyodide}
+#| exercise: rebal_3_py
+#| check: true
+if result is not None and abs(result - 1) < 0.001:
+    feedback = {"correct": True, "message": "Right: just 1. Even a 30% rise only drifts stocks to 83.9%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Drift is the distance between the stock share and 80, in points."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: rebal_3_r
+#| setup: true
+library(dplyr)
+moves <- data.frame(stock_move = c(-0.30, -0.10, -0.05, 0.10, 0.30))
+```
+
+```{webr}
+#| exercise: rebal_3_r
+# add stocks, share, and drift columns, then count drifts over 5 points
+```
+
+::: {.hint exercise="rebal_3_r"}
+`mutate(stocks = 8000 * (1 + stock_move), share = 100 * stocks / (stocks + 2000), drift = abs(share - 80))`, then `filter(drift > 5)` and `nrow()`.
+:::
+
+::: {.solution exercise="rebal_3_r"}
+```r
+moves |>
+  mutate(
+    stocks = 8000 * (1 + stock_move),
+    share  = 100 * stocks / (stocks + 2000),
+    drift  = abs(share - 80)
+  ) |>
+  filter(drift > 5) |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: rebal_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1) < 0.001)) {
+  list(correct = TRUE, message = "Right: just 1. Even a 30% rise only drifts stocks to 83.9%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Drift is the distance between the stock share and 80, in points.")
+}
+```
+
+:::

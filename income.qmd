@@ -1,6 +1,9 @@
 ---
 title: "Income"
+engine: knitr
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +17,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -171,162 +180,315 @@ ggplot(df_w, aes(x = year, y = amount, fill = layer)) +
 
 The blue layer grows in a straight line, one \$9,360 deposit per year. The green layer is growth, and it passes the blue layer after about year 18.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `wealth_formula()`, then find the wealth after 40 years: \$62,400 income, 15% saved, 8% return.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Put the inputs in one row:
+Put the inputs in `A2` (62400), `B2` (0.15), `C2` (0.08), and `D2` (40). In `E2`, write a formula for total wealth (money put in plus growth).
 
-* `A2`: median income (62400)
-* `B2`: savings rate (0.15)
-* `C2`: annual return (0.08)
-* `D2`: years (40)
-
-Total contributed (the money put in) in `E2`:
-
-```swift
-=A2*B2*D2
-```
-
-Total wealth, contributions plus growth, in `F2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =(A2*B2)*(((1+C2)^D2-1)/C2)
 ```
 
-Excel's built in `FV()` gives the same \$2,424,769 (enter the yearly savings as a negative number because it is cash leaving your pocket):
+Or use `=FV(C2, D2, -A2*B2)`. Both return \$2,424,769.
+:::
 
-```swift
-=FV(C2, D2, -A2*B2)
-```
+#### Python
 
-Growth alone in `G2`:
-
-```swift
-=F2-E2
-```
-
-`F2` already includes everything in `E2`, so don't add the two together. To compare savings rates, fill `B3:B4` with 0.10 and 0.20 and copy the row down.
-
-## Python
-
-The Python version of `wealth_formula()` works the same way:
-
-```{python}
-#| label: wealth-formula-py
+```{pyodide}
+#| exercise: wealth_1_py
 def wealth_formula(median_income, savings_rate, annual_return, years):
-    # future value of saving a fixed amount every year (contributions plus growth)
+    annual_savings = median_income * ______
+    return annual_savings * (((1 + ______) ** years - 1) / annual_return)
+
+wealth_formula(62400, 0.15, 0.08, 40)
+```
+
+::: {.hint exercise="wealth_1_py"}
+Yearly savings is income times the savings rate. The growth factor uses the yearly return.
+:::
+
+::: {.solution exercise="wealth_1_py"}
+```python
+def wealth_formula(median_income, savings_rate, annual_return, years):
     annual_savings = median_income * savings_rate
-    return annual_savings * (((1 + annual_return)**years - 1) / annual_return)
+    return annual_savings * (((1 + annual_return) ** years - 1) / annual_return)
+
+wealth_formula(62400, 0.15, 0.08, 40)
+```
+:::
+
+```{pyodide}
+#| exercise: wealth_1_py
+#| check: true
+if result is not None and abs(result - 2424769.02) < 1:
+    feedback = {"correct": True, "message": "Right: about $2.4 million after 40 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check which argument goes in each blank."}
+feedback
 ```
 
-After 40 years with median income, a 15% savings rate, and an 8% return:
+#### R
 
-```{python}
-#| label: wealth-formula-py-apply
-fmt_dollar(wealth_formula(
-    median_income=62400,
-    savings_rate=0.15,
-    annual_return=0.08,
-    years=40
-))
-```
-
-Plain Python numbers are not vectorized, so we loop over the checkpoints:
-
-```{python}
-#| label: wealth-formula-py-checkpoints
-for yrs in [10, 18, 20, 30, 40]:
-    total = wealth_formula(62400, 0.15, 0.08, yrs)
-    put_in = 62400 * 0.15 * yrs
-    print(f"{yrs:>3} yrs  put in {fmt_dollar(put_in, 0):>10}  "
-          f"growth {fmt_dollar(total - put_in, 0):>11}  total {fmt_dollar(total, 0):>11}")
-```
-
-The same income at three savings rates after 40 years:
-
-```{python}
-#| label: wealth-formula-py-rates
-for rate in [0.10, 0.15, 0.20]:
-    print(f"{fmt_pct(rate):>6}  {fmt_dollar(62400 * rate, 0):>8}/yr  "
-          f"{fmt_dollar(wealth_formula(62400, rate, 0.08, 40), 0):>12}")
-```
-
-A savings rate of zero returns zero. A return of exactly zero raises a `ZeroDivisionError` in Python (R returns `NaN` instead), so with no growth use yearly savings × years:
-
-```{python}
-#| label: wealth-formula-py-edge
-print(wealth_formula(62400, savings_rate=0, annual_return=0.08, years=40))
-try:
-    wealth_formula(62400, savings_rate=0.15, annual_return=0, years=40)
-except ZeroDivisionError:
-    print("No growth:", fmt_dollar(62400 * 0.15 * 40))
-```
-
-## R
-
-`wealth_formula()` returns the future value of saving a fixed amount every year.
-
-```{r}
-#| label: wealth-formula-r
+```{webr}
+#| exercise: wealth_1_r
 wealth_formula <- function(median_income, savings_rate, annual_return, years) {
-  # future value of saving a fixed amount every year (contributions plus growth)
+  annual_savings <- median_income * ______
+  annual_savings * (((1 + ______)^years - 1) / annual_return)
+}
+wealth_formula(62400, 0.15, 0.08, 40)
+```
+
+::: {.hint exercise="wealth_1_r"}
+Yearly savings is income times the savings rate. The growth factor uses the yearly return.
+:::
+
+::: {.solution exercise="wealth_1_r"}
+```r
+wealth_formula <- function(median_income, savings_rate, annual_return, years) {
+  annual_savings <- median_income * savings_rate
+  annual_savings * (((1 + annual_return)^years - 1) / annual_return)
+}
+wealth_formula(62400, 0.15, 0.08, 40)
+```
+:::
+
+```{webr}
+#| exercise: wealth_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 2424769.02, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $2.4 million after 40 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check which argument goes in each blank.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+Same \$62,400 income, but now you save 20% for 30 years at 8%. How much of the total is growth (total minus money put in)?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 0.20 and `D2` to 30. In `F2`, find the growth.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=FV(C2, D2, -A2*B2) - A2*B2*D2
+```
+
+Growth is \$1,039,374 of the \$1,413,774 total.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: wealth_2_py
+#| setup: true
+def wealth_formula(median_income, savings_rate, annual_return, years):
+    annual_savings = median_income * savings_rate
+    return annual_savings * (((1 + annual_return) ** years - 1) / annual_return)
+```
+
+```{pyodide}
+#| exercise: wealth_2_py
+total = wealth_formula(______)
+put_in = ______
+total - put_in
+```
+
+::: {.hint exercise="wealth_2_py"}
+Money put in is yearly savings (income × rate) times the number of years.
+:::
+
+::: {.solution exercise="wealth_2_py"}
+```python
+total = wealth_formula(62400, 0.20, 0.08, 30)
+put_in = 62400 * 0.20 * 30
+total - put_in
+```
+:::
+
+```{pyodide}
+#| exercise: wealth_2_py
+#| check: true
+if result is not None and abs(result - 1039374.47) < 1:
+    feedback = {"correct": True, "message": "Right: growth is about $1.04 million of the $1.41 million total."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Did you subtract the money put in from the total?"}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: wealth_2_r
+#| setup: true
+wealth_formula <- function(median_income, savings_rate, annual_return, years) {
   annual_savings <- median_income * savings_rate
   annual_savings * (((1 + annual_return)^years - 1) / annual_return)
 }
 ```
 
-After 40 years with median income, a 15% savings rate, and an 8% return:
-
-```{r}
-#| label: wealth-formula-r-apply
-wealth_formula(
-  median_income = 62400,
-  savings_rate = 0.15,
-  annual_return = 0.08,
-  years = 40
-) |> fmt_dollar()
+```{webr}
+#| exercise: wealth_2_r
+total <- wealth_formula(______)
+put_in <- ______
+total - put_in
 ```
 
-The function is vectorized, so we can pass several checkpoints at once and split each total into money put in and growth:
+::: {.hint exercise="wealth_2_r"}
+Money put in is yearly savings (income × rate) times the number of years.
+:::
 
-```{r}
-#| label: wealth-formula-r-checkpoints
-yrs <- c(10, 18, 20, 30, 40)
-total <- wealth_formula(62400, 0.15, 0.08, yrs)
-put_in <- 62400 * 0.15 * yrs
-data.frame(
-  years  = yrs,
-  put_in = fmt_dollar(put_in, 0),
-  growth = fmt_dollar(total - put_in, 0),
-  total  = fmt_dollar(total, 0)
-)
+::: {.solution exercise="wealth_2_r"}
+```r
+total <- wealth_formula(62400, 0.20, 0.08, 30)
+put_in <- 62400 * 0.20 * 30
+total - put_in
+```
+:::
+
+```{webr}
+#| exercise: wealth_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 1039374.47, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: growth is about $1.04 million of the $1.41 million total.")
+} else {
+  list(correct = FALSE, message = "Not quite. Did you subtract the money put in from the total?")
+}
 ```
 
-Year 18 is the first checkpoint where growth is bigger than the money put in.
+:::
 
-Stoicism is the savings rate. Here is the same income at three savings rates after 40 years:
+### Level 3: Challenge
 
-```{r}
-#| label: wealth-formula-r-rates
-rates <- c(0.10, 0.15, 0.20)
-data.frame(
-  savings_rate = fmt_pct(rates),
-  yearly       = fmt_dollar(62400 * rates, 0),
-  after_40     = fmt_dollar(wealth_formula(62400, rates, 0.08, 40), 0)
-)
+Back to 15% saved at 8%. In which year does growth first become bigger than the money put in?
+
+::: panel-tabset
+
+#### Excel
+
+Put years 1 to 40 in `A5:A44`. Build columns for total wealth, money put in, and growth, then find the first year where growth is bigger.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B5`, `C5`, and `D5`, then fill down to row 44:
+
+```swift
+=FV($C$2, A5, -$A$2*$B$2)
+=$A$2*$B$2*A5
+=B5-C5
 ```
 
-Two edge cases are worth checking. A savings rate of zero collapses the whole term to zero, just like Galloway's formula says. A return of exactly zero divides by zero, so R returns `NaN`; with no growth the answer is simply yearly savings × years.
+Then find the first year:
 
-```{r}
-#| label: wealth-formula-r-edge
-wealth_formula(62400, savings_rate = 0, annual_return = 0.08, years = 40)
-wealth_formula(62400, savings_rate = 0.15, annual_return = 0, years = 40)
-62400 * 0.15 * 40
+```swift
+=MATCH(TRUE, D5:D44>C5:C44, 0)
 ```
 
-How to read this result: about \$2.4 million after 40 years, and only \$374,400 of it is money you put in. Time and growth did the rest.
+The answer is year 18.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: wealth_3_py
+#| setup: true
+def wealth_formula(median_income, savings_rate, annual_return, years):
+    annual_savings = median_income * savings_rate
+    return annual_savings * (((1 + annual_return) ** years - 1) / annual_return)
+```
+
+```{pyodide}
+#| exercise: wealth_3_py
+first_year = None
+# loop over years 1 to 40 and stop at the first year growth beats money put in
+
+first_year
+```
+
+::: {.hint exercise="wealth_3_py"}
+Use `for years in range(1, 41):`, compute `total` and `put_in`, and `break` when `total - put_in > put_in`.
+:::
+
+::: {.solution exercise="wealth_3_py"}
+```python
+first_year = None
+for years in range(1, 41):
+    total = wealth_formula(62400, 0.15, 0.08, years)
+    put_in = 62400 * 0.15 * years
+    if total - put_in > put_in:
+        first_year = years
+        break
+
+first_year
+```
+:::
+
+```{pyodide}
+#| exercise: wealth_3_py
+#| check: true
+if result == 18:
+    feedback = {"correct": True, "message": "Right: year 18. From then on, growth does more work than you do."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Compare growth (total minus put in) to money put in."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: wealth_3_r
+#| setup: true
+wealth_formula <- function(median_income, savings_rate, annual_return, years) {
+  annual_savings <- median_income * savings_rate
+  annual_savings * (((1 + annual_return)^years - 1) / annual_return)
+}
+```
+
+```{webr}
+#| exercise: wealth_3_r
+years <- 1:40
+# find the first year growth beats money put in
+
+```
+
+::: {.hint exercise="wealth_3_r"}
+`wealth_formula()` is vectorized, so pass all 40 years at once. Then use `min(years[...])` with a comparison inside the brackets.
+:::
+
+::: {.solution exercise="wealth_3_r"}
+```r
+years <- 1:40
+total <- wealth_formula(62400, 0.15, 0.08, years)
+put_in <- 62400 * 0.15 * years
+min(years[total - put_in > put_in])
+```
+:::
+
+```{webr}
+#| exercise: wealth_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 18))) {
+  list(correct = TRUE, message = "Right: year 18. From then on, growth does more work than you do.")
+} else {
+  list(correct = FALSE, message = "Not quite. Compare growth (total minus put in) to money put in.")
+}
+```
 
 :::
 
@@ -372,127 +534,287 @@ ggplot(df_fc, aes(x = amount, y = bar, fill = part)) +
 
 The red section covers 5 and a half of the 10 pieces, so fixed costs take 55% of the paycheck. The ceiling is 60% of \$3,200, or \$1,920.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `fixed_cost_ratio()`, then find the ratio for \$1,760 of fixed costs on \$3,200 take-home pay.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Enter fixed costs in `A2` (1760) and take-home pay in `B2` (3200), then in `C2`:
+Enter fixed costs in `A2` (1760) and take-home pay in `B2` (3200). In `C2`, write the ratio as a number out of 100.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =A2/B2*100
 ```
 
-That gives `55`. Or enter `=A2/B2` and format `C2` as a percentage (`Home → %`) to display 55%. For a percent string:
+This returns 55. Or enter `=A2/B2` and format the cell as a percentage.
+:::
 
-```swift
-=TEXT(A2/B2, "0.0%")
+#### Python
+
+```{pyodide}
+#| exercise: fixed_1_py
+def fixed_cost_ratio(fixed_costs, take_home):
+    return (______ / ______) * 100
+
+fixed_cost_ratio(1760, 3200)
 ```
 
-![](img/income-fixed-cost-ratio-text-perc.png){width="75%"}
+::: {.hint exercise="fixed_1_py"}
+The ratio is the part (fixed costs) divided by the whole (take-home pay).
+:::
 
-The room left under the 60% ceiling, in `D2`:
+::: {.solution exercise="fixed_1_py"}
+```python
+def fixed_cost_ratio(fixed_costs, take_home):
+    return (fixed_costs / take_home) * 100
+
+fixed_cost_ratio(1760, 3200)
+```
+:::
+
+```{pyodide}
+#| exercise: fixed_1_py
+#| check: true
+if result is not None and abs(result - 55) < 0.01:
+    feedback = {"correct": True, "message": "Right: 55%, under the 60% ceiling."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide fixed costs by take-home pay."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fixed_1_r
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  (______ / ______) * 100
+}
+fixed_cost_ratio(1760, 3200)
+```
+
+::: {.hint exercise="fixed_1_r"}
+The ratio is the part (fixed costs) divided by the whole (take-home pay).
+:::
+
+::: {.solution exercise="fixed_1_r"}
+```r
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  (fixed_costs / take_home) * 100
+}
+fixed_cost_ratio(1760, 3200)
+```
+:::
+
+```{webr}
+#| exercise: fixed_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 55))) {
+  list(correct = TRUE, message = "Right: 55%, under the 60% ceiling.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide fixed costs by take-home pay.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+A job with lower pay brings home \$2,800 a month, with the same \$1,760 of fixed costs. How much room is left under the 60% ceiling? (A negative answer means you are over.)
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 2800. In `D2`, find the room left under the ceiling.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =B2*0.6-A2
 ```
 
-A pass/fail flag in `E2`:
+This returns -80: the same fixed costs are \$80 over the line on a smaller paycheck.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: fixed_2_py
+take_home = 2800
+fixed_costs = 1760
+ceiling_60 = ______
+ceiling_60 - fixed_costs
+```
+
+::: {.hint exercise="fixed_2_py"}
+The ceiling is 60% of take-home pay.
+:::
+
+::: {.solution exercise="fixed_2_py"}
+```python
+take_home = 2800
+fixed_costs = 1760
+ceiling_60 = take_home * 0.60
+ceiling_60 - fixed_costs
+```
+:::
+
+```{pyodide}
+#| exercise: fixed_2_py
+#| check: true
+if result is not None and abs(result - (-80)) < 0.01:
+    feedback = {"correct": True, "message": "Right: $80 over the line. Same rent, smaller paycheck."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply take-home pay by 0.60, then subtract fixed costs."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fixed_2_r
+take_home <- 2800
+fixed_costs <- 1760
+ceiling_60 <- ______
+ceiling_60 - fixed_costs
+```
+
+::: {.hint exercise="fixed_2_r"}
+The ceiling is 60% of take-home pay.
+:::
+
+::: {.solution exercise="fixed_2_r"}
+```r
+take_home <- 2800
+fixed_costs <- 1760
+ceiling_60 <- take_home * 0.60
+ceiling_60 - fixed_costs
+```
+:::
+
+```{webr}
+#| exercise: fixed_2_r
+#| check: true
+if (isTRUE(all.equal(.result, -80))) {
+  list(correct = TRUE, message = "Right: $80 over the line. Same rent, smaller paycheck.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply take-home pay by 0.60, then subtract fixed costs.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+You bring home \$3,200 a month, and your fixed costs other than rent (insurance, phone, loan payment) add up to \$560. Write `max_fixed_costs(take_home, ceiling)` that returns the most you can spend on fixed costs, then use it to find the highest rent that keeps you under 60%.
+
+::: panel-tabset
+
+#### Excel
+
+With take-home pay in `B2` (3200), find the highest rent in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=IF(A2/B2<=0.6, "Under 60%", "Over 60%")
+=B2*0.6-560
 ```
 
-Add more budgets in rows 3 to 5 and fill `C2:E2` down.
+The highest rent is \$1,360.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: fixed-cost-py
-def fixed_cost_ratio(fixed_costs, take_home):
-    return (fixed_costs / take_home) * 100
+```{pyodide}
+#| exercise: fixed_3_py
+def max_fixed_costs(take_home, ceiling=0.60):
+    # your code here
+    pass
+
+max_fixed_costs(3200) - 560
 ```
 
-\$1,760 of fixed costs on \$3,200 take-home pay:
+::: {.hint exercise="fixed_3_py"}
+The function only needs one line: take-home pay times the ceiling.
+:::
 
-```{python}
-#| label: fixed-cost-py-apply
-fixed_cost_ratio(fixed_costs=1760, take_home=3200)
+::: {.solution exercise="fixed_3_py"}
+```python
+def max_fixed_costs(take_home, ceiling=0.60):
+    return take_home * ceiling
+
+max_fixed_costs(3200) - 560
+```
+:::
+
+```{pyodide}
+#| exercise: fixed_3_py
+#| check: true
+if result is not None and abs(result - 1360) < 0.01:
+    feedback = {"correct": True, "message": "Right: rent up to $1,360 keeps you at 60%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Return take_home * ceiling, then subtract the other fixed costs."}
+feedback
 ```
 
-Python prints `55.00000000000001` because computers store decimals in binary, which adds a tiny rounding error. Wrap the result in `round()` for display:
+#### R
 
-```{python}
-#| label: fixed-cost-py-round
-round(fixed_cost_ratio(fixed_costs=1760, take_home=3200), 1)
+```{webr}
+#| exercise: fixed_3_r
+max_fixed_costs <- function(take_home, ceiling = 0.60) {
+  # your code here
+}
+max_fixed_costs(3200) - 560
 ```
 
-Room left under the 60% ceiling:
+::: {.hint exercise="fixed_3_r"}
+The function only needs one line: take-home pay times the ceiling.
+:::
 
-```{python}
-#| label: fixed-cost-py-room
-ceiling_60 = 3200 * 0.60
-print(fmt_dollar(ceiling_60), fmt_dollar(ceiling_60 - 1760))
+::: {.solution exercise="fixed_3_r"}
+```r
+max_fixed_costs <- function(take_home, ceiling = 0.60) {
+  take_home * ceiling
+}
+max_fixed_costs(3200) - 560
+```
+:::
+
+```{webr}
+#| exercise: fixed_3_r
+#| check: true
+if (isTRUE(all.equal(.result, 1360))) {
+  list(correct = TRUE, message = "Right: rent up to $1,360 keeps you at 60%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Return take_home * ceiling, then subtract the other fixed costs.")
+}
 ```
 
-The same comparison across four budgets:
+:::
 
-```{python}
-#| label: fixed-cost-py-compare
-budgets = [
-    ("First job", 1760, 3200),
-    ("Lower pay", 1760, 2800),
-    ("After a raise", 1760, 3600),
-    ("Pricier apartment", 2160, 3200),
-]
-for scenario, fixed, pay in budgets:
-    ratio = fixed_cost_ratio(fixed, pay)
-    print(f"{scenario:<18} {ratio:5.1f}  under 60: {ratio <= 60}")
-```
-
-## R
+## Using Pipes in R
 
 ```{r}
 #| label: fixed-cost-r
+#| include: false
 fixed_cost_ratio <- function(fixed_costs, take_home) {
   (fixed_costs / take_home) * 100
 }
 ```
 
-\$1,760 of fixed costs on \$3,200 take-home pay:
-
-```{r}
-#| label: fixed-cost-r-apply
-fixed_cost_ratio(fixed_costs = 1760, take_home = 3200)
+```{python}
+#| label: fixed-cost-py
+#| include: false
+def fixed_cost_ratio(fixed_costs, take_home):
+    return (fixed_costs / take_home) * 100
 ```
-
-How much room is left under the 60% ceiling?
-
-```{r}
-#| label: fixed-cost-r-room
-ceiling_60 <- 3200 * 0.60
-ceiling_60
-ceiling_60 - 1760
-```
-
-The ratio works on several budgets at once. Below, the same \$1,760 of fixed costs is compared against three paychecks, plus a higher rent on the original paycheck:
-
-```{r}
-#| label: fixed-cost-r-compare
-budgets <- data.frame(
-  scenario    = c("First job", "Lower pay", "After a raise", "Pricier apartment"),
-  fixed_costs = c(1760, 1760, 1760, 2160),
-  take_home   = c(3200, 2800, 3600, 3200)
-)
-budgets$ratio    <- round(fixed_cost_ratio(budgets$fixed_costs, budgets$take_home), 1)
-budgets$under_60 <- budgets$ratio <= 60
-budgets
-```
-
-How to read this result: anything at or under 60 leaves at least 40% of the paycheck for savings and flexible spending. A \$400 jump in rent pushes the same paycheck to 67.5%, over the line.
-
-:::
-
-## Using Pipes in R
 
 The pipe operator (`|>`) passes the output of one function directly into the next function as its first argument, so the code reads left to right instead of inside out. `fixed_cost_ratio()` already multiplies by 100, so we can pipe its result into `round()` and then `paste0()` to add the percent sign.
 
@@ -544,6 +866,44 @@ Python's approach emphasizes explicit intermediate steps. This reads top to bott
 
 Read more about the pipe operator in [R vs. Python](r_vs_py.qmd#sec-pipe-operator).
 
+### Exercise: Pipes
+
+Rewrite the nested call below with the pipe so it reads left to right. Use the pricier apartment: \$2,160 of fixed costs on \$3,200.
+
+```{webr}
+#| exercise: pipes_r
+#| setup: true
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  (fixed_costs / take_home) * 100
+}
+```
+
+```{webr}
+#| exercise: pipes_r
+# nested: paste0(round(fixed_cost_ratio(2160, 3200), 1), "%")
+fixed_cost_ratio(2160, 3200) |> ______ |> ______
+```
+
+::: {.hint exercise="pipes_r"}
+Each step after the pipe takes the previous result as its first argument: `round(1)`, then `paste0("%")`.
+:::
+
+::: {.solution exercise="pipes_r"}
+```r
+fixed_cost_ratio(2160, 3200) |> round(1) |> paste0("%")
+```
+:::
+
+```{webr}
+#| exercise: pipes_r
+#| check: true
+if (identical(.result, "67.5%")) {
+  list(correct = TRUE, message = "Right: 67.5%, over the 60% line.")
+} else {
+  list(correct = FALSE, message = "Not quite. Round to 1 digit, then paste on the percent sign.")
+}
+```
+
 ## What a Raise Is Really Worth
 
 Say a raise adds \$400 a month to your take-home pay, and you split it: \$200 goes to your lifestyle and \$200 gets invested. The chart shows what that single habit produces at 7% over 25 years.
@@ -593,38 +953,131 @@ ggplot(df_raise, aes(x = year, y = value)) +
   )
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `raise_invested_value()`, then find the value of investing half of a \$400 raise for 25 years at 7%.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Use the built in `FV()` function: `FV(rate, nper, pmt)`.
+Use the built in `FV(rate, nper, pmt)` function with a monthly rate, a number of months, and the monthly contribution as a negative number.
 
-* `rate`: monthly return = `7%/12`
-* `nper`: number of months = `25*12`
-* `pmt`: monthly contribution as a negative = `-200`
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =FV(7%/12, 25*12, -200)
 ```
 
-![](img/income-future-value.png){width="75%" fig-align="center"}
+This returns \$162,014.34.
+:::
 
-This returns \$162,014.34. To compare splits, put the raise in `A2` (400), the share in `B2` (0.5), the yearly rate in `C2` (0.07), and the years in `D2` (25), then in `E2`:
+#### Python
 
-```swift
-=FV(C2/12, D2*12, -A2*B2)
+```{pyodide}
+#| exercise: raise_1_py
+def raise_invested_value(monthly_raise, invest_share, rate, years):
+    contribution = monthly_raise * ______
+    monthly_rate = rate / ______
+    periods = years * 12
+    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+
+raise_invested_value(400, 0.5, 0.07, 25)
 ```
 
-Fill rows 3 to 5 with shares of 0.25, 0.75, and 1, and copy `E2` down. Money put in, in `F2`:
+::: {.hint exercise="raise_1_py"}
+The contribution is the share of the raise you invest. The yearly rate is split across 12 months.
+:::
 
-```swift
-=A2*B2*D2*12
+::: {.solution exercise="raise_1_py"}
+```python
+def raise_invested_value(monthly_raise, invest_share, rate, years):
+    contribution = monthly_raise * invest_share
+    monthly_rate = rate / 12
+    periods = years * 12
+    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+
+raise_invested_value(400, 0.5, 0.07, 25)
+```
+:::
+
+```{pyodide}
+#| exercise: raise_1_py
+#| check: true
+if result is not None and abs(result - 162014.34) < 1:
+    feedback = {"correct": True, "message": "Right: about $162,000 from $200 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check the share and the number of months in a year."}
+feedback
 ```
 
-## Python
+#### R
 
-```{python}
-#| label: raise-value-py
+```{webr}
+#| exercise: raise_1_r
+raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
+  contribution <- monthly_raise * ______
+  monthly_rate <- rate / ______
+  periods      <- years * 12
+  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
+}
+raise_invested_value(400, 0.5, 0.07, 25)
+```
+
+::: {.hint exercise="raise_1_r"}
+The contribution is the share of the raise you invest. The yearly rate is split across 12 months.
+:::
+
+::: {.solution exercise="raise_1_r"}
+```r
+raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
+  contribution <- monthly_raise * invest_share
+  monthly_rate <- rate / 12
+  periods      <- years * 12
+  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
+}
+raise_invested_value(400, 0.5, 0.07, 25)
+```
+:::
+
+```{webr}
+#| exercise: raise_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 162014.34, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $162,000 from $200 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check the share and the number of months in a year.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+Now invest 75% of the same \$400 raise for 25 years at 7%. How much of the final value is growth?
+
+::: panel-tabset
+
+#### Excel
+
+Find the growth in one formula: the future value minus the money put in.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=FV(7%/12, 25*12, -300) - 300*25*12
+```
+
+Growth is \$153,022 of the \$243,022 total.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: raise_2_py
+#| setup: true
 def raise_invested_value(monthly_raise, invest_share, rate, years):
     contribution = monthly_raise * invest_share
     monthly_rate = rate / 12
@@ -632,35 +1085,40 @@ def raise_invested_value(monthly_raise, invest_share, rate, years):
     return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
 ```
 
-Half of a \$400/month raise, invested for 25 years at 7%:
-
-```{python}
-#| label: raise-value-py-apply
-fmt_dollar(raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25))
+```{pyodide}
+#| exercise: raise_2_py
+value = raise_invested_value(______)
+put_in = ______
+value - put_in
 ```
 
-Sanity check on money put in vs. growth:
+::: {.hint exercise="raise_2_py"}
+75% of \$400 is \$300 a month, for 25 × 12 months.
+:::
 
-```{python}
-#| label: raise-value-py-check
-fv = raise_invested_value(400, 0.5, 0.07, 25)
-put_in = 200 * 25 * 12
-print(fmt_dollar(put_in, 0), fmt_dollar(fv - put_in, 0))
+::: {.solution exercise="raise_2_py"}
+```python
+value = raise_invested_value(400, 0.75, 0.07, 25)
+put_in = 400 * 0.75 * 25 * 12
+value - put_in
+```
+:::
+
+```{pyodide}
+#| exercise: raise_2_py
+#| check: true
+if result is not None and abs(result - 153021.51) < 1:
+    feedback = {"correct": True, "message": "Right: about $153,000 of growth on $90,000 put in."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Money put in is $300 a month for 300 months."}
+feedback
 ```
 
-The same \$400 raise split four ways:
+#### R
 
-```{python}
-#| label: raise-value-py-shares
-for share in [0.25, 0.50, 0.75, 1.00]:
-    print(f"{fmt_pct(share, 0):>5}  {fmt_dollar(400 * share, 0):>5}/mo  "
-          f"{fmt_dollar(raise_invested_value(400, share, 0.07, 25), 0):>9}")
-```
-
-## R
-
-```{r}
-#| label: raise-value-r
+```{webr}
+#| exercise: raise_2_r
+#| setup: true
 raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
   contribution <- monthly_raise * invest_share
   monthly_rate <- rate / 12
@@ -669,38 +1127,149 @@ raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
 }
 ```
 
-Half of a \$400/month raise, invested for 25 years at 7%:
-
-```{r}
-#| label: raise-value-r-apply
-raise_invested_value(
-  monthly_raise = 400,
-  invest_share = 0.5,
-  rate = 0.07,
-  years = 25) |> fmt_dollar()
+```{webr}
+#| exercise: raise_2_r
+value <- raise_invested_value(______)
+put_in <- ______
+value - put_in
 ```
 
-Sanity check: you put in \$200 × 300 months = \$60,000, so growth added about \$102,000.
+::: {.hint exercise="raise_2_r"}
+75% of \$400 is \$300 a month, for 25 × 12 months.
+:::
 
-```{r}
-#| label: raise-value-r-check
-fv <- raise_invested_value(400, 0.5, 0.07, 25)
-put_in <- 200 * 25 * 12
-c(put_in = put_in, growth = round(fv - put_in))
+::: {.solution exercise="raise_2_r"}
+```r
+value <- raise_invested_value(400, 0.75, 0.07, 25)
+put_in <- 400 * 0.75 * 25 * 12
+value - put_in
+```
+:::
+
+```{webr}
+#| exercise: raise_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 153021.51, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $153,000 of growth on $90,000 put in.")
+} else {
+  list(correct = FALSE, message = "Not quite. Money put in is $300 a month for 300 months.")
+}
 ```
 
-How big a share should you invest? Here is the same \$400 raise split four ways, over 25 years:
+:::
 
-```{r}
-#| label: raise-value-r-shares
-shares <- c(0.25, 0.50, 0.75, 1.00)
-data.frame(
-  invest_share = fmt_pct(shares, 0),
-  monthly      = fmt_dollar(400 * shares, 0),
-  after_25     = fmt_dollar(raise_invested_value(400, shares, 0.07, 25), 0)
-)
+### Level 3: Challenge
+
+You invest half of a \$400 raise at 7%. How many whole years until it is worth at least \$100,000?
+
+::: panel-tabset
+
+#### Excel
+
+Put years 1 to 30 in `A2:A31`. Find the value at each year, then find the first year at or above \$100,000.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, then fill down to row 31:
+
+```swift
+=FV(7%/12, A2*12, -200)
 ```
 
-How to read this result: every extra \$100 a month you invest adds about \$81,000 after 25 years. Even the 25% split grows to more than \$80,000.
+Then:
+
+```swift
+=MATCH(TRUE, B2:B31>=100000, 0)
+```
+
+The answer is 20 years.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: raise_3_py
+#| setup: true
+def raise_invested_value(monthly_raise, invest_share, rate, years):
+    contribution = monthly_raise * invest_share
+    monthly_rate = rate / 12
+    periods = years * 12
+    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+```
+
+```{pyodide}
+#| exercise: raise_3_py
+years = 1
+# keep adding a year until the value reaches $100,000
+
+years
+```
+
+::: {.hint exercise="raise_3_py"}
+Use `while raise_invested_value(400, 0.5, 0.07, years) < 100000:` and add 1 to `years` inside the loop.
+:::
+
+::: {.solution exercise="raise_3_py"}
+```python
+years = 1
+while raise_invested_value(400, 0.5, 0.07, years) < 100000:
+    years += 1
+
+years
+```
+:::
+
+```{pyodide}
+#| exercise: raise_3_py
+#| check: true
+if result == 20:
+    feedback = {"correct": True, "message": "Right: 20 years turns $200 a month into $100,000."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Stop at the first year the value is at least $100,000."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: raise_3_r
+#| setup: true
+raise_invested_value <- function(monthly_raise, invest_share, rate, years) {
+  contribution <- monthly_raise * invest_share
+  monthly_rate <- rate / 12
+  periods      <- years * 12
+  contribution * (((1 + monthly_rate)^periods - 1) / monthly_rate)
+}
+```
+
+```{webr}
+#| exercise: raise_3_r
+years <- 1:30
+# find the first year the value is at least $100,000
+
+```
+
+::: {.hint exercise="raise_3_r"}
+`raise_invested_value()` is vectorized, so pass all 30 years at once. Then use `min(years[...])`.
+:::
+
+::: {.solution exercise="raise_3_r"}
+```r
+years <- 1:30
+value <- raise_invested_value(400, 0.5, 0.07, years)
+min(years[value >= 100000])
+```
+:::
+
+```{webr}
+#| exercise: raise_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 20))) {
+  list(correct = TRUE, message = "Right: 20 years turns $200 a month into $100,000.")
+} else {
+  list(correct = FALSE, message = "Not quite. Stop at the first year the value is at least $100,000.")
+}
+```
 
 :::

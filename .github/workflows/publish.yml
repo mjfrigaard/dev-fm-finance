@@ -25,7 +25,7 @@ jobs:
       # Code results come from the committed _freeze/ folder, so R and
       # Python are not needed here. Render locally before pushing.
       - name: Render website
-        run: quarto render --to html
+        run: quarto render
 
       - uses: actions/upload-pages-artifact@v3
         with:

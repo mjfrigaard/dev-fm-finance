@@ -1,6 +1,15 @@
 ---
 title: "Retirement Accounts"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -61,73 +76,275 @@ ggplot(df_match, aes(x = amount, y = bar, fill = part)) +
 
 The second example runs the same job across several contribution rates. Past 6%, your own deposits keep growing but the match stops. The last example shows what one year of the full match becomes if it stays invested for 40 years at 7%.
 
-::: panel-tabset
-## Excel
+Read the match as a 50% return the day you deposit. Contributing 3% instead of 6% leaves $675 a year on the table, and one year of the full match grows to about $20,200 over 40 years at 7%.
 
-With `Salary` in `B2`, `Your %` in `C2`, `Match limit %` in `D2`, and `Match rate` in `E2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `employer_match()`, then find the yearly match on a \$45,000 salary when you contribute 6% and the employer matches 50% of the first 6%.
+
+::: panel-tabset
+
+#### Excel
+
+Put the salary in `A2` (45000), your contribution in `B2` (0.06), the match limit in `C2` (0.06), and the match rate in `D2` (0.5). Find the match in `E2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2 * MIN(C2, D2) * E2
+=A2 * MIN(B2, C2) * D2
 ```
 
-List several rates down column `C` and copy the formula down to see where the match stops growing.
+This returns \$1,350.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: match-py
+```{pyodide}
+#| exercise: match_1_py
+def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
+    return salary * ______(contribution_pct, match_limit_pct) * match_rate
+
+employer_match(45000, 0.06, 0.06, 0.50)
+```
+
+::: {.hint exercise="match_1_py"}
+The employer only matches up to the limit, so use the smaller of your % and the limit.
+:::
+
+::: {.solution exercise="match_1_py"}
+```python
 def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
     return salary * min(contribution_pct, match_limit_pct) * match_rate
 
-# $45,000 salary, 6% contribution, 50% match on the first 6%
-print(employer_match(salary=45000, contribution_pct=0.06,
-                     match_limit_pct=0.06, match_rate=0.50))
+employer_match(45000, 0.06, 0.06, 0.50)
+```
+:::
 
-# same job, but only contributing 3%
-print(employer_match(salary=45000, contribution_pct=0.03,
-                     match_limit_pct=0.06, match_rate=0.50))
-
-# several contribution rates
-for pct in [0, 0.03, 0.06, 0.10, 0.15]:
-    m = employer_match(45000, pct, 0.06, 0.50)
-    print(f"{pct:>4.0%}: you ${45000 * pct:>6,.0f}, match ${m:>5,.0f}, missed ${1350 - m:>5,.0f}")
-
-# one year of the full match, invested for 40 years at 7%
-print(1350 * 1.07 ** 40)
+```{pyodide}
+#| exercise: match_1_py
+#| check: true
+if result is not None and abs(result - 1350) < 0.01:
+    feedback = {"correct": True, "message": "Right: $1,350 a year of free money."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use the smaller of your % and the limit."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: match-r
+```{webr}
+#| exercise: match_1_r
+employer_match <- function(salary, contribution_pct, match_limit_pct, match_rate) {
+  salary * ______(contribution_pct, match_limit_pct) * match_rate
+}
+employer_match(45000, 0.06, 0.06, 0.50)
+```
+
+::: {.hint exercise="match_1_r"}
+The employer only matches up to the limit, so use the smaller of your % and the limit. `pmin()` does it element by element.
+:::
+
+::: {.solution exercise="match_1_r"}
+```r
 employer_match <- function(salary, contribution_pct, match_limit_pct, match_rate) {
   salary * pmin(contribution_pct, match_limit_pct) * match_rate
 }
+employer_match(45000, 0.06, 0.06, 0.50)
+```
+:::
 
-# $45,000 salary, 6% contribution, 50% match on the first 6%
-employer_match(salary = 45000, contribution_pct = 0.06,
-               match_limit_pct = 0.06, match_rate = 0.50)
-
-# same job, but only contributing 3%
-employer_match(salary = 45000, contribution_pct = 0.03,
-               match_limit_pct = 0.06, match_rate = 0.50)
-
-# several contribution rates
-pct <- c(0, 0.03, 0.06, 0.10, 0.15)
-data.frame(
-  your_pct     = pct * 100,
-  you_put_in   = 45000 * pct,
-  match        = employer_match(45000, pct, 0.06, 0.50),
-  match_missed = 1350 - employer_match(45000, pct, 0.06, 0.50)
-)
-
-# one year of the full match, invested for 40 years at 7%
-1350 * 1.07^40
+```{webr}
+#| exercise: match_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1350) < 0.01)) {
+  list(correct = TRUE, message = "Right: $1,350 a year of free money.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use the smaller of your % and the limit.")
+}
 ```
 
 :::
 
-Read the match as a 50% return the day you deposit. Contributing 3% instead of 6% leaves $675 a year on the table, and one year of the full match grows to about $20,200 over 40 years at 7%.
+### Level 2: Practice
+
+Same job, but you only contribute 3%. What is the match now?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 0.03.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$675. Half the match is left on the table.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: match_2_py
+#| setup: true
+def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
+    return salary * min(contribution_pct, match_limit_pct) * match_rate
+```
+
+```{pyodide}
+#| exercise: match_2_py
+employer_match(______)
+```
+
+::: {.hint exercise="match_2_py"}
+Only your contribution changes: 0.03.
+:::
+
+::: {.solution exercise="match_2_py"}
+```python
+employer_match(45000, 0.03, 0.06, 0.50)
+```
+:::
+
+```{pyodide}
+#| exercise: match_2_py
+#| check: true
+if result is not None and abs(result - 675) < 0.01:
+    feedback = {"correct": True, "message": "Right: $675, half of what's on offer."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Change your contribution to 0.03."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: match_2_r
+#| setup: true
+employer_match <- function(salary, contribution_pct, match_limit_pct, match_rate) {
+  salary * pmin(contribution_pct, match_limit_pct) * match_rate
+}
+```
+
+```{webr}
+#| exercise: match_2_r
+employer_match(______)
+```
+
+::: {.hint exercise="match_2_r"}
+Only your contribution changes: 0.03.
+:::
+
+::: {.solution exercise="match_2_r"}
+```r
+employer_match(45000, 0.03, 0.06, 0.50)
+```
+:::
+
+```{webr}
+#| exercise: match_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 675) < 0.01)) {
+  list(correct = TRUE, message = "Right: $675, half of what's on offer.")
+} else {
+  list(correct = FALSE, message = "Not quite. Change your contribution to 0.03.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Five coworkers each earn \$45,000 with the same 50%-of-6% match, contributing 0%, 3%, 6%, 10%, and 15%. The full match is \$1,350. How much match do they miss in total?
+
+::: panel-tabset
+
+#### Excel
+
+Put the rates in `A2:A6`, the match in `B`, and the missed match in `C`, then total it.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=45000*MIN(A2, 6%)*50%`. In `C2`: `=1350 - B2`. Then `=SUM(C2:C6)` returns \$2,025. Contributing more than 6% doesn't earn more match.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: match_3_py
+#| setup: true
+import pandas as pd
+coworkers = pd.DataFrame({"pct": [0, 0.03, 0.06, 0.10, 0.15]})
+```
+
+```{pyodide}
+#| exercise: match_3_py
+# add a match column, then total the missed match
+```
+
+::: {.hint exercise="match_3_py"}
+`min()` can't compare a whole column to 0.06. Use `coworkers["pct"].clip(upper=0.06)` to cap each row.
+:::
+
+::: {.solution exercise="match_3_py"}
+```python
+coworkers["match"] = 45000 * coworkers["pct"].clip(upper=0.06) * 0.50
+(1350 - coworkers["match"]).sum()
+```
+:::
+
+```{pyodide}
+#| exercise: match_3_py
+#| check: true
+if result is not None and abs(result - 2025) < 0.01:
+    feedback = {"correct": True, "message": "Right: $2,025 missed, all by the two who contribute under 6%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Cap each rate at 6% before computing the match."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: match_3_r
+#| setup: true
+library(dplyr)
+employer_match <- function(salary, contribution_pct, match_limit_pct, match_rate) {
+  salary * pmin(contribution_pct, match_limit_pct) * match_rate
+}
+coworkers <- data.frame(pct = c(0, 0.03, 0.06, 0.10, 0.15))
+```
+
+```{webr}
+#| exercise: match_3_r
+# add a match column, then total the missed match
+```
+
+::: {.hint exercise="match_3_r"}
+`employer_match()` uses `pmin()`, so it works on the whole `pct` column. Then `summarise(missed = sum(1350 - match))`.
+:::
+
+::: {.solution exercise="match_3_r"}
+```r
+coworkers |>
+  mutate(match = employer_match(45000, pct, 0.06, 0.50)) |>
+  summarise(missed = sum(1350 - match)) |>
+  pull(missed)
+```
+:::
+
+```{webr}
+#| exercise: match_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2025) < 0.01)) {
+  list(correct = TRUE, message = "Right: $2,025 missed, all by the two who contribute under 6%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Cap each rate at 6% before computing the match.")
+}
+```
+
+:::
 
 ## Traditional vs. Roth
 
@@ -179,71 +396,295 @@ ggplot(df_rt, aes(x = account, y = amount, fill = layer)) +
 
 Multiplying by (1 − tax rate) gives the same answer whether you do it first or last. So the second example holds today's rate at 12% and tries several retirement rates. The edge case is a retirement rate lower than today's, where Traditional wins.
 
-::: panel-tabset
-## Excel
+Read the result as a contest between two tax rates. Growth and years don't pick the winner. Roth wins when today's rate is lower than your rate in retirement, and Traditional wins when it's higher.
 
-With `Contribution` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `after_tax_value()`, then find what \$1,000 in a Roth leaves you after 40 years at 7%, taxed at today's 12% rate.
+
+::: panel-tabset
+
+#### Excel
+
+Put the contribution in `A2` (1000), the tax rate in `B2` (0.12), the return in `C2` (0.07), and years in `D2` (40). Find the after-tax value in `E2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2 * (1 - C2) * (1 + D2) ^ E2
+=A2 * (1 - B2) * (1 + C2)^D2
 ```
 
-Put today's rate in one row and the retirement rate in the next; the row with the larger result wins.
+This returns \$13,177.52.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: roth-py
+```{pyodide}
+#| exercise: roth_1_py
+def after_tax_value(contribution, tax_rate, rate, years):
+    return contribution * (1 - ______) * (1 + rate) ** ______
+
+after_tax_value(1000, 0.12, 0.07, 40)
+```
+
+::: {.hint exercise="roth_1_py"}
+Taxes take a share of the money; growth multiplies it once per year.
+:::
+
+::: {.solution exercise="roth_1_py"}
+```python
 def after_tax_value(contribution, tax_rate, rate, years):
     return contribution * (1 - tax_rate) * (1 + rate) ** years
 
-# Roth: taxed at today's 12% rate
-print(after_tax_value(contribution=1000, tax_rate=0.12, rate=0.07, years=40))
+after_tax_value(1000, 0.12, 0.07, 40)
+```
+:::
 
-# Traditional: taxed at a 22% rate in retirement
-print(after_tax_value(contribution=1000, tax_rate=0.22, rate=0.07, years=40))
-
-# today's rate is 12%; try several retirement rates
-roth = after_tax_value(1000, 0.12, 0.07, 40)
-for later in [0.10, 0.12, 0.22, 0.24]:
-    trad = after_tax_value(1000, later, 0.07, 40)
-    winner = "tie" if abs(roth - trad) < 1 else ("Roth" if roth > trad else "Traditional")
-    print(f"retire at {later:.0%}: Roth ${roth:,.0f}, Traditional ${trad:,.0f} -> {winner}")
+```{pyodide}
+#| exercise: roth_1_py
+#| check: true
+if result is not None and abs(result - 13177.522899) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $13,178 you keep."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use tax_rate and years."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: roth-r
+```{webr}
+#| exercise: roth_1_r
+after_tax_value <- function(contribution, tax_rate, rate, years) {
+  contribution * (1 - ______) * (1 + rate)^______
+}
+after_tax_value(1000, 0.12, 0.07, 40)
+```
+
+::: {.hint exercise="roth_1_r"}
+Taxes take a share of the money; growth multiplies it once per year.
+:::
+
+::: {.solution exercise="roth_1_r"}
+```r
 after_tax_value <- function(contribution, tax_rate, rate, years) {
   contribution * (1 - tax_rate) * (1 + rate)^years
 }
+after_tax_value(1000, 0.12, 0.07, 40)
+```
+:::
 
-# Roth: taxed at today's 12% rate
-after_tax_value(contribution = 1000, tax_rate = 0.12, rate = 0.07, years = 40)
-
-# Traditional: taxed at a 22% rate in retirement
-after_tax_value(contribution = 1000, tax_rate = 0.22, rate = 0.07, years = 40)
-
-# sanity check: same rate now and later gives the same answer
-all.equal(1000 * (1 - 0.12) * 1.07^40, 1000 * 1.07^40 * (1 - 0.12))
-
-# today's rate is 12%; try several retirement rates
-later <- c(0.10, 0.12, 0.22, 0.24)
-roth  <- after_tax_value(1000, 0.12, 0.07, 40)
-trad  <- after_tax_value(1000, later, 0.07, 40)
-data.frame(
-  retirement_rate = later * 100,
-  roth            = round(roth),
-  traditional     = round(trad),
-  winner          = ifelse(abs(roth - trad) < 1, "tie",
-                           ifelse(roth > trad, "Roth", "Traditional"))
-)
+```{webr}
+#| exercise: roth_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 13177.522899) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $13,178 you keep.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use tax_rate and years.")
+}
 ```
 
 :::
 
-Read the result as a contest between two tax rates. Growth and years don't pick the winner. Roth wins when today's rate is lower than your rate in retirement, and Traditional wins when it's higher.
+### Level 2: Practice
+
+In a Traditional account, the same \$1,000 is taxed when you take it out. If your retirement tax rate is 22%, what do you keep?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 0.22.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$11,680.08, about \$1,500 less than the Roth.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: roth_2_py
+#| setup: true
+def after_tax_value(contribution, tax_rate, rate, years):
+    return contribution * (1 - tax_rate) * (1 + rate) ** years
+```
+
+```{pyodide}
+#| exercise: roth_2_py
+after_tax_value(______)
+```
+
+::: {.hint exercise="roth_2_py"}
+Only the tax rate changes: 0.22.
+:::
+
+::: {.solution exercise="roth_2_py"}
+```python
+after_tax_value(1000, 0.22, 0.07, 40)
+```
+:::
+
+```{pyodide}
+#| exercise: roth_2_py
+#| check: true
+if result is not None and abs(result - 11680.077115) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $11,680. A higher rate later favors the Roth."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 0.22."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: roth_2_r
+#| setup: true
+after_tax_value <- function(contribution, tax_rate, rate, years) {
+  contribution * (1 - tax_rate) * (1 + rate)^years
+}
+```
+
+```{webr}
+#| exercise: roth_2_r
+after_tax_value(______)
+```
+
+::: {.hint exercise="roth_2_r"}
+Only the tax rate changes: 0.22.
+:::
+
+::: {.solution exercise="roth_2_r"}
+```r
+after_tax_value(1000, 0.22, 0.07, 40)
+```
+:::
+
+```{webr}
+#| exercise: roth_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 11680.077115) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $11,680. A higher rate later favors the Roth.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 0.22.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Today's rate is 12% (the Roth). Compare it with a Traditional account at retirement rates of 10%, 12%, 22%, and 24%. Label each "Roth", "Traditional", or "tie" (within \$1).
+
+::: panel-tabset
+
+#### Excel
+
+Put the retirement rates in `A2:A5`. Find the Traditional value in `B`, then the winner in `C` against the Roth's \$13,177.52.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=1000*(1-A2)*1.07^40`. In `C2`, filled down:
+
+```swift
+=IF(ABS(13177.52-B2)<1, "tie", IF(13177.52>B2, "Roth", "Traditional"))
+```
+
+The winners are Traditional, tie, Roth, Roth.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: roth_3_py
+#| setup: true
+def after_tax_value(contribution, tax_rate, rate, years):
+    return contribution * (1 - tax_rate) * (1 + rate) ** years
+```
+
+```{pyodide}
+#| exercise: roth_3_py
+roth = after_tax_value(1000, 0.12, 0.07, 40)
+later = [0.10, 0.12, 0.22, 0.24]
+# one label per retirement rate
+```
+
+::: {.hint exercise="roth_3_py"}
+Write a small function that compares `roth` with `after_tax_value(1000, r, 0.07, 40)`, checking the tie first, and use a list comprehension.
+:::
+
+::: {.solution exercise="roth_3_py"}
+```python
+roth = after_tax_value(1000, 0.12, 0.07, 40)
+later = [0.10, 0.12, 0.22, 0.24]
+def winner(r):
+    trad = after_tax_value(1000, r, 0.07, 40)
+    if abs(roth - trad) < 1:
+        return "tie"
+    return "Roth" if roth > trad else "Traditional"
+
+[winner(r) for r in later]
+```
+:::
+
+```{pyodide}
+#| exercise: roth_3_py
+#| check: true
+if result == ["Traditional", "tie", "Roth", "Roth"]:
+    feedback = {"correct": True, "message": "Right: the account taxed at the lower rate wins; equal rates tie."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check for the tie first, then compare the two values."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: roth_3_r
+#| setup: true
+library(dplyr)
+after_tax_value <- function(contribution, tax_rate, rate, years) {
+  contribution * (1 - tax_rate) * (1 + rate)^years
+}
+```
+
+```{webr}
+#| exercise: roth_3_r
+roth <- after_tax_value(1000, 0.12, 0.07, 40)
+later <- c(0.10, 0.12, 0.22, 0.24)
+# one label per retirement rate
+```
+
+::: {.hint exercise="roth_3_r"}
+`trad <- after_tax_value(1000, later, 0.07, 40)` works on all four rates. Then `case_when()` with the tie test first.
+:::
+
+::: {.solution exercise="roth_3_r"}
+```r
+roth <- after_tax_value(1000, 0.12, 0.07, 40)
+later <- c(0.10, 0.12, 0.22, 0.24)
+trad <- after_tax_value(1000, later, 0.07, 40)
+case_when(
+  abs(roth - trad) < 1 ~ "tie",
+  roth > trad ~ "Roth",
+  .default = "Traditional"
+)
+```
+:::
+
+```{webr}
+#| exercise: roth_3_r
+#| check: true
+if (identical(as.character(.result), c("Traditional", "tie", "Roth", "Roth"))) {
+  list(correct = TRUE, message = "Right: the account taxed at the lower rate wins; equal rates tie.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check for the tie first, then compare the two values.")
+}
+```
+
+:::
 
 ## Cashing Out vs. Rolling Over
 
@@ -253,46 +694,268 @@ The book's job change example: cash out $5,000 at 22, or leave it invested until
 
 Example: $5,000 × (1 − 0.12 − 0.10) = $3,900 today, vs. $5,000 × 1.07\^45 ≈ $105,000 at 67 (the book rounds to about $100,000).
 
-::: panel-tabset
-## Excel
+Read it as a trade: $3,900 now costs you about $100,000 later.
 
-With `Balance` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `cash_out()`, then find what you'd actually receive cashing out a \$5,000 401(k) at a 12% tax rate with the 10% penalty.
+
+::: panel-tabset
+
+#### Excel
+
+Put the balance in `A2` (5000), tax rate in `B2` (0.12), and penalty in `C2` (0.10). Find the cash in `D2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2 * (1 - C2 - 0.10)
-=B2 * (1 + D2) ^ E2
+=A2 * (1 - B2 - C2)
 ```
 
-## Python
+This returns \$3,900.
+:::
 
-```{python}
-#| label: cash-out-py
+#### Python
+
+```{pyodide}
+#| exercise: cashout_1_py
+def cash_out(balance, tax_rate, penalty=0.10):
+    return balance * (1 - ______ - ______)
+
+cash_out(5000, 0.12)
+```
+
+::: {.hint exercise="cashout_1_py"}
+Both the tax and the penalty come off the top.
+:::
+
+::: {.solution exercise="cashout_1_py"}
+```python
 def cash_out(balance, tax_rate, penalty=0.10):
     return balance * (1 - tax_rate - penalty)
 
-print(cash_out(balance=5000, tax_rate=0.12))
-print(5000 * 1.07 ** (67 - 22))
+cash_out(5000, 0.12)
+```
+:::
 
-for bal in [2000, 5000, 20000]:
-    print(f"${bal:,}: cash now ${cash_out(bal, 0.12):,.0f}, at 67 ${bal * 1.07 ** 45:,.0f}")
+```{pyodide}
+#| exercise: cashout_1_py
+#| check: true
+if result is not None and abs(result - 3900) < 0.01:
+    feedback = {"correct": True, "message": "Right: $3,900. You lose $1,100 on day one."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract both the tax rate and the penalty."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: cash-out-r
+```{webr}
+#| exercise: cashout_1_r
+cash_out <- function(balance, tax_rate, penalty = 0.10) {
+  balance * (1 - ______ - ______)
+}
+cash_out(5000, 0.12)
+```
+
+::: {.hint exercise="cashout_1_r"}
+Both the tax and the penalty come off the top.
+:::
+
+::: {.solution exercise="cashout_1_r"}
+```r
 cash_out <- function(balance, tax_rate, penalty = 0.10) {
   balance * (1 - tax_rate - penalty)
 }
+cash_out(5000, 0.12)
+```
+:::
 
-cash_out(balance = 5000, tax_rate = 0.12)
-5000 * 1.07^(67 - 22)
-
-# several balances
-bal <- c(2000, 5000, 20000)
-data.frame(balance = bal, cash_now = cash_out(bal, 0.12), at_67 = round(bal * 1.07^45))
+```{webr}
+#| exercise: cashout_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 3900) < 0.01)) {
+  list(correct = TRUE, message = "Right: $3,900. You lose $1,100 on day one.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract both the tax rate and the penalty.")
+}
 ```
 
 :::
 
-Read it as a trade: $3,900 now costs you about $100,000 later.
+### Level 2: Practice
+
+Roll it over instead. If the \$5,000 stays invested at 7% from age 22 to 67, what is it worth?
+
+::: panel-tabset
+
+#### Excel
+
+Find the value in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=5000 * 1.07^(67-22)
+```
+
+This returns \$105,012.26.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: cashout_2_py
+5000 * (1 + 0.07) ** ______
+```
+
+::: {.hint exercise="cashout_2_py"}
+The money grows from 22 to 67: that's 45 years.
+:::
+
+::: {.solution exercise="cashout_2_py"}
+```python
+5000 * (1 + 0.07) ** (67 - 22)
+```
+:::
+
+```{pyodide}
+#| exercise: cashout_2_py
+#| check: true
+if result is not None and abs(result - 105012.258793) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $105,000, versus $3,900 today."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Grow it for 45 years."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: cashout_2_r
+5000 * (1 + 0.07)^______
+```
+
+::: {.hint exercise="cashout_2_r"}
+The money grows from 22 to 67: that's 45 years.
+:::
+
+::: {.solution exercise="cashout_2_r"}
+```r
+5000 * (1 + 0.07)^(67 - 22)
+```
+:::
+
+```{webr}
+#| exercise: cashout_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 105012.258793) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $105,000, versus $3,900 today.")
+} else {
+  list(correct = FALSE, message = "Not quite. Grow it for 45 years.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Three job changers at 22 cash out \$2,000, \$5,000, and \$20,000 at a 12% tax rate with the 10% penalty. Combined, how much more would they have at 67 by rolling over (7% a year) than the cash they got?
+
+::: panel-tabset
+
+#### Excel
+
+Put balances in `A2:A4`, cash now in `B`, value at 67 in `C`, and find the total difference.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`: `=A2*(1-12%-10%)`. In `C2`: `=A2*1.07^45`. Fill down, then `=SUM(C2:C4)-SUM(B2:B4)` returns \$546,006.20.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: cashout_3_py
+#| setup: true
+def cash_out(balance, tax_rate, penalty=0.10):
+    return balance * (1 - tax_rate - penalty)
+
+import pandas as pd
+changers = pd.DataFrame({"balance": [2000, 5000, 20000]})
+```
+
+```{pyodide}
+#| exercise: cashout_3_py
+# add cash_now and at_67 columns, then total at_67 minus total cash_now
+```
+
+::: {.hint exercise="cashout_3_py"}
+`cash_out()` works on a whole column. `at_67` is `balance * 1.07 ** 45`.
+:::
+
+::: {.solution exercise="cashout_3_py"}
+```python
+changers["cash_now"] = cash_out(changers["balance"], 0.12)
+changers["at_67"] = changers["balance"] * 1.07 ** 45
+changers["at_67"].sum() - changers["cash_now"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: cashout_3_py
+#| check: true
+if result is not None and abs(result - 546006.197484) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $546,000 traded for $21,060 of cash today."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Grow each balance 45 years, and cash out each at 78 cents on the dollar."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: cashout_3_r
+#| setup: true
+library(dplyr)
+cash_out <- function(balance, tax_rate, penalty = 0.10) {
+  balance * (1 - tax_rate - penalty)
+}
+changers <- data.frame(balance = c(2000, 5000, 20000))
+```
+
+```{webr}
+#| exercise: cashout_3_r
+# add cash_now and at_67 columns, then total at_67 minus total cash_now
+```
+
+::: {.hint exercise="cashout_3_r"}
+`mutate(cash_now = cash_out(balance, 0.12), at_67 = balance * 1.07^45)`, then `summarise(gap = sum(at_67) - sum(cash_now))`.
+:::
+
+::: {.solution exercise="cashout_3_r"}
+```r
+changers |>
+  mutate(
+    cash_now = cash_out(balance, 0.12),
+    at_67    = balance * 1.07^45
+  ) |>
+  summarise(gap = sum(at_67) - sum(cash_now)) |>
+  pull(gap)
+```
+:::
+
+```{webr}
+#| exercise: cashout_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 546006.197484) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $546,000 traded for $21,060 of cash today.")
+} else {
+  list(correct = FALSE, message = "Not quite. Grow each balance 45 years, and cash out each at 78 cents on the dollar.")
+}
+```
+
+:::

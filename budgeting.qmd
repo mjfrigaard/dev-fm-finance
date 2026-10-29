@@ -1,6 +1,15 @@
 ---
 title: "Budgeting"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -59,122 +74,331 @@ ggplot(df_pct, aes(x = "", y = amount, fill = label)) +
         axis.ticks.y = element_blank(), panel.grid = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `percent_of_income()`, then find what share of a \$5,000 paycheck goes to \$1,500 of rent.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming `Expense` is in cell `B2` and `Income` is in cell `C2`:
+With the expense in `B2` (1500) and income in `C2` (5000), write the percentage in `D2`.
 
-``` swift
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
 =(B2 / C2) * 100
 ```
 
+This returns 30. Or enter `=B2 / C2` and format the cell as a **Percentage**.
+
 ![](img/budget_percent_of_income.png){width='100%' fig-align='center'}
+:::
 
-Or, more simply, enter `=B2 / C2` and format the cell as a **Percentage** using the button in the toolbar.
+#### Python
 
-![](img/budget_percent_of_income_format.png){width='100%' fig-align='center'}
+```{pyodide}
+#| exercise: pct_1_py
+def percent_of_income(expense, income):
+    return (______ / ______) * 100
 
-For the full zero-based budget, put category names in `A2:A8`, amounts in `B2:B8`, and income in `E1`. In `C2`, lock the income cell with `$` and fill down to `C8`:
-
-``` swift
-=B2 / $E$1
+percent_of_income(1500, 5000)
 ```
 
-Check the totals in row 9. `B9` should equal income, and `C9` should read 100%:
+::: {.hint exercise="pct_1_py"}
+The share is the part (the expense) divided by the whole (income).
+:::
 
-``` swift
-=SUM(B2:B8)
-=SUM(C2:C8)
-```
-
-## Python
-
-The Python version of `percent_of_income()` works the same way.
-
-```{python}
-#| label: percent-py
+::: {.solution exercise="pct_1_py"}
+```python
 def percent_of_income(expense, income):
     return (expense / income) * 100
 
-percent_of_income(expense=1500, income=5000)
+percent_of_income(1500, 5000)
+```
+:::
+
+```{pyodide}
+#| exercise: pct_1_py
+#| check: true
+if result is not None and abs(result - 30) < 0.01:
+    feedback = {"correct": True, "message": "Right: rent is 30% of take-home pay."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the expense by income."}
+feedback
 ```
 
-Plain Python works one value at a time, so we loop over the zero-based budget from the book.
+#### R
 
-```{python}
-#| label: percent-py-zero-based
-zero_based = {
-    "Rent": 1500, "Groceries": 500, "Transport": 300, "Investments": 1000,
-    "Savings": 500, "Fun Money": 700, "Other": 500,
+```{webr}
+#| exercise: pct_1_r
+percent_of_income <- function(expense, income) {
+  (______ / ______) * 100
 }
-for category, amount in zero_based.items():
-    print(f"{category:<12} ${amount:>6,}  {percent_of_income(amount, 5000):5.1f}%")
+percent_of_income(1500, 5000)
 ```
 
-Sanity check: the dollars add up to income and the percentages add up to 100.
+::: {.hint exercise="pct_1_r"}
+The share is the part (the expense) divided by the whole (income).
+:::
 
-```{python}
-#| label: percent-py-check
-total = sum(zero_based.values())
-print(total, percent_of_income(total, 5000))
-```
-
-How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
-
-One edge case: Python raises a `ZeroDivisionError` when income is zero, so guard against it.
-
-```{python}
-#| label: percent-py-edge
-def safe_percent_of_income(expense, income):
-    if income == 0:
-        return None
-    return percent_of_income(expense, income)
-
-print(safe_percent_of_income(1500, 0))
-```
-
-## R
-
-`percent_of_income()` divides an expense by income and multiplies by 100.
-
-```{r}
-#| label: percent-r
+::: {.solution exercise="pct_1_r"}
+```r
 percent_of_income <- function(expense, income) {
   (expense / income) * 100
 }
+percent_of_income(1500, 5000)
+```
+:::
 
-percent_of_income(expense = 1500, income = 5000)
+```{webr}
+#| exercise: pct_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 30))) {
+  list(correct = TRUE, message = "Right: rent is 30% of take-home pay.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the expense by income.")
+}
 ```
 
-The function is vectorized, so we can pass the whole zero-based budget from the book at once.
+:::
 
-```{r}
-#| label: percent-r-zero-based
-zero_based <- data.frame(
+### Level 2: Practice
+
+Here is the book's zero-based budget for a \$5,000 paycheck. What percent of income goes to Investments and Savings combined?
+
+| Category | Amount |
+| :--- | ---: |
+| Rent | \$1,500 |
+| Groceries | \$500 |
+| Transport | \$300 |
+| Investments | \$1,000 |
+| Savings | \$500 |
+| Fun Money | \$700 |
+| Other | \$500 |
+
+::: panel-tabset
+
+#### Excel
+
+Put categories in `A2:A8`, amounts in `B2:B8`, and income in `E1`. Find the combined percentage for Investments and Savings.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `C2`, lock the income cell with `$` and fill down to `C8`:
+
+```swift
+=B2 / $E$1 * 100
+```
+
+Then add the two rows: `=C5 + C6`. The answer is 30.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: pct_2_py
+#| setup: true
+import pandas as pd
+def percent_of_income(expense, income):
+    return (expense / income) * 100
+
+budget = pd.DataFrame({
+    "category": ["Rent", "Groceries", "Transport", "Investments",
+                 "Savings", "Fun Money", "Other"],
+    "amount": [1500, 500, 300, 1000, 500, 700, 500]
+})
+```
+
+```{pyodide}
+#| exercise: pct_2_py
+budget["pct"] = percent_of_income(budget["amount"], 5000)
+budget.loc[budget["category"].isin(______), "pct"].sum()
+```
+
+::: {.hint exercise="pct_2_py"}
+`isin()` takes a list: `["Investments", "Savings"]`.
+:::
+
+::: {.solution exercise="pct_2_py"}
+```python
+budget["pct"] = percent_of_income(budget["amount"], 5000)
+budget.loc[budget["category"].isin(["Investments", "Savings"]), "pct"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: pct_2_py
+#| check: true
+if result is not None and abs(result - 30) < 0.01:
+    feedback = {"correct": True, "message": "Right: 30% of income goes to your future self."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Keep only Investments and Savings, then add their percentages."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: pct_2_r
+#| setup: true
+library(dplyr)
+percent_of_income <- function(expense, income) {
+  (expense / income) * 100
+}
+budget <- data.frame(
   category = c("Rent", "Groceries", "Transport", "Investments",
                "Savings", "Fun Money", "Other"),
   amount   = c(1500, 500, 300, 1000, 500, 700, 500)
 )
-zero_based$pct <- percent_of_income(zero_based$amount, income = 5000)
-zero_based
 ```
 
-Sanity check: in a zero-based budget, the dollars add up to income and the percentages add up to 100.
-
-```{r}
-#| label: percent-r-check
-sum(zero_based$amount)
-sum(zero_based$pct)
+```{webr}
+#| exercise: pct_2_r
+budget |>
+  mutate(pct = percent_of_income(amount, 5000)) |>
+  filter(category %in% ______) |>
+  summarise(total = sum(pct)) |>
+  pull(total)
 ```
 
-How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
+::: {.hint exercise="pct_2_r"}
+`%in%` takes a vector: `c("Investments", "Savings")`.
+:::
 
-One edge case: an income of zero has no meaningful percentage. R returns `Inf` (or `NaN` for 0 ÷ 0) instead of an error.
+::: {.solution exercise="pct_2_r"}
+```r
+budget |>
+  mutate(pct = percent_of_income(amount, 5000)) |>
+  filter(category %in% c("Investments", "Savings")) |>
+  summarise(total = sum(pct)) |>
+  pull(total)
+```
+:::
 
-```{r}
-#| label: percent-r-edge
-percent_of_income(expense = 1500, income = 0)
+```{webr}
+#| exercise: pct_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 30))) {
+  list(correct = TRUE, message = "Right: 30% of income goes to your future self.")
+} else {
+  list(correct = FALSE, message = "Not quite. Keep only Investments and Savings, then add their percentages.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Rent goes up from \$1,500 to \$1,800. To keep the budget zero-based (every dollar still adds up to \$5,000), you take the extra \$300 out of Fun Money. What percent of income is Fun Money now?
+
+::: panel-tabset
+
+#### Excel
+
+Change the rent amount in `B2`, then change `B7` (Fun Money) so `B9` (the total) is still 5,000.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Set `B2` to 1800 and `B7` to `=700 - (B2 - 1500)`, which is 400. `C7` then shows 8, and `C9` still reads 100.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: pct_3_py
+#| setup: true
+import pandas as pd
+def percent_of_income(expense, income):
+    return (expense / income) * 100
+
+budget = pd.DataFrame({
+    "category": ["Rent", "Groceries", "Transport", "Investments",
+                 "Savings", "Fun Money", "Other"],
+    "amount": [1500, 500, 300, 1000, 500, 700, 500]
+})
+```
+
+```{pyodide}
+#| exercise: pct_3_py
+# raise rent, cut Fun Money by the same amount, and return Fun Money's percent
+
+```
+
+::: {.hint exercise="pct_3_py"}
+Change a single cell with `budget.loc[budget["category"] == "Rent", "amount"] = 1800`. Check that `budget["amount"].sum()` is still 5000.
+:::
+
+::: {.solution exercise="pct_3_py"}
+```python
+budget.loc[budget["category"] == "Rent", "amount"] = 1800
+budget.loc[budget["category"] == "Fun Money", "amount"] -= 300
+fun = budget.loc[budget["category"] == "Fun Money", "amount"].sum()
+percent_of_income(fun, 5000)
+```
+:::
+
+```{pyodide}
+#| exercise: pct_3_py
+#| check: true
+if result is not None and abs(result - 8) < 0.01:
+    feedback = {"correct": True, "message": "Right: Fun Money drops from 14% to 8%. Rent increases hit somewhere."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Fun Money should fall from $700 to $400."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: pct_3_r
+#| setup: true
+library(dplyr)
+percent_of_income <- function(expense, income) {
+  (expense / income) * 100
+}
+budget <- data.frame(
+  category = c("Rent", "Groceries", "Transport", "Investments",
+               "Savings", "Fun Money", "Other"),
+  amount   = c(1500, 500, 300, 1000, 500, 700, 500)
+)
+```
+
+```{webr}
+#| exercise: pct_3_r
+# raise rent, cut Fun Money by the same amount, and return Fun Money's percent
+
+```
+
+::: {.hint exercise="pct_3_r"}
+Inside `mutate()`, use `case_when()` to change only the Rent and Fun Money rows, and `.default = amount` to keep the rest. Check that `sum(amount)` is still 5000.
+:::
+
+::: {.solution exercise="pct_3_r"}
+```r
+budget |>
+  mutate(amount = case_when(
+    category == "Rent" ~ 1800,
+    category == "Fun Money" ~ amount - 300,
+    .default = amount
+  )) |>
+  filter(category == "Fun Money") |>
+  mutate(pct = percent_of_income(amount, 5000)) |>
+  pull(pct)
+```
+:::
+
+```{webr}
+#| exercise: pct_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 8))) {
+  list(correct = TRUE, message = "Right: Fun Money drops from 14% to 8%. Rent increases hit somewhere.")
+} else {
+  list(correct = FALSE, message = "Not quite. Fun Money should fall from $700 to $400.")
+}
 ```
 
 :::
@@ -221,171 +445,317 @@ ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
         panel.grid.minor = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `to_annual()`, then find the yearly cost of a \$5 daily coffee.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Let's start with the daily value in cell `A1`, then convert it to the cost per week in cell `A2`:
+Put the daily cost in `A1` (5). In `A2`, find the yearly cost.
 
-``` swift
-=A1 * 7
-```
+::: {.callout-note collapse="true"}
+## Solution
 
-Next we can convert the week to the monthly cost in cell `A3`:
-
-``` swift
-=A2 * 4.33
-```
-
-Finally, we get the annual cost in cell `A4`:
-
-``` swift
+```swift
 =A1 * 365
 ```
 
-Format cells `A1` - `A4` as **Currency** or **Accounting**.
+This returns \$1,825.
 
 ![](img/budget_daily2yearly_formula.png){width='100%' fig-align='center'}
+:::
 
-To convert a weekly value in cell `A1` to a monthly value, place the following formula in cell `A2`:
+#### Python
 
-``` swift
-=A1 * 4.33
+```{pyodide}
+#| exercise: annual_1_py
+def to_annual(amount, period="daily"):
+    factors = {"daily": ______, "weekly": 52, "monthly": ______}
+    return amount * factors[period]
+
+to_annual(5, "daily")
 ```
 
-To convert the monthly cost to an annual cost, enter the following in cell `A3`:
+::: {.hint exercise="annual_1_py"}
+How many days are in a year? How many months?
+:::
 
-``` swift
-=A2 * 12
-```
-
-Format cells `A1` - `A3` as **Currency** or **Accounting**.
-
-![](img/budget_weekly2yearly_formula.png){width='100%' fig-align='center'}
-
-For a sinking fund tab, put expense names in `A2:A5` and annual costs in `B2:B5`. In `C2`, enter the formula below and fill down, then total the column in `C6` with `=SUM(C2:C5)`:
-
-``` swift
-=B2 / 12
-```
-
-## Python
-
-The Python versions use a dictionary of factors.
-
-```{python}
-#| label: annualize-py
+::: {.solution exercise="annual_1_py"}
+```python
 def to_annual(amount, period="daily"):
     factors = {"daily": 365, "weekly": 52, "monthly": 12}
     return amount * factors[period]
 
-def to_monthly(amount, period="daily"):
-    factors = {"daily": 30.44, "weekly": 4.33, "annual": 1 / 12}
-    return amount * factors[period]
+to_annual(5, "daily")
+```
+:::
+
+```{pyodide}
+#| exercise: annual_1_py
+#| check: true
+if result is not None and abs(result - 1825) < 0.01:
+    feedback = {"correct": True, "message": "Right: $1,825 a year, about the price of a vacation."}
+else:
+    feedback = {"correct": False, "message": "Not quite. A year has 365 days and 12 months."}
+feedback
 ```
 
-The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
+#### R
 
-```{python}
-#| label: annualize-py-apply
-print(to_annual(amount=5, period="daily"))
-print(to_monthly(amount=150, period="weekly"))
+```{webr}
+#| exercise: annual_1_r
+to_annual <- function(amount, period = "daily") {
+  factors <- c(daily = ______, weekly = 52, monthly = ______)
+  amount * factors[[period]]
+}
+to_annual(5, "daily")
 ```
 
-Several habits side by side.
+::: {.hint exercise="annual_1_r"}
+How many days are in a year? How many months?
+:::
 
-```{python}
-#| label: annualize-py-table
-habits = [("Coffee", 5, "daily"), ("Groceries", 150, "weekly"), ("Streaming", 15.99, "monthly")]
-for habit, amount, period in habits:
-    annual = to_annual(amount, period)
-    print(f"{habit:<10} annual ${annual:>9,.2f}  monthly ${annual / 12:>7,.2f}")
-```
-
-The same math powers sinking funds. Divide each periodic cost from the book by 12.
-
-```{python}
-#| label: sinking-fund-py
-sinking = {"Car insurance": 1200, "Christmas/gifts": 600,
-           "Car maintenance": 1200, "Annual vacation": 2400}
-monthly = {k: to_monthly(v, period="annual") for k, v in sinking.items()}
-for k, v in monthly.items():
-    print(f"{k:<16} ${v:,.2f}/month")
-print(f"Total: ${sum(monthly.values()):,.2f}/month")
-```
-
-Sanity check: 4.33 × 12 = 51.96 weeks, so the two routes differ by about \$6 on \$150/week.
-
-```{python}
-#| label: annualize-py-check
-print(to_annual(150, "weekly"), round(to_monthly(150, "weekly") * 12, 2))
-```
-
-How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
-
-## R
-
-`to_annual()` multiplies a recurring amount by how many times it happens in a year. `to_monthly()` converts any period to a monthly amount.
-
-```{r}
-#| label: annualize-r
-to_annual <- function(amount, period = c("daily", "weekly", "monthly")) {
-  period  <- match.arg(period)
+::: {.solution exercise="annual_1_r"}
+```r
+to_annual <- function(amount, period = "daily") {
   factors <- c(daily = 365, weekly = 52, monthly = 12)
   amount * factors[[period]]
 }
+to_annual(5, "daily")
+```
+:::
 
-to_monthly <- function(amount, period = c("daily", "weekly", "annual")) {
-  period  <- match.arg(period)
-  factors <- c(daily = 30.44, weekly = 4.33, annual = 1 / 12)
-  amount * factors[[period]]
+```{webr}
+#| exercise: annual_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 1825))) {
+  list(correct = TRUE, message = "Right: $1,825 a year, about the price of a vacation.")
+} else {
+  list(correct = FALSE, message = "Not quite. A year has 365 days and 12 months.")
 }
 ```
 
-The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
+:::
 
-```{r}
-#| label: annualize-r-apply
-to_annual(amount = 5, period = "daily")
-to_monthly(amount = 150, period = "weekly")
+### Level 2: Practice
+
+The book's sinking funds turn yearly costs into monthly set-asides: car insurance \$1,200, gifts \$600, car maintenance \$1,200, and a vacation \$2,400. How much do you need to set aside each month for all four?
+
+::: panel-tabset
+
+#### Excel
+
+Put the names in `A2:A5` and yearly costs in `B2:B5`. Find each monthly amount in column `C` and the total in `C6`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `C2`, then fill down:
+
+```swift
+=B2 / 12
 ```
 
-Several habits side by side. `mapply()` runs both functions over each row.
+Then `=SUM(C2:C5)` returns \$450.
+:::
 
-```{r}
-#| label: annualize-r-table
+#### Python
+
+```{pyodide}
+#| exercise: annual_2_py
+#| setup: true
+import pandas as pd
+sinking = pd.DataFrame({
+    "expense": ["Car insurance", "Christmas/gifts", "Car maintenance", "Annual vacation"],
+    "annual": [1200, 600, 1200, 2400]
+})
+```
+
+```{pyodide}
+#| exercise: annual_2_py
+sinking["monthly"] = ______
+sinking["monthly"].sum()
+```
+
+::: {.hint exercise="annual_2_py"}
+Divide the whole `annual` column by 12.
+:::
+
+::: {.solution exercise="annual_2_py"}
+```python
+sinking["monthly"] = sinking["annual"] / 12
+sinking["monthly"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: annual_2_py
+#| check: true
+if result is not None and abs(result - 450) < 0.01:
+    feedback = {"correct": True, "message": "Right: $450 a month means none of these bills is ever a surprise."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide each yearly cost by 12, then add them up."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: annual_2_r
+#| setup: true
+library(dplyr)
+sinking <- data.frame(
+  expense = c("Car insurance", "Christmas/gifts", "Car maintenance", "Annual vacation"),
+  annual  = c(1200, 600, 1200, 2400)
+)
+```
+
+```{webr}
+#| exercise: annual_2_r
+sinking |>
+  mutate(monthly = ______) |>
+  summarise(total = sum(monthly)) |>
+  pull(total)
+```
+
+::: {.hint exercise="annual_2_r"}
+Divide the `annual` column by 12.
+:::
+
+::: {.solution exercise="annual_2_r"}
+```r
+sinking |>
+  mutate(monthly = annual / 12) |>
+  summarise(total = sum(monthly)) |>
+  pull(total)
+```
+:::
+
+```{webr}
+#| exercise: annual_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 450))) {
+  list(correct = TRUE, message = "Right: $450 a month means none of these bills is ever a surprise.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide each yearly cost by 12, then add them up.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Three habits are paid on different schedules: coffee \$5 a day, groceries \$150 a week, and streaming \$15.99 a month. What do they cost together in a year?
+
+::: panel-tabset
+
+#### Excel
+
+Put habits in `A2:A4`, amounts in `B2:B4`, and periods ("daily", "weekly", "monthly") in `C2:C4`. Find each yearly cost in `D` and the total.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `D2`, then fill down:
+
+```swift
+=B2 * SWITCH(C2, "daily", 365, "weekly", 52, "monthly", 12)
+```
+
+Then `=SUM(D2:D4)` returns \$9,816.88.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: annual_3_py
+#| setup: true
+import pandas as pd
+def to_annual(amount, period="daily"):
+    factors = {"daily": 365, "weekly": 52, "monthly": 12}
+    return amount * factors[period]
+
+habits = pd.DataFrame({
+    "habit": ["Coffee", "Groceries", "Streaming"],
+    "amount": [5, 150, 15.99],
+    "period": ["daily", "weekly", "monthly"]
+})
+```
+
+```{pyodide}
+#| exercise: annual_3_py
+# find each habit's yearly cost, then the total
+
+```
+
+::: {.hint exercise="annual_3_py"}
+`to_annual()` takes one row at a time. Use `habits.apply(lambda row: to_annual(row["amount"], row["period"]), axis=1)`.
+:::
+
+::: {.solution exercise="annual_3_py"}
+```python
+habits["annual"] = habits.apply(lambda row: to_annual(row["amount"], row["period"]), axis=1)
+habits["annual"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: annual_3_py
+#| check: true
+if result is not None and abs(result - 9816.88) < 0.01:
+    feedback = {"correct": True, "message": "Right: $9,816.88 a year. Groceries are most of it."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Each habit needs its own period's factor."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: annual_3_r
+#| setup: true
+library(dplyr)
+to_annual <- function(amount, period = "daily") {
+  factors <- c(daily = 365, weekly = 52, monthly = 12)
+  amount * factors[[period]]
+}
 habits <- data.frame(
   habit  = c("Coffee", "Groceries", "Streaming"),
   amount = c(5, 150, 15.99),
   period = c("daily", "weekly", "monthly")
 )
-habits$annual  <- mapply(to_annual, habits$amount, habits$period)
-habits$monthly <- habits$annual / 12
-habits
 ```
 
-The same math powers sinking funds. Divide each periodic cost from the book by 12 to get the monthly set aside.
+```{webr}
+#| exercise: annual_3_r
+# find each habit's yearly cost, then the total
 
-```{r}
-#| label: sinking-fund-r
-sinking <- data.frame(
-  expense = c("Car insurance", "Christmas/gifts", "Car maintenance", "Annual vacation"),
-  annual  = c(1200, 600, 1200, 2400)
-)
-sinking$monthly <- to_monthly(sinking$annual, period = "annual")
-sinking
-sum(sinking$monthly)
 ```
 
-Sanity check: 4.33 weeks × 12 months is 51.96 weeks, a hair short of 52. That is why weekly → monthly → annual lands \$6 under weekly → annual for \$150/week.
+::: {.hint exercise="annual_3_r"}
+`to_annual()` takes one period at a time. Inside `mutate()`, use `mapply(to_annual, amount, period)` to run it on each row.
+:::
 
-```{r}
-#| label: annualize-r-check
-to_annual(150, "weekly")
-to_monthly(150, "weekly") * 12
+::: {.solution exercise="annual_3_r"}
+```r
+habits |>
+  mutate(annual = mapply(to_annual, amount, period)) |>
+  summarise(total = sum(annual)) |>
+  pull(total)
 ```
+:::
 
-How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
+```{webr}
+#| exercise: annual_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 9816.88))) {
+  list(correct = TRUE, message = "Right: $9,816.88 a year. Groceries are most of it.")
+} else {
+  list(correct = FALSE, message = "Not quite. Each habit needs its own period's factor.")
+}
+```
 
 :::
 
@@ -420,92 +790,284 @@ ggplot(df_opp, aes(x = year, y = value)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `opportunity_cost()`, then find what the \$25,000 saved on a used car grows to in 30 years at 7%.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming the initial amount is in cell `A2`, the annual rate (as a decimal, e.g., 0.07) is in `B2`, and the number of years is in `C2`:
+Put the amount in `A2` (25000), the rate in `B2` (0.07), and years in `C2` (30). Find the future value in `D2`.
 
-``` swift
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
 =A2*(1+B2)^C2
 ```
 
+This returns \$190,306.38.
+
 ![](img/budget_opportunity_cost_formula.png){width='100%' fig-align='center'}
+:::
 
-For a grid, put the amount in `A1`, rates across `B2:D2` (0.05, 0.07, 0.09), and years down `A3:A6` (5, 10, 20, 30). In `B3`, enter the formula below and fill right and down. The `$` signs keep the amount, the rate row, and the years column locked:
+#### Python
 
-``` swift
-=$A$1*(1+B$2)^$A3
+```{pyodide}
+#| exercise: opp_1_py
+def opportunity_cost(amount, rate, years):
+    return amount * (1 + ______) ** ______
+
+opportunity_cost(25000, 0.07, 30)
 ```
 
-## Python
+::: {.hint exercise="opp_1_py"}
+Grow by `(1 + rate)` once for every year.
+:::
 
-The Python version of `opportunity_cost()` works the same way.
-
-```{python}
-#| label: opp-cost-py
+::: {.solution exercise="opp_1_py"}
+```python
 def opportunity_cost(amount, rate, years):
     return amount * (1 + rate) ** years
 
-opportunity_cost(amount=25000, rate=0.07, years=30)
+opportunity_cost(25000, 0.07, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: opp_1_py
+#| check: true
+if result is not None and abs(result - 190306.38) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $190,000. That's the real price of the new car."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Raise (1 + rate) to the number of years."}
+feedback
 ```
 
-A grid of horizons and rates. numpy broadcasting fills every combination at once.
+#### R
 
-```{python}
-#| label: opp-cost-py-grid
-import numpy as np
-
-years = np.array([5, 10, 20, 30])
-rates = np.array([0.05, 0.07, 0.09])
-grid = opportunity_cost(25000, rates[None, :], years[:, None])
-print("         " + "".join(f"{r:>10.0%}" for r in rates))
-for y, row in zip(years, grid):
-    print(f"{y:>2} yrs   " + "".join(f"{v:>10,.0f}" for v in row))
+```{webr}
+#| exercise: opp_1_r
+opportunity_cost <- function(amount, rate, years) {
+  amount * (1 + ______)^______
+}
+opportunity_cost(25000, 0.07, 30)
 ```
 
-Sanity check: 0% growth or 0 years returns the original amount.
+::: {.hint exercise="opp_1_r"}
+Grow by `(1 + rate)` once for every year.
+:::
 
-```{python}
-#| label: opp-cost-py-check
-print(opportunity_cost(25000, 0, 30), opportunity_cost(25000, 0.07, 0))
-```
-
-How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
-
-## R
-
-`opportunity_cost()` takes the dollar `amount`, the yearly `rate` of return, and the number of `years`.
-
-```{r}
-#| label: opp-cost-r
+::: {.solution exercise="opp_1_r"}
+```r
 opportunity_cost <- function(amount, rate, years) {
   amount * (1 + rate)^years
 }
+opportunity_cost(25000, 0.07, 30)
+```
+:::
 
-opportunity_cost(amount = 25000, rate = 0.07, years = 30)
+```{webr}
+#| exercise: opp_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 190306.38, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $190,000. That's the real price of the new car.")
+} else {
+  list(correct = FALSE, message = "Not quite. Raise (1 + rate) to the number of years.")
+}
 ```
 
-Returns are never guaranteed, so compare a cautious, middle, and hopeful rate across several horizons. `outer()` builds the whole grid in one call.
+:::
 
-```{r}
-#| label: opp-cost-r-grid
-years <- c(5, 10, 20, 30)
-rates <- c(0.05, 0.07, 0.09)
-grid <- outer(years, rates, function(y, r) opportunity_cost(25000, r, y))
-dimnames(grid) <- list(paste(years, "yrs"), paste0(rates * 100, "%"))
-round(grid)
+### Level 2: Practice
+
+Returns are never guaranteed. Using a cautious 5% return instead, what does the same \$25,000 grow to in 30 years?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 0.05.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same `=A2*(1+B2)^C2` now returns \$108,048.56. Even the cautious rate makes the used car worth more than \$100,000.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: opp_2_py
+#| setup: true
+def opportunity_cost(amount, rate, years):
+    return amount * (1 + rate) ** years
 ```
 
-Sanity check: at 0% the money just sits there, and after 0 years nothing has grown.
-
-```{r}
-#| label: opp-cost-r-check
-opportunity_cost(25000, rate = 0, years = 30)
-opportunity_cost(25000, rate = 0.07, years = 0)
+```{pyodide}
+#| exercise: opp_2_py
+opportunity_cost(______)
 ```
 
-How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
+::: {.hint exercise="opp_2_py"}
+Pass the amount, the rate as a decimal (0.05), and the years.
+:::
+
+::: {.solution exercise="opp_2_py"}
+```python
+opportunity_cost(25000, 0.05, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: opp_2_py
+#| check: true
+if result is not None and abs(result - 108048.56) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $108,000, still more than four times the $25,000."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Write 5% as 0.05."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: opp_2_r
+#| setup: true
+opportunity_cost <- function(amount, rate, years) {
+  amount * (1 + rate)^years
+}
+```
+
+```{webr}
+#| exercise: opp_2_r
+opportunity_cost(______)
+```
+
+::: {.hint exercise="opp_2_r"}
+Pass the amount, the rate as a decimal (0.05), and the years.
+:::
+
+::: {.solution exercise="opp_2_r"}
+```r
+opportunity_cost(25000, 0.05, 30)
+```
+:::
+
+```{webr}
+#| exercise: opp_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 108048.56, tolerance = 1e-6))) {
+  list(correct = TRUE, message = "Right: about $108,000, still more than four times the $25,000.")
+} else {
+  list(correct = FALSE, message = "Not quite. Write 5% as 0.05.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+At 7%, how many whole years does it take for the \$25,000 to double to \$50,000?
+
+::: panel-tabset
+
+#### Excel
+
+Put years 1 to 20 in `A5:A24`, find the value at each year in `B`, then find the first year at or above \$50,000.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B5`, then fill down:
+
+```swift
+=$A$2*(1+$B$2)^A5
+```
+
+Then `=MATCH(TRUE, B5:B24>=50000, 0)` returns 11. You can also solve it directly with `=ROUNDUP(NPER(7%, 0, -25000, 50000), 0)`.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: opp_3_py
+#| setup: true
+def opportunity_cost(amount, rate, years):
+    return amount * (1 + rate) ** years
+```
+
+```{pyodide}
+#| exercise: opp_3_py
+years = 1
+# keep adding a year until the value reaches $50,000
+
+years
+```
+
+::: {.hint exercise="opp_3_py"}
+Use `while opportunity_cost(25000, 0.07, years) < 50000:` and add 1 to `years` inside the loop.
+:::
+
+::: {.solution exercise="opp_3_py"}
+```python
+years = 1
+while opportunity_cost(25000, 0.07, years) < 50000:
+    years += 1
+
+years
+```
+:::
+
+```{pyodide}
+#| exercise: opp_3_py
+#| check: true
+if result == 11:
+    feedback = {"correct": True, "message": "Right: 11 years. The rule of 72 (72 / 7 = about 10.3) gets you close."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Stop at the first year the value is at least $50,000."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: opp_3_r
+#| setup: true
+opportunity_cost <- function(amount, rate, years) {
+  amount * (1 + rate)^years
+}
+```
+
+```{webr}
+#| exercise: opp_3_r
+years <- 1:20
+# find the first year the value is at least $50,000
+
+```
+
+::: {.hint exercise="opp_3_r"}
+`opportunity_cost()` is vectorized, so pass all 20 years at once. Then use `min(years[...])`.
+:::
+
+::: {.solution exercise="opp_3_r"}
+```r
+years <- 1:20
+value <- opportunity_cost(25000, 0.07, years)
+min(years[value >= 50000])
+```
+:::
+
+```{webr}
+#| exercise: opp_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), 11))) {
+  list(correct = TRUE, message = "Right: 11 years. The rule of 72 (72 / 7 = about 10.3) gets you close.")
+} else {
+  list(correct = FALSE, message = "Not quite. Stop at the first year the value is at least $50,000.")
+}
+```
 
 :::
 
@@ -540,111 +1102,281 @@ ggplot(df_be, aes(x = month, y = saved, fill = reached)) +
         panel.grid.minor = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `months_to_break_even()`, then find how long a \$500 membership that saves \$60 a month takes to pay for itself.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming the upfront cost is in cell `A2` and the monthly savings amount is in cell `B2`:
+With the upfront cost in `A2` (500) and monthly savings in `B2` (60), find the months in `C2`.
 
-``` swift
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
 =A2 / B2
 ```
 
+This returns 8.33 months.
+
 ![](img/budget_break_even_formula.png){width='100%' fig-align='center'}
+:::
 
-To round up to whole months and flag purchases that never break even, use this in `C2` instead:
+#### Python
 
-``` swift
-=IF(B2 <= 0, "Never", ROUNDUP(A2 / B2, 0))
+```{pyodide}
+#| exercise: be_1_py
+def months_to_break_even(upfront_cost, monthly_savings):
+    return ______ / ______
+
+months_to_break_even(500, 60)
 ```
 
-## Python
+::: {.hint exercise="be_1_py"}
+How many months of savings does it take to cover the upfront cost?
+:::
 
-The Python version of `months_to_break_even()` works the same way.
-
-```{python}
-#| label: break-even-py
+::: {.solution exercise="be_1_py"}
+```python
 def months_to_break_even(upfront_cost, monthly_savings):
     return upfront_cost / monthly_savings
 
-months_to_break_even(upfront_cost=500, monthly_savings=60)
+months_to_break_even(500, 60)
+```
+:::
+
+```{pyodide}
+#| exercise: be_1_py
+#| check: true
+if result is not None and abs(result - 500 / 60) < 0.001:
+    feedback = {"correct": True, "message": "Right: about 8.3 months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the upfront cost by the monthly savings."}
+feedback
 ```
 
-Round up to the month you actually cross the line.
+#### R
 
-```{python}
-#| label: break-even-py-ceiling
-import math
-
-math.ceil(months_to_break_even(500, 60))
+```{webr}
+#| exercise: be_1_r
+months_to_break_even <- function(upfront_cost, monthly_savings) {
+  ______ / ______
+}
+months_to_break_even(500, 60)
 ```
 
-Compare a few options at once.
+::: {.hint exercise="be_1_r"}
+How many months of savings does it take to cover the upfront cost?
+:::
 
-```{python}
-#| label: break-even-py-table
-options = [("Gym membership", 500, 60), ("Warehouse club", 65, 15), ("Refinance fee", 3000, 120)]
-for option, upfront, savings in options:
-    m = months_to_break_even(upfront, savings)
-    print(f"{option:<15} {m:5.1f} months  (month {math.ceil(m)})")
-```
-
-Edge case: zero savings raises a `ZeroDivisionError` in Python, and negative savings gives a negative answer. Neither ever breaks even, so guard against both.
-
-```{python}
-#| label: break-even-py-edge
-def safe_break_even(upfront_cost, monthly_savings):
-    if monthly_savings <= 0:
-        return math.inf
-    return months_to_break_even(upfront_cost, monthly_savings)
-
-print(safe_break_even(500, 0), safe_break_even(500, -10))
-```
-
-How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
-
-## R
-
-`months_to_break_even()` divides the upfront cost by the monthly savings.
-
-```{r}
-#| label: break-even-r
+::: {.solution exercise="be_1_r"}
+```r
 months_to_break_even <- function(upfront_cost, monthly_savings) {
   upfront_cost / monthly_savings
 }
+months_to_break_even(500, 60)
+```
+:::
 
-months_to_break_even(upfront_cost = 500, monthly_savings = 60)
+```{webr}
+#| exercise: be_1_r
+#| check: true
+if (isTRUE(all.equal(.result, 500 / 60))) {
+  list(correct = TRUE, message = "Right: about 8.3 months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the upfront cost by the monthly savings.")
+}
 ```
 
-Savings arrive in whole months, so round up to find the month you actually cross the line. That matches the first green bar in the chart.
+:::
 
-```{r}
-#| label: break-even-r-ceiling
-ceiling(months_to_break_even(500, 60))
+### Level 2: Practice
+
+Refinancing a loan costs \$3,000 upfront and lowers your payment by \$110 a month. Savings arrive in whole months, so in which month do you break even?
+
+::: panel-tabset
+
+#### Excel
+
+Put 3000 in `A2` and 110 in `B2`. Round up to a whole month.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=ROUNDUP(A2 / B2, 0)
 ```
 
-Compare a few options at once.
+This returns 28. If you plan to sell the house sooner than that, the refinance doesn't pay.
+:::
 
-```{r}
-#| label: break-even-r-table
-options_df <- data.frame(
-  option  = c("Gym membership", "Warehouse club", "Refinance fee"),
-  upfront = c(500, 65, 3000),
-  savings = c(60, 15, 120)
-)
-options_df$months <- months_to_break_even(options_df$upfront, options_df$savings)
-options_df$whole_months <- ceiling(options_df$months)
-options_df
+#### Python
+
+```{pyodide}
+#| exercise: be_2_py
+#| setup: true
+import math
+def months_to_break_even(upfront_cost, monthly_savings):
+    return upfront_cost / monthly_savings
 ```
 
-Edge case: if a purchase saves nothing (or costs more each month), it never breaks even. Check before dividing.
-
-```{r}
-#| label: break-even-r-edge
-months_to_break_even(500, 0)
-months_to_break_even(500, -10)
+```{pyodide}
+#| exercise: be_2_py
+math.______(months_to_break_even(3000, 110))
 ```
 
-How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
+::: {.hint exercise="be_2_py"}
+27.3 months means you cross the line in month 28. Which `math` function always rounds up?
+:::
+
+::: {.solution exercise="be_2_py"}
+```python
+math.ceil(months_to_break_even(3000, 110))
+```
+:::
+
+```{pyodide}
+#| exercise: be_2_py
+#| check: true
+if result == 28:
+    feedback = {"correct": True, "message": "Right: month 28, a bit over two years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Round 27.3 up, not to the nearest month."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: be_2_r
+#| setup: true
+months_to_break_even <- function(upfront_cost, monthly_savings) {
+  upfront_cost / monthly_savings
+}
+```
+
+```{webr}
+#| exercise: be_2_r
+______(months_to_break_even(3000, 110))
+```
+
+::: {.hint exercise="be_2_r"}
+27.3 months means you cross the line in month 28. Which function always rounds up?
+:::
+
+::: {.solution exercise="be_2_r"}
+```r
+ceiling(months_to_break_even(3000, 110))
+```
+:::
+
+```{webr}
+#| exercise: be_2_r
+#| check: true
+if (isTRUE(all.equal(.result, 28))) {
+  list(correct = TRUE, message = "Right: month 28, a bit over two years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Round 27.3 up, not to the nearest month.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+A purchase that saves nothing (or costs more each month) never breaks even, but plain division gives a misleading answer. Write `safe_break_even(upfront_cost, monthly_savings)` that returns infinity when savings are zero or less, and the usual months otherwise. Test it on savings of \$0, -\$10, and \$60.
+
+::: panel-tabset
+
+#### Excel
+
+Write a formula in `C2` that shows "Never" when `B2` is zero or less, and the whole months otherwise.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=IF(B2 <= 0, "Never", ROUNDUP(A2 / B2, 0))
+```
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: be_3_py
+import math
+def safe_break_even(upfront_cost, monthly_savings):
+    # your code here
+    pass
+
+[safe_break_even(500, 0), safe_break_even(500, -10), safe_break_even(500, 60)]
+```
+
+::: {.hint exercise="be_3_py"}
+Check `if monthly_savings <= 0:` first and `return math.inf`. Otherwise return the division.
+:::
+
+::: {.solution exercise="be_3_py"}
+```python
+import math
+def safe_break_even(upfront_cost, monthly_savings):
+    if monthly_savings <= 0:
+        return math.inf
+    return upfront_cost / monthly_savings
+
+[safe_break_even(500, 0), safe_break_even(500, -10), safe_break_even(500, 60)]
+```
+:::
+
+```{pyodide}
+#| exercise: be_3_py
+#| check: true
+import math
+ok = (isinstance(result, list) and len(result) == 3 and result[0] == math.inf
+      and result[1] == math.inf and abs(result[2] - 500 / 60) < 0.001)
+if ok:
+    feedback = {"correct": True, "message": "Right: no savings means it never pays for itself."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Zero and negative savings should both return math.inf."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: be_3_r
+safe_break_even <- function(upfront_cost, monthly_savings) {
+  # your code here
+}
+c(safe_break_even(500, 0), safe_break_even(500, -10), safe_break_even(500, 60))
+```
+
+::: {.hint exercise="be_3_r"}
+Check `if (monthly_savings <= 0)` first and `return(Inf)`. Otherwise return the division.
+:::
+
+::: {.solution exercise="be_3_r"}
+```r
+safe_break_even <- function(upfront_cost, monthly_savings) {
+  if (monthly_savings <= 0) {
+    return(Inf)
+  }
+  upfront_cost / monthly_savings
+}
+c(safe_break_even(500, 0), safe_break_even(500, -10), safe_break_even(500, 60))
+```
+:::
+
+```{webr}
+#| exercise: be_3_r
+#| check: true
+if (isTRUE(all.equal(.result, c(Inf, Inf, 500 / 60)))) {
+  list(correct = TRUE, message = "Right: no savings means it never pays for itself.")
+} else {
+  list(correct = FALSE, message = "Not quite. Zero and negative savings should both return Inf.")
+}
+```
 
 :::

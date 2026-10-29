@@ -1,6 +1,15 @@
 ---
 title: "Major Purchases"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -15,6 +24,12 @@ source("_common.R")
 #| include: false
 ```
 
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -60,104 +75,278 @@ ggplot(df_5pct, aes(x = "", y = amount, fill = component)) +
 
 Example: a $500,000 home → (500,000 × 0.05) ÷ 12 = $2,083 a month. Rent below that, and renting and investing the difference tends to win.
 
+How to read this result: the threshold is the rent at which renting and owning cost about the same. It's a quick filter, not a final answer; your plans to stay and your local rents still matter.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `rent_buy_threshold()`, then find the 5% rule's monthly cost of owning a \$500,000 home.
+
 ::: panel-tabset
-## Excel
 
-Assuming the home value is in `A2` and the unrecoverable rate (`0.05`) is in `B2`, the threshold goes in `C2`:
+#### Excel
 
-```swift
-=(A2*B2)/12
-```
+Put the home value in `A2` (500000) and the rate in `B2` (0.05). Find the monthly threshold in `C2`.
 
-With a comparable rent in `D2`, the verdict goes in `E2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=IF(D2 < C2, "rent and invest", "buying competes")
+=A2 * B2 / 12
 ```
 
-## Python
+This returns \$2,083.33.
+:::
 
-`rent_buy_threshold()` turns the 5% rule into a monthly rent figure.
+#### Python
 
-```{python}
-#| label: rent-buy-py
+```{pyodide}
+#| exercise: rentbuy_1_py
+def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
+    return (______ * ______) / 12
+
+rent_buy_threshold(500000)
+```
+
+::: {.hint exercise="rentbuy_1_py"}
+5% of the home's value is lost each year; divide by 12 for a month.
+:::
+
+::: {.solution exercise="rentbuy_1_py"}
+```python
 def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
     return (home_value * unrecoverable_rate) / 12
 
-# $500,000 home at the standard 5% unrecoverable rate
-print(rent_buy_threshold(home_value=500000))
+rent_buy_threshold(500000)
+```
+:::
+
+```{pyodide}
+#| exercise: rentbuy_1_py
+#| check: true
+if result is not None and abs(result - 2083.3333) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $2,083 a month. Rent below that and renting tends to win."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply the value by the rate, then divide by 12."}
+feedback
 ```
 
-The 5% split into its parts:
+#### R
 
-```{python}
-#| label: rent-buy-py-parts
-parts = {"property_tax": 0.01, "maintenance": 0.01, "cost_of_capital": 0.03}
-yearly = {k: 500000 * v for k, v in parts.items()}
-print(yearly, "total:", sum(yearly.values()), "monthly:", round(sum(yearly.values()) / 12, 2))
+```{webr}
+#| exercise: rentbuy_1_r
+rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
+  (______ * ______) / 12
+}
+rent_buy_threshold(500000)
 ```
 
-Compare several homes to a $2,000 rent:
+::: {.hint exercise="rentbuy_1_r"}
+5% of the home's value is lost each year; divide by 12 for a month.
+:::
 
-```{python}
-#| label: rent-buy-py-compare
-rent = 2000
-for home in [300000, 400000, 500000, 600000]:
-    t = rent_buy_threshold(home)
-    verdict = "rent and invest" if rent < t else "buying competes"
-    print(f"${home:>9,}  threshold ${t:>7,.0f}  {verdict}")
-```
-
-Edge case: try other unrecoverable rates.
-
-```{python}
-#| label: rent-buy-py-rates
-print([round(rent_buy_threshold(500000, rate)) for rate in [0.04, 0.05, 0.06]])
-```
-
-## R
-
-`rent_buy_threshold()` turns the 5% rule into a monthly rent figure.
-
-```{r}
-#| label: rent-buy-r
+::: {.solution exercise="rentbuy_1_r"}
+```r
 rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
   (home_value * unrecoverable_rate) / 12
 }
-
-# $500,000 home at the standard 5% unrecoverable rate
-rent_buy_threshold(home_value = 500000)
+rent_buy_threshold(500000)
 ```
+:::
 
-The 5% is a sum of parts. Splitting it shows which part drives the total.
-
-```{r}
-#| label: rent-buy-r-parts
-yearly <- 500000 * c(property_tax = 0.01, maintenance = 0.01, cost_of_capital = 0.03)
-c(yearly, total = sum(yearly), monthly = sum(yearly) / 12)
-```
-
-Compare several homes to a $2,000 rent. The function works on a whole vector of prices at once.
-
-```{r}
-#| label: rent-buy-r-compare
-homes <- data.frame(home_value = c(300000L, 400000L, 500000L, 600000L))
-homes$threshold <- round(rent_buy_threshold(homes$home_value))
-homes$rent      <- 2000
-homes$verdict   <- ifelse(homes$rent < homes$threshold, "rent and invest", "buying competes")
-homes
-```
-
-Edge case: the 3% cost of capital depends on interest rates and expected returns. In a low rate era a 4% total is closer; with high rates, 6% may fit better.
-
-```{r}
-#| label: rent-buy-r-rates
-round(sapply(c(0.04, 0.05, 0.06), rent_buy_threshold, home_value = 500000))
+```{webr}
+#| exercise: rentbuy_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2083.3333) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $2,083 a month. Rent below that and renting tends to win.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply the value by the rate, then divide by 12.")
+}
 ```
 
 :::
 
-How to read this result: the threshold is the rent at which renting and owning cost about the same. It's a quick filter, not a final answer; your plans to stay and your local rents still matter.
+### Level 2: Practice
+
+In a low-rate era, 4% may fit better than 5%. What is the threshold for a \$600,000 home at 4%?
+
+::: panel-tabset
+
+#### Excel
+
+Change `A2` to 600000 and `B2` to 0.04.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$2,000.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: rentbuy_2_py
+#| setup: true
+def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
+    return (home_value * unrecoverable_rate) / 12
+```
+
+```{pyodide}
+#| exercise: rentbuy_2_py
+rent_buy_threshold(______)
+```
+
+::: {.hint exercise="rentbuy_2_py"}
+Pass the home value and `unrecoverable_rate=0.04`.
+:::
+
+::: {.solution exercise="rentbuy_2_py"}
+```python
+rent_buy_threshold(600000, unrecoverable_rate=0.04)
+```
+:::
+
+```{pyodide}
+#| exercise: rentbuy_2_py
+#| check: true
+if result is not None and abs(result - 2000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $2,000 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 600000 and 0.04."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: rentbuy_2_r
+#| setup: true
+rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
+  (home_value * unrecoverable_rate) / 12
+}
+```
+
+```{webr}
+#| exercise: rentbuy_2_r
+rent_buy_threshold(______)
+```
+
+::: {.hint exercise="rentbuy_2_r"}
+Pass the home value and `unrecoverable_rate = 0.04`.
+:::
+
+::: {.solution exercise="rentbuy_2_r"}
+```r
+rent_buy_threshold(600000, unrecoverable_rate = 0.04)
+```
+:::
+
+```{webr}
+#| exercise: rentbuy_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $2,000 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 600000 and 0.04.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+You can rent a place for \$2,000 a month. Comparing homes worth \$300,000, \$400,000, \$500,000, and \$600,000 at the 5% rule, for how many is renting and investing the better deal (rent below the threshold)?
+
+::: panel-tabset
+
+#### Excel
+
+Put the home values in `A2:A5`, the threshold in `B`, and count where 2,000 is below it.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=A2*0.05/12`. Then `=COUNTIF(B2:B5, ">2000")` returns 2 (the \$500,000 and \$600,000 homes).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: rentbuy_3_py
+#| setup: true
+def rent_buy_threshold(home_value, unrecoverable_rate=0.05):
+    return (home_value * unrecoverable_rate) / 12
+
+import pandas as pd
+homes = pd.DataFrame({"home_value": [300000, 400000, 500000, 600000]})
+```
+
+```{pyodide}
+#| exercise: rentbuy_3_py
+# add a threshold column, then count homes where $2,000 rent is below it
+```
+
+::: {.hint exercise="rentbuy_3_py"}
+`homes["threshold"] = rent_buy_threshold(homes["home_value"])`, then `(homes["threshold"] > 2000).sum()`.
+:::
+
+::: {.solution exercise="rentbuy_3_py"}
+```python
+homes["threshold"] = rent_buy_threshold(homes["home_value"])
+(homes["threshold"] > 2000).sum()
+```
+:::
+
+```{pyodide}
+#| exercise: rentbuy_3_py
+#| check: true
+if result is not None and abs(result - 2) < 0.001:
+    feedback = {"correct": True, "message": "Right: 2. Against the $500,000 and $600,000 homes, $2,000 rent wins."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Renting wins when the rent is below the threshold."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: rentbuy_3_r
+#| setup: true
+library(dplyr)
+rent_buy_threshold <- function(home_value, unrecoverable_rate = 0.05) {
+  (home_value * unrecoverable_rate) / 12
+}
+homes <- data.frame(home_value = c(300000, 400000, 500000, 600000))
+```
+
+```{webr}
+#| exercise: rentbuy_3_r
+# add a threshold column, then count homes where $2,000 rent is below it
+```
+
+::: {.hint exercise="rentbuy_3_r"}
+`mutate(threshold = rent_buy_threshold(home_value))`, then `filter(2000 < threshold)` and `nrow()`.
+:::
+
+::: {.solution exercise="rentbuy_3_r"}
+```r
+homes |>
+  mutate(threshold = rent_buy_threshold(home_value)) |>
+  filter(2000 < threshold) |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: rentbuy_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2) < 0.001)) {
+  list(correct = TRUE, message = "Right: 2. Against the $500,000 and $600,000 homes, $2,000 rent wins.")
+} else {
+  list(correct = FALSE, message = "Not quite. Renting wins when the rent is below the threshold.")
+}
+```
+
+:::
 
 ## The Monthly Mortgage Payment
 
@@ -196,109 +385,301 @@ ggplot(df_mort, aes(x = term, y = payment, fill = term)) +
 
 Example: a $480,000 loan (a $600,000 home with 20% down) at 6% for 30 years → about $2,878 a month.
 
+How to read this result: the monthly payment is only part of the cost. Before choosing a term, check that the payment plus property tax and insurance stays under 28% to 30% of gross income.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `mortgage_payment()`, then find the monthly payment on a \$480,000 loan at 6% for 30 years.
+
 ::: panel-tabset
-## Excel
 
-Assuming the loan amount is in `A2`, the annual rate is in `B2` (as a decimal), and the years are in `C2`, the payment goes in `D2`:
+#### Excel
 
-```swift
-=A2*((B2/12)*(1+B2/12)^(C2*12))/((1+B2/12)^(C2*12)-1)
-```
+Find the payment in one formula.
 
-Excel's built in `PMT()` does the same job (flip the sign, since Excel treats the payment as money going out):
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=-PMT(B2/12, C2*12, A2)
+=PMT(6%/12, 360, -480000)
 ```
 
-Total interest goes in `E2`:
+This returns \$2,877.84.
+:::
 
-```swift
-=D2*C2*12-A2
+#### Python
+
+```{pyodide}
+#| exercise: mortgage_1_py
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / ______
+    n = years * ______
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+
+mortgage_payment(480000, 0.06, 30)
 ```
 
-## Python
+::: {.hint exercise="mortgage_1_py"}
+Mortgages are paid monthly: a monthly rate and a number of months.
+:::
 
-`mortgage_payment()` implements the amortization formula.
-
-```{python}
-#| label: mortgage-payment-py
+::: {.solution exercise="mortgage_1_py"}
+```python
 def mortgage_payment(principal, annual_rate, years):
     r = annual_rate / 12
     n = years * 12
     return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
 
-# $480,000 loan at 6% over 30 years
-print(mortgage_payment(principal=480000, annual_rate=0.06, years=30))
+mortgage_payment(480000, 0.06, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: mortgage_1_py
+#| check: true
+if result is not None and abs(result - 2877.8425) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $2,878 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Both blanks are 12."}
+feedback
 ```
 
-Payment and total interest by term:
+#### R
 
-```{python}
-#| label: mortgage-payment-py-terms
-for years in [15, 20, 30]:
-    pmt = mortgage_payment(480000, 0.06, years)
-    print(f"{years} yrs  payment ${pmt:,.0f}  total interest ${pmt * years * 12 - 480000:,.0f}")
+```{webr}
+#| exercise: mortgage_1_r
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / ______
+  n <- years * ______
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+mortgage_payment(480000, 0.06, 30)
 ```
 
-Payments at three rates on a 30 year loan:
+::: {.hint exercise="mortgage_1_r"}
+Mortgages are paid monthly: a monthly rate and a number of months.
+:::
 
-```{python}
-#| label: mortgage-payment-py-rates
-print([round(mortgage_payment(480000, rate, 30)) for rate in [0.05, 0.06, 0.07]])
-```
-
-Edge case: at a 0% rate the formula divides by zero (Python raises `ZeroDivisionError`), so the payment is just principal ÷ months.
-
-```{python}
-#| label: mortgage-payment-py-edge
-print(480000 / 360)
-```
-
-## R
-
-`mortgage_payment()` implements the amortization formula.
-
-```{r}
-#| label: mortgage-payment-r
+::: {.solution exercise="mortgage_1_r"}
+```r
 mortgage_payment <- function(principal, annual_rate, years) {
   r <- annual_rate / 12
   n <- years * 12
   principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
 }
-
-# $480,000 loan at 6% over 30 years
-mortgage_payment(principal = 480000, annual_rate = 0.06, years = 30)
+mortgage_payment(480000, 0.06, 30)
 ```
+:::
 
-The bar chart shows the payment; the total interest is the bigger story. A 15 year loan costs about $1,170 more a month but saves over $300,000 in interest.
-
-```{r}
-#| label: mortgage-payment-r-terms
-terms <- data.frame(years = c(15, 20, 30))
-terms$payment        <- round(mortgage_payment(480000, 0.06, terms$years))
-terms$total_interest <- round(mortgage_payment(480000, 0.06, terms$years) * terms$years * 12 - 480000)
-terms
-```
-
-Rates matter too. Each point on a 30 year loan moves the payment by roughly $300 a month.
-
-```{r}
-#| label: mortgage-payment-r-rates
-round(sapply(c(0.05, 0.06, 0.07), mortgage_payment, principal = 480000, years = 30))
-```
-
-Edge case: at a 0% rate the formula divides zero by zero, so R returns `NaN`. The payment is then just principal ÷ months.
-
-```{r}
-#| label: mortgage-payment-r-edge
-mortgage_payment(480000, 0, 30)
-480000 / 360
+```{webr}
+#| exercise: mortgage_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2877.8425) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $2,878 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Both blanks are 12.")
+}
 ```
 
 :::
 
-How to read this result: the monthly payment is only part of the cost. Before choosing a term, check that the payment plus property tax and insurance stays under 28% to 30% of gross income.
+### Level 2: Practice
+
+A 15-year loan has a bigger payment but far less interest. How much total interest does the 15-year loan save compared with the 30-year loan on the same \$480,000 at 6%?
+
+::: panel-tabset
+
+#### Excel
+
+Find each loan's total interest (payment × months − principal), then the difference.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=(PMT(6%/12,360,-480000)*360 - 480000) - (PMT(6%/12,180,-480000)*180 - 480000)
+```
+
+This returns \$306,931.01.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: mortgage_2_py
+#| setup: true
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: mortgage_2_py
+interest_30 = mortgage_payment(480000, 0.06, 30) * 360 - 480000
+interest_15 = ______
+interest_30 - interest_15
+```
+
+::: {.hint exercise="mortgage_2_py"}
+The 15-year loan has 180 payments.
+:::
+
+::: {.solution exercise="mortgage_2_py"}
+```python
+interest_30 = mortgage_payment(480000, 0.06, 30) * 360 - 480000
+interest_15 = mortgage_payment(480000, 0.06, 15) * 180 - 480000
+interest_30 - interest_15
+```
+:::
+
+```{pyodide}
+#| exercise: mortgage_2_py
+#| check: true
+if result is not None and abs(result - 306931.008) < 0.01:
+    feedback = {"correct": True, "message": "Right: over $300,000 of interest saved."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 15 years and 180 payments for the shorter loan."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: mortgage_2_r
+#| setup: true
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+```
+
+```{webr}
+#| exercise: mortgage_2_r
+interest_30 <- mortgage_payment(480000, 0.06, 30) * 360 - 480000
+interest_15 <- ______
+interest_30 - interest_15
+```
+
+::: {.hint exercise="mortgage_2_r"}
+The 15-year loan has 180 payments.
+:::
+
+::: {.solution exercise="mortgage_2_r"}
+```r
+interest_30 <- mortgage_payment(480000, 0.06, 30) * 360 - 480000
+interest_15 <- mortgage_payment(480000, 0.06, 15) * 180 - 480000
+interest_30 - interest_15
+```
+:::
+
+```{webr}
+#| exercise: mortgage_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 306931.008) < 0.01)) {
+  list(correct = TRUE, message = "Right: over $300,000 of interest saved.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 15 years and 180 payments for the shorter loan.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Flip the question: your budget allows a \$2,500 monthly payment. At 6% for 30 years, what is the largest loan you can take?
+
+::: panel-tabset
+
+#### Excel
+
+Find the loan in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PV(6%/12, 360, -2500)
+```
+
+This returns \$416,979.04.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: mortgage_3_py
+#| setup: true
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: mortgage_3_py
+# the payment on a $1 loan tells you the cost per dollar borrowed
+```
+
+::: {.hint exercise="mortgage_3_py"}
+`mortgage_payment(1, 0.06, 30)` is the payment per dollar. Divide \$2,500 by it.
+:::
+
+::: {.solution exercise="mortgage_3_py"}
+```python
+2500 / mortgage_payment(1, 0.06, 30)
+```
+:::
+
+```{pyodide}
+#| exercise: mortgage_3_py
+#| check: true
+if result is not None and abs(result - 416979.036) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $417,000. With 20% down, that's a home near $521,000."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the budget by the payment on a $1 loan."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: mortgage_3_r
+#| setup: true
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+```
+
+```{webr}
+#| exercise: mortgage_3_r
+# the payment on a $1 loan tells you the cost per dollar borrowed
+```
+
+::: {.hint exercise="mortgage_3_r"}
+`mortgage_payment(1, 0.06, 30)` is the payment per dollar. Divide \$2,500 by it.
+:::
+
+::: {.solution exercise="mortgage_3_r"}
+```r
+2500 / mortgage_payment(1, 0.06, 30)
+```
+:::
+
+```{webr}
+#| exercise: mortgage_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 416979.036) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $417,000. With 20% down, that's a home near $521,000.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the budget by the payment on a $1 loan.")
+}
+```
+
+:::
 
 ## Where the First Year's Payments Go
 
@@ -355,148 +736,316 @@ ggplot(df_amort, aes(x = month, y = amount, fill = type)) +
 
 Example: on that $480,000 loan, month one interest is $2,400 of the $2,878 payment, about 83% interest, leaving only about $478 toward principal.
 
+How to read this result: early on, your payment mostly rents money from the bank. Equity builds slowly at first and quickly at the end, so selling within a few years leaves little principal paid down.
+
+### Level 1: Guided
+
+In month one of the \$480,000 loan at 6%, interest is the balance × (6% ÷ 12). Fill in the blanks to find how much of the \$2,877.84 payment actually pays down the loan.
+
 ::: panel-tabset
-## Excel
 
-Assuming the loan amount is in `A2`, the annual rate is in `B2`, and the years are in `C2`, the monthly payment goes in `D2`:
+#### Excel
 
-```swift
-=-PMT(B2/12, C2*12, A2)
-```
+With the payment in `A2`, find month one's interest in `B2` and principal in `C2`.
 
-The first month's interest goes in `E2`, the principal in `F2`, and the percent interest in `G2` (format as a Percentage):
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=A2*B2/12
-=D2-E2
-=E2/D2
+=480000 * 6%/12
+=A2 - B2
 ```
 
-For any year, `CUMIPMT()` and `CUMPRINC()` add up the interest and principal between two payment numbers. Year 1 interest, for example:
+Interest is \$2,400, so only \$477.84 goes to principal.
+:::
 
-```swift
-=-CUMIPMT(B2/12, C2*12, A2, 1, 12, 0)
-```
+#### Python
 
-Principal paid after 5 years:
-
-```swift
-=-CUMPRINC(B2/12, C2*12, A2, 1, 60, 0)
-```
-
-## Python
-
-`first_payment_split()` reuses `mortgage_payment()`, repeated here to keep this tab self contained.
-
-```{python}
-#| label: first-payment-py
+```{pyodide}
+#| exercise: first_1_py
+#| setup: true
 def mortgage_payment(principal, annual_rate, years):
     r = annual_rate / 12
     n = years * 12
     return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
-
-def first_payment_split(principal, annual_rate, years):
-    payment = mortgage_payment(principal, annual_rate, years)
-    interest = principal * (annual_rate / 12)
-    return {
-        "payment": payment,
-        "interest": interest,
-        "principal": payment - interest,
-        "pct_interest": (interest / payment) * 100,
-    }
-
-# first payment on a $480,000 loan at 6% over 30 years
-print(first_payment_split(principal=480000, annual_rate=0.06, years=30))
 ```
 
-The share of interest by year:
-
-```{python}
-#| label: first-payment-py-schedule
-def amortize(principal, annual_rate, years):
-    r = annual_rate / 12
-    pmt = mortgage_payment(principal, annual_rate, years)
-    balance, rows = principal, []
-    for m in range(years * 12):
-        interest = balance * r
-        balance -= pmt - interest
-        rows.append((m // 12 + 1, interest, pmt - interest))
-    return rows
-
-sched = amortize(480000, 0.06, 30)
-for year in [1, 5, 10, 15, 19, 20, 25, 30]:
-    i = sum(row[1] for row in sched if row[0] == year)
-    p = sum(row[2] for row in sched if row[0] == year)
-    print(f"year {year:>2}  {i / (i + p):.1%} interest")
+```{pyodide}
+#| exercise: first_1_py
+payment = mortgage_payment(480000, 0.06, 30)
+interest = 480000 * ______
+payment - ______
 ```
 
-Principal paid after 5 years:
+::: {.hint exercise="first_1_py"}
+The monthly rate is 0.06 / 12. Principal is whatever is left of the payment after interest.
+:::
 
-```{python}
-#| label: first-payment-py-five
-paid_5yr = sum(row[2] for row in sched[:60])
-print(f"${paid_5yr:,.0f} paid off, {paid_5yr / 480000:.1%} of the loan")
+::: {.solution exercise="first_1_py"}
+```python
+payment = mortgage_payment(480000, 0.06, 30)
+interest = 480000 * (0.06 / 12)
+payment - interest
+```
+:::
+
+```{pyodide}
+#| exercise: first_1_py
+#| check: true
+if result is not None and abs(result - 477.8425) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $478 of a $2,878 payment."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Interest is the balance times 0.06 / 12."}
+feedback
 ```
 
-## R
+#### R
 
-`first_payment_split()` reuses `mortgage_payment()` from the section above, so it's repeated here to keep this tab self contained.
-
-```{r}
-#| label: first-payment-r
+```{webr}
+#| exercise: first_1_r
+#| setup: true
 mortgage_payment <- function(principal, annual_rate, years) {
   r <- annual_rate / 12
   n <- years * 12
   principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
 }
-
-first_payment_split <- function(principal, annual_rate, years) {
-  payment  <- mortgage_payment(principal, annual_rate, years)
-  interest <- principal * (annual_rate / 12)
-  data.frame(
-    payment      = payment,
-    interest     = interest,
-    principal    = payment - interest,
-    pct_interest = (interest / payment) * 100
-  )
-}
-
-# first payment on a $480,000 loan at 6% over 30 years
-first_payment_split(principal = 480000, annual_rate = 0.06, years = 30)
 ```
 
-One month is a snapshot. Walking the loan month by month and adding up each year shows how slowly the split changes. The first year is about 83% interest, and interest doesn't drop below half until year 19.
-
-```{r}
-#| label: first-payment-r-schedule
-amortize <- function(principal, annual_rate, years) {
-  r   <- annual_rate / 12
-  pmt <- mortgage_payment(principal, annual_rate, years)
-  interest <- numeric(years * 12)
-  balance  <- principal
-  for (m in seq_along(interest)) {
-    interest[m] <- balance * r
-    balance     <- balance - (pmt - interest[m])
-  }
-  data.frame(year = rep(seq_len(years), each = 12), interest = interest,
-             principal = pmt - interest)
-}
-
-sched  <- amortize(480000, 0.06, 30)
-by_yr  <- aggregate(cbind(interest, principal) ~ year, data = sched, FUN = sum)
-by_yr$pct_interest <- round(by_yr$interest / (by_yr$interest + by_yr$principal) * 100, 1)
-by_yr[by_yr$year %in% c(1, 5, 10, 15, 19, 20, 25, 30), ]
+```{webr}
+#| exercise: first_1_r
+payment <- mortgage_payment(480000, 0.06, 30)
+interest <- 480000 * ______
+payment - ______
 ```
 
-Why moving every 5 years hurts: after 60 payments, only about 7% of the loan is paid off.
+::: {.hint exercise="first_1_r"}
+The monthly rate is 0.06 / 12. Principal is whatever is left of the payment after interest.
+:::
 
-```{r}
-#| label: first-payment-r-five
-paid_5yr <- sum(sched$principal[1:60])
-c(principal_paid = round(paid_5yr), pct_of_loan = round(paid_5yr / 480000 * 100, 1),
-  interest_paid = round(sum(sched$interest[1:60])))
+::: {.solution exercise="first_1_r"}
+```r
+payment <- mortgage_payment(480000, 0.06, 30)
+interest <- 480000 * (0.06 / 12)
+payment - interest
+```
+:::
+
+```{webr}
+#| exercise: first_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 477.8425) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $478 of a $2,878 payment.")
+} else {
+  list(correct = FALSE, message = "Not quite. Interest is the balance times 0.06 / 12.")
+}
 ```
 
 :::
 
-How to read this result: early on, your payment mostly rents money from the bank. Equity builds slowly at first and quickly at the end, so selling within a few years leaves little principal paid down.
+### Level 2: Practice
+
+What percent of that first payment is interest?
+
+::: panel-tabset
+
+#### Excel
+
+Find the share in `D2`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=B2 / A2 * 100
+```
+
+This returns 83.4.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: first_2_py
+#| setup: true
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: first_2_py
+payment = mortgage_payment(480000, 0.06, 30)
+interest = 480000 * (0.06 / 12)
+______
+```
+
+::: {.hint exercise="first_2_py"}
+Interest divided by the payment, times 100.
+:::
+
+::: {.solution exercise="first_2_py"}
+```python
+payment = mortgage_payment(480000, 0.06, 30)
+interest = 480000 * (0.06 / 12)
+interest / payment * 100
+```
+:::
+
+```{pyodide}
+#| exercise: first_2_py
+#| check: true
+if result is not None and abs(result - 83.3958) < 0.001:
+    feedback = {"correct": True, "message": "Right: about 83% of the first payment is interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide interest by the payment."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: first_2_r
+#| setup: true
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+```
+
+```{webr}
+#| exercise: first_2_r
+payment <- mortgage_payment(480000, 0.06, 30)
+interest <- 480000 * (0.06 / 12)
+______
+```
+
+::: {.hint exercise="first_2_r"}
+Interest divided by the payment, times 100.
+:::
+
+::: {.solution exercise="first_2_r"}
+```r
+payment <- mortgage_payment(480000, 0.06, 30)
+interest <- 480000 * (0.06 / 12)
+interest / payment * 100
+```
+:::
+
+```{webr}
+#| exercise: first_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 83.3958) < 0.001)) {
+  list(correct = TRUE, message = "Right: about 83% of the first payment is interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide interest by the payment.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Walk the loan forward 60 months. Each month, interest is the balance × 0.005 and the rest of the payment lowers the balance. How much principal have you paid off after 5 years?
+
+::: panel-tabset
+
+#### Excel
+
+Build a 60-row schedule with month, starting balance, interest, principal, and ending balance, then total the principal.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Or skip the table: `=-CUMPRINC(6%/12, 360, 480000, 1, 60, 0)` returns \$33,339.09, about 7% of the loan.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: first_3_py
+#| setup: true
+def mortgage_payment(principal, annual_rate, years):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: first_3_py
+payment = mortgage_payment(480000, 0.06, 30)
+balance = 480000
+# loop 60 months, then return how much the balance has dropped
+```
+
+::: {.hint exercise="first_3_py"}
+`for month in range(60):` subtract `payment - balance * 0.005` from `balance`. Then return `480000 - balance`.
+:::
+
+::: {.solution exercise="first_3_py"}
+```python
+payment = mortgage_payment(480000, 0.06, 30)
+balance = 480000
+for month in range(60):
+    balance -= payment - balance * 0.005
+
+480000 - balance
+```
+:::
+
+```{pyodide}
+#| exercise: first_3_py
+#| check: true
+if result is not None and abs(result - 33339.087) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $33,339 after $172,670 of payments. Moving every 5 years hurts."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Recompute interest from the new balance every month."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: first_3_r
+#| setup: true
+mortgage_payment <- function(principal, annual_rate, years) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+```
+
+```{webr}
+#| exercise: first_3_r
+payment <- mortgage_payment(480000, 0.06, 30)
+balance <- 480000
+# loop 60 months, then return how much the balance has dropped
+```
+
+::: {.hint exercise="first_3_r"}
+`for (month in 1:60)` set `balance <- balance - (payment - balance * 0.005)`. Then return `480000 - balance`.
+:::
+
+::: {.solution exercise="first_3_r"}
+```r
+payment <- mortgage_payment(480000, 0.06, 30)
+balance <- 480000
+for (month in 1:60) {
+  balance <- balance - (payment - balance * 0.005)
+}
+480000 - balance
+```
+:::
+
+```{webr}
+#| exercise: first_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 33339.087) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $33,339 after $172,670 of payments. Moving every 5 years hurts.")
+} else {
+  list(correct = FALSE, message = "Not quite. Recompute interest from the new balance every month.")
+}
+```
+
+:::

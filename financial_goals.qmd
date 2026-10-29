@@ -1,6 +1,15 @@
 ---
 title: "Financial Goals"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -59,117 +74,308 @@ ggplot(df_goal, aes(x = amount, y = bar, fill = part)) +
 
 Example: a $15,000 down payment in 5 years at 4% takes about $226 a month, $24 less than the $250 you'd need with no interest. Over five years, interest adds about $1,425.
 
+How to read this result: the monthly amount is your payday transfer. If it doesn't fit your budget, push the date out before you lower the goal; an extra two years cuts the monthly amount by about 30%.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `monthly_for_goal()`, then find the monthly deposit for a \$15,000 down payment in 5 years at 4%.
+
 ::: panel-tabset
-## Excel
 
-Assuming the goal is in `B2`, the yearly rate is in `C2`, and the number of months is in `D2`, the monthly amount goes in `E2`:
+#### Excel
 
-```swift
-=PMT(C2 / 12, D2, 0, -B2)
-```
+Put the goal in `A2` (15000), the rate in `B2` (0.04), and months in `C2` (60). Find the monthly deposit in `D2`.
 
-Interest earned goes in `F2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2 - E2 * D2
+=PMT(B2/12, C2, 0, -A2)
 ```
 
-To check the answer, `FV()` should return the goal:
+This returns \$226.25.
+:::
 
-```swift
-=FV(C2 / 12, D2, -E2)
+#### Python
+
+```{pyodide}
+#| exercise: goal_1_py
+def monthly_for_goal(goal, annual_rate, months):
+    r = annual_rate / ______
+    if r == 0:
+        return goal / months
+    return goal * r / ((1 + r) ** ______ - 1)
+
+monthly_for_goal(15000, 0.04, 60)
 ```
 
-## Python
+::: {.hint exercise="goal_1_py"}
+Use a monthly rate, and compound once for every month.
+:::
 
-`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
-
-```{python}
-#| label: goal-py
+::: {.solution exercise="goal_1_py"}
+```python
 def monthly_for_goal(goal, annual_rate, months):
     r = annual_rate / 12
     if r == 0:
         return goal / months
     return goal * r / ((1 + r) ** months - 1)
 
-# $15,000 in 5 years at 4%, compared to no interest
-print(monthly_for_goal(goal=15000, annual_rate=0.04, months=60))
-print(monthly_for_goal(goal=15000, annual_rate=0, months=60))
+monthly_for_goal(15000, 0.04, 60)
+```
+:::
+
+```{pyodide}
+#| exercise: goal_1_py
+#| check: true
+if result is not None and abs(result - 226.2478308) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $226 a month, $24 less than with no interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the rate by 12 and raise to the months."}
+feedback
 ```
 
-How much of the goal comes from interest?
+#### R
 
-```{python}
-#| label: goal-py-interest
-pmt = monthly_for_goal(goal=15000, annual_rate=0.04, months=60)
-print(f"deposits: {pmt * 60:,.2f}  interest: {15000 - pmt * 60:,.2f}")
+```{webr}
+#| exercise: goal_1_r
+monthly_for_goal <- function(goal, annual_rate, months) {
+  r <- annual_rate / ______
+  if (r == 0) return(goal / months)
+  goal * r / ((1 + r)^______ - 1)
+}
+monthly_for_goal(15000, 0.04, 60)
 ```
 
-Same goal, different rates and deadlines:
+::: {.hint exercise="goal_1_r"}
+Use a monthly rate, and compound once for every month.
+:::
 
-```{python}
-#| label: goal-py-grid
-print(f"{'rate':>6} {'3 yrs':>7} {'5 yrs':>7} {'7 yrs':>7}")
-for rate in [0, 0.02, 0.04, 0.05]:
-    row = [monthly_for_goal(15000, rate, y * 12) for y in [3, 5, 7]]
-    print(f"{rate:>6.0%} " + " ".join(f"{m:>7,.0f}" for m in row))
-```
-
-Sanity check: the deposits should grow back to $15,000.
-
-```{python}
-#| label: goal-py-check
-r = 0.04 / 12
-print(round(pmt * ((1 + r) ** 60 - 1) / r, 2))
-```
-
-## R
-
-`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
-
-```{r}
-#| label: goal-r
+::: {.solution exercise="goal_1_r"}
+```r
 monthly_for_goal <- function(goal, annual_rate, months) {
   r <- annual_rate / 12
   if (r == 0) return(goal / months)
   goal * r / ((1 + r)^months - 1)
 }
-
-# $15,000 in 5 years at 4%, compared to no interest
-monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
-monthly_for_goal(goal = 15000, annual_rate = 0, months = 60)
+monthly_for_goal(15000, 0.04, 60)
 ```
+:::
 
-How much of the goal comes from interest? Multiply the deposit by the number of months and subtract from the goal.
-
-```{r}
-#| label: goal-r-interest
-pmt <- monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
-c(deposits = pmt * 60, interest = 15000 - pmt * 60)
-```
-
-Same goal, different rates and deadlines. A longer runway lowers the monthly amount far more than a higher rate does.
-
-```{r}
-#| label: goal-r-grid
-grid <- expand.grid(annual_rate = c(0, 0.02, 0.04, 0.05), years = c(3, 5, 7))
-grid$monthly <- round(mapply(monthly_for_goal, goal = 15000,
-                             annual_rate = grid$annual_rate,
-                             months = grid$years * 12))
-grid
-```
-
-Sanity check: growing $226.25 a month at 4% for 60 months should land back on $15,000.
-
-```{r}
-#| label: goal-r-check
-r <- 0.04 / 12
-pmt * ((1 + r)^60 - 1) / r
+```{webr}
+#| exercise: goal_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 226.2478308) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $226 a month, $24 less than with no interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the rate by 12 and raise to the months.")
+}
 ```
 
 :::
 
-How to read this result: the monthly amount is your payday transfer. If it doesn't fit your budget, push the date out before you lower the goal; an extra two years cuts the monthly amount by about 30%.
+### Level 2: Practice
+
+How much of the \$15,000 comes from interest rather than your deposits?
+
+::: panel-tabset
+
+#### Excel
+
+Find the interest in `E2`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=A2 - D2*C2
+```
+
+This returns \$1,425.13.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: goal_2_py
+#| setup: true
+def monthly_for_goal(goal, annual_rate, months):
+    r = annual_rate / 12
+    if r == 0:
+        return goal / months
+    return goal * r / ((1 + r) ** months - 1)
+```
+
+```{pyodide}
+#| exercise: goal_2_py
+pmt = monthly_for_goal(15000, 0.04, 60)
+______
+```
+
+::: {.hint exercise="goal_2_py"}
+Your deposits are the payment times 60. Interest is the rest of the goal.
+:::
+
+::: {.solution exercise="goal_2_py"}
+```python
+pmt = monthly_for_goal(15000, 0.04, 60)
+15000 - pmt * 60
+```
+:::
+
+```{pyodide}
+#| exercise: goal_2_py
+#| check: true
+if result is not None and abs(result - 1425.13015) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $1,425 of the goal is interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the total deposits from the goal."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: goal_2_r
+#| setup: true
+monthly_for_goal <- function(goal, annual_rate, months) {
+  r <- annual_rate / 12
+  if (r == 0) return(goal / months)
+  goal * r / ((1 + r)^months - 1)
+}
+```
+
+```{webr}
+#| exercise: goal_2_r
+pmt <- monthly_for_goal(15000, 0.04, 60)
+______
+```
+
+::: {.hint exercise="goal_2_r"}
+Your deposits are the payment times 60. Interest is the rest of the goal.
+:::
+
+::: {.solution exercise="goal_2_r"}
+```r
+pmt <- monthly_for_goal(15000, 0.04, 60)
+15000 - pmt * 60
+```
+:::
+
+```{webr}
+#| exercise: goal_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1425.13015) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $1,425 of the goal is interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the total deposits from the goal.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Your budget allows \$200 a month at most. At 4%, what is the shortest deadline in whole years (1 to 10) that keeps the deposit at or under \$200?
+
+::: panel-tabset
+
+#### Excel
+
+Put years 1 to 10 in `A2:A11`, the monthly deposit in `B`, and find the shortest deadline at or under \$200.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=PMT(4%/12, A2*12, 0, -15000)`. Then:
+
+```swift
+=MINIFS(A2:A11, B2:B11, "<=200")
+```
+
+The answer is 6 years (\$184.68 a month).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: goal_3_py
+#| setup: true
+def monthly_for_goal(goal, annual_rate, months):
+    r = annual_rate / 12
+    if r == 0:
+        return goal / months
+    return goal * r / ((1 + r) ** months - 1)
+```
+
+```{pyodide}
+#| exercise: goal_3_py
+years = range(1, 11)
+# shortest deadline with a deposit of $200 or less
+```
+
+::: {.hint exercise="goal_3_py"}
+Use `min(y for y in years if monthly_for_goal(15000, 0.04, y * 12) <= 200)`.
+:::
+
+::: {.solution exercise="goal_3_py"}
+```python
+years = range(1, 11)
+min(y for y in years if monthly_for_goal(15000, 0.04, y * 12) <= 200)
+```
+:::
+
+```{pyodide}
+#| exercise: goal_3_py
+#| check: true
+if result is not None and abs(result - 6) < 0.001:
+    feedback = {"correct": True, "message": "Right: 6 years at about $185 a month. A longer runway does the heavy lifting."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check each deadline's deposit against $200."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: goal_3_r
+#| setup: true
+monthly_for_goal <- function(goal, annual_rate, months) {
+  r <- annual_rate / 12
+  if (r == 0) return(goal / months)
+  goal * r / ((1 + r)^months - 1)
+}
+```
+
+```{webr}
+#| exercise: goal_3_r
+years <- 1:10
+# shortest deadline with a deposit of $200 or less
+```
+
+::: {.hint exercise="goal_3_r"}
+`monthly_for_goal()` has an `if`, so give it one deadline at a time: `sapply(years * 12, monthly_for_goal, goal = 15000, annual_rate = 0.04)`. Then `min(years[...])`.
+:::
+
+::: {.solution exercise="goal_3_r"}
+```r
+years <- 1:10
+deposit <- sapply(years * 12, monthly_for_goal, goal = 15000, annual_rate = 0.04)
+min(years[deposit <= 200])
+```
+:::
+
+```{webr}
+#| exercise: goal_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 6) < 0.001)) {
+  list(correct = TRUE, message = "Right: 6 years at about $185 a month. A longer runway does the heavy lifting.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check each deadline's deposit against $200.")
+}
+```
+
+:::
 
 ## One Goal at a Time vs. All at Once
 
@@ -206,94 +412,275 @@ ggplot(df_seq, aes(x = done, y = plan, fill = goal)) +
 
 Example: with $600 a month for a $3,000 trip and a $9,000 car, both goals are done in ($3,000 + $9,000) ÷ $600 = 20 months either way. The trip takes 5 months one at a time, or 10 months split evenly.
 
+How to read this result: the order is a choice about which goal you want first, not about saving time overall. Put a fixed date goal (a wedding, a car on its last legs) first, or give it the bigger share.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `months_to_fund()`, then find how many months a \$3,000 trip takes at \$600 a month.
+
 ::: panel-tabset
-## Excel
 
-Assuming the goal is in `B2` and the monthly amount going to it is in `C2`:
+#### Excel
 
-```swift
-=ROUNDUP(B2 / C2, 0)
-```
+Put the goal in `A2` (3000) and the monthly amount in `B2` (600). Find the whole months in `C2`.
 
-For the finish line on all goals, put the goals in `B2:B3` and total monthly savings in `D2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=ROUNDUP(SUM(B2:B3) / D2, 0)
+=ROUNDUP(A2 / B2, 0)
 ```
 
-## Python
+This returns 5.
+:::
 
-`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
+#### Python
 
-```{python}
-#| label: sequence-py
+```{pyodide}
+#| exercise: seq_1_py
 import math
+def months_to_fund(goal, monthly):
+    return math.______(______ / monthly)
 
+months_to_fund(3000, 600)
+```
+
+::: {.hint exercise="seq_1_py"}
+A goal isn't done until the last dollar is in, so always round up.
+:::
+
+::: {.solution exercise="seq_1_py"}
+```python
+import math
 def months_to_fund(goal, monthly):
     return math.ceil(goal / monthly)
 
-# one at a time: trip first, then car
-print(months_to_fund(3000, 600), months_to_fund(3000 + 9000, 600))
+months_to_fund(3000, 600)
+```
+:::
 
-# split evenly: trip gets half until it's done
-print(months_to_fund(3000, 300), months_to_fund(3000 + 9000, 600))
+```{pyodide}
+#| exercise: seq_1_py
+#| check: true
+if result is not None and abs(result - 5) < 0.001:
+    feedback = {"correct": True, "message": "Right: 5 months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the goal by the monthly amount and round up."}
+feedback
 ```
 
-Try other splits:
+#### R
 
-```{python}
-#| label: sequence-py-splits
-print(f"{'trip share':>10} {'trip month':>10} {'all done':>9}")
-for share in [1, 0.75, 0.5, 0.25]:
-    print(f"{share:>10.0%} {months_to_fund(3000, 600 * share):>10} "
-          f"{months_to_fund(3000 + 9000, 600):>9}")
+```{webr}
+#| exercise: seq_1_r
+months_to_fund <- function(goal, monthly) {
+  ______(______ / monthly)
+}
+months_to_fund(3000, 600)
 ```
 
-Edge case: rounding up matters.
+::: {.hint exercise="seq_1_r"}
+A goal isn't done until the last dollar is in, so always round up.
+:::
 
-```{python}
-#| label: sequence-py-edge
-print(months_to_fund(1000, 300))
-```
-
-## R
-
-`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
-
-```{r}
-#| label: sequence-r
+::: {.solution exercise="seq_1_r"}
+```r
 months_to_fund <- function(goal, monthly) {
   ceiling(goal / monthly)
 }
-
-# one at a time: trip first, then car
 months_to_fund(3000, 600)
-months_to_fund(3000 + 9000, 600)
-
-# split evenly: trip gets half until it's done
-months_to_fund(3000, 300)
-months_to_fund(3000 + 9000, 600)
 ```
+:::
 
-Try other splits. The more you send to the trip, the sooner it's done. The car always finishes at month 20, as long as every dollar keeps going to some goal.
-
-```{r}
-#| label: sequence-r-splits
-trip_share <- c(1, 0.75, 0.5, 0.25)
-data.frame(
-  trip_share  = trip_share,
-  trip_month  = months_to_fund(3000, 600 * trip_share),
-  all_done    = months_to_fund(3000 + 9000, 600)
-)
-```
-
-Edge case: rounding up matters. A $1,000 goal at $300 a month takes 4 months, not 3.3.
-
-```{r}
-#| label: sequence-r-edge
-months_to_fund(1000, 300)
+```{webr}
+#| exercise: seq_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 5) < 0.001)) {
+  list(correct = TRUE, message = "Right: 5 months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the goal by the monthly amount and round up.")
+}
 ```
 
 :::
 
-How to read this result: the order is a choice about which goal you want first, not about saving time overall. Put a fixed date goal (a wedding, a car on its last legs) first, or give it the bigger share.
+### Level 2: Practice
+
+Instead of one goal at a time, you split the \$600 evenly between the trip and a \$9,000 car. When is the trip funded now?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 300.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns 10 months: twice as long, though everything is still done at month 20.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: seq_2_py
+#| setup: true
+import math
+def months_to_fund(goal, monthly):
+    return math.ceil(goal / monthly)
+```
+
+```{pyodide}
+#| exercise: seq_2_py
+months_to_fund(______)
+```
+
+::: {.hint exercise="seq_2_py"}
+The trip now gets half of \$600.
+:::
+
+::: {.solution exercise="seq_2_py"}
+```python
+months_to_fund(3000, 300)
+```
+:::
+
+```{pyodide}
+#| exercise: seq_2_py
+#| check: true
+if result is not None and abs(result - 10) < 0.001:
+    feedback = {"correct": True, "message": "Right: 10 months instead of 5. Splitting delays the first win."}
+else:
+    feedback = {"correct": False, "message": "Not quite. The trip gets $300 a month."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: seq_2_r
+#| setup: true
+months_to_fund <- function(goal, monthly) {
+  ceiling(goal / monthly)
+}
+```
+
+```{webr}
+#| exercise: seq_2_r
+months_to_fund(______)
+```
+
+::: {.hint exercise="seq_2_r"}
+The trip now gets half of \$600.
+:::
+
+::: {.solution exercise="seq_2_r"}
+```r
+months_to_fund(3000, 300)
+```
+:::
+
+```{webr}
+#| exercise: seq_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 10) < 0.001)) {
+  list(correct = TRUE, message = "Right: 10 months instead of 5. Splitting delays the first win.")
+} else {
+  list(correct = FALSE, message = "Not quite. The trip gets $300 a month.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Three goals, funded one at a time in this order with \$700 a month: a \$2,000 emergency starter, a \$3,000 trip, and a \$9,000 car. In which month is each goal finished?
+
+::: panel-tabset
+
+#### Excel
+
+Put the goals in `A2:A4`. Find the running total in `B` and the finishing month in `C`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`: `=SUM($A$2:A2)`, filled down. In `C2`: `=ROUNDUP(B2/700, 0)`, filled down. The months are 3, 8, and 20.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: seq_3_py
+#| setup: true
+import math
+def months_to_fund(goal, monthly):
+    return math.ceil(goal / monthly)
+```
+
+```{pyodide}
+#| exercise: seq_3_py
+goals = [2000, 3000, 9000]
+# finishing month for each goal, one at a time
+```
+
+::: {.hint exercise="seq_3_py"}
+Each goal finishes when the running total of goals so far is funded. `itertools.accumulate(goals)` gives the running totals.
+:::
+
+::: {.solution exercise="seq_3_py"}
+```python
+from itertools import accumulate
+goals = [2000, 3000, 9000]
+[months_to_fund(total, 700) for total in accumulate(goals)]
+```
+:::
+
+```{pyodide}
+#| exercise: seq_3_py
+#| check: true
+if result == [3, 8, 20]:
+    feedback = {"correct": True, "message": "Right: months 3, 8, and 20."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use the running total of the goals, not each goal alone."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: seq_3_r
+#| setup: true
+months_to_fund <- function(goal, monthly) {
+  ceiling(goal / monthly)
+}
+```
+
+```{webr}
+#| exercise: seq_3_r
+goals <- c(2000, 3000, 9000)
+# finishing month for each goal, one at a time
+```
+
+::: {.hint exercise="seq_3_r"}
+Each goal finishes when the running total of goals so far is funded. `cumsum(goals)` gives the running totals.
+:::
+
+::: {.solution exercise="seq_3_r"}
+```r
+goals <- c(2000, 3000, 9000)
+months_to_fund(cumsum(goals), 700)
+```
+:::
+
+```{webr}
+#| exercise: seq_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), c(3, 8, 20)))) {
+  list(correct = TRUE, message = "Right: months 3, 8, and 20.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use the running total of the goals, not each goal alone.")
+}
+```
+
+:::

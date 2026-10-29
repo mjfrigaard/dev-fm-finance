@@ -1,6 +1,15 @@
 ---
 title: "Taxes"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -64,101 +79,6 @@ ggplot(df_br, aes(x = amount, y = bar, fill = slice)) +
 
 On $45,000, the tax is ($12,400 × 10%) + ($16,500 × 12%) = $3,220. That is an effective rate of about 7.2%, even though the top bracket is 12%.
 
-::: panel-tabset
-## Excel
-
-Put income in `B2`. Put the bracket lower limits (0, 12400, 50400, 105700, 201775, 256225, 640600) in `E2:E8`, the full rates (10%, 12%, 22%, 24%, 32%, 35%, 37%) in `F2:F8`, and the extra rate each bracket adds over the one below it (10%, 2%, 10%, 2%, 8%, 3%, 2%) in `G2:G8`.
-
-Tax in `C2`:
-
-```swift
-=SUMPRODUCT(--(MAX(B2-16100,0)>E2:E8), MAX(B2-16100,0)-E2:E8, G2:G8)
-```
-
-Effective rate in `D2`:
-
-```swift
-=IF(B2>0, C2/B2, 0)
-```
-
-Marginal rate in `H2`:
-
-```swift
-=IF(B2<=16100, 0, LOOKUP(MAX(B2-16100,0)-0.01, E2:E8, F2:F8))
-```
-
-Copy row 2 down to compare several salaries.
-
-## Python
-
-```{python}
-#| label: bracket-py
-import numpy as np
-
-LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
-RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
-
-def income_tax(income, deduction=16100):
-    taxable = max(income - deduction, 0)
-    upper = np.append(LOWER[1:], np.inf)
-    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
-
-def marginal_rate(income, deduction=16100):
-    taxable = max(income - deduction, 0)
-    if taxable == 0:
-        return 0.0
-    return float(RATE[LOWER < taxable][-1])
-
-# 2026 federal income tax on a $45,000 salary (single filer)
-tax = income_tax(income=45000)
-print(tax)
-print(round(tax / 45000, 4))
-
-# compare several salaries
-for s in [15000, 30000, 45000, 66000, 100000, 150000]:
-    t = income_tax(s)
-    print(f"{s:>7,}  tax ${t:>9,.0f}  effective {t / s:5.1%}  marginal {marginal_rate(s):.0%}")
-```
-
-## R
-
-```{r}
-#| label: bracket-r
-income_tax <- function(income, deduction = 16100) {
-  taxable <- max(income - deduction, 0)
-  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
-  upper <- c(lower[-1], Inf)
-  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
-  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
-}
-
-marginal_rate <- function(income, deduction = 16100) {
-  taxable <- max(income - deduction, 0)
-  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
-  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
-  if (taxable == 0) return(0)
-  rate[max(which(taxable > lower))]
-}
-
-# 2026 federal income tax on a $45,000 salary (single filer)
-tax <- income_tax(income = 45000)
-tax
-tax / 45000
-
-# compare several salaries
-salaries <- c(15000, 30000, 45000, 66000, 100000, 150000)
-data.frame(
-  salary    = salaries,
-  tax       = sapply(salaries, income_tax),
-  effective = round(sapply(salaries, income_tax) / salaries, 3),
-  marginal  = sapply(salaries, marginal_rate)
-)
-```
-
-The effective rate is always below the marginal rate. A $15,000 salary owes no federal income tax at all, because it is smaller than the standard deduction.
-
-:::
-
 ```{r}
 #| label: effective-vs-marginal
 #| echo: false
@@ -193,6 +113,306 @@ ggplot(df_rates, aes(x = income, y = rate, colour = type)) +
 ```
 
 How to read this result: the marginal rate tells you what happens to your next dollar. The effective rate tells you what share of your whole salary went to federal income tax. Use the marginal rate for decisions (like a Traditional 401(k) contribution) and the effective rate for budgeting.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `income_tax()` for a 2026 single filer (standard deduction \$16,100), then find the federal income tax on a \$45,000 salary.
+
+::: panel-tabset
+
+#### Excel
+
+Put the salary in `A2` (45000). The taxable income is the salary minus \$16,100. Write the tax in `B2` using the first three brackets (10% to \$12,400, 12% to \$50,400, 22% above).
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=LET(t, MAX(A2-16100, 0),
+  0.10*MIN(t, 12400) + 0.12*MAX(MIN(t, 50400)-12400, 0) + 0.22*MAX(MIN(t, 105700)-50400, 0))
+```
+
+This returns \$3,220.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: bracket_1_py
+def income_tax(income, deduction=16100):
+    taxable = max(______ - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - ______, 0) for r, l, u in zip(rate, lower, upper))
+
+income_tax(45000)
+```
+
+::: {.hint exercise="bracket_1_py"}
+Taxable income is what's left after the deduction. In each bracket, tax only the part of taxable income above that bracket's lower edge `l`.
+:::
+
+::: {.solution exercise="bracket_1_py"}
+```python
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+
+income_tax(45000)
+```
+:::
+
+```{pyodide}
+#| exercise: bracket_1_py
+#| check: true
+if result is not None and abs(result - 3220) < 0.01:
+    feedback = {"correct": True, "message": "Right: $3,220 of federal income tax."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the deduction from income, and each bracket's lower edge from taxable income."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: bracket_1_r
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(______ - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - ______, 0))
+}
+income_tax(45000)
+```
+
+::: {.hint exercise="bracket_1_r"}
+Taxable income is what's left after the deduction. In each bracket, tax only the part of taxable income above that bracket's `lower` edge.
+:::
+
+::: {.solution exercise="bracket_1_r"}
+```r
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+income_tax(45000)
+```
+:::
+
+```{webr}
+#| exercise: bracket_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 3220) < 0.01)) {
+  list(correct = TRUE, message = "Right: $3,220 of federal income tax.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the deduction from income, and each bracket's lower edge from taxable income.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+What is the effective tax rate (tax ÷ income) on a \$100,000 salary? Give a decimal.
+
+::: panel-tabset
+
+#### Excel
+
+Change `A2` to 100000 and divide the tax by the salary.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The tax is \$13,170, so `=B2/A2` returns 0.1317. Even with a 22% marginal rate, only 13% of income goes to federal income tax.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: bracket_2_py
+#| setup: true
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+```
+
+```{pyodide}
+#| exercise: bracket_2_py
+income_tax(______) / ______
+```
+
+::: {.hint exercise="bracket_2_py"}
+Tax on \$100,000 divided by \$100,000.
+:::
+
+::: {.solution exercise="bracket_2_py"}
+```python
+income_tax(100000) / 100000
+```
+:::
+
+```{pyodide}
+#| exercise: bracket_2_py
+#| check: true
+if result is not None and abs(result - 0.1317) < 1e-06:
+    feedback = {"correct": True, "message": "Right: 13.2%, far below the 22% bracket."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the tax by the full salary, not taxable income."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: bracket_2_r
+#| setup: true
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+```
+
+```{webr}
+#| exercise: bracket_2_r
+income_tax(______) / ______
+```
+
+::: {.hint exercise="bracket_2_r"}
+Tax on \$100,000 divided by \$100,000.
+:::
+
+::: {.solution exercise="bracket_2_r"}
+```r
+income_tax(100000) / 100000
+```
+:::
+
+```{webr}
+#| exercise: bracket_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.1317) < 1e-06)) {
+  list(correct = TRUE, message = "Right: 13.2%, far below the 22% bracket.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the tax by the full salary, not taxable income.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The marginal rate is the tax on your next dollar: `income_tax(salary + 1) - income_tax(salary)`. Checking salaries in \$1,000 steps from \$20,000 to \$200,000, what is the lowest salary whose next dollar is taxed at 22%?
+
+::: panel-tabset
+
+#### Excel
+
+Work it out from the brackets: the 22% bracket starts at \$50,400 of taxable income.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+Add back the deduction: `=50400 + 16100` is \$66,500. The first whole \$1,000 above it is \$67,000.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: bracket_3_py
+#| setup: true
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+```
+
+```{pyodide}
+#| exercise: bracket_3_py
+salaries = range(20000, 200001, 1000)
+# lowest salary whose next dollar is taxed at 22%
+```
+
+::: {.hint exercise="bracket_3_py"}
+Use `min(s for s in salaries if round(income_tax(s + 1) - income_tax(s), 2) == 0.22)`. Rounding avoids tiny decimal errors.
+:::
+
+::: {.solution exercise="bracket_3_py"}
+```python
+salaries = range(20000, 200001, 1000)
+min(s for s in salaries if round(income_tax(s + 1) - income_tax(s), 2) == 0.22)
+```
+:::
+
+```{pyodide}
+#| exercise: bracket_3_py
+#| check: true
+if result is not None and abs(result - 67000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $67,000. The 22% bracket starts at $66,500 of salary."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Compute the tax on the next dollar for each salary."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: bracket_3_r
+#| setup: true
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+```
+
+```{webr}
+#| exercise: bracket_3_r
+salaries <- seq(20000, 200000, by = 1000)
+# lowest salary whose next dollar is taxed at 22%
+```
+
+::: {.hint exercise="bracket_3_r"}
+`income_tax()` uses `max()`, so it handles one salary at a time. Use `sapply(salaries, function(s) income_tax(s + 1) - income_tax(s))`, round to 2 digits, then `min(salaries[...])`.
+:::
+
+::: {.solution exercise="bracket_3_r"}
+```r
+salaries <- seq(20000, 200000, by = 1000)
+marginal <- sapply(salaries, function(s) income_tax(s + 1) - income_tax(s))
+min(salaries[round(marginal, 2) == 0.22])
+```
+:::
+
+```{webr}
+#| exercise: bracket_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 67000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $67,000. The 22% bracket starts at $66,500 of salary.")
+} else {
+  list(correct = FALSE, message = "Not quite. Compute the tax on the next dollar for each salary.")
+}
+```
+
+:::
 
 ## How Much of a Raise You Keep
 
@@ -229,57 +449,77 @@ ggplot(df_raise, aes(x = amount, y = bar, fill = part)) +
 
 On $66,000, taxable income goes from $49,900 to $51,900. The first $500 fills the 12% bracket and the last $1,500 is taxed at 22%. The tax rises from $5,740 to $6,130, so you keep $1,610 of the $2,000 (before FICA and state tax).
 
+How to read this result: the share you keep can never drop below 63% (100% minus the top 37% rate). A raise that stays inside one bracket keeps exactly 1 minus that rate. A raise that crosses a line lands somewhere in between.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `raise_kept()`, then find how much of a \$2,000 raise on a \$66,000 salary you keep after federal income tax.
+
 ::: panel-tabset
-## Excel
 
-Using the tax formula above, put the old income in `B2` and its tax in `C2`, the new income in `B3` and its tax in `C3`, and the raise in `D2`.
+#### Excel
 
-Amount kept:
+With your tax formula from Level 1, put the old salary in `A2` (66000) and the new salary in `A3` (68000). Find the amount kept.
 
-```swift
-=D2-(C3-C2)
-```
-
-Share of the raise kept:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=(D2-(C3-C2))/D2
+=2000 - (B3 - B2)
 ```
 
-## Python
+The tax rises from \$5,740 to \$6,130, so you keep \$1,610. Part of the raise is taxed at 12% and part at 22%.
+:::
 
-```{python}
-#| label: raise-py
-import numpy as np
+#### Python
 
-LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
-RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
-
+```{pyodide}
+#| exercise: raise_1_py
+#| setup: true
 def income_tax(income, deduction=16100):
     taxable = max(income - deduction, 0)
-    upper = np.append(LOWER[1:], np.inf)
-    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+```
 
+```{pyodide}
+#| exercise: raise_1_py
+def raise_kept(old_income, raise_amount):
+    return raise_amount - (income_tax(______) - income_tax(______))
+
+raise_kept(66000, 2000)
+```
+
+::: {.hint exercise="raise_1_py"}
+The extra tax is the tax on the new salary minus the tax on the old salary.
+:::
+
+::: {.solution exercise="raise_1_py"}
+```python
 def raise_kept(old_income, raise_amount):
     return raise_amount - (income_tax(old_income + raise_amount) - income_tax(old_income))
 
-# $2,000 raise on a $66,000 salary
-print(income_tax(66000), income_tax(68000))
-print(raise_kept(old_income=66000, raise_amount=2000))
+raise_kept(66000, 2000)
+```
+:::
 
-# the same $2,000 raise at different salaries
-for old in [30000, 45000, 66000, 100000, 150000]:
-    kept = raise_kept(old, 2000)
-    print(f"{old:>7,}  keep ${kept:,.0f} ({kept / 2000:.1%})")
-
-# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
-print(all(raise_kept(66000, r) > 0 for r in range(1, 5001)))
+```{pyodide}
+#| exercise: raise_1_py
+#| check: true
+if result is not None and abs(result - 1610) < 0.01:
+    feedback = {"correct": True, "message": "Right: $1,610. Only the dollars above $66,500 are taxed at 22%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Tax on (old + raise) minus tax on old."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: raise-r
+```{webr}
+#| exercise: raise_1_r
+#| setup: true
 income_tax <- function(income, deduction = 16100) {
   taxable <- max(income - deduction, 0)
   lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
@@ -287,25 +527,243 @@ income_tax <- function(income, deduction = 16100) {
   rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
   sum(rate * pmax(pmin(taxable, upper) - lower, 0))
 }
+```
 
+```{webr}
+#| exercise: raise_1_r
+raise_kept <- function(old_income, raise) {
+  raise - (income_tax(______) - income_tax(______))
+}
+raise_kept(66000, 2000)
+```
+
+::: {.hint exercise="raise_1_r"}
+The extra tax is the tax on the new salary minus the tax on the old salary.
+:::
+
+::: {.solution exercise="raise_1_r"}
+```r
 raise_kept <- function(old_income, raise) {
   raise - (income_tax(old_income + raise) - income_tax(old_income))
 }
+raise_kept(66000, 2000)
+```
+:::
 
-# $2,000 raise on a $66,000 salary
-income_tax(66000)
-income_tax(68000)
-raise_kept(old_income = 66000, raise = 2000)
-
-# the same $2,000 raise at different salaries
-old <- c(30000, 45000, 66000, 100000, 150000)
-kept <- sapply(old, raise_kept, raise = 2000)
-data.frame(old_income = old, kept = kept, share_kept = round(kept / 2000, 3))
-
-# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
-all(sapply(seq(1, 5000, by = 1), raise_kept, old_income = 66000) > 0)
+```{webr}
+#| exercise: raise_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1610) < 0.01)) {
+  list(correct = TRUE, message = "Right: $1,610. Only the dollars above $66,500 are taxed at 22%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Tax on (old + raise) minus tax on old.")
+}
 ```
 
 :::
 
-How to read this result: the share you keep can never drop below 63% (100% minus the top 37% rate). A raise that stays inside one bracket keeps exactly 1 minus that rate. A raise that crosses a line lands somewhere in between.
+### Level 2: Practice
+
+The same \$2,000 raise on a \$100,000 salary. How much do you keep?
+
+::: panel-tabset
+
+#### Excel
+
+Change the salaries to 100000 and 102000.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$1,560: the whole raise is taxed at 22%.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: raise_2_py
+#| setup: true
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+
+def raise_kept(old_income, raise_amount):
+    return raise_amount - (income_tax(old_income + raise_amount) - income_tax(old_income))
+```
+
+```{pyodide}
+#| exercise: raise_2_py
+raise_kept(______)
+```
+
+::: {.hint exercise="raise_2_py"}
+Old salary 100000, raise 2000.
+:::
+
+::: {.solution exercise="raise_2_py"}
+```python
+raise_kept(100000, 2000)
+```
+:::
+
+```{pyodide}
+#| exercise: raise_2_py
+#| check: true
+if result is not None and abs(result - 1560) < 0.01:
+    feedback = {"correct": True, "message": "Right: $1,560, or 78%. A raise never lowers your take-home pay."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 100000 and 2000."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: raise_2_r
+#| setup: true
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+raise_kept <- function(old_income, raise) {
+  raise - (income_tax(old_income + raise) - income_tax(old_income))
+}
+```
+
+```{webr}
+#| exercise: raise_2_r
+raise_kept(______)
+```
+
+::: {.hint exercise="raise_2_r"}
+Old salary 100000, raise 2000.
+:::
+
+::: {.solution exercise="raise_2_r"}
+```r
+raise_kept(100000, 2000)
+```
+:::
+
+```{webr}
+#| exercise: raise_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1560) < 0.01)) {
+  list(correct = TRUE, message = "Right: $1,560, or 78%. A raise never lowers your take-home pay.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 100000 and 2000.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Find how much of a \$2,000 raise is kept at each of these salaries: \$30,000, \$45,000, \$66,000, \$100,000, and \$150,000.
+
+::: panel-tabset
+
+#### Excel
+
+Put the salaries in `A2:A6`, the tax on each in `B`, the tax on salary + 2,000 in `C`, and the amount kept in `D`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+With the tax formula in `B` and `C`, `D2` is `=2000 - (C2 - B2)`, filled down. The amounts kept are \$1,760, \$1,760, \$1,610, \$1,560, and \$1,520.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: raise_3_py
+#| setup: true
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    lower = [0, 12400, 50400, 105700, 201775, 256225, 640600]
+    upper = lower[1:] + [float("inf")]
+    rate = [0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37]
+    return sum(r * max(min(taxable, u) - l, 0) for r, l, u in zip(rate, lower, upper))
+
+def raise_kept(old_income, raise_amount):
+    return raise_amount - (income_tax(old_income + raise_amount) - income_tax(old_income))
+```
+
+```{pyodide}
+#| exercise: raise_3_py
+old = [30000, 45000, 66000, 100000, 150000]
+# amount kept at each salary
+```
+
+::: {.hint exercise="raise_3_py"}
+A list comprehension: `[raise_kept(o, 2000) for o in old]`.
+:::
+
+::: {.solution exercise="raise_3_py"}
+```python
+old = [30000, 45000, 66000, 100000, 150000]
+[raise_kept(o, 2000) for o in old]
+```
+:::
+
+```{pyodide}
+#| exercise: raise_3_py
+#| check: true
+if result is not None and [round(x, 2) for x in result] == [1760, 1760, 1610, 1560, 1520]:
+    feedback = {"correct": True, "message": "Right: $1,760 down to $1,520. You keep at least 76% of every raise."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Run raise_kept() once for each salary."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: raise_3_r
+#| setup: true
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
+raise_kept <- function(old_income, raise) {
+  raise - (income_tax(old_income + raise) - income_tax(old_income))
+}
+```
+
+```{webr}
+#| exercise: raise_3_r
+old <- c(30000, 45000, 66000, 100000, 150000)
+# amount kept at each salary
+```
+
+::: {.hint exercise="raise_3_r"}
+`raise_kept()` handles one salary at a time, so use `sapply(old, raise_kept, raise = 2000)`.
+:::
+
+::: {.solution exercise="raise_3_r"}
+```r
+old <- c(30000, 45000, 66000, 100000, 150000)
+sapply(old, raise_kept, raise = 2000)
+```
+:::
+
+```{webr}
+#| exercise: raise_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), c(1760, 1760, 1610, 1560, 1520)))) {
+  list(correct = TRUE, message = "Right: $1,760 down to $1,520. You keep at least 76% of every raise.")
+} else {
+  list(correct = FALSE, message = "Not quite. Run raise_kept() once for each salary.")
+}
+```
+
+:::
