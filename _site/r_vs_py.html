@@ -65,6 +65,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
+<link href="./setup.html" rel="next">
 <link href="./estate_planning.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -73,16 +74,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-a4ffa0dce75e473123300348af87f86f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-1428555387006d2b360127baf2a02f66.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
-<link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-42ed7287b56c5c583e2c2463c9cf4916.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -110,175 +105,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
-<link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
 
 </head>
 
-<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
-    const toggleBodyColorMode = (bsSheetEl) => {
-      const mode = bsSheetEl.getAttribute("data-mode");
-      const bodyEl = window.document.querySelector("body");
-      if (mode === "dark") {
-        bodyEl.classList.add("quarto-dark");
-        bodyEl.classList.remove("quarto-light");
-      } else {
-        bodyEl.classList.add("quarto-light");
-        bodyEl.classList.remove("quarto-dark");
-      }
-    }
-    const toggleBodyColorPrimary = () => {
-      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
-      if (bsSheetEl) {
-        toggleBodyColorMode(bsSheetEl);
-      }
-    }
-    const setColorSchemeToggle = (alternate) => {
-      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-      for (let i=0; i < toggles.length; i++) {
-        const toggle = toggles[i];
-        if (toggle) {
-          if (alternate) {
-            toggle.classList.add("alternate");
-          } else {
-            toggle.classList.remove("alternate");
-          }
-        }
-      }
-    };
-    const toggleColorMode = (alternate) => {
-      // Switch the stylesheets
-      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
-      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-      manageTransitions('#quarto-margin-sidebar .nav-link', false);
-      if (alternate) {
-        // note: dark is layered on light, we don't disable primary!
-        enableStylesheet(alternateStylesheets);
-        for (const sheetNode of alternateStylesheets) {
-          if (sheetNode.id === "quarto-bootstrap") {
-            toggleBodyColorMode(sheetNode);
-          }
-        }
-      } else {
-        disableStylesheet(alternateStylesheets);
-        enableStylesheet(primaryStylesheets)
-        toggleBodyColorPrimary();
-      }
-      manageTransitions('#quarto-margin-sidebar .nav-link', true);
-      // Switch the toggles
-      setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
-      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-        manageTransitions("body", false);
-        window.scrollTo(0, 1);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          manageTransitions("body", true);
-        }, 40);
-      }
-    }
-    const disableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        stylesheet.rel = 'disabled-stylesheet';
-      }
-    }
-    const enableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
-          stylesheet.rel = 'stylesheet';
-        }
-      }
-    }
-    const manageTransitions = (selector, allowTransitions) => {
-      const els = window.document.querySelectorAll(selector);
-      for (let i=0; i < els.length; i++) {
-        const el = els[i];
-        if (allowTransitions) {
-          el.classList.remove('notransition');
-        } else {
-          el.classList.add('notransition');
-        }
-      }
-    }
-    const isFileUrl = () => {
-      return window.location.protocol === 'file:';
-    }
-    const hasAlternateSentinel = () => {
-      let styleSentinel = getColorSchemeSentinel();
-      if (styleSentinel !== null) {
-        return styleSentinel === "alternate";
-      } else {
-        return false;
-      }
-    }
-    const setStyleSentinel = (alternate) => {
-      const value = alternate ? "alternate" : "default";
-      if (!isFileUrl()) {
-        window.localStorage.setItem("quarto-color-scheme", value);
-      } else {
-        localAlternateSentinel = value;
-      }
-    }
-    const getColorSchemeSentinel = () => {
-      if (!isFileUrl()) {
-        const storageValue = window.localStorage.getItem("quarto-color-scheme");
-        return storageValue != null ? storageValue : localAlternateSentinel;
-      } else {
-        return localAlternateSentinel;
-      }
-    }
-    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-      let newTheme = '';
-      if(authorPrefersDark) {
-        newTheme = isAlternate ? baseTheme : alternateTheme;
-      } else {
-        newTheme = isAlternate ? alternateTheme : baseTheme;
-      }
-      const changeGiscusTheme = () => {
-        // From: https://github.com/giscus/giscus/issues/336
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe) return;
-          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-        }
-        sendMessage({
-          setConfig: {
-            theme: newTheme
-          }
-        });
-      }
-      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-      if (isGiscussLoaded) {
-        changeGiscusTheme();
-      }
-    };
-    const authorPrefersDark = false;
-    const darkModeDefault = authorPrefersDark;
-      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-    // Dark / light mode switch
-    window.quartoToggleColorScheme = () => {
-      // Read the current dark / light value
-      let toAlternate = !hasAlternateSentinel();
-      toggleColorMode(toAlternate);
-      setStyleSentinel(toAlternate);
-      toggleGiscusIfUsed(toAlternate, darkModeDefault);
-      window.dispatchEvent(new Event('resize'));
-    };
-    // Switch to dark mode if need be
-    if (hasAlternateSentinel()) {
-      toggleColorMode(true);
-    } else {
-      toggleColorMode(false);
-    }
-  </script>
+<body class="nav-sidebar docked fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -303,9 +134,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">DEV (fm-finance)</a> 
-        <div class="sidebar-tools-main tools-wide">
+        <div class="sidebar-tools-main">
     <a href="https://github.com/mjfrigaard/dev-fm-finance" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -499,6 +329,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">R vs.&nbsp;Python</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting set up</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -506,35 +342,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
-    <h2 id="toc-title">Contents</h2>
-   
-  <ul>
-  <li><a href="#sec-r-vs-python" id="toc-sec-r-vs-python" class="nav-link active" data-scroll-target="#sec-r-vs-python"><span class="header-section-number">1</span> Notable Differences Between R and Python</a>
-  <ul>
-  <li><a href="#sec-assignment-operator" id="toc-sec-assignment-operator" class="nav-link" data-scroll-target="#sec-assignment-operator"><span class="header-section-number">1.1</span> Assignment Operator</a></li>
-  <li><a href="#sec-function-definition" id="toc-sec-function-definition" class="nav-link" data-scroll-target="#sec-function-definition"><span class="header-section-number">1.2</span> Function Definition</a></li>
-  <li><a href="#sec-return-values" id="toc-sec-return-values" class="nav-link" data-scroll-target="#sec-return-values"><span class="header-section-number">1.3</span> Return Values</a></li>
-  <li><a href="#sec-pipe-operator" id="toc-sec-pipe-operator" class="nav-link" data-scroll-target="#sec-pipe-operator"><span class="header-section-number">1.4</span> Pipe Operator</a></li>
-  <li><a href="#sec-string-formatting" id="toc-sec-string-formatting" class="nav-link" data-scroll-target="#sec-string-formatting"><span class="header-section-number">1.5</span> String Formatting</a></li>
-  <li><a href="#sec-code-block-structure" id="toc-sec-code-block-structure" class="nav-link" data-scroll-target="#sec-code-block-structure"><span class="header-section-number">1.6</span> Code Block Structure</a></li>
-  <li><a href="#sec-whitespace-rules" id="toc-sec-whitespace-rules" class="nav-link" data-scroll-target="#sec-whitespace-rules"><span class="header-section-number">1.7</span> Whitespace Rules</a></li>
-  <li><a href="#sec-indexing" id="toc-sec-indexing" class="nav-link" data-scroll-target="#sec-indexing"><span class="header-section-number">1.8</span> Indexing</a></li>
-  <li><a href="#sec-missing-values" id="toc-sec-missing-values" class="nav-link" data-scroll-target="#sec-missing-values"><span class="header-section-number">1.9</span> Missing Values</a></li>
-  <li><a href="#sec-vectorization" id="toc-sec-vectorization" class="nav-link" data-scroll-target="#sec-vectorization"><span class="header-section-number">1.10</span> Vectorization</a></li>
-  <li><a href="#sec-package-management" id="toc-sec-package-management" class="nav-link" data-scroll-target="#sec-package-management"><span class="header-section-number">1.11</span> Package Management</a></li>
-  <li><a href="#sec-comments" id="toc-sec-comments" class="nav-link" data-scroll-target="#sec-comments"><span class="header-section-number">1.12</span> Comments</a></li>
-  <li><a href="#sec-boolean-values" id="toc-sec-boolean-values" class="nav-link" data-scroll-target="#sec-boolean-values"><span class="header-section-number">1.13</span> Boolean Values</a></li>
-  <li><a href="#sec-logical-operators" id="toc-sec-logical-operators" class="nav-link" data-scroll-target="#sec-logical-operators"><span class="header-section-number">1.14</span> Logical Operators</a></li>
-  <li><a href="#sec-data-frames" id="toc-sec-data-frames" class="nav-link" data-scroll-target="#sec-data-frames"><span class="header-section-number">1.15</span> Data Frames</a></li>
-  </ul></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
-
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./r_vs_py.html">Resources</a></li><li class="breadcrumb-item"><a href="./r_vs_py.html">R vs.&nbsp;Python</a></li></ol></nav>
 <div class="quarto-title">
@@ -555,11 +365,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="sec-r-vs-python" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="sec-r-vs-python"><span class="header-section-number">1</span> Notable Differences Between R and Python</h2>
+<section id="sec-r-vs-python" class="level2">
+<h2 class="anchored" data-anchor-id="sec-r-vs-python">Notable Differences Between R and Python</h2>
 <p>The sections below are a quick reference for the most important differences in syntax and style between R and Python. Don’t worry about memorizing these right now—just know that they exist, and you’ll see examples of each in the next chapters.</p>
-<section id="sec-assignment-operator" class="level3" data-number="1.1">
-<h3 data-number="1.1" class="anchored" data-anchor-id="sec-assignment-operator"><span class="header-section-number">1.1</span> Assignment Operator</h3>
+<section id="sec-assignment-operator" class="level3">
+<h3 class="anchored" data-anchor-id="sec-assignment-operator">Assignment Operator</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -581,8 +391,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-function-definition" class="level3" data-number="1.2">
-<h3 data-number="1.2" class="anchored" data-anchor-id="sec-function-definition"><span class="header-section-number">1.2</span> Function Definition</h3>
+<section id="sec-function-definition" class="level3">
+<h3 class="anchored" data-anchor-id="sec-function-definition">Function Definition</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -607,8 +417,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-return-values" class="level3" data-number="1.3">
-<h3 data-number="1.3" class="anchored" data-anchor-id="sec-return-values"><span class="header-section-number">1.3</span> Return Values</h3>
+<section id="sec-return-values" class="level3">
+<h3 class="anchored" data-anchor-id="sec-return-values">Return Values</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -631,8 +441,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-pipe-operator" class="level3" data-number="1.4">
-<h3 data-number="1.4" class="anchored" data-anchor-id="sec-pipe-operator"><span class="header-section-number">1.4</span> Pipe Operator</h3>
+<section id="sec-pipe-operator" class="level3">
+<h3 class="anchored" data-anchor-id="sec-pipe-operator">Pipe Operator</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -662,8 +472,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-string-formatting" class="level3" data-number="1.5">
-<h3 data-number="1.5" class="anchored" data-anchor-id="sec-string-formatting"><span class="header-section-number">1.5</span> String Formatting</h3>
+<section id="sec-string-formatting" class="level3">
+<h3 class="anchored" data-anchor-id="sec-string-formatting">String Formatting</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -688,8 +498,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-code-block-structure" class="level3" data-number="1.6">
-<h3 data-number="1.6" class="anchored" data-anchor-id="sec-code-block-structure"><span class="header-section-number">1.6</span> Code Block Structure</h3>
+<section id="sec-code-block-structure" class="level3">
+<h3 class="anchored" data-anchor-id="sec-code-block-structure">Code Block Structure</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -714,8 +524,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-whitespace-rules" class="level3" data-number="1.7">
-<h3 data-number="1.7" class="anchored" data-anchor-id="sec-whitespace-rules"><span class="header-section-number">1.7</span> Whitespace Rules</h3>
+<section id="sec-whitespace-rules" class="level3">
+<h3 class="anchored" data-anchor-id="sec-whitespace-rules">Whitespace Rules</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -775,8 +585,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-indexing" class="level3" data-number="1.8">
-<h3 data-number="1.8" class="anchored" data-anchor-id="sec-indexing"><span class="header-section-number">1.8</span> Indexing</h3>
+<section id="sec-indexing" class="level3">
+<h3 class="anchored" data-anchor-id="sec-indexing">Indexing</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -800,8 +610,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-missing-values" class="level3" data-number="1.9">
-<h3 data-number="1.9" class="anchored" data-anchor-id="sec-missing-values"><span class="header-section-number">1.9</span> Missing Values</h3>
+<section id="sec-missing-values" class="level3">
+<h3 class="anchored" data-anchor-id="sec-missing-values">Missing Values</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -826,8 +636,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-vectorization" class="level3" data-number="1.10">
-<h3 data-number="1.10" class="anchored" data-anchor-id="sec-vectorization"><span class="header-section-number">1.10</span> Vectorization</h3>
+<section id="sec-vectorization" class="level3">
+<h3 class="anchored" data-anchor-id="sec-vectorization">Vectorization</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -852,8 +662,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-package-management" class="level3" data-number="1.11">
-<h3 data-number="1.11" class="anchored" data-anchor-id="sec-package-management"><span class="header-section-number">1.11</span> Package Management</h3>
+<section id="sec-package-management" class="level3">
+<h3 class="anchored" data-anchor-id="sec-package-management">Package Management</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -877,8 +687,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-comments" class="level3" data-number="1.12">
-<h3 data-number="1.12" class="anchored" data-anchor-id="sec-comments"><span class="header-section-number">1.12</span> Comments</h3>
+<section id="sec-comments" class="level3">
+<h3 class="anchored" data-anchor-id="sec-comments">Comments</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -905,8 +715,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-boolean-values" class="level3" data-number="1.13">
-<h3 data-number="1.13" class="anchored" data-anchor-id="sec-boolean-values"><span class="header-section-number">1.13</span> Boolean Values</h3>
+<section id="sec-boolean-values" class="level3">
+<h3 class="anchored" data-anchor-id="sec-boolean-values">Boolean Values</h3>
 <div class="quarto-layout-panel" data-layout="[50,50]">
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: flex-start;">
@@ -928,8 +738,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="sec-logical-operators" class="level3" data-number="1.14">
-<h3 data-number="1.14" class="anchored" data-anchor-id="sec-logical-operators"><span class="header-section-number">1.14</span> Logical Operators</h3>
+<section id="sec-logical-operators" class="level3">
+<h3 class="anchored" data-anchor-id="sec-logical-operators">Logical Operators</h3>
 <p>R uses <code>&amp;</code>, <code>|</code>, <code>!</code> for vectorized logic; <code>&amp;&amp;</code>, <code>||</code> for scalar logic.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>) <span class="sc">&amp;</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">TRUE</span>)   <span class="co"># vectorized</span></span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="cn">TRUE</span> <span class="sc">&amp;&amp;</span> <span class="cn">FALSE</span>                    <span class="co"># scalar</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -939,8 +749,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> polars <span class="im">as</span> pl</span>
 <span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>df.<span class="bu">filter</span>((pl.col(<span class="st">"a"</span>) <span class="op">&gt;</span> <span class="dv">0</span>) <span class="op">&amp;</span> (pl.col(<span class="st">"b"</span>) <span class="op">&lt;</span> <span class="dv">10</span>)) <span class="co"># vectorized</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
-<section id="sec-data-frames" class="level3" data-number="1.15">
-<h3 data-number="1.15" class="anchored" data-anchor-id="sec-data-frames"><span class="header-section-number">1.15</span> Data Frames</h3>
+<section id="sec-data-frames" class="level3">
+<h3 class="anchored" data-anchor-id="sec-data-frames">Data Frames</h3>
 <p><code>data.frame</code> is built into base R; enhanced versions include <code>tibble</code> (tidyverse) and <code>data.table</code>.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"B"</span>), </span>
@@ -951,50 +761,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pl.DataFrame({<span class="st">"name"</span>: [<span class="st">"A"</span>, <span class="st">"B"</span>], <span class="st">"value"</span>: [<span class="dv">1</span>, <span class="dv">2</span>]})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
-<script type="ojs-module-contents">
-eyJjb250ZW50cyI6W119
-</script>
-<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
-<div id="exercise-loading-status" class="d-flex gap-2">
-
-</div>
-<div class="spinner-grow spinner-grow-sm">
-
-</div>
-</div>
-<script type="vfs-file">
-W10=
-</script>
 </section>
 </section>
 
 </main> <!-- /main -->
-<script type="ojs-module-contents">
-eyJjb250ZW50cyI6W119
-</script>
-<script type="module">
-if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
-window._ojs.paths.runtimeToDoc = "../..";
-window._ojs.paths.runtimeToRoot = "../..";
-window._ojs.paths.docToRoot = "";
-window._ojs.selfContained = false;
-window._ojs.runtime.interpretFromScriptTags();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
-    // Ensure there is a toggle, if there isn't float one in the top right
-    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-      const i = window.document.createElement("i");
-      i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
-    }
-    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -1334,64 +1106,25 @@ window._ojs.runtime.interpretFromScriptTags();
           }
         };
       }
-        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
-        for (let i=0; i<annoteTargets.length; i++) {
-          const annoteTarget = annoteTargets[i];
-          const targetCell = annoteTarget.getAttribute("data-target-cell");
-          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
-          const contentFn = () => {
-            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-            if (content) {
-              const tipContent = content.cloneNode(true);
-              tipContent.classList.add("code-annotation-tip-content");
-              return tipContent.outerHTML;
-            }
-          }
-          const config = {
-            allowHTML: true,
-            content: contentFn,
-            onShow: (instance) => {
-              selectCodeLines(instance.reference);
-              instance.reference.classList.add('code-annotation-active');
-              window.tippy.hideAll();
-            },
-            onHide: (instance) => {
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
               unselectCodeLines();
-              instance.reference.classList.remove('code-annotation-active');
-            },
-            maxWidth: 300,
-            delay: [50, 0],
-            duration: [200, 0],
-            offset: [5, 10],
-            arrow: true,
-            appendTo: function(el) {
-              return el.parentElement.parentElement.parentElement;
-            },
-            interactive: true,
-            interactiveBorder: 10,
-            theme: 'quarto',
-            placement: 'right',
-            popperOptions: {
-              modifiers: [
-              {
-                name: 'flip',
-                options: {
-                  flipVariations: false, // true by default
-                  allowedAutoPlacements: ['right'],
-                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
-                },
-              },
-              {
-                name: 'preventOverflow',
-                options: {
-                  mainAxis: false,
-                  altAxis: false
-                }
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
               }
-              ]        
-            }      
-          };
-          window.tippy(annoteTarget, config); 
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
@@ -1439,6 +1172,9 @@ window._ojs.runtime.interpretFromScriptTags();
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./setup.html" class="pagination-link" aria-label="Getting set up">
+        <span class="nav-page-text">Getting set up</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->
