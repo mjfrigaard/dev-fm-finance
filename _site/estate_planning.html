@@ -77,9 +77,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-57ba0b5ef6365612ea40b1a4d9075177.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-cb13b06cd07ee9ae4f8f9ef08cecb12e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-57ba0b5ef6365612ea40b1a4d9075177.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4a4890a92dccbde0f62628a0a32d9014.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e8f33ffb92992b1fe58908f423db0703.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-4a4890a92dccbde0f62628a0a32d9014.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -488,79 +488,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Example: ($12,000 + $6,000 + $8,000 + $9,000) − ($6,000 + $1,000) = $35,000 − $7,000 = a net worth of $28,000.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Excel</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<p><code>net_worth()</code> takes two named vectors, so you can see each item and the total.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>net_worth <span class="ot">&lt;-</span> <span class="cf">function</span>(assets, debts) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(assets) <span class="sc">-</span> <span class="fu">sum</span>(debts)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">savings =</span> <span class="dv">8000</span>, <span class="at">car =</span> <span class="dv">9000</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>debts  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">car_loan =</span> <span class="dv">6000</span>, <span class="at">credit_card =</span> <span class="dv">1000</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(assets, debts)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>Sanity check: paying off the credit card from savings doesn’t change net worth. Cash goes down by $1,000 and so does debt.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>assets_after <span class="ot">&lt;-</span> <span class="fu">replace</span>(assets, <span class="st">"savings"</span>, <span class="dv">8000</span> <span class="sc">-</span> <span class="dv">1000</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>debts_after  <span class="ot">&lt;-</span> <span class="fu">replace</span>(debts, <span class="st">"credit_card"</span>, <span class="dv">0</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(assets_after, debts_after)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that’s common.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(<span class="at">assets =</span> <span class="fu">c</span>(<span class="at">savings =</span> <span class="dv">3000</span>, <span class="at">car =</span> <span class="dv">5000</span>),</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">debts  =</span> <span class="fu">c</span>(<span class="at">student_loans =</span> <span class="dv">30000</span>))</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -22000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<p>Assuming assets are listed in <code>B2:B5</code> and debts in <code>C2:C3</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">-</span> SUM<span class="op">(</span>C2<span class="op">:</span>C3<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <p><code>net_worth()</code> takes two dictionaries, so you can see each item and the total.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> net_worth(assets, debts):</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(assets.values()) <span class="op">-</span> <span class="bu">sum</span>(debts.values())</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>assets <span class="op">=</span> {<span class="st">"401k"</span>: <span class="dv">12000</span>, <span class="st">"roth_ira"</span>: <span class="dv">6000</span>, <span class="st">"savings"</span>: <span class="dv">8000</span>, <span class="st">"car"</span>: <span class="dv">9000</span>}</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>debts <span class="op">=</span> {<span class="st">"car_loan"</span>: <span class="dv">6000</span>, <span class="st">"credit_card"</span>: <span class="dv">1000</span>}</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth(assets, debts))</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> net_worth(assets, debts):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">sum</span>(assets.values()) <span class="op">-</span> <span class="bu">sum</span>(debts.values())</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>assets <span class="op">=</span> {<span class="st">"401k"</span>: <span class="dv">12000</span>, <span class="st">"roth_ira"</span>: <span class="dv">6000</span>, <span class="st">"savings"</span>: <span class="dv">8000</span>, <span class="st">"car"</span>: <span class="dv">9000</span>}</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>debts <span class="op">=</span> {<span class="st">"car_loan"</span>: <span class="dv">6000</span>, <span class="st">"credit_card"</span>: <span class="dv">1000</span>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth(assets, debts))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Sanity check: paying off the credit card from savings doesn’t change net worth.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>assets_after <span class="op">=</span> {<span class="op">**</span>assets, <span class="st">"savings"</span>: <span class="dv">8000</span> <span class="op">-</span> <span class="dv">1000</span>}</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>debts_after <span class="op">=</span> {<span class="op">**</span>debts, <span class="st">"credit_card"</span>: <span class="dv">0</span>}</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth(assets_after, debts_after))</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>assets_after <span class="op">=</span> {<span class="op">**</span>assets, <span class="st">"savings"</span>: <span class="dv">8000</span> <span class="op">-</span> <span class="dv">1000</span>}</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>debts_after <span class="op">=</span> {<span class="op">**</span>debts, <span class="st">"credit_card"</span>: <span class="dv">0</span>}</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth(assets_after, debts_after))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <p>Edge case: net worth can be negative.</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth({<span class="st">"savings"</span>: <span class="dv">3000</span>, <span class="st">"car"</span>: <span class="dv">5000</span>}, {<span class="st">"student_loans"</span>: <span class="dv">30000</span>}))</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -22000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(net_worth({<span class="st">"savings"</span>: <span class="dv">3000</span>, <span class="st">"car"</span>: <span class="dv">5000</span>}, {<span class="st">"student_loans"</span>: <span class="dv">30000</span>}))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; -22000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>Assuming assets are listed in <code>B2:B5</code> and debts in <code>C2:C3</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">-</span> SUM<span class="op">(</span>C2<span class="op">:</span>C3<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>net_worth()</code> takes two named vectors, so you can see each item and the total.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>net_worth <span class="ot">&lt;-</span> <span class="cf">function</span>(assets, debts) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(assets) <span class="sc">-</span> <span class="fu">sum</span>(debts)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">savings =</span> <span class="dv">8000</span>, <span class="at">car =</span> <span class="dv">9000</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>debts  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">car_loan =</span> <span class="dv">6000</span>, <span class="at">credit_card =</span> <span class="dv">1000</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(assets, debts)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Sanity check: paying off the credit card from savings doesn’t change net worth. Cash goes down by $1,000 and so does debt.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>assets_after <span class="ot">&lt;-</span> <span class="fu">replace</span>(assets, <span class="st">"savings"</span>, <span class="dv">8000</span> <span class="sc">-</span> <span class="dv">1000</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>debts_after  <span class="ot">&lt;-</span> <span class="fu">replace</span>(debts, <span class="st">"credit_card"</span>, <span class="dv">0</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(assets_after, debts_after)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 28000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that’s common.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">net_worth</span>(<span class="at">assets =</span> <span class="fu">c</span>(<span class="at">savings =</span> <span class="dv">3000</span>, <span class="at">car =</span> <span class="dv">5000</span>),</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>          <span class="at">debts  =</span> <span class="fu">c</span>(<span class="at">student_loans =</span> <span class="dv">30000</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] -22000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </div>
 </div>
 </div>
@@ -590,51 +590,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Example: ($12,000 + $6,000 + $45,000 + $8,000) ÷ $80,000 = about 89% of the estate, decided by forms that take minutes to fill out. That’s why beneficiary designations come before a will for most young people.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Excel</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<p><code>beneficiary_share()</code> divides what the forms control by the whole estate.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>beneficiary_share <span class="ot">&lt;-</span> <span class="cf">function</span>(with_beneficiary, without_beneficiary) {</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(with_beneficiary) <span class="sc">/</span> (<span class="fu">sum</span>(with_beneficiary) <span class="sc">+</span> <span class="fu">sum</span>(without_beneficiary))</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>with_beneficiary    <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">life_insurance =</span> <span class="dv">45000</span>, <span class="at">savings_pod =</span> <span class="dv">8000</span>)</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>without_beneficiary <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">car =</span> <span class="dv">9000</span>)</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="fu">beneficiary_share</span>(with_beneficiary, without_beneficiary)</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8875</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
-<p>What if some forms are blank? A blank form moves that account into the “will or state law” pile. Each scenario below starts from the same $80,000 estate.</p>
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>all_assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">life_insurance =</span> <span class="dv">45000</span>,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">savings =</span> <span class="dv">8000</span>, <span class="at">car =</span> <span class="dv">9000</span>)</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>scenarios <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"all forms filled"</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>, <span class="st">"roth_ira"</span>, <span class="st">"life_insurance"</span>, <span class="st">"savings"</span>),</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"no POD on savings"</span>  <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>, <span class="st">"roth_ira"</span>, <span class="st">"life_insurance"</span>),</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"only the 401(k)"</span>    <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>),</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"no forms at all"</span>    <span class="ot">=</span> <span class="fu">character</span>(<span class="dv">0</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">scenario     =</span> <span class="fu">names</span>(scenarios),</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">forms_share  =</span> <span class="fu">sapply</span>(scenarios, <span class="cf">function</span>(s)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">beneficiary_share</span>(all_assets[s], all_assets[<span class="sc">!</span><span class="fu">names</span>(all_assets) <span class="sc">%in%</span> s])),</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">through_will =</span> <span class="fu">sapply</span>(scenarios, <span class="cf">function</span>(s) <span class="fu">sum</span>(all_assets[<span class="sc">!</span><span class="fu">names</span>(all_assets) <span class="sc">%in%</span> s])),</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names    =</span> <span class="cn">NULL</span></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   scenario          forms_share through_will</span></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                   &lt;dbl&gt;        &lt;dbl&gt;</span></span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 all forms filled        0.888         9000</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 no POD on savings       0.788        17000</span></span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 only the 401(k)         0.15         68000</span></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 no forms at all         0            80000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<p>Assuming assets with a named beneficiary are in <code>B2:B5</code> and assets without one are in <code>C2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">/</span> <span class="op">(</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">+</span> SUM<span class="op">(</span>C2<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To test blank forms, list every asset in <code>B2:B6</code> with <code>Yes</code> or <code>No</code> in <code>C2:C6</code> for “has a beneficiary,” then:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUMIF<span class="op">(</span>C2<span class="op">:</span>C6<span class="op">,</span> <span class="st">"Yes"</span><span class="op">,</span> B2<span class="op">:</span>B6<span class="op">)</span> <span class="op">/</span> SUM<span class="op">(</span>B2<span class="op">:</span>B6<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <p><code>beneficiary_share()</code> divides what the forms control by the whole estate.</p>
@@ -675,10 +637,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>Assuming assets with a named beneficiary are in <code>B2:B5</code> and assets without one are in <code>C2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">/</span> <span class="op">(</span>SUM<span class="op">(</span>B2<span class="op">:</span>B5<span class="op">)</span> <span class="op">+</span> SUM<span class="op">(</span>C2<span class="op">))</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>To test blank forms, list every asset in <code>B2:B6</code> with <code>Yes</code> or <code>No</code> in <code>C2:C6</code> for “has a beneficiary,” then:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>SUMIF<span class="op">(</span>C2<span class="op">:</span>C6<span class="op">,</span> <span class="st">"Yes"</span><span class="op">,</span> B2<span class="op">:</span>B6<span class="op">)</span> <span class="op">/</span> SUM<span class="op">(</span>B2<span class="op">:</span>B6<span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>beneficiary_share()</code> divides what the forms control by the whole estate.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>beneficiary_share <span class="ot">&lt;-</span> <span class="cf">function</span>(with_beneficiary, without_beneficiary) {</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sum</span>(with_beneficiary) <span class="sc">/</span> (<span class="fu">sum</span>(with_beneficiary) <span class="sc">+</span> <span class="fu">sum</span>(without_beneficiary))</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>with_beneficiary    <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">life_insurance =</span> <span class="dv">45000</span>, <span class="at">savings_pod =</span> <span class="dv">8000</span>)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>without_beneficiary <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">car =</span> <span class="dv">9000</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">beneficiary_share</span>(with_beneficiary, without_beneficiary)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.8875</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<p>What if some forms are blank? A blank form moves that account into the “will or state law” pile. Each scenario below starts from the same $80,000 estate.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>all_assets <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">k401 =</span> <span class="dv">12000</span>, <span class="at">roth_ira =</span> <span class="dv">6000</span>, <span class="at">life_insurance =</span> <span class="dv">45000</span>,</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">savings =</span> <span class="dv">8000</span>, <span class="at">car =</span> <span class="dv">9000</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>scenarios <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"all forms filled"</span>   <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>, <span class="st">"roth_ira"</span>, <span class="st">"life_insurance"</span>, <span class="st">"savings"</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"no POD on savings"</span>  <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>, <span class="st">"roth_ira"</span>, <span class="st">"life_insurance"</span>),</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"only the 401(k)"</span>    <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"k401"</span>),</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"no forms at all"</span>    <span class="ot">=</span> <span class="fu">character</span>(<span class="dv">0</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">scenario     =</span> <span class="fu">names</span>(scenarios),</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">forms_share  =</span> <span class="fu">sapply</span>(scenarios, <span class="cf">function</span>(s)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">beneficiary_share</span>(all_assets[s], all_assets[<span class="sc">!</span><span class="fu">names</span>(all_assets) <span class="sc">%in%</span> s])),</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">through_will =</span> <span class="fu">sapply</span>(scenarios, <span class="cf">function</span>(s) <span class="fu">sum</span>(all_assets[<span class="sc">!</span><span class="fu">names</span>(all_assets) <span class="sc">%in%</span> s])),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names    =</span> <span class="cn">NULL</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 3</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   scenario          forms_share through_will</span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   &lt;chr&gt;                   &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1 all forms filled        0.888         9000</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2 no POD on savings       0.788        17000</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3 only the 401(k)         0.15         68000</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4 no forms at all         0            80000</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </div>
 </div>
 </div>

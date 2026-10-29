@@ -57,25 +57,18 @@ ggplot(df_fee, aes(x = fee, y = fund, fill = fill)) +
 The second example uses a table of typical expense ratios across a few balances. The fee grows with your balance, so a fee that costs pocket change at $10,000 costs real money at $250,000.
 
 ::: panel-tabset
-## R
+## Excel
 
-```{r}
-#| label: fee-r
-yearly_fee <- function(balance, expense_ratio) {
-  balance * expense_ratio
-}
+With `Balance` in `B2` and `Expense ratio` in `C2`:
 
-# $10,000 in an index fund vs. an active fund
-yearly_fee(balance = 10000, expense_ratio = c(0.0004, 0.01))
+```swift
+=B2 * C2
+```
 
-# several funds across several balances
-ratios   <- c(index = 0.0004, target_date = 0.0010, active = 0.01)
-balances <- c(10000, 50000, 250000)
-fees <- outer(balances, ratios, yearly_fee)
-data.frame(balance = balances, fees)
+For a table, put balances down column `A` (`A3:A5`) and ratios across row 2 (`B2:D2`), then fill `B3` across and down:
 
-# sanity check: how many times as expensive?
-0.01 / 0.0004
+```swift
+=$A3 * B$2
 ```
 
 ## Python
@@ -100,19 +93,27 @@ for bal in [10000, 50000, 250000]:
 print(0.01 / 0.0004)
 ```
 
-## Excel
+## R
 
-With `Balance` in `B2` and `Expense ratio` in `C2`:
+```{r}
+#| label: fee-r
+yearly_fee <- function(balance, expense_ratio) {
+  balance * expense_ratio
+}
 
-```swift
-=B2 * C2
+# $10,000 in an index fund vs. an active fund
+yearly_fee(balance = 10000, expense_ratio = c(0.0004, 0.01))
+
+# several funds across several balances
+ratios   <- c(index = 0.0004, target_date = 0.0010, active = 0.01)
+balances <- c(10000, 50000, 250000)
+fees <- outer(balances, ratios, yearly_fee)
+data.frame(balance = balances, fees)
+
+# sanity check: how many times as expensive?
+0.01 / 0.0004
 ```
 
-For a table, put balances down column `A` (`A3:A5`) and ratios across row 2 (`B2:D2`), then fill `B3` across and down:
-
-```swift
-=$A3 * B$2
-```
 :::
 
 Read the fee as dollars you never see. The active fund costs $2,500 a year on $250,000, and the index fund costs $100.
@@ -160,6 +161,42 @@ ggplot(df_drag, aes(x = year, y = value, fill = fund)) +
 The second example tries several expense ratios over 40 years and reports the share of the low cost result each one loses. The edge case is a 0% fee, which is just the plain annuity from Investing Basics.
 
 ::: panel-tabset
+## Excel
+
+With `Contribution` in `B2`, `Return` in `C2`, `Expense ratio` in `D2`, and `Years` in `E2`:
+
+```swift
+=FV((C2 - D2) / 12, E2 * 12, -B2)
+```
+
+Copy the row down with different expense ratios in column `D` to build the comparison table.
+
+## Python
+
+```{python}
+#| label: fee-drag-py
+import numpy as np
+
+def future_value_after_fees(contribution, annual_return, expense_ratio, years):
+    rate = (annual_return - expense_ratio) / 12
+    periods = years * 12
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+
+# $300/month for 40 years at 7%, index fund vs. active fund
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund = future_value_after_fees(300, 0.07, 0.01, 40)
+print(round(index_fund), round(active_fund), round(index_fund - active_fund))
+
+# share of the index fund result lost to the 1% fee
+print((index_fund - active_fund) / index_fund)
+
+# several expense ratios over 40 years
+er = np.array([0, 0.0004, 0.001, 0.005, 0.01, 0.015])
+fv = future_value_after_fees(300, 0.07, er, 40)
+for e, v in zip(er, fv):
+    print(f"{e:.2%}: ${v:,.0f} ({1 - v / index_fund:+.1%} vs. index)")
+```
+
 ## R
 
 ```{r}
@@ -189,41 +226,6 @@ data.frame(
 )
 ```
 
-## Python
-
-```{python}
-#| label: fee-drag-py
-import numpy as np
-
-def future_value_after_fees(contribution, annual_return, expense_ratio, years):
-    rate = (annual_return - expense_ratio) / 12
-    periods = years * 12
-    return contribution * (((1 + rate) ** periods - 1) / rate)
-
-# $300/month for 40 years at 7%, index fund vs. active fund
-index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
-active_fund = future_value_after_fees(300, 0.07, 0.01, 40)
-print(round(index_fund), round(active_fund), round(index_fund - active_fund))
-
-# share of the index fund result lost to the 1% fee
-print((index_fund - active_fund) / index_fund)
-
-# several expense ratios over 40 years
-er = np.array([0, 0.0004, 0.001, 0.005, 0.01, 0.015])
-fv = future_value_after_fees(300, 0.07, er, 40)
-for e, v in zip(er, fv):
-    print(f"{e:.2%}: ${v:,.0f} ({1 - v / index_fund:+.1%} vs. index)")
-```
-
-## Excel
-
-With `Contribution` in `B2`, `Return` in `C2`, `Expense ratio` in `D2`, and `Years` in `E2`:
-
-```swift
-=FV((C2 - D2) / 12, E2 * 12, -B2)
-```
-
-Copy the row down with different expense ratios in column `D` to build the comparison table.
 :::
 
 Read the lifetime cost as a share, not a dollar amount. A 1% fee takes about 23% of the ending balance, which is why the book says close to a quarter. A negative "lost" number means that fund beat the 0.04% index fund (only possible here with a lower fee).

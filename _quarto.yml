@@ -1,39 +1,50 @@
 project:
   type: website
+  render:
+    - "*.qmd"
 
 website:
   title: "DEV (fm-finance)"
-  navbar:
-    left:
-      - text: "Foundations"
-        menu:
+  reader-mode: true
+  repo-url: https://github.com/mjfrigaard/dev-fm-finance
+  page-navigation: true
+  sidebar:
+    style: docked
+    search: true
+    tools:
+      - icon: github
+        href: https://github.com/mjfrigaard/dev-fm-finance
+    contents:
+      - index.qmd
+      - section: "Foundations"
+        contents:
           - income.qmd
           - tracking_spending.qmd
           - budgeting.qmd
           - managing_debt.qmd
           - emergency_fund.qmd
-      - text: "Savings"
-        menu:
+      - section: "Savings"
+        contents:
           - savings_strategies.qmd
           - high_yield_accounts.qmd
           - automating_savings.qmd
-      - text: "Investing"
-        menu:
+      - section: "Investing"
+        contents:
           - investing_basics.qmd
           - retirement_accounts.qmd
           - index_funds.qmd
           - asset_allocation.qmd
-      - text: "Taxes & Insurance"
-        menu:
+      - section: "Taxes & Insurance"
+        contents:
           - taxes.qmd
           - insurance.qmd
-      - text: "Planning"
-        menu:
+      - section: "Planning"
+        contents:
           - financial_goals.qmd
           - major_purchases.qmd
           - estate_planning.qmd
-      - text: "Resources"
-        menu:
+      - section: "Resources"
+        contents:
           - r_vs_py.qmd
 
 format:
@@ -61,7 +72,7 @@ format:
     fig-format: retina
     lightbox: true
     fig-asp: 0.618
-    fontsize: 1.025em
+    fontsize: 1.010em
     linestretch: 1.30
 
 bibliography: references.bib

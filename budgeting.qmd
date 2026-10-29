@@ -61,47 +61,31 @@ ggplot(df_pct, aes(x = "", y = amount, fill = label)) +
 
 ::: panel-tabset
 
-## R
+## Excel
 
-`percent_of_income()` divides an expense by income and multiplies by 100.
+Assuming `Expense` is in cell `B2` and `Income` is in cell `C2`:
 
-```{r}
-#| label: percent-r
-percent_of_income <- function(expense, income) {
-  (expense / income) * 100
-}
-
-percent_of_income(expense = 1500, income = 5000)
+``` swift
+=(B2 / C2) * 100
 ```
 
-The function is vectorized, so we can pass the whole zero-based budget from the book at once.
+![](img/budget_percent_of_income.png){width='100%' fig-align='center'}
 
-```{r}
-#| label: percent-r-zero-based
-zero_based <- data.frame(
-  category = c("Rent", "Groceries", "Transport", "Investments",
-               "Savings", "Fun Money", "Other"),
-  amount   = c(1500, 500, 300, 1000, 500, 700, 500)
-)
-zero_based$pct <- percent_of_income(zero_based$amount, income = 5000)
-zero_based
+Or, more simply, enter `=B2 / C2` and format the cell as a **Percentage** using the button in the toolbar.
+
+![](img/budget_percent_of_income_format.png){width='100%' fig-align='center'}
+
+For the full zero-based budget, put category names in `A2:A8`, amounts in `B2:B8`, and income in `E1`. In `C2`, lock the income cell with `$` and fill down to `C8`:
+
+``` swift
+=B2 / $E$1
 ```
 
-Sanity check: in a zero-based budget, the dollars add up to income and the percentages add up to 100.
+Check the totals in row 9. `B9` should equal income, and `C9` should read 100%:
 
-```{r}
-#| label: percent-r-check
-sum(zero_based$amount)
-sum(zero_based$pct)
-```
-
-How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
-
-One edge case: an income of zero has no meaningful percentage. R returns `Inf` (or `NaN` for 0 ÷ 0) instead of an error.
-
-```{r}
-#| label: percent-r-edge
-percent_of_income(expense = 1500, income = 0)
+``` swift
+=SUM(B2:B8)
+=SUM(C2:C8)
 ```
 
 ## Python
@@ -150,31 +134,47 @@ def safe_percent_of_income(expense, income):
 print(safe_percent_of_income(1500, 0))
 ```
 
-## Excel
+## R
 
-Assuming `Expense` is in cell `B2` and `Income` is in cell `C2`:
+`percent_of_income()` divides an expense by income and multiplies by 100.
 
-``` swift
-=(B2 / C2) * 100
+```{r}
+#| label: percent-r
+percent_of_income <- function(expense, income) {
+  (expense / income) * 100
+}
+
+percent_of_income(expense = 1500, income = 5000)
 ```
 
-![](img/budget_percent_of_income.png){width='100%' fig-align='center'}
+The function is vectorized, so we can pass the whole zero-based budget from the book at once.
 
-Or, more simply, enter `=B2 / C2` and format the cell as a **Percentage** using the button in the toolbar.
-
-![](img/budget_percent_of_income_format.png){width='100%' fig-align='center'}
-
-For the full zero-based budget, put category names in `A2:A8`, amounts in `B2:B8`, and income in `E1`. In `C2`, lock the income cell with `$` and fill down to `C8`:
-
-``` swift
-=B2 / $E$1
+```{r}
+#| label: percent-r-zero-based
+zero_based <- data.frame(
+  category = c("Rent", "Groceries", "Transport", "Investments",
+               "Savings", "Fun Money", "Other"),
+  amount   = c(1500, 500, 300, 1000, 500, 700, 500)
+)
+zero_based$pct <- percent_of_income(zero_based$amount, income = 5000)
+zero_based
 ```
 
-Check the totals in row 9. `B9` should equal income, and `C9` should read 100%:
+Sanity check: in a zero-based budget, the dollars add up to income and the percentages add up to 100.
 
-``` swift
-=SUM(B2:B8)
-=SUM(C2:C8)
+```{r}
+#| label: percent-r-check
+sum(zero_based$amount)
+sum(zero_based$pct)
+```
+
+How to read this: rent is 30% of take-home pay, and every category together uses 100%. If the total were above 100, the budget would spend more than you earn.
+
+One edge case: an income of zero has no meaningful percentage. R returns `Inf` (or `NaN` for 0 ÷ 0) instead of an error.
+
+```{r}
+#| label: percent-r-edge
+percent_of_income(expense = 1500, income = 0)
 ```
 
 :::
@@ -222,6 +222,106 @@ ggplot(df_annual, aes(x = period, y = cost, fill = period)) +
 ```
 
 ::: panel-tabset
+
+## Excel
+
+Let's start with the daily value in cell `A1`, then convert it to the cost per week in cell `A2`:
+
+``` swift
+=A1 * 7
+```
+
+Next we can convert the week to the monthly cost in cell `A3`:
+
+``` swift
+=A2 * 4.33
+```
+
+Finally, we get the annual cost in cell `A4`:
+
+``` swift
+=A1 * 365
+```
+
+Format cells `A1` - `A4` as **Currency** or **Accounting**.
+
+![](img/budget_daily2yearly_formula.png){width='100%' fig-align='center'}
+
+To convert a weekly value in cell `A1` to a monthly value, place the following formula in cell `A2`:
+
+``` swift
+=A1 * 4.33
+```
+
+To convert the monthly cost to an annual cost, enter the following in cell `A3`:
+
+``` swift
+=A2 * 12
+```
+
+Format cells `A1` - `A3` as **Currency** or **Accounting**.
+
+![](img/budget_weekly2yearly_formula.png){width='100%' fig-align='center'}
+
+For a sinking fund tab, put expense names in `A2:A5` and annual costs in `B2:B5`. In `C2`, enter the formula below and fill down, then total the column in `C6` with `=SUM(C2:C5)`:
+
+``` swift
+=B2 / 12
+```
+
+## Python
+
+The Python versions use a dictionary of factors.
+
+```{python}
+#| label: annualize-py
+def to_annual(amount, period="daily"):
+    factors = {"daily": 365, "weekly": 52, "monthly": 12}
+    return amount * factors[period]
+
+def to_monthly(amount, period="daily"):
+    factors = {"daily": 30.44, "weekly": 4.33, "annual": 1 / 12}
+    return amount * factors[period]
+```
+
+The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
+
+```{python}
+#| label: annualize-py-apply
+print(to_annual(amount=5, period="daily"))
+print(to_monthly(amount=150, period="weekly"))
+```
+
+Several habits side by side.
+
+```{python}
+#| label: annualize-py-table
+habits = [("Coffee", 5, "daily"), ("Groceries", 150, "weekly"), ("Streaming", 15.99, "monthly")]
+for habit, amount, period in habits:
+    annual = to_annual(amount, period)
+    print(f"{habit:<10} annual ${annual:>9,.2f}  monthly ${annual / 12:>7,.2f}")
+```
+
+The same math powers sinking funds. Divide each periodic cost from the book by 12.
+
+```{python}
+#| label: sinking-fund-py
+sinking = {"Car insurance": 1200, "Christmas/gifts": 600,
+           "Car maintenance": 1200, "Annual vacation": 2400}
+monthly = {k: to_monthly(v, period="annual") for k, v in sinking.items()}
+for k, v in monthly.items():
+    print(f"{k:<16} ${v:,.2f}/month")
+print(f"Total: ${sum(monthly.values()):,.2f}/month")
+```
+
+Sanity check: 4.33 × 12 = 51.96 weeks, so the two routes differ by about \$6 on \$150/week.
+
+```{python}
+#| label: annualize-py-check
+print(to_annual(150, "weekly"), round(to_monthly(150, "weekly") * 12, 2))
+```
+
+How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
 
 ## R
 
@@ -287,106 +387,6 @@ to_monthly(150, "weekly") * 12
 
 How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
 
-## Python
-
-The Python versions use a dictionary of factors.
-
-```{python}
-#| label: annualize-py
-def to_annual(amount, period="daily"):
-    factors = {"daily": 365, "weekly": 52, "monthly": 12}
-    return amount * factors[period]
-
-def to_monthly(amount, period="daily"):
-    factors = {"daily": 30.44, "weekly": 4.33, "annual": 1 / 12}
-    return amount * factors[period]
-```
-
-The book examples: a \$5/day coffee over a year, and \$150/week on groceries over a month.
-
-```{python}
-#| label: annualize-py-apply
-print(to_annual(amount=5, period="daily"))
-print(to_monthly(amount=150, period="weekly"))
-```
-
-Several habits side by side.
-
-```{python}
-#| label: annualize-py-table
-habits = [("Coffee", 5, "daily"), ("Groceries", 150, "weekly"), ("Streaming", 15.99, "monthly")]
-for habit, amount, period in habits:
-    annual = to_annual(amount, period)
-    print(f"{habit:<10} annual ${annual:>9,.2f}  monthly ${annual / 12:>7,.2f}")
-```
-
-The same math powers sinking funds. Divide each periodic cost from the book by 12.
-
-```{python}
-#| label: sinking-fund-py
-sinking = {"Car insurance": 1200, "Christmas/gifts": 600,
-           "Car maintenance": 1200, "Annual vacation": 2400}
-monthly = {k: to_monthly(v, period="annual") for k, v in sinking.items()}
-for k, v in monthly.items():
-    print(f"{k:<16} ${v:,.2f}/month")
-print(f"Total: ${sum(monthly.values()):,.2f}/month")
-```
-
-Sanity check: 4.33 × 12 = 51.96 weeks, so the two routes differ by about \$6 on \$150/week.
-
-```{python}
-#| label: annualize-py-check
-print(to_annual(150, "weekly"), round(to_monthly(150, "weekly") * 12, 2))
-```
-
-How to read this: the annual number is the one to compare against your goals. A \$5 habit you never think about costs about as much as a vacation.
-
-## Excel
-
-Let's start with the daily value in cell `A1`, then convert it to the cost per week in cell `A2`:
-
-``` swift
-=A1 * 7
-```
-
-Next we can convert the week to the monthly cost in cell `A3`:
-
-``` swift
-=A2 * 4.33
-```
-
-Finally, we get the annual cost in cell `A4`:
-
-``` swift
-=A1 * 365
-```
-
-Format cells `A1` - `A4` as **Currency** or **Accounting**.
-
-![](img/budget_daily2yearly_formula.png){width='100%' fig-align='center'}
-
-To convert a weekly value in cell `A1` to a monthly value, place the following formula in cell `A2`:
-
-``` swift
-=A1 * 4.33
-```
-
-To convert the monthly cost to an annual cost, enter the following in cell `A3`:
-
-``` swift
-=A2 * 12
-```
-
-Format cells `A1` - `A3` as **Currency** or **Accounting**.
-
-![](img/budget_weekly2yearly_formula.png){width='100%' fig-align='center'}
-
-For a sinking fund tab, put expense names in `A2:A5` and annual costs in `B2:B5`. In `C2`, enter the formula below and fill down, then total the column in `C6` with `=SUM(C2:C5)`:
-
-``` swift
-=B2 / 12
-```
-
 :::
 
 ## Opportunity Cost
@@ -422,39 +422,21 @@ ggplot(df_opp, aes(x = year, y = value)) +
 
 ::: panel-tabset
 
-## R
+## Excel
 
-`opportunity_cost()` takes the dollar `amount`, the yearly `rate` of return, and the number of `years`.
+Assuming the initial amount is in cell `A2`, the annual rate (as a decimal, e.g., 0.07) is in `B2`, and the number of years is in `C2`:
 
-```{r}
-#| label: opp-cost-r
-opportunity_cost <- function(amount, rate, years) {
-  amount * (1 + rate)^years
-}
-
-opportunity_cost(amount = 25000, rate = 0.07, years = 30)
+``` swift
+=A2*(1+B2)^C2
 ```
 
-Returns are never guaranteed, so compare a cautious, middle, and hopeful rate across several horizons. `outer()` builds the whole grid in one call.
+![](img/budget_opportunity_cost_formula.png){width='100%' fig-align='center'}
 
-```{r}
-#| label: opp-cost-r-grid
-years <- c(5, 10, 20, 30)
-rates <- c(0.05, 0.07, 0.09)
-grid <- outer(years, rates, function(y, r) opportunity_cost(25000, r, y))
-dimnames(grid) <- list(paste(years, "yrs"), paste0(rates * 100, "%"))
-round(grid)
+For a grid, put the amount in `A1`, rates across `B2:D2` (0.05, 0.07, 0.09), and years down `A3:A6` (5, 10, 20, 30). In `B3`, enter the formula below and fill right and down. The `$` signs keep the amount, the rate row, and the years column locked:
+
+``` swift
+=$A$1*(1+B$2)^$A3
 ```
-
-Sanity check: at 0% the money just sits there, and after 0 years nothing has grown.
-
-```{r}
-#| label: opp-cost-r-check
-opportunity_cost(25000, rate = 0, years = 30)
-opportunity_cost(25000, rate = 0.07, years = 0)
-```
-
-How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
 
 ## Python
 
@@ -491,21 +473,39 @@ print(opportunity_cost(25000, 0, 30), opportunity_cost(25000, 0.07, 0))
 
 How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
 
-## Excel
+## R
 
-Assuming the initial amount is in cell `A2`, the annual rate (as a decimal, e.g., 0.07) is in `B2`, and the number of years is in `C2`:
+`opportunity_cost()` takes the dollar `amount`, the yearly `rate` of return, and the number of `years`.
 
-``` swift
-=A2*(1+B2)^C2
+```{r}
+#| label: opp-cost-r
+opportunity_cost <- function(amount, rate, years) {
+  amount * (1 + rate)^years
+}
+
+opportunity_cost(amount = 25000, rate = 0.07, years = 30)
 ```
 
-![](img/budget_opportunity_cost_formula.png){width='100%' fig-align='center'}
+Returns are never guaranteed, so compare a cautious, middle, and hopeful rate across several horizons. `outer()` builds the whole grid in one call.
 
-For a grid, put the amount in `A1`, rates across `B2:D2` (0.05, 0.07, 0.09), and years down `A3:A6` (5, 10, 20, 30). In `B3`, enter the formula below and fill right and down. The `$` signs keep the amount, the rate row, and the years column locked:
-
-``` swift
-=$A$1*(1+B$2)^$A3
+```{r}
+#| label: opp-cost-r-grid
+years <- c(5, 10, 20, 30)
+rates <- c(0.05, 0.07, 0.09)
+grid <- outer(years, rates, function(y, r) opportunity_cost(25000, r, y))
+dimnames(grid) <- list(paste(years, "yrs"), paste0(rates * 100, "%"))
+round(grid)
 ```
+
+Sanity check: at 0% the money just sits there, and after 0 years nothing has grown.
+
+```{r}
+#| label: opp-cost-r-check
+opportunity_cost(25000, rate = 0, years = 30)
+opportunity_cost(25000, rate = 0.07, years = 0)
+```
+
+How to read this: the 7% column is the book's estimate, but even the 5% column shows the car choice is worth more than \$100,000 after 30 years. The longer the horizon, the more the rate matters.
 
 :::
 
@@ -542,49 +542,21 @@ ggplot(df_be, aes(x = month, y = saved, fill = reached)) +
 
 ::: panel-tabset
 
-## R
+## Excel
 
-`months_to_break_even()` divides the upfront cost by the monthly savings.
+Assuming the upfront cost is in cell `A2` and the monthly savings amount is in cell `B2`:
 
-```{r}
-#| label: break-even-r
-months_to_break_even <- function(upfront_cost, monthly_savings) {
-  upfront_cost / monthly_savings
-}
-
-months_to_break_even(upfront_cost = 500, monthly_savings = 60)
+``` swift
+=A2 / B2
 ```
 
-Savings arrive in whole months, so round up to find the month you actually cross the line. That matches the first green bar in the chart.
+![](img/budget_break_even_formula.png){width='100%' fig-align='center'}
 
-```{r}
-#| label: break-even-r-ceiling
-ceiling(months_to_break_even(500, 60))
+To round up to whole months and flag purchases that never break even, use this in `C2` instead:
+
+``` swift
+=IF(B2 <= 0, "Never", ROUNDUP(A2 / B2, 0))
 ```
-
-Compare a few options at once.
-
-```{r}
-#| label: break-even-r-table
-options_df <- data.frame(
-  option  = c("Gym membership", "Warehouse club", "Refinance fee"),
-  upfront = c(500, 65, 3000),
-  savings = c(60, 15, 120)
-)
-options_df$months <- months_to_break_even(options_df$upfront, options_df$savings)
-options_df$whole_months <- ceiling(options_df$months)
-options_df
-```
-
-Edge case: if a purchase saves nothing (or costs more each month), it never breaks even. Check before dividing.
-
-```{r}
-#| label: break-even-r-edge
-months_to_break_even(500, 0)
-months_to_break_even(500, -10)
-```
-
-How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
 
 ## Python
 
@@ -631,20 +603,48 @@ print(safe_break_even(500, 0), safe_break_even(500, -10))
 
 How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
 
-## Excel
+## R
 
-Assuming the upfront cost is in cell `A2` and the monthly savings amount is in cell `B2`:
+`months_to_break_even()` divides the upfront cost by the monthly savings.
 
-``` swift
-=A2 / B2
+```{r}
+#| label: break-even-r
+months_to_break_even <- function(upfront_cost, monthly_savings) {
+  upfront_cost / monthly_savings
+}
+
+months_to_break_even(upfront_cost = 500, monthly_savings = 60)
 ```
 
-![](img/budget_break_even_formula.png){width='100%' fig-align='center'}
+Savings arrive in whole months, so round up to find the month you actually cross the line. That matches the first green bar in the chart.
 
-To round up to whole months and flag purchases that never break even, use this in `C2` instead:
-
-``` swift
-=IF(B2 <= 0, "Never", ROUNDUP(A2 / B2, 0))
+```{r}
+#| label: break-even-r-ceiling
+ceiling(months_to_break_even(500, 60))
 ```
+
+Compare a few options at once.
+
+```{r}
+#| label: break-even-r-table
+options_df <- data.frame(
+  option  = c("Gym membership", "Warehouse club", "Refinance fee"),
+  upfront = c(500, 65, 3000),
+  savings = c(60, 15, 120)
+)
+options_df$months <- months_to_break_even(options_df$upfront, options_df$savings)
+options_df$whole_months <- ceiling(options_df$months)
+options_df
+```
+
+Edge case: if a purchase saves nothing (or costs more each month), it never breaks even. Check before dividing.
+
+```{r}
+#| label: break-even-r-edge
+months_to_break_even(500, 0)
+months_to_break_even(500, -10)
+```
+
+How to read this: the \$500 membership pays for itself if you keep using it past month 9. If you are not sure you will last that long, skip it.
 
 :::

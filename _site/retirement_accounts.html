@@ -77,9 +77,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-57ba0b5ef6365612ea40b1a4d9075177.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-cb13b06cd07ee9ae4f8f9ef08cecb12e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-57ba0b5ef6365612ea40b1a4d9075177.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-4a4890a92dccbde0f62628a0a32d9014.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-e8f33ffb92992b1fe58908f423db0703.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-4a4890a92dccbde0f62628a0a32d9014.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
@@ -492,48 +492,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The second example runs the same job across several contribution rates. Past 6%, your own deposits keep growing but the match stops. The last example shows what one year of the full match becomes if it stays invested for 40 years at 7%.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Excel</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Excel</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>employer_match <span class="ot">&lt;-</span> <span class="cf">function</span>(salary, contribution_pct, match_limit_pct, match_rate) {</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  salary <span class="sc">*</span> <span class="fu">pmin</span>(contribution_pct, match_limit_pct) <span class="sc">*</span> match_rate</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $45,000 salary, 6% contribution, 50% match on the first 6%</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">employer_match</span>(<span class="at">salary =</span> <span class="dv">45000</span>, <span class="at">contribution_pct =</span> <span class="fl">0.06</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">match_limit_pct =</span> <span class="fl">0.06</span>, <span class="at">match_rate =</span> <span class="fl">0.50</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1350</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># same job, but only contributing 3%</span></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">employer_match</span>(<span class="at">salary =</span> <span class="dv">45000</span>, <span class="at">contribution_pct =</span> <span class="fl">0.03</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">match_limit_pct =</span> <span class="fl">0.06</span>, <span class="at">match_rate =</span> <span class="fl">0.50</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 675</span></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># several contribution rates</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>pct <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="fl">0.06</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>)</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">your_pct     =</span> pct <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">you_put_in   =</span> <span class="dv">45000</span> <span class="sc">*</span> pct,</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">match        =</span> <span class="fu">employer_match</span>(<span class="dv">45000</span>, pct, <span class="fl">0.06</span>, <span class="fl">0.50</span>),</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">match_missed =</span> <span class="dv">1350</span> <span class="sc">-</span> <span class="fu">employer_match</span>(<span class="dv">45000</span>, pct, <span class="fl">0.06</span>, <span class="fl">0.50</span>)</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 4</span></span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   your_pct you_put_in match match_missed</span></span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1        0          0     0         1350</span></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2        3       1350   675          675</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3        6       2700  1350            0</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       10       4500  1350            0</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5       15       6750  1350            0</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="co"># one year of the full match, invested for 40 years at 7%</span></span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="dv">1350</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20215.52</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<p>With <code>Salary</code> in <code>B2</code>, <code>Your %</code> in <code>C2</code>, <code>Match limit %</code> in <code>D2</code>, and <code>Match rate</code> in <code>E2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> MIN<span class="op">(</span>C2<span class="op">,</span> D2<span class="op">)</span> <span class="op">*</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>List several rates down column <code>C</code> and copy the formula down to see where the match stops growing.</p>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
 <div class="cell">
@@ -569,9 +533,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>With <code>Salary</code> in <code>B2</code>, <code>Your %</code> in <code>C2</code>, <code>Match limit %</code> in <code>D2</code>, and <code>Match rate</code> in <code>E2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> MIN<span class="op">(</span>C2<span class="op">,</span> D2<span class="op">)</span> <span class="op">*</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>List several rates down column <code>C</code> and copy the formula down to see where the match stops growing.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>employer_match <span class="ot">&lt;-</span> <span class="cf">function</span>(salary, contribution_pct, match_limit_pct, match_rate) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  salary <span class="sc">*</span> <span class="fu">pmin</span>(contribution_pct, match_limit_pct) <span class="sc">*</span> match_rate</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># $45,000 salary, 6% contribution, 50% match on the first 6%</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">employer_match</span>(<span class="at">salary =</span> <span class="dv">45000</span>, <span class="at">contribution_pct =</span> <span class="fl">0.06</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">match_limit_pct =</span> <span class="fl">0.06</span>, <span class="at">match_rate =</span> <span class="fl">0.50</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1350</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># same job, but only contributing 3%</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="fu">employer_match</span>(<span class="at">salary =</span> <span class="dv">45000</span>, <span class="at">contribution_pct =</span> <span class="fl">0.03</span>,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>               <span class="at">match_limit_pct =</span> <span class="fl">0.06</span>, <span class="at">match_rate =</span> <span class="fl">0.50</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 675</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co"># several contribution rates</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>pct <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.03</span>, <span class="fl">0.06</span>, <span class="fl">0.10</span>, <span class="fl">0.15</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">your_pct     =</span> pct <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">you_put_in   =</span> <span class="dv">45000</span> <span class="sc">*</span> pct,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">match        =</span> <span class="fu">employer_match</span>(<span class="dv">45000</span>, pct, <span class="fl">0.06</span>, <span class="fl">0.50</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">match_missed =</span> <span class="dv">1350</span> <span class="sc">-</span> <span class="fu">employer_match</span>(<span class="dv">45000</span>, pct, <span class="fl">0.06</span>, <span class="fl">0.50</span>)</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 5 × 4</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   your_pct you_put_in match match_missed</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt;        &lt;dbl&gt;</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1        0          0     0         1350</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2        3       1350   675          675</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3        6       2700  1350            0</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4       10       4500  1350            0</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 5       15       6750  1350            0</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># one year of the full match, invested for 40 years at 7%</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="dv">1350</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 20215.52</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </div>
 </div>
 </div>
@@ -603,48 +603,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Multiplying by (1 − tax rate) gives the same answer whether you do it first or last. So the second example holds today’s rate at 12% and tries several retirement rates. The edge case is a retirement rate lower than today’s, where Traditional wins.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Excel</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Excel</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>after_tax_value <span class="ot">&lt;-</span> <span class="cf">function</span>(contribution, tax_rate, rate, years) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  contribution <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> tax_rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Roth: taxed at today's 12% rate</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="fu">after_tax_value</span>(<span class="at">contribution =</span> <span class="dv">1000</span>, <span class="at">tax_rate =</span> <span class="fl">0.12</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">40</span>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 13177.52</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Traditional: taxed at a 22% rate in retirement</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">after_tax_value</span>(<span class="at">contribution =</span> <span class="dv">1000</span>, <span class="at">tax_rate =</span> <span class="fl">0.22</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">40</span>)</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 11680.08</span></span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: same rate now and later gives the same answer</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="dv">1000</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.12</span>) <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span>, <span class="dv">1000</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.12</span>))</span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
-<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a><span class="co"># today's rate is 12%; try several retirement rates</span></span>
-<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>later <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>)</span>
-<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>roth  <span class="ot">&lt;-</span> <span class="fu">after_tax_value</span>(<span class="dv">1000</span>, <span class="fl">0.12</span>, <span class="fl">0.07</span>, <span class="dv">40</span>)</span>
-<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>trad  <span class="ot">&lt;-</span> <span class="fu">after_tax_value</span>(<span class="dv">1000</span>, later, <span class="fl">0.07</span>, <span class="dv">40</span>)</span>
-<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">retirement_rate =</span> later <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">roth            =</span> <span class="fu">round</span>(roth),</span>
-<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">traditional     =</span> <span class="fu">round</span>(trad),</span>
-<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">winner          =</span> <span class="fu">ifelse</span>(<span class="fu">abs</span>(roth <span class="sc">-</span> trad) <span class="sc">&lt;</span> <span class="dv">1</span>, <span class="st">"tie"</span>,</span>
-<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">ifelse</span>(roth <span class="sc">&gt;</span> trad, <span class="st">"Roth"</span>, <span class="st">"Traditional"</span>))</span>
-<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 4</span></span>
-<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   retirement_rate  roth traditional winner     </span></span>
-<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;      </span></span>
-<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1              10 13178       13477 Traditional</span></span>
-<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2              12 13178       13178 tie        </span></span>
-<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3              22 13178       11680 Roth       </span></span>
-<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4              24 13178       11381 Roth</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<p>With <code>Contribution</code> in <code>B2</code>, <code>Tax rate</code> in <code>C2</code>, <code>Return</code> in <code>D2</code>, and <code>Years</code> in <code>E2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">-</span> C2<span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> D2<span class="op">)</span> <span class="op">^</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Put today’s rate in one row and the retirement rate in the next; the row with the larger result wins.</p>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
 <div class="cell">
@@ -675,9 +639,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>With <code>Contribution</code> in <code>B2</code>, <code>Tax rate</code> in <code>C2</code>, <code>Return</code> in <code>D2</code>, and <code>Years</code> in <code>E2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">-</span> C2<span class="op">)</span> <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> D2<span class="op">)</span> <span class="op">^</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Put today’s rate in one row and the retirement rate in the next; the row with the larger result wins.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>after_tax_value <span class="ot">&lt;-</span> <span class="cf">function</span>(contribution, tax_rate, rate, years) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  contribution <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> tax_rate) <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> rate)<span class="sc">^</span>years</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Roth: taxed at today's 12% rate</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">after_tax_value</span>(<span class="at">contribution =</span> <span class="dv">1000</span>, <span class="at">tax_rate =</span> <span class="fl">0.12</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">40</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 13177.52</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Traditional: taxed at a 22% rate in retirement</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">after_tax_value</span>(<span class="at">contribution =</span> <span class="dv">1000</span>, <span class="at">tax_rate =</span> <span class="fl">0.22</span>, <span class="at">rate =</span> <span class="fl">0.07</span>, <span class="at">years =</span> <span class="dv">40</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 11680.08</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># sanity check: same rate now and later gives the same answer</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a><span class="fu">all.equal</span>(<span class="dv">1000</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.12</span>) <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span>, <span class="dv">1000</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">40</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fl">0.12</span>))</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] TRUE</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="co"># today's rate is 12%; try several retirement rates</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>later <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.10</span>, <span class="fl">0.12</span>, <span class="fl">0.22</span>, <span class="fl">0.24</span>)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>roth  <span class="ot">&lt;-</span> <span class="fu">after_tax_value</span>(<span class="dv">1000</span>, <span class="fl">0.12</span>, <span class="fl">0.07</span>, <span class="dv">40</span>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>trad  <span class="ot">&lt;-</span> <span class="fu">after_tax_value</span>(<span class="dv">1000</span>, later, <span class="fl">0.07</span>, <span class="dv">40</span>)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">retirement_rate =</span> later <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">roth            =</span> <span class="fu">round</span>(roth),</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">traditional     =</span> <span class="fu">round</span>(trad),</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">winner          =</span> <span class="fu">ifelse</span>(<span class="fu">abs</span>(roth <span class="sc">-</span> trad) <span class="sc">&lt;</span> <span class="dv">1</span>, <span class="st">"tie"</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>                           <span class="fu">ifelse</span>(roth <span class="sc">&gt;</span> trad, <span class="st">"Roth"</span>, <span class="st">"Traditional"</span>))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 4 × 4</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   retirement_rate  roth traditional winner     </span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;             &lt;dbl&gt; &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt;      </span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1              10 13178       13477 Traditional</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2              12 13178       13178 tie        </span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3              22 13178       11680 Roth       </span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 4              24 13178       11381 Roth</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </div>
 </div>
 </div>
@@ -689,32 +689,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Formula:</strong> Cash in hand = Balance × (1 − tax rate − penalty); Left invested = Balance × (1 + r)^n</p>
 <p>Example: $5,000 × (1 − 0.12 − 0.10) = $3,900 today, vs.&nbsp;$5,000 × 1.07^45 ≈ $105,000 at 67 (the book rounds to about $100,000).</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">Excel</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Excel</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">Python</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-3" role="tab" aria-controls="tabset-3-3" aria-selected="false" href="">R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<div class="cell">
-<details open="" class="code-fold">
-<summary>show/hide</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cash_out <span class="ot">&lt;-</span> <span class="cf">function</span>(balance, tax_rate, <span class="at">penalty =</span> <span class="fl">0.10</span>) {</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  balance <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> tax_rate <span class="sc">-</span> penalty)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cash_out</span>(<span class="at">balance =</span> <span class="dv">5000</span>, <span class="at">tax_rate =</span> <span class="fl">0.12</span>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3900</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="dv">5000</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span>(<span class="dv">67</span> <span class="sc">-</span> <span class="dv">22</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 105012.3</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># several balances</span></span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>bal <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">5000</span>, <span class="dv">20000</span>)</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">balance =</span> bal, <span class="at">cash_now =</span> <span class="fu">cash_out</span>(bal, <span class="fl">0.12</span>), <span class="at">at_67 =</span> <span class="fu">round</span>(bal <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">45</span>))</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   balance cash_now  at_67</span></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    2000     1560  42005</span></span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    5000     3900 105012</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   20000    15600 420049</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-</div>
+<p>With <code>Balance</code> in <code>B2</code>, <code>Tax rate</code> in <code>C2</code>, <code>Return</code> in <code>D2</code>, and <code>Years</code> in <code>E2</code>:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">-</span> C2 <span class="op">-</span> <span class="fl">0.10</span><span class="op">)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> D2<span class="op">)</span> <span class="op">^</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
 <div class="cell">
@@ -737,9 +717,29 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div id="tabset-3-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-3-tab">
-<p>With <code>Balance</code> in <code>B2</code>, <code>Tax rate</code> in <code>C2</code>, <code>Return</code> in <code>D2</code>, and <code>Years</code> in <code>E2</code>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode swift code-with-copy"><code class="sourceCode swift"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">-</span> C2 <span class="op">-</span> <span class="fl">0.10</span><span class="op">)</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="op">=</span>B2 <span class="op">*</span> <span class="op">(</span><span class="dv">1</span> <span class="op">+</span> D2<span class="op">)</span> <span class="op">^</span> E2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>show/hide</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cash_out <span class="ot">&lt;-</span> <span class="cf">function</span>(balance, tax_rate, <span class="at">penalty =</span> <span class="fl">0.10</span>) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  balance <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> tax_rate <span class="sc">-</span> penalty)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cash_out</span>(<span class="at">balance =</span> <span class="dv">5000</span>, <span class="at">tax_rate =</span> <span class="fl">0.12</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 3900</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="dv">5000</span> <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span>(<span class="dv">67</span> <span class="sc">-</span> <span class="dv">22</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 105012.3</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># several balances</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>bal <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">2000</span>, <span class="dv">5000</span>, <span class="dv">20000</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">balance =</span> bal, <span class="at">cash_now =</span> <span class="fu">cash_out</span>(bal, <span class="fl">0.12</span>), <span class="at">at_67 =</span> <span class="fu">round</span>(bal <span class="sc">*</span> <span class="fl">1.07</span><span class="sc">^</span><span class="dv">45</span>))</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 3 × 3</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   balance cash_now  at_67</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 1    2000     1560  42005</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 2    5000     3900 105012</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 3   20000    15600 420049</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
 </div>
 </div>
 </div>

@@ -65,6 +65,61 @@ ggplot(df_br, aes(x = amount, y = bar, fill = slice)) +
 On $45,000, the tax is ($12,400 × 10%) + ($16,500 × 12%) = $3,220. That is an effective rate of about 7.2%, even though the top bracket is 12%.
 
 ::: panel-tabset
+## Excel
+
+Put income in `B2`. Put the bracket lower limits (0, 12400, 50400, 105700, 201775, 256225, 640600) in `E2:E8`, the full rates (10%, 12%, 22%, 24%, 32%, 35%, 37%) in `F2:F8`, and the extra rate each bracket adds over the one below it (10%, 2%, 10%, 2%, 8%, 3%, 2%) in `G2:G8`.
+
+Tax in `C2`:
+
+```swift
+=SUMPRODUCT(--(MAX(B2-16100,0)>E2:E8), MAX(B2-16100,0)-E2:E8, G2:G8)
+```
+
+Effective rate in `D2`:
+
+```swift
+=IF(B2>0, C2/B2, 0)
+```
+
+Marginal rate in `H2`:
+
+```swift
+=IF(B2<=16100, 0, LOOKUP(MAX(B2-16100,0)-0.01, E2:E8, F2:F8))
+```
+
+Copy row 2 down to compare several salaries.
+
+## Python
+
+```{python}
+#| label: bracket-py
+import numpy as np
+
+LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
+RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
+
+def income_tax(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    upper = np.append(LOWER[1:], np.inf)
+    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
+
+def marginal_rate(income, deduction=16100):
+    taxable = max(income - deduction, 0)
+    if taxable == 0:
+        return 0.0
+    return float(RATE[LOWER < taxable][-1])
+
+# 2026 federal income tax on a $45,000 salary (single filer)
+tax = income_tax(income=45000)
+print(tax)
+print(round(tax / 45000, 4))
+
+# compare several salaries
+for s in [15000, 30000, 45000, 66000, 100000, 150000]:
+    t = income_tax(s)
+    print(f"{s:>7,}  tax ${t:>9,.0f}  effective {t / s:5.1%}  marginal {marginal_rate(s):.0%}")
+```
+
 ## R
 
 ```{r}
@@ -102,60 +157,6 @@ data.frame(
 
 The effective rate is always below the marginal rate. A $15,000 salary owes no federal income tax at all, because it is smaller than the standard deduction.
 
-## Python
-
-```{python}
-#| label: bracket-py
-import numpy as np
-
-LOWER = np.array([0, 12400, 50400, 105700, 201775, 256225, 640600])
-RATE  = np.array([0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37])
-
-def income_tax(income, deduction=16100):
-    taxable = max(income - deduction, 0)
-    upper = np.append(LOWER[1:], np.inf)
-    return float(np.sum(RATE * np.clip(np.minimum(taxable, upper) - LOWER, 0, None)))
-
-def marginal_rate(income, deduction=16100):
-    taxable = max(income - deduction, 0)
-    if taxable == 0:
-        return 0.0
-    return float(RATE[LOWER < taxable][-1])
-
-# 2026 federal income tax on a $45,000 salary (single filer)
-tax = income_tax(income=45000)
-print(tax)
-print(round(tax / 45000, 4))
-
-# compare several salaries
-for s in [15000, 30000, 45000, 66000, 100000, 150000]:
-    t = income_tax(s)
-    print(f"{s:>7,}  tax ${t:>9,.0f}  effective {t / s:5.1%}  marginal {marginal_rate(s):.0%}")
-```
-
-## Excel
-
-Put income in `B2`. Put the bracket lower limits (0, 12400, 50400, 105700, 201775, 256225, 640600) in `E2:E8`, the full rates (10%, 12%, 22%, 24%, 32%, 35%, 37%) in `F2:F8`, and the extra rate each bracket adds over the one below it (10%, 2%, 10%, 2%, 8%, 3%, 2%) in `G2:G8`.
-
-Tax in `C2`:
-
-```swift
-=SUMPRODUCT(--(MAX(B2-16100,0)>E2:E8), MAX(B2-16100,0)-E2:E8, G2:G8)
-```
-
-Effective rate in `D2`:
-
-```swift
-=IF(B2>0, C2/B2, 0)
-```
-
-Marginal rate in `H2`:
-
-```swift
-=IF(B2<=16100, 0, LOOKUP(MAX(B2-16100,0)-0.01, E2:E8, F2:F8))
-```
-
-Copy row 2 down to compare several salaries.
 :::
 
 ```{r}
@@ -229,34 +230,20 @@ ggplot(df_raise, aes(x = amount, y = bar, fill = part)) +
 On $66,000, taxable income goes from $49,900 to $51,900. The first $500 fills the 12% bracket and the last $1,500 is taxed at 22%. The tax rises from $5,740 to $6,130, so you keep $1,610 of the $2,000 (before FICA and state tax).
 
 ::: panel-tabset
-## R
+## Excel
 
-```{r}
-#| label: raise-r
-income_tax <- function(income, deduction = 16100) {
-  taxable <- max(income - deduction, 0)
-  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
-  upper <- c(lower[-1], Inf)
-  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
-  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
-}
+Using the tax formula above, put the old income in `B2` and its tax in `C2`, the new income in `B3` and its tax in `C3`, and the raise in `D2`.
 
-raise_kept <- function(old_income, raise) {
-  raise - (income_tax(old_income + raise) - income_tax(old_income))
-}
+Amount kept:
 
-# $2,000 raise on a $66,000 salary
-income_tax(66000)
-income_tax(68000)
-raise_kept(old_income = 66000, raise = 2000)
+```swift
+=D2-(C3-C2)
+```
 
-# the same $2,000 raise at different salaries
-old <- c(30000, 45000, 66000, 100000, 150000)
-kept <- sapply(old, raise_kept, raise = 2000)
-data.frame(old_income = old, kept = kept, share_kept = round(kept / 2000, 3))
+Share of the raise kept:
 
-# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
-all(sapply(seq(1, 5000, by = 1), raise_kept, old_income = 66000) > 0)
+```swift
+=(D2-(C3-C2))/D2
 ```
 
 ## Python
@@ -289,21 +276,36 @@ for old in [30000, 45000, 66000, 100000, 150000]:
 print(all(raise_kept(66000, r) > 0 for r in range(1, 5001)))
 ```
 
-## Excel
+## R
 
-Using the tax formula above, put the old income in `B2` and its tax in `C2`, the new income in `B3` and its tax in `C3`, and the raise in `D2`.
+```{r}
+#| label: raise-r
+income_tax <- function(income, deduction = 16100) {
+  taxable <- max(income - deduction, 0)
+  lower <- c(0, 12400, 50400, 105700, 201775, 256225, 640600)
+  upper <- c(lower[-1], Inf)
+  rate  <- c(0.10, 0.12, 0.22, 0.24, 0.32, 0.35, 0.37)
+  sum(rate * pmax(pmin(taxable, upper) - lower, 0))
+}
 
-Amount kept:
+raise_kept <- function(old_income, raise) {
+  raise - (income_tax(old_income + raise) - income_tax(old_income))
+}
 
-```swift
-=D2-(C3-C2)
+# $2,000 raise on a $66,000 salary
+income_tax(66000)
+income_tax(68000)
+raise_kept(old_income = 66000, raise = 2000)
+
+# the same $2,000 raise at different salaries
+old <- c(30000, 45000, 66000, 100000, 150000)
+kept <- sapply(old, raise_kept, raise = 2000)
+data.frame(old_income = old, kept = kept, share_kept = round(kept / 2000, 3))
+
+# sanity check: no raise from $1 to $5,000 ever lowers your after tax income
+all(sapply(seq(1, 5000, by = 1), raise_kept, old_income = 66000) > 0)
 ```
 
-Share of the raise kept:
-
-```swift
-=(D2-(C3-C2))/D2
-```
 :::
 
 How to read this result: the share you keep can never drop below 63% (100% minus the top 37% rate). A raise that stays inside one bracket keeps exactly 1 minus that rate. A raise that crosses a line lands somewhere in between.

@@ -62,6 +62,40 @@ ggplot(df_match, aes(x = amount, y = bar, fill = part)) +
 The second example runs the same job across several contribution rates. Past 6%, your own deposits keep growing but the match stops. The last example shows what one year of the full match becomes if it stays invested for 40 years at 7%.
 
 ::: panel-tabset
+## Excel
+
+With `Salary` in `B2`, `Your %` in `C2`, `Match limit %` in `D2`, and `Match rate` in `E2`:
+
+```swift
+=B2 * MIN(C2, D2) * E2
+```
+
+List several rates down column `C` and copy the formula down to see where the match stops growing.
+
+## Python
+
+```{python}
+#| label: match-py
+def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
+    return salary * min(contribution_pct, match_limit_pct) * match_rate
+
+# $45,000 salary, 6% contribution, 50% match on the first 6%
+print(employer_match(salary=45000, contribution_pct=0.06,
+                     match_limit_pct=0.06, match_rate=0.50))
+
+# same job, but only contributing 3%
+print(employer_match(salary=45000, contribution_pct=0.03,
+                     match_limit_pct=0.06, match_rate=0.50))
+
+# several contribution rates
+for pct in [0, 0.03, 0.06, 0.10, 0.15]:
+    m = employer_match(45000, pct, 0.06, 0.50)
+    print(f"{pct:>4.0%}: you ${45000 * pct:>6,.0f}, match ${m:>5,.0f}, missed ${1350 - m:>5,.0f}")
+
+# one year of the full match, invested for 40 years at 7%
+print(1350 * 1.07 ** 40)
+```
+
 ## R
 
 ```{r}
@@ -91,39 +125,6 @@ data.frame(
 1350 * 1.07^40
 ```
 
-## Python
-
-```{python}
-#| label: match-py
-def employer_match(salary, contribution_pct, match_limit_pct, match_rate):
-    return salary * min(contribution_pct, match_limit_pct) * match_rate
-
-# $45,000 salary, 6% contribution, 50% match on the first 6%
-print(employer_match(salary=45000, contribution_pct=0.06,
-                     match_limit_pct=0.06, match_rate=0.50))
-
-# same job, but only contributing 3%
-print(employer_match(salary=45000, contribution_pct=0.03,
-                     match_limit_pct=0.06, match_rate=0.50))
-
-# several contribution rates
-for pct in [0, 0.03, 0.06, 0.10, 0.15]:
-    m = employer_match(45000, pct, 0.06, 0.50)
-    print(f"{pct:>4.0%}: you ${45000 * pct:>6,.0f}, match ${m:>5,.0f}, missed ${1350 - m:>5,.0f}")
-
-# one year of the full match, invested for 40 years at 7%
-print(1350 * 1.07 ** 40)
-```
-
-## Excel
-
-With `Salary` in `B2`, `Your %` in `C2`, `Match limit %` in `D2`, and `Match rate` in `E2`:
-
-```swift
-=B2 * MIN(C2, D2) * E2
-```
-
-List several rates down column `C` and copy the formula down to see where the match stops growing.
 :::
 
 Read the match as a 50% return the day you deposit. Contributing 3% instead of 6% leaves $675 a year on the table, and one year of the full match grows to about $20,200 over 40 years at 7%.
@@ -179,6 +180,37 @@ ggplot(df_rt, aes(x = account, y = amount, fill = layer)) +
 Multiplying by (1 − tax rate) gives the same answer whether you do it first or last. So the second example holds today's rate at 12% and tries several retirement rates. The edge case is a retirement rate lower than today's, where Traditional wins.
 
 ::: panel-tabset
+## Excel
+
+With `Contribution` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+
+```swift
+=B2 * (1 - C2) * (1 + D2) ^ E2
+```
+
+Put today's rate in one row and the retirement rate in the next; the row with the larger result wins.
+
+## Python
+
+```{python}
+#| label: roth-py
+def after_tax_value(contribution, tax_rate, rate, years):
+    return contribution * (1 - tax_rate) * (1 + rate) ** years
+
+# Roth: taxed at today's 12% rate
+print(after_tax_value(contribution=1000, tax_rate=0.12, rate=0.07, years=40))
+
+# Traditional: taxed at a 22% rate in retirement
+print(after_tax_value(contribution=1000, tax_rate=0.22, rate=0.07, years=40))
+
+# today's rate is 12%; try several retirement rates
+roth = after_tax_value(1000, 0.12, 0.07, 40)
+for later in [0.10, 0.12, 0.22, 0.24]:
+    trad = after_tax_value(1000, later, 0.07, 40)
+    winner = "tie" if abs(roth - trad) < 1 else ("Roth" if roth > trad else "Traditional")
+    print(f"retire at {later:.0%}: Roth ${roth:,.0f}, Traditional ${trad:,.0f} -> {winner}")
+```
+
 ## R
 
 ```{r}
@@ -209,36 +241,6 @@ data.frame(
 )
 ```
 
-## Python
-
-```{python}
-#| label: roth-py
-def after_tax_value(contribution, tax_rate, rate, years):
-    return contribution * (1 - tax_rate) * (1 + rate) ** years
-
-# Roth: taxed at today's 12% rate
-print(after_tax_value(contribution=1000, tax_rate=0.12, rate=0.07, years=40))
-
-# Traditional: taxed at a 22% rate in retirement
-print(after_tax_value(contribution=1000, tax_rate=0.22, rate=0.07, years=40))
-
-# today's rate is 12%; try several retirement rates
-roth = after_tax_value(1000, 0.12, 0.07, 40)
-for later in [0.10, 0.12, 0.22, 0.24]:
-    trad = after_tax_value(1000, later, 0.07, 40)
-    winner = "tie" if abs(roth - trad) < 1 else ("Roth" if roth > trad else "Traditional")
-    print(f"retire at {later:.0%}: Roth ${roth:,.0f}, Traditional ${trad:,.0f} -> {winner}")
-```
-
-## Excel
-
-With `Contribution` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
-
-```swift
-=B2 * (1 - C2) * (1 + D2) ^ E2
-```
-
-Put today's rate in one row and the retirement rate in the next; the row with the larger result wins.
 :::
 
 Read the result as a contest between two tax rates. Growth and years don't pick the winner. Roth wins when today's rate is lower than your rate in retirement, and Traditional wins when it's higher.
@@ -252,20 +254,13 @@ The book's job change example: cash out $5,000 at 22, or leave it invested until
 Example: $5,000 × (1 − 0.12 − 0.10) = $3,900 today, vs. $5,000 × 1.07\^45 ≈ $105,000 at 67 (the book rounds to about $100,000).
 
 ::: panel-tabset
-## R
+## Excel
 
-```{r}
-#| label: cash-out-r
-cash_out <- function(balance, tax_rate, penalty = 0.10) {
-  balance * (1 - tax_rate - penalty)
-}
+With `Balance` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
 
-cash_out(balance = 5000, tax_rate = 0.12)
-5000 * 1.07^(67 - 22)
-
-# several balances
-bal <- c(2000, 5000, 20000)
-data.frame(balance = bal, cash_now = cash_out(bal, 0.12), at_67 = round(bal * 1.07^45))
+```swift
+=B2 * (1 - C2 - 0.10)
+=B2 * (1 + D2) ^ E2
 ```
 
 ## Python
@@ -282,14 +277,22 @@ for bal in [2000, 5000, 20000]:
     print(f"${bal:,}: cash now ${cash_out(bal, 0.12):,.0f}, at 67 ${bal * 1.07 ** 45:,.0f}")
 ```
 
-## Excel
+## R
 
-With `Balance` in `B2`, `Tax rate` in `C2`, `Return` in `D2`, and `Years` in `E2`:
+```{r}
+#| label: cash-out-r
+cash_out <- function(balance, tax_rate, penalty = 0.10) {
+  balance * (1 - tax_rate - penalty)
+}
 
-```swift
-=B2 * (1 - C2 - 0.10)
-=B2 * (1 + D2) ^ E2
+cash_out(balance = 5000, tax_rate = 0.12)
+5000 * 1.07^(67 - 22)
+
+# several balances
+bal <- c(2000, 5000, 20000)
+data.frame(balance = bal, cash_now = cash_out(bal, 0.12), at_67 = round(bal * 1.07^45))
 ```
+
 :::
 
 Read it as a trade: $3,900 now costs you about $100,000 later.

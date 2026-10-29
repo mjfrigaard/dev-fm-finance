@@ -39,36 +39,11 @@ A minimal bank export has three columns: `Date`, `Description`, and `Amount`. Th
 
 ::: panel-tabset
 
-## R
+## Excel
 
-```{r}
-#| label: bank-statement-r
-r_bank_statement <- tibble::tibble(
-  Date = as.Date(c(
-    "2026-01-02", "2026-01-02", "2026-01-03", "2026-01-03",
-    "2026-01-04", "2026-01-04", "2026-01-05", "2026-01-06",
-    "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10",
-    "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14",
-    "2026-01-15"
-  )),
-  Description = c(
-    "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
-    "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
-    "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
-    "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
-    "24 Hour Fitness"
-  ),
-  Amount = c(
-     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
-    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
-     -42.80, -156.78, -39.99
-  )
-)
+We can simply copy and paste the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
 
-r_bank_statement |> knitr::kable()
-```
-
-We can view the bank statement in R using `knitr::kable()`.
+![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
 
 ## Python
 
@@ -103,11 +78,36 @@ py_bank_statement = pl.DataFrame({
 py_bank_statement
 ```
 
-## Excel
+## R
 
-We can simply copy and paste the data into Excel; `Date` in A, `Description` in B, `Amount` in C.
+```{r}
+#| label: bank-statement-r
+r_bank_statement <- tibble::tibble(
+  Date = as.Date(c(
+    "2026-01-02", "2026-01-02", "2026-01-03", "2026-01-03",
+    "2026-01-04", "2026-01-04", "2026-01-05", "2026-01-06",
+    "2026-01-07", "2026-01-08", "2026-01-09", "2026-01-10",
+    "2026-01-11", "2026-01-12", "2026-01-13", "2026-01-14",
+    "2026-01-15"
+  )),
+  Description = c(
+    "Employer Payroll", "Rent", "Comcast Internet", "Trader Joe's",
+    "Shell Gas", "Netflix", "Starbucks", "PG&E Electric",
+    "AT&T Wireless", "Spotify", "Whole Foods", "Chipotle",
+    "Geico Auto Insurance", "NYTimes Digital", "Shell Gas", "Costco",
+    "24 Hour Fitness"
+  ),
+  Amount = c(
+     2400.00, -1500.00, -75.00, -82.45, -45.20, -15.99, -6.75,
+    -142.30, -85.00, -10.99, -64.12, -14.50, -125.00, -17.00,
+     -42.80, -156.78, -39.99
+  )
+)
 
-![`bank_statement` in Excel](img/tracking_spending-bank-statement.png){width='75%' fig-align='center'}
+r_bank_statement |> knitr::kable()
+```
+
+We can view the bank statement in R using `knitr::kable()`.
 
 :::
 
@@ -116,65 +116,6 @@ We can simply copy and paste the data into Excel; `Date` in A, `Description` in 
 Map description keywords to budget buckets in a single pass.
 
 ::: panel-tabset
-
-## R
-
-In R, we can use `dplyr` to do the following:
-
-- `dplyr::case_when()` evaluates each pattern in order and assigns the matching category
-
-  - `grepl()` does the keyword test against `Description`
-
-- The final `TRUE` arm catches everything that didn't match and labels it `"Other"`
-```{r}
-#| label: categorize-r
-r_bank_statement <- r_bank_statement |>
-  dplyr::mutate(
-    Category = dplyr::case_when(
-      grepl("Payroll", Description) ~ "Income",
-      grepl("Rent", Description) ~ "Housing",
-      grepl("Comcast|PG&E|AT&T", Description) ~ "Utilities",
-      grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
-      grepl("Shell", Description) ~ "Transportation",
-      grepl("Starbucks|Chipotle", Description) ~ "Dining",
-      grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
-      grepl("Geico", Description) ~ "Insurance",
-      TRUE ~ "Other"
-    )
-  )
-
-r_bank_statement |> 
-  knitr::kable()
-```
-
-## Python
-
-`polars` is similar to `dplyr`, but:
-
-- `with_columns()` is the `mutate()` analog
-
-  - a chain of `pl.when().then()` calls is the `case_when()` analog
-
-- `pl.col("Description").str.contains(...)` does the keyword test
-
-  - regex by default and the `|` between merchants is alternation
-
-```{python}
-#| label: categorize-py
-py_bank_statement = py_bank_statement.with_columns(
-    Category = pl.when(pl.col("Description").str.contains("Payroll")).then(pl.lit("Income"))
-        .when(pl.col("Description").str.contains("Rent")).then(pl.lit("Housing"))
-        .when(pl.col("Description").str.contains("Comcast|PG&E|AT&T")).then(pl.lit("Utilities"))
-        .when(pl.col("Description").str.contains("Trader Joe|Whole Foods|Costco")).then(pl.lit("Groceries"))
-        .when(pl.col("Description").str.contains("Shell")).then(pl.lit("Transportation"))
-        .when(pl.col("Description").str.contains("Starbucks|Chipotle")).then(pl.lit("Dining"))
-        .when(pl.col("Description").str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness")).then(pl.lit("Subscriptions"))
-        .when(pl.col("Description").str.contains("Geico")).then(pl.lit("Insurance"))
-        .otherwise(pl.lit("Other"))
-)
-
-py_bank_statement
-```
 
 ## Excel
 
@@ -218,6 +159,65 @@ In Excel, we can also use the *Format as Table* feature to make the data easier 
 
 [^excel-tables]: Read the [Overview of Excel tables](https://support.microsoft.com/en-us/excel/overview-of-excel-tables) on the Microsoft documentation. 
 
+## Python
+
+`polars` is similar to `dplyr`, but:
+
+- `with_columns()` is the `mutate()` analog
+
+  - a chain of `pl.when().then()` calls is the `case_when()` analog
+
+- `pl.col("Description").str.contains(...)` does the keyword test
+
+  - regex by default and the `|` between merchants is alternation
+
+```{python}
+#| label: categorize-py
+py_bank_statement = py_bank_statement.with_columns(
+    Category = pl.when(pl.col("Description").str.contains("Payroll")).then(pl.lit("Income"))
+        .when(pl.col("Description").str.contains("Rent")).then(pl.lit("Housing"))
+        .when(pl.col("Description").str.contains("Comcast|PG&E|AT&T")).then(pl.lit("Utilities"))
+        .when(pl.col("Description").str.contains("Trader Joe|Whole Foods|Costco")).then(pl.lit("Groceries"))
+        .when(pl.col("Description").str.contains("Shell")).then(pl.lit("Transportation"))
+        .when(pl.col("Description").str.contains("Starbucks|Chipotle")).then(pl.lit("Dining"))
+        .when(pl.col("Description").str.contains("Netflix|Spotify|NYTimes|24 Hour Fitness")).then(pl.lit("Subscriptions"))
+        .when(pl.col("Description").str.contains("Geico")).then(pl.lit("Insurance"))
+        .otherwise(pl.lit("Other"))
+)
+
+py_bank_statement
+```
+
+## R
+
+In R, we can use `dplyr` to do the following:
+
+- `dplyr::case_when()` evaluates each pattern in order and assigns the matching category
+
+  - `grepl()` does the keyword test against `Description`
+
+- The final `TRUE` arm catches everything that didn't match and labels it `"Other"`
+```{r}
+#| label: categorize-r
+r_bank_statement <- r_bank_statement |>
+  dplyr::mutate(
+    Category = dplyr::case_when(
+      grepl("Payroll", Description) ~ "Income",
+      grepl("Rent", Description) ~ "Housing",
+      grepl("Comcast|PG&E|AT&T", Description) ~ "Utilities",
+      grepl("Trader Joe|Whole Foods|Costco", Description) ~ "Groceries",
+      grepl("Shell", Description) ~ "Transportation",
+      grepl("Starbucks|Chipotle", Description) ~ "Dining",
+      grepl("Netflix|Spotify|NYTimes|24 Hour Fitness", Description) ~ "Subscriptions",
+      grepl("Geico", Description) ~ "Insurance",
+      TRUE ~ "Other"
+    )
+  )
+
+r_bank_statement |> 
+  knitr::kable()
+```
+
 :::
 
 ## Answering Tracking Questions
@@ -226,51 +226,21 @@ Once every row has a category, the book's three tracking questions take one shor
 
 ::: panel-tabset
 
-## R
+## Excel
 
-Totals by category, spending only (negative amounts), largest first:
+With `Date` in `A`, `Description` in `B`, `Amount` in `C`, and `Category` in `D`, the [`SUMIF()` function](https://support.microsoft.com/en-us/excel/sumif-function) adds up one category. Total spent on subscriptions:
 
-```{r}
-#| label: category-totals-r
-income <- sum(r_bank_statement$Amount[r_bank_statement$Amount > 0])
-
-category_totals <- r_bank_statement |>
-  dplyr::filter(Amount < 0) |>
-  dplyr::group_by(Category) |>
-  dplyr::summarise(Total = -sum(Amount), .groups = "drop") |>
-  dplyr::arrange(dplyr::desc(Total)) |>
-  dplyr::mutate(Share = fmt_pct(Total / income))
-
-category_totals |> knitr::kable()
+```swift
+=-SUMIF(D:D, "Subscriptions", C:C)
 ```
 
-Total spent on subscriptions:
+The minus sign turns the negative spending total into a positive number. Fixed costs as a share of income (format the cell as a percentage):
 
-```{r}
-#| label: subscription-total-r
-category_totals$Total[category_totals$Category == "Subscriptions"] |> fmt_dollar()
+```swift
+=-(SUMIF(D:D,"Housing",C:C)+SUMIF(D:D,"Utilities",C:C)+SUMIF(D:D,"Insurance",C:C))/SUMIF(C:C,">0")
 ```
 
-Share of income going to fixed costs (housing, utilities, and insurance):
-
-```{r}
-#| label: fixed-share-r
-fixed <- c("Housing", "Utilities", "Insurance")
-fixed_total <- sum(category_totals$Total[category_totals$Category %in% fixed])
-fmt_dollar(fixed_total)
-fmt_pct(fixed_total / income)
-```
-
-The biggest variable category:
-
-```{r}
-#| label: biggest-variable-r
-category_totals |>
-  dplyr::filter(Category %nin% c(fixed, "Subscriptions")) |>
-  dplyr::slice_max(Total, n = 1)
-```
-
-How to read this result: this statement covers only half a month and one \$2,400 paycheck, but the full month's rent. That is why fixed costs look like 80% of income. Always compare a full month of spending against a full month of income before drawing conclusions.
+For every category at once, select the data and use **Insert → PivotTable**, with `Category` in Rows and `Amount` in Values.
 
 ## Python
 
@@ -320,21 +290,51 @@ The biggest variable category:
 )
 ```
 
-## Excel
+## R
 
-With `Date` in `A`, `Description` in `B`, `Amount` in `C`, and `Category` in `D`, the [`SUMIF()` function](https://support.microsoft.com/en-us/excel/sumif-function) adds up one category. Total spent on subscriptions:
+Totals by category, spending only (negative amounts), largest first:
 
-```swift
-=-SUMIF(D:D, "Subscriptions", C:C)
+```{r}
+#| label: category-totals-r
+income <- sum(r_bank_statement$Amount[r_bank_statement$Amount > 0])
+
+category_totals <- r_bank_statement |>
+  dplyr::filter(Amount < 0) |>
+  dplyr::group_by(Category) |>
+  dplyr::summarise(Total = -sum(Amount), .groups = "drop") |>
+  dplyr::arrange(dplyr::desc(Total)) |>
+  dplyr::mutate(Share = fmt_pct(Total / income))
+
+category_totals |> knitr::kable()
 ```
 
-The minus sign turns the negative spending total into a positive number. Fixed costs as a share of income (format the cell as a percentage):
+Total spent on subscriptions:
 
-```swift
-=-(SUMIF(D:D,"Housing",C:C)+SUMIF(D:D,"Utilities",C:C)+SUMIF(D:D,"Insurance",C:C))/SUMIF(C:C,">0")
+```{r}
+#| label: subscription-total-r
+category_totals$Total[category_totals$Category == "Subscriptions"] |> fmt_dollar()
 ```
 
-For every category at once, select the data and use **Insert → PivotTable**, with `Category` in Rows and `Amount` in Values.
+Share of income going to fixed costs (housing, utilities, and insurance):
+
+```{r}
+#| label: fixed-share-r
+fixed <- c("Housing", "Utilities", "Insurance")
+fixed_total <- sum(category_totals$Total[category_totals$Category %in% fixed])
+fmt_dollar(fixed_total)
+fmt_pct(fixed_total / income)
+```
+
+The biggest variable category:
+
+```{r}
+#| label: biggest-variable-r
+category_totals |>
+  dplyr::filter(Category %nin% c(fixed, "Subscriptions")) |>
+  dplyr::slice_max(Total, n = 1)
+```
+
+How to read this result: this statement covers only half a month and one \$2,400 paycheck, but the full month's rent. That is why fixed costs look like 80% of income. Always compare a full month of spending against a full month of income before drawing conclusions.
 
 :::
 
@@ -387,65 +387,37 @@ Each bar adds another year's \$240 to everything saved so far, and the whole pil
 
 ::: panel-tabset
 
-## R
+## Excel
 
-```{r}
-#| label: subscription-opp-cost-r
-subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
-  annual_cost <- monthly_cost * 12
-  annual_cost * ((1 + rate)^years - 1) / rate
-}
+In Excel, create a new sheet with the inputs:
+
+| Monthly cost | Number of Years | Annual Return (as decimal) | Opportunity Cost |
+| ------------ | --------------- | -------------------------- | ---------------- |
+| $20          | 30              | 0.07                       | *Formula below*  |
+
+The formula (given this setup) in `D2`:
+
+```swift
+=(A2*12)*((1+C2)^B2-1)/C2
 ```
 
-A \$20/month subscription for 30 years at 7%:
+`A2*12` converts the monthly cost to annual; the rest is the future value formula for regular deposits, using the rate in `C2` and the time horizon in `B2`.
 
-```{r}
-#| label: subscription-opp-cost-r-apply
-subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
+![Opportunity Cost in Excel](img/tracking_spending-opportunity_cost.png){width='100%' fig-align='center'}
+
+`FV()` gives the same answer, \$22,670.59:
+
+```swift
+=FV(C2, B2, -A2*12)
 ```
 
-Sanity check: money put in vs. growth.
+To audit several subscriptions, list each monthly cost in `A2:A5` (15.99, 10.99, 17.00, 39.99), keep the years and rate in `B` and `C`, fill `D2` down, and total them with `=SUM(D2:D5)`.
 
-```{r}
-#| label: subscription-opp-cost-r-check
-oc <- subscription_opportunity_cost(20, 30)
-put_in <- 20 * 12 * 30
-c(put_in = put_in, growth = round(oc - put_in))
-```
+If the data is arranged differently, adjust the cell references accordingly:
 
-Now audit the four subscriptions in the bank statement above. The function is vectorized, so one call prices them all:
+![Opportunity Cost 2 in Excel](img/tracking_spending-opportunity_cost2.png){width='100%' fig-align='center'}
 
-```{r}
-#| label: subscription-audit-r
-subs <- r_bank_statement |>
-  dplyr::filter(Category == "Subscriptions") |>
-  dplyr::transmute(Description, monthly = -Amount)
-
-subs$after_10 <- round(subscription_opportunity_cost(subs$monthly, 10))
-subs$after_30 <- round(subscription_opportunity_cost(subs$monthly, 30))
-subs |> knitr::kable()
-fmt_dollar(sum(subs$after_30))
-```
-
-How to read this result: the \$83.97 a month in this statement is a \$95,000 decision over 30 years. The gym membership alone is nearly half of it.
-
-The book's survey figure of \$219/month uses monthly deposits. The audit formula above uses yearly deposits, which comes out a little lower:
-
-```{r}
-#| label: subscription-survey-r
-# yearly deposits (the audit formula)
-subscription_opportunity_cost(219, 30) |> fmt_dollar()
-# monthly deposits (the book's ~$267,000)
-(219 * ((1 + 0.07 / 12)^(30 * 12) - 1) / (0.07 / 12)) |> fmt_dollar()
-```
-
-Edge case: a rate of 0 divides by zero and returns `NaN`. With no growth, the opportunity cost is just the money you would have spent.
-
-```{r}
-#| label: subscription-opp-cost-r-edge
-subscription_opportunity_cost(20, 30, rate = 0)
-20 * 12 * 30
-```
+![Opportunity Cost Layouts in Excel](img/tracking_spending-opportunity_cost_layouts.png){width='100%' fig-align='center'}
 
 ## Python
 
@@ -512,36 +484,64 @@ except ZeroDivisionError:
     print("No growth:", fmt_dollar(20 * 12 * 30))
 ```
 
-## Excel
+## R
 
-In Excel, create a new sheet with the inputs:
-
-| Monthly cost | Number of Years | Annual Return (as decimal) | Opportunity Cost |
-| ------------ | --------------- | -------------------------- | ---------------- |
-| $20          | 30              | 0.07                       | *Formula below*  |
-
-The formula (given this setup) in `D2`:
-
-```swift
-=(A2*12)*((1+C2)^B2-1)/C2
+```{r}
+#| label: subscription-opp-cost-r
+subscription_opportunity_cost <- function(monthly_cost, years, rate = 0.07) {
+  annual_cost <- monthly_cost * 12
+  annual_cost * ((1 + rate)^years - 1) / rate
+}
 ```
 
-`A2*12` converts the monthly cost to annual; the rest is the future value formula for regular deposits, using the rate in `C2` and the time horizon in `B2`.
+A \$20/month subscription for 30 years at 7%:
 
-![Opportunity Cost in Excel](img/tracking_spending-opportunity_cost.png){width='100%' fig-align='center'}
-
-`FV()` gives the same answer, \$22,670.59:
-
-```swift
-=FV(C2, B2, -A2*12)
+```{r}
+#| label: subscription-opp-cost-r-apply
+subscription_opportunity_cost(monthly_cost = 20, years = 30) |> fmt_dollar()
 ```
 
-To audit several subscriptions, list each monthly cost in `A2:A5` (15.99, 10.99, 17.00, 39.99), keep the years and rate in `B` and `C`, fill `D2` down, and total them with `=SUM(D2:D5)`.
+Sanity check: money put in vs. growth.
 
-If the data is arranged differently, adjust the cell references accordingly:
+```{r}
+#| label: subscription-opp-cost-r-check
+oc <- subscription_opportunity_cost(20, 30)
+put_in <- 20 * 12 * 30
+c(put_in = put_in, growth = round(oc - put_in))
+```
 
-![Opportunity Cost 2 in Excel](img/tracking_spending-opportunity_cost2.png){width='100%' fig-align='center'}
+Now audit the four subscriptions in the bank statement above. The function is vectorized, so one call prices them all:
 
-![Opportunity Cost Layouts in Excel](img/tracking_spending-opportunity_cost_layouts.png){width='100%' fig-align='center'}
+```{r}
+#| label: subscription-audit-r
+subs <- r_bank_statement |>
+  dplyr::filter(Category == "Subscriptions") |>
+  dplyr::transmute(Description, monthly = -Amount)
+
+subs$after_10 <- round(subscription_opportunity_cost(subs$monthly, 10))
+subs$after_30 <- round(subscription_opportunity_cost(subs$monthly, 30))
+subs |> knitr::kable()
+fmt_dollar(sum(subs$after_30))
+```
+
+How to read this result: the \$83.97 a month in this statement is a \$95,000 decision over 30 years. The gym membership alone is nearly half of it.
+
+The book's survey figure of \$219/month uses monthly deposits. The audit formula above uses yearly deposits, which comes out a little lower:
+
+```{r}
+#| label: subscription-survey-r
+# yearly deposits (the audit formula)
+subscription_opportunity_cost(219, 30) |> fmt_dollar()
+# monthly deposits (the book's ~$267,000)
+(219 * ((1 + 0.07 / 12)^(30 * 12) - 1) / (0.07 / 12)) |> fmt_dollar()
+```
+
+Edge case: a rate of 0 divides by zero and returns `NaN`. With no growth, the opportunity cost is just the money you would have spent.
+
+```{r}
+#| label: subscription-opp-cost-r-edge
+subscription_opportunity_cost(20, 30, rate = 0)
+20 * 12 * 30
+```
 
 :::

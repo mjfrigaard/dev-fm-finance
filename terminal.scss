@@ -32,24 +32,16 @@ $sidebar-hl:       $term-amber;
 $footer-bg:        $term-bg;
 $footer-fg:        $term-muted;
 
-$headings-font-family: "IBM Plex Mono", SFMono-Regular, Menlo, Consolas, monospace;
+$headings-font-family: "IBM Plex Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
 $font-family-sans-serif: "Ubuntu Sans", -apple-system, "Segoe UI", Roboto, sans-serif;
 $font-family-monospace: "Google Sans Code", SFMono-Regular, Menlo, Consolas, monospace;
 
 /*-- scss:rules --*/
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Google+Sans+Code:wght@400;600&family=Ubuntu+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600&family=Google+Sans+Code:wght@400;600&family=Ubuntu+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 code {
   color: $term-green;
 }
-
-// IBM Plex Mono runs about 35% wider than Lato, so scale headings to match
-h1, .h1, h1.title { @include font-size($h1-font-size * .75); }
-h2, .h2 { @include font-size($h2-font-size * .75); }
-h3, .h3 { @include font-size($h3-font-size * .75); }
-h4, .h4 { @include font-size($h4-font-size * .75); }
-h5, .h5 { @include font-size($h5-font-size * .75); }
-h6, .h6 { @include font-size($h6-font-size * .75); }
 
 .sidebar-title {
   font-size: 1rem;

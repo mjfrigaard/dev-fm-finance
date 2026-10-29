@@ -65,36 +65,12 @@ ggplot(df_nw, aes(x = amount, y = side, fill = side, group = part)) +
 Example: ($12,000 + $6,000 + $8,000 + $9,000) − ($6,000 + $1,000) = $35,000 − $7,000 = a net worth of $28,000.
 
 ::: panel-tabset
-## R
+## Excel
 
-`net_worth()` takes two named vectors, so you can see each item and the total.
+Assuming assets are listed in `B2:B5` and debts in `C2:C3`:
 
-```{r}
-#| label: networth-r
-net_worth <- function(assets, debts) {
-  sum(assets) - sum(debts)
-}
-
-assets <- c(k401 = 12000, roth_ira = 6000, savings = 8000, car = 9000)
-debts  <- c(car_loan = 6000, credit_card = 1000)
-net_worth(assets, debts)
-```
-
-Sanity check: paying off the credit card from savings doesn't change net worth. Cash goes down by $1,000 and so does debt.
-
-```{r}
-#| label: networth-r-check
-assets_after <- replace(assets, "savings", 8000 - 1000)
-debts_after  <- replace(debts, "credit_card", 0)
-net_worth(assets_after, debts_after)
-```
-
-Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that's common.
-
-```{r}
-#| label: networth-r-edge
-net_worth(assets = c(savings = 3000, car = 5000),
-          debts  = c(student_loans = 30000))
+```swift
+=SUM(B2:B5) - SUM(C2:C3)
 ```
 
 ## Python
@@ -127,13 +103,38 @@ Edge case: net worth can be negative.
 print(net_worth({"savings": 3000, "car": 5000}, {"student_loans": 30000}))
 ```
 
-## Excel
+## R
 
-Assuming assets are listed in `B2:B5` and debts in `C2:C3`:
+`net_worth()` takes two named vectors, so you can see each item and the total.
 
-```swift
-=SUM(B2:B5) - SUM(C2:C3)
+```{r}
+#| label: networth-r
+net_worth <- function(assets, debts) {
+  sum(assets) - sum(debts)
+}
+
+assets <- c(k401 = 12000, roth_ira = 6000, savings = 8000, car = 9000)
+debts  <- c(car_loan = 6000, credit_card = 1000)
+net_worth(assets, debts)
 ```
+
+Sanity check: paying off the credit card from savings doesn't change net worth. Cash goes down by $1,000 and so does debt.
+
+```{r}
+#| label: networth-r-check
+assets_after <- replace(assets, "savings", 8000 - 1000)
+debts_after  <- replace(debts, "credit_card", 0)
+net_worth(assets_after, debts_after)
+```
+
+Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that's common.
+
+```{r}
+#| label: networth-r-edge
+net_worth(assets = c(savings = 3000, car = 5000),
+          debts  = c(student_loans = 30000))
+```
+
 :::
 
 How to read this result: net worth is the yearly check in on your progress. It's also roughly what your estate would be worth today, before adding any life insurance.
@@ -173,6 +174,53 @@ ggplot(df_ben, aes(x = amount, y = bar, fill = group)) +
 Example: ($12,000 + $6,000 + $45,000 + $8,000) ÷ $80,000 = about 89% of the estate, decided by forms that take minutes to fill out. That's why beneficiary designations come before a will for most young people.
 
 ::: panel-tabset
+## Excel
+
+Assuming assets with a named beneficiary are in `B2:B5` and assets without one are in `C2`:
+
+```swift
+=SUM(B2:B5) / (SUM(B2:B5) + SUM(C2))
+```
+
+To test blank forms, list every asset in `B2:B6` with `Yes` or `No` in `C2:C6` for "has a beneficiary," then:
+
+```swift
+=SUMIF(C2:C6, "Yes", B2:B6) / SUM(B2:B6)
+```
+
+## Python
+
+`beneficiary_share()` divides what the forms control by the whole estate.
+
+```{python}
+#| label: beneficiary-py
+def beneficiary_share(with_beneficiary, without_beneficiary):
+    named = sum(with_beneficiary.values())
+    return named / (named + sum(without_beneficiary.values()))
+
+with_beneficiary = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000, "savings_pod": 8000}
+without_beneficiary = {"car": 9000}
+print(beneficiary_share(with_beneficiary, without_beneficiary))
+```
+
+What if some forms are blank?
+
+```{python}
+#| label: beneficiary-py-scenarios
+all_assets = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000,
+              "savings": 8000, "car": 9000}
+scenarios = {
+    "all forms filled": ["401k", "roth_ira", "life_insurance", "savings"],
+    "no POD on savings": ["401k", "roth_ira", "life_insurance"],
+    "only the 401(k)": ["401k"],
+    "no forms at all": [],
+}
+for name, named in scenarios.items():
+    yes = {k: v for k, v in all_assets.items() if k in named}
+    no = {k: v for k, v in all_assets.items() if k not in named}
+    print(f"{name:<18} {beneficiary_share(yes, no):>5.0%}  through will: ${sum(no.values()):,}")
+```
+
 ## R
 
 `beneficiary_share()` divides what the forms control by the whole estate.
@@ -209,52 +257,6 @@ data.frame(
 )
 ```
 
-## Python
-
-`beneficiary_share()` divides what the forms control by the whole estate.
-
-```{python}
-#| label: beneficiary-py
-def beneficiary_share(with_beneficiary, without_beneficiary):
-    named = sum(with_beneficiary.values())
-    return named / (named + sum(without_beneficiary.values()))
-
-with_beneficiary = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000, "savings_pod": 8000}
-without_beneficiary = {"car": 9000}
-print(beneficiary_share(with_beneficiary, without_beneficiary))
-```
-
-What if some forms are blank?
-
-```{python}
-#| label: beneficiary-py-scenarios
-all_assets = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000,
-              "savings": 8000, "car": 9000}
-scenarios = {
-    "all forms filled": ["401k", "roth_ira", "life_insurance", "savings"],
-    "no POD on savings": ["401k", "roth_ira", "life_insurance"],
-    "only the 401(k)": ["401k"],
-    "no forms at all": [],
-}
-for name, named in scenarios.items():
-    yes = {k: v for k, v in all_assets.items() if k in named}
-    no = {k: v for k, v in all_assets.items() if k not in named}
-    print(f"{name:<18} {beneficiary_share(yes, no):>5.0%}  through will: ${sum(no.values()):,}")
-```
-
-## Excel
-
-Assuming assets with a named beneficiary are in `B2:B5` and assets without one are in `C2`:
-
-```swift
-=SUM(B2:B5) / (SUM(B2:B5) + SUM(C2))
-```
-
-To test blank forms, list every asset in `B2:B6` with `Yes` or `No` in `C2:C6` for "has a beneficiary," then:
-
-```swift
-=SUMIF(C2:C6, "Yes", B2:B6) / SUM(B2:B6)
-```
 :::
 
 How to read this result: the higher the share, the less your will has to do. With every form filled in, a will only decides the car. With no forms, all $80,000 goes through probate.

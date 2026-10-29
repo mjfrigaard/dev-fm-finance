@@ -68,6 +68,39 @@ ggplot(df_mix, aes(x = mix, y = change, fill = year)) +
 The second example adds more splits and two columns compared with 100/0: the average year gain you give up and the bad year loss you avoid. The third uses the real 2008 numbers from the book (stocks about −37%, bonds about +5%), where bonds actually went up.
 
 ::: panel-tabset
+## Excel
+
+With `Stock %` in `B2`, `Stock return` in `C2`, and `Bond return` in `D2`:
+
+```swift
+=B2 * C2 + (1 - B2) * D2
+```
+
+Put splits down column `B` and copy the formula down. Multiply by your balance for dollars.
+
+## Python
+
+```{python}
+#| label: mix-py
+import polars as pl
+
+def portfolio_return(stock_pct, stock_return, bond_return):
+    return stock_pct * stock_return + (1 - stock_pct) * bond_return
+
+# 100/0, 80/20, and 60/40 in an average year and a bad year
+print(pl.DataFrame({"stocks": [1.0, 0.8, 0.6]}).with_columns(
+    average=portfolio_return(pl.col("stocks"), 0.10, 0.04),
+    bad=portfolio_return(pl.col("stocks"), -0.40, 0.0),
+))
+
+# more splits, in dollars on $10,000, plus 2008
+pl.DataFrame({"stocks": [1.0, 0.9, 0.8, 0.6, 0.4, 0.0]}).with_columns(
+    average=10000 * portfolio_return(pl.col("stocks"), 0.10, 0.04),
+    bad=10000 * portfolio_return(pl.col("stocks"), -0.40, 0.0),
+    y2008=10000 * portfolio_return(pl.col("stocks"), -0.37, 0.05),
+)
+```
+
 ## R
 
 ```{r}
@@ -100,38 +133,6 @@ data.frame(
 portfolio_return(splits, stock_return = -0.37, bond_return = 0.05)
 ```
 
-## Python
-
-```{python}
-#| label: mix-py
-import polars as pl
-
-def portfolio_return(stock_pct, stock_return, bond_return):
-    return stock_pct * stock_return + (1 - stock_pct) * bond_return
-
-# 100/0, 80/20, and 60/40 in an average year and a bad year
-print(pl.DataFrame({"stocks": [1.0, 0.8, 0.6]}).with_columns(
-    average=portfolio_return(pl.col("stocks"), 0.10, 0.04),
-    bad=portfolio_return(pl.col("stocks"), -0.40, 0.0),
-))
-
-# more splits, in dollars on $10,000, plus 2008
-pl.DataFrame({"stocks": [1.0, 0.9, 0.8, 0.6, 0.4, 0.0]}).with_columns(
-    average=10000 * portfolio_return(pl.col("stocks"), 0.10, 0.04),
-    bad=10000 * portfolio_return(pl.col("stocks"), -0.40, 0.0),
-    y2008=10000 * portfolio_return(pl.col("stocks"), -0.37, 0.05),
-)
-```
-
-## Excel
-
-With `Stock %` in `B2`, `Stock return` in `C2`, and `Bond return` in `D2`:
-
-```swift
-=B2 * C2 + (1 - B2) * D2
-```
-
-Put splits down column `B` and copy the formula down. Multiply by your balance for dollars.
 :::
 
 Read the two columns together. Going from 100/0 to 60/40 gives up $240 in an average year but cuts the bad year loss from $4,000 to $2,400. Each step toward bonds trades a little growth for a softer fall.
@@ -174,6 +175,44 @@ ggplot(df_rb, aes(x = amount, y = stage, fill = asset)) +
 The second example runs several stock moves, up and down, and applies the book's 5 percentage point rule to decide whether to act at all. A negative amount means sell stocks and buy bonds. The last example rebalances with new money only, so nothing gets sold.
 
 ::: panel-tabset
+## Excel
+
+With `Target %` in `B2`, `Stocks` in `C2`, and `Bonds` in `D2`:
+
+```swift
+=B2 * (C2 + D2) - C2
+```
+
+To flag whether the drift is more than 5 points:
+
+```swift
+=ABS(C2/(C2+D2) - B2) > 0.05
+```
+
+## Python
+
+```{python}
+#| label: rebalance-py
+def rebalance_amount(target_pct, total, current_amount):
+    return target_pct * total - current_amount
+
+# $5,600 in stocks and $2,000 in bonds after a 30% stock drop
+print(rebalance_amount(target_pct=0.80, total=5600 + 2000, current_amount=5600))
+
+# several stock moves on an 80/20, $10,000 portfolio
+for move in [-0.30, -0.10, -0.05, 0.10, 0.30]:
+    stocks = 8000 * (1 + move)
+    total = stocks + 2000
+    drift = 100 * stocks / total - 80
+    amt = rebalance_amount(0.80, total, stocks)
+    print(f"stocks {move:+.0%}: share {stocks / total:.1%}, drift {drift:+.1f} pts, "
+          f"rebalance {abs(drift) > 5}, move ${amt:,.0f}")
+
+# rebalance with new money
+new_money = 1000
+print(min(new_money, rebalance_amount(0.80, 7600 + new_money, 5600)))
+```
+
 ## R
 
 ```{r}
@@ -204,43 +243,6 @@ new_money <- 1000
 min(new_money, rebalance_amount(0.80, 7600 + new_money, 5600))
 ```
 
-## Python
-
-```{python}
-#| label: rebalance-py
-def rebalance_amount(target_pct, total, current_amount):
-    return target_pct * total - current_amount
-
-# $5,600 in stocks and $2,000 in bonds after a 30% stock drop
-print(rebalance_amount(target_pct=0.80, total=5600 + 2000, current_amount=5600))
-
-# several stock moves on an 80/20, $10,000 portfolio
-for move in [-0.30, -0.10, -0.05, 0.10, 0.30]:
-    stocks = 8000 * (1 + move)
-    total = stocks + 2000
-    drift = 100 * stocks / total - 80
-    amt = rebalance_amount(0.80, total, stocks)
-    print(f"stocks {move:+.0%}: share {stocks / total:.1%}, drift {drift:+.1f} pts, "
-          f"rebalance {abs(drift) > 5}, move ${amt:,.0f}")
-
-# rebalance with new money
-new_money = 1000
-print(min(new_money, rebalance_amount(0.80, 7600 + new_money, 5600)))
-```
-
-## Excel
-
-With `Target %` in `B2`, `Stocks` in `C2`, and `Bonds` in `D2`:
-
-```swift
-=B2 * (C2 + D2) - C2
-```
-
-To flag whether the drift is more than 5 points:
-
-```swift
-=ABS(C2/(C2+D2) - B2) > 0.05
-```
 :::
 
 Read a positive answer as "buy that much stock," and a negative answer as "sell that much stock." A 10% drop only moves the split about 2 points, so the 5 point rule says wait. With $1,000 of new money after the 30% drop, the full $1,000 goes to stocks and the gap closes from $480 to under $300 without selling anything.

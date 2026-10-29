@@ -60,47 +60,18 @@ ggplot(df_pyf, aes(x = amount, y = bar, fill = part)) +
 ```
 
 ::: panel-tabset
-## R
+## Excel
 
-```{r}
-#| label: pyf-r
-monthly_savings <- function(gross_monthly_income, savings_rate) {
-  gross_monthly_income * savings_rate
-}
+Assuming gross monthly income is in `A2` and the savings rate is in `B2`:
 
-# $5,000 gross monthly income, 25% savings rate
-monthly_savings(gross_monthly_income = 5000, savings_rate = 0.25)
+``` swift
+=A2 * B2
 ```
 
-Compare a few savings rates on the same income. The two columns should always add back up to $5,000.
+For variable pay, with the last six months of income in `A2:A7` and the rate in `B2`:
 
-```{r}
-#| label: pyf-r-rates
-rate <- c(0.10, 0.15, 0.20, 0.25)
-saved <- monthly_savings(5000, rate)
-data.frame(rate = rate, automated = saved, left_to_spend = 5000 - saved)
-```
-
-The book splits the 25% across four destinations. The pieces should add up to the $1,250 total.
-
-```{r}
-#| label: pyf-r-split
-split <- data.frame(
-  destination = c("Emergency fund", "401(k) match", "Sinking funds", "Investing"),
-  pct         = c(0.10, 0.05, 0.05, 0.05)
-)
-split$amount <- monthly_savings(5000, split$pct)
-split
-sum(split$amount) == monthly_savings(5000, 0.25)
-```
-
-If your pay varies, automate a percentage of your six month average instead of one month's pay.
-
-```{r}
-#| label: pyf-r-variable
-last_6 <- c(4200, 5600, 3900, 6100, 4800, 5400)
-mean(last_6)
-monthly_savings(mean(last_6), 0.25)
+``` swift
+=AVERAGE(A2:A7) * B2
 ```
 
 ## Python
@@ -145,19 +116,49 @@ print(avg)
 print(monthly_savings(avg, 0.25))
 ```
 
-## Excel
+## R
 
-Assuming gross monthly income is in `A2` and the savings rate is in `B2`:
+```{r}
+#| label: pyf-r
+monthly_savings <- function(gross_monthly_income, savings_rate) {
+  gross_monthly_income * savings_rate
+}
 
-``` swift
-=A2 * B2
+# $5,000 gross monthly income, 25% savings rate
+monthly_savings(gross_monthly_income = 5000, savings_rate = 0.25)
 ```
 
-For variable pay, with the last six months of income in `A2:A7` and the rate in `B2`:
+Compare a few savings rates on the same income. The two columns should always add back up to $5,000.
 
-``` swift
-=AVERAGE(A2:A7) * B2
+```{r}
+#| label: pyf-r-rates
+rate <- c(0.10, 0.15, 0.20, 0.25)
+saved <- monthly_savings(5000, rate)
+data.frame(rate = rate, automated = saved, left_to_spend = 5000 - saved)
 ```
+
+The book splits the 25% across four destinations. The pieces should add up to the $1,250 total.
+
+```{r}
+#| label: pyf-r-split
+split <- data.frame(
+  destination = c("Emergency fund", "401(k) match", "Sinking funds", "Investing"),
+  pct         = c(0.10, 0.05, 0.05, 0.05)
+)
+split$amount <- monthly_savings(5000, split$pct)
+split
+sum(split$amount) == monthly_savings(5000, 0.25)
+```
+
+If your pay varies, automate a percentage of your six month average instead of one month's pay.
+
+```{r}
+#| label: pyf-r-variable
+last_6 <- c(4200, 5600, 3900, 6100, 4800, 5400)
+mean(last_6)
+monthly_savings(mean(last_6), 0.25)
+```
+
 :::
 
 How to read this result: this is the amount to schedule as an automatic transfer. If you keep moving money back to checking, the book suggests cutting it by 25 to 50% and trying again.
@@ -195,6 +196,48 @@ ggplot(df_split, aes(x = amount, y = bar, fill = part)) +
 ```
 
 ::: panel-tabset
+## Excel
+
+Assuming `Gross` is in `B2`, `Savings_Rate` in `C2`, `401k_Rate` in `D2`, and `Taxes` in `E2`:
+
+``` swift
+401(k) (F2):    =B2 * D2
+HYSA (G2):      =MAX(B2 * C2 - F2, 0)
+Checking (H2):  =B2 - F2 - E2 - G2
+```
+
+## Python
+
+```{python}
+#| label: deposit-split-py
+def deposit_split(gross, savings_rate, k401_rate, taxes):
+    k401 = gross * k401_rate
+    hysa = max(gross * savings_rate - k401, 0)
+    deposit = gross - k401 - taxes
+    return {"k401": k401, "taxes": taxes, "deposit": deposit,
+            "hysa": hysa, "checking": deposit - hysa}
+
+split = deposit_split(gross=5000, savings_rate=0.25, k401_rate=0.10, taxes=750)
+print(split)
+```
+
+Check that the pieces add back to the gross paycheck and that 25% is saved.
+
+```{python}
+#| label: deposit-split-py-check
+print(split["k401"] + split["taxes"] + split["hysa"] + split["checking"])
+print((split["k401"] + split["hysa"]) / 5000)
+```
+
+Try different 401(k) rates, holding taxes at $750 for simplicity. At 30% the HYSA split drops to zero.
+
+```{python}
+#| label: deposit-split-py-k401
+for k in [0.05, 0.10, 0.15, 0.30]:
+    s = deposit_split(5000, 0.25, k, taxes=750)
+    print(f"401(k) {k:4.0%}: HYSA ${s['hysa']:>5,.0f}  checking ${s['checking']:>6,.0f}")
+```
+
 ## R
 
 `deposit_split()` returns each piece of the paycheck. `pmax()` keeps the HYSA split from going negative when the 401(k) alone meets the goal.
@@ -230,47 +273,6 @@ do.call(rbind, lapply(c(0.05, 0.10, 0.15, 0.30), function(k) {
 }))
 ```
 
-## Python
-
-```{python}
-#| label: deposit-split-py
-def deposit_split(gross, savings_rate, k401_rate, taxes):
-    k401 = gross * k401_rate
-    hysa = max(gross * savings_rate - k401, 0)
-    deposit = gross - k401 - taxes
-    return {"k401": k401, "taxes": taxes, "deposit": deposit,
-            "hysa": hysa, "checking": deposit - hysa}
-
-split = deposit_split(gross=5000, savings_rate=0.25, k401_rate=0.10, taxes=750)
-print(split)
-```
-
-Check that the pieces add back to the gross paycheck and that 25% is saved.
-
-```{python}
-#| label: deposit-split-py-check
-print(split["k401"] + split["taxes"] + split["hysa"] + split["checking"])
-print((split["k401"] + split["hysa"]) / 5000)
-```
-
-Try different 401(k) rates, holding taxes at $750 for simplicity. At 30% the HYSA split drops to zero.
-
-```{python}
-#| label: deposit-split-py-k401
-for k in [0.05, 0.10, 0.15, 0.30]:
-    s = deposit_split(5000, 0.25, k, taxes=750)
-    print(f"401(k) {k:4.0%}: HYSA ${s['hysa']:>5,.0f}  checking ${s['checking']:>6,.0f}")
-```
-
-## Excel
-
-Assuming `Gross` is in `B2`, `Savings_Rate` in `C2`, `401k_Rate` in `D2`, and `Taxes` in `E2`:
-
-``` swift
-401(k) (F2):    =B2 * D2
-HYSA (G2):      =MAX(B2 * C2 - F2, 0)
-Checking (H2):  =B2 - F2 - E2 - G2
-```
 :::
 
 How to read this result: the HYSA and checking numbers are what you type into your payroll portal. The 401(k) and taxes are handled by payroll before the deposit.
@@ -312,6 +314,53 @@ ggplot(esc, aes(x = label, y = value, fill = label)) +
 ```
 
 ::: panel-tabset
+## Excel
+
+Assuming `Old_Income` is in `B2` and `New_Income` is in `C2`, the extra monthly savings is:
+
+``` swift
+=(C2 - B2) * 0.5 / 12
+```
+
+For the 30 year value, with the monthly amount in `D2`:
+
+``` swift
+=FV(0.07 / 12, 360, -D2)
+```
+
+## Python
+
+```{python}
+#| label: escalation-py
+def raise_to_savings(old_income, new_income, share=0.5):
+    return (new_income - old_income) * share / 12
+
+# $50k to $52k, save half
+raise_to_savings(old_income=50000, new_income=52000)
+```
+
+Grow each year's monthly amount for 30 years at 7% to reproduce the book's table.
+
+```{python}
+#| label: escalation-py-table
+def fv_monthly(monthly, rate=0.07, years=30):
+    r = rate / 12
+    return monthly * ((1 + r) ** (12 * years) - 1) / r
+
+table = [(1, 50000, 0.15), (3, 54000, 0.20), (5, 58000, 0.25), (7, 63000, 0.30)]
+for year, income, rate in table:
+    monthly = income * rate / 12
+    print(f"Year {year}: ${income:,} at {rate:.0%} = ${monthly:>8,.2f}/mo  "
+          f"30 yrs: ${fv_monthly(monthly):>12,.0f}")
+```
+
+Sanity check against plain deposits at a rate near zero.
+
+```{python}
+#| label: escalation-py-check
+print(625 * 360, round(fv_monthly(625, rate=1e-9)))
+```
+
 ## R
 
 `raise_to_savings()` returns the extra monthly savings from a raise.
@@ -352,52 +401,6 @@ Sanity check: with a 0% return the value is just the deposits added up. `fv_mont
 c(deposits = 625 * 360, fv_near_zero = round(fv_monthly(625, rate = 1e-9)))
 ```
 
-## Python
-
-```{python}
-#| label: escalation-py
-def raise_to_savings(old_income, new_income, share=0.5):
-    return (new_income - old_income) * share / 12
-
-# $50k to $52k, save half
-raise_to_savings(old_income=50000, new_income=52000)
-```
-
-Grow each year's monthly amount for 30 years at 7% to reproduce the book's table.
-
-```{python}
-#| label: escalation-py-table
-def fv_monthly(monthly, rate=0.07, years=30):
-    r = rate / 12
-    return monthly * ((1 + r) ** (12 * years) - 1) / r
-
-table = [(1, 50000, 0.15), (3, 54000, 0.20), (5, 58000, 0.25), (7, 63000, 0.30)]
-for year, income, rate in table:
-    monthly = income * rate / 12
-    print(f"Year {year}: ${income:,} at {rate:.0%} = ${monthly:>8,.2f}/mo  "
-          f"30 yrs: ${fv_monthly(monthly):>12,.0f}")
-```
-
-Sanity check against plain deposits at a rate near zero.
-
-```{python}
-#| label: escalation-py-check
-print(625 * 360, round(fv_monthly(625, rate=1e-9)))
-```
-
-## Excel
-
-Assuming `Old_Income` is in `B2` and `New_Income` is in `C2`, the extra monthly savings is:
-
-``` swift
-=(C2 - B2) * 0.5 / 12
-```
-
-For the 30 year value, with the monthly amount in `D2`:
-
-``` swift
-=FV(0.07 / 12, 360, -D2)
-```
 :::
 
 How to read this result: each step up in the savings rate adds hundreds of thousands of dollars after 30 years. The raises pay for it, so the money you live on never shrinks.
