@@ -64,45 +64,24 @@ ggplot(tiers, aes(x = label, y = saved, fill = label)) +
 ```
 
 ::: panel-tabset
-## R
+## Excel
 
-`savings_rate()` subtracts spending from income and divides by income.
+Assuming `Income` is in cell `B2` and `Spending` is in cell `C2`, the savings rate goes in `D2`:
 
-```{r}
-#| label: savings-rate-r
-savings_rate <- function(income, spending) {
-  ((income - spending) / income) * 100
-}
-
-# $5,000 take-home, $3,500 spent
-savings_rate(income = 5000, spending = 3500)
+``` swift
+=((B2 - C2) / B2) * 100
 ```
 
-The function is vectorized, so we can check several spending levels at once and label each with its benchmark tier. The last row spends more than it earns, which gives a negative rate.
+To label the benchmark tier in `E2`:
 
-```{r}
-#| label: savings-rate-r-tiers
-spending <- c(4700, 4250, 3750, 3250, 5200)
-rates <- savings_rate(income = 5000, spending = spending)
-data.frame(
-  spending = spending,
-  rate     = round(rates, 1),
-  tier     = cut(rates,
-                 breaks = c(-Inf, 10, 20, 30, Inf),
-                 labels = c("Danger zone", "Average", "Strong", "FI path"),
-                 right  = FALSE)
-)
+``` swift
+=IFS(D2 < 10, "Danger zone", D2 < 20, "Average", D2 < 30, "Strong", TRUE, "FI path")
 ```
 
-Flip the formula to find the spending limit for a target rate: Spending = Income × (1 − Rate). Plugging it back in should return the rate we started with.
+To find the spending limit for a target rate (as a decimal) in `F2`:
 
-```{r}
-#| label: savings-rate-r-check
-spending_limit <- function(income, target_rate) {
-  income * (1 - target_rate)
-}
-spending_limit(income = 5000, target_rate = 0.30)
-savings_rate(income = 5000, spending = spending_limit(5000, 0.30))
+``` swift
+=B2 * (1 - F2)
 ```
 
 ## Python
@@ -148,25 +127,47 @@ print(limit)
 print(savings_rate(income=5000, spending=limit))
 ```
 
-## Excel
+## R
 
-Assuming `Income` is in cell `B2` and `Spending` is in cell `C2`, the savings rate goes in `D2`:
+`savings_rate()` subtracts spending from income and divides by income.
 
-``` swift
-=((B2 - C2) / B2) * 100
+```{r}
+#| label: savings-rate-r
+savings_rate <- function(income, spending) {
+  ((income - spending) / income) * 100
+}
+
+# $5,000 take-home, $3,500 spent
+savings_rate(income = 5000, spending = 3500)
 ```
 
-To label the benchmark tier in `E2`:
+The function is vectorized, so we can check several spending levels at once and label each with its benchmark tier. The last row spends more than it earns, which gives a negative rate.
 
-``` swift
-=IFS(D2 < 10, "Danger zone", D2 < 20, "Average", D2 < 30, "Strong", TRUE, "FI path")
+```{r}
+#| label: savings-rate-r-tiers
+spending <- c(4700, 4250, 3750, 3250, 5200)
+rates <- savings_rate(income = 5000, spending = spending)
+data.frame(
+  spending = spending,
+  rate     = round(rates, 1),
+  tier     = cut(rates,
+                 breaks = c(-Inf, 10, 20, 30, Inf),
+                 labels = c("Danger zone", "Average", "Strong", "FI path"),
+                 right  = FALSE)
+)
 ```
 
-To find the spending limit for a target rate (as a decimal) in `F2`:
+Flip the formula to find the spending limit for a target rate: Spending = Income × (1 − Rate). Plugging it back in should return the rate we started with.
 
-``` swift
-=B2 * (1 - F2)
+```{r}
+#| label: savings-rate-r-check
+spending_limit <- function(income, target_rate) {
+  income * (1 - target_rate)
+}
+spending_limit(income = 5000, target_rate = 0.30)
+savings_rate(income = 5000, spending = spending_limit(5000, 0.30))
 ```
+
 :::
 
 How to read this result: a 30% rate means 30 cents of every dollar you bring home stays with you. If the rate is negative, you are spending more than you earn and the gap is coming from savings or debt.
@@ -207,43 +208,21 @@ ggplot(yrs, aes(x = label, y = years, fill = label)) +
 ```
 
 ::: panel-tabset
-## R
+## Excel
 
-`years_to_target()` solves the savings growth formula for time. `ceiling()` gives the year the balance actually passes the target.
+Assuming `Annual_Savings` is in cell `B2`, the return `Rate` is in `C2`, and the `Target` is in `D2`:
 
-```{r}
-#| label: years-target-r
-years_to_target <- function(annual_savings, target, rate = 0.07) {
-  log(1 + target * rate / annual_savings) / log(1 + rate)
-}
-
-# $40k at 40% vs. $120k at 10%
-yrs <- years_to_target(annual_savings = c(16000, 12000), target = 500000)
-round(yrs, 1)
-ceiling(yrs)
+``` swift
+=LN(1 + D2 * C2 / B2) / LN(1 + C2)
 ```
 
-Same $60,000 income, four savings rates. Saving nothing never gets there, so the last row returns `Inf`.
+Excel's `NPER()` gives the same answer (savings entered as a negative cash flow):
 
-```{r}
-#| label: years-target-r-rates
-rate <- c(0.08, 0.15, 0.25, 0.35, 0)
-data.frame(
-  rate   = rate,
-  saved  = 60000 * rate,
-  years  = round(years_to_target(60000 * rate, target = 500000), 1)
-)
+``` swift
+=NPER(C2, -B2, 0, D2)
 ```
 
-Sanity check: grow $16,000 a year for 17 and 18 years. The balance should be just under $500k after 17 and over it after 18.
-
-```{r}
-#| label: years-target-r-check
-fv_annual <- function(annual_savings, years, rate = 0.07) {
-  annual_savings * ((1 + rate)^years - 1) / rate
-}
-round(fv_annual(16000, years = c(17, 18)))
-```
+Wrap either one in `ROUNDUP(..., 0)` to get the year the balance passes the target.
 
 ## Python
 
@@ -283,21 +262,44 @@ def fv_annual(annual_savings, years, rate=0.07):
 [round(fv_annual(16000, years)) for years in [17, 18]]
 ```
 
-## Excel
+## R
 
-Assuming `Annual_Savings` is in cell `B2`, the return `Rate` is in `C2`, and the `Target` is in `D2`:
+`years_to_target()` solves the savings growth formula for time. `ceiling()` gives the year the balance actually passes the target.
 
-``` swift
-=LN(1 + D2 * C2 / B2) / LN(1 + C2)
+```{r}
+#| label: years-target-r
+years_to_target <- function(annual_savings, target, rate = 0.07) {
+  log(1 + target * rate / annual_savings) / log(1 + rate)
+}
+
+# $40k at 40% vs. $120k at 10%
+yrs <- years_to_target(annual_savings = c(16000, 12000), target = 500000)
+round(yrs, 1)
+ceiling(yrs)
 ```
 
-Excel's `NPER()` gives the same answer (savings entered as a negative cash flow):
+Same $60,000 income, four savings rates. Saving nothing never gets there, so the last row returns `Inf`.
 
-``` swift
-=NPER(C2, -B2, 0, D2)
+```{r}
+#| label: years-target-r-rates
+rate <- c(0.08, 0.15, 0.25, 0.35, 0)
+data.frame(
+  rate   = rate,
+  saved  = 60000 * rate,
+  years  = round(years_to_target(60000 * rate, target = 500000), 1)
+)
 ```
 
-Wrap either one in `ROUNDUP(..., 0)` to get the year the balance passes the target.
+Sanity check: grow $16,000 a year for 17 and 18 years. The balance should be just under $500k after 17 and over it after 18.
+
+```{r}
+#| label: years-target-r-check
+fv_annual <- function(annual_savings, years, rate = 0.07) {
+  annual_savings * ((1 + rate)^years - 1) / rate
+}
+round(fv_annual(16000, years = c(17, 18)))
+```
+
 :::
 
 How to read this result: the answer is the number of years of steady saving needed, not counting anything you already have. Raising the savings rate shortens the timeline much more at low rates than at high ones.

@@ -52,35 +52,15 @@ Both languages let you create reusable functions for financial calculations. The
 Before working through the math, it helps to have two small formatting utilities that handle the `$` and `%` symbols seen throughout the book. They take a plain number and return a reader-friendly string.
 
 ::: panel-tabset
-## R
+## Excel
 
-`fmt_dollar()` adds a dollar sign, comma separators, and rounds to a set number of decimal places.
+In Excel, number formatting is applied through the toolbar. Select the cells to format and choose the appropriate option from the Number Format dropdown.
 
-```{r}
-#| label: fmt-dollar-r
-fmt_dollar <- function(x, digits = 2) {
-  paste0("$", formatC(x, format = "f", digits = digits, big.mark = ","))
-}
-```
+![Common number formats in Excel](img/income-xlsx-number-formats.png){width='100%' fig-align="center"}
 
-`fmt_pct()` expects a decimal rate (e.g. `0.07` for 7%) and converts it to a percentage string.
+There are two options for money: Currency and Accounting.[^excel-formats]
 
-```{r}
-#| label: fmt-pct-r
-fmt_pct <- function(x, digits = 1) {
-  paste0(round(x * 100, digits), "%")
-}
-```
-
-This can be used to format percentages as strings with a percent sign.
-
-```{r}
-#| label: fmt-utils-r-apply
-fmt_dollar(9200)
-fmt_dollar(4200.50)
-fmt_pct(0.07)
-fmt_pct(0.456)
-```
+[^excel-formats]: Read more about the [differences between Currency and Accounting](https://support.microsoft.com/en-us/excel/format-numbers-as-currency-in-excel#__toc305071612) formats in Excel.
 
 ## Python
 
@@ -110,15 +90,35 @@ print(fmt_pct(0.07))
 print(fmt_pct(0.456))
 ```
 
-## Excel
+## R
 
-In Excel, number formatting is applied through the toolbar. Select the cells to format and choose the appropriate option from the Number Format dropdown.
+`fmt_dollar()` adds a dollar sign, comma separators, and rounds to a set number of decimal places.
 
-![Common number formats in Excel](img/income-xlsx-number-formats.png){width='100%' fig-align="center"}
+```{r}
+#| label: fmt-dollar-r
+fmt_dollar <- function(x, digits = 2) {
+  paste0("$", formatC(x, format = "f", digits = digits, big.mark = ","))
+}
+```
 
-There are two options for money: Currency and Accounting.[^excel-formats]
+`fmt_pct()` expects a decimal rate (e.g. `0.07` for 7%) and converts it to a percentage string.
 
-[^excel-formats]: Read more about the [differences between Currency and Accounting](https://support.microsoft.com/en-us/excel/format-numbers-as-currency-in-excel#__toc305071612) formats in Excel.
+```{r}
+#| label: fmt-pct-r
+fmt_pct <- function(x, digits = 1) {
+  paste0(round(x * 100, digits), "%")
+}
+```
+
+This can be used to format percentages as strings with a percent sign.
+
+```{r}
+#| label: fmt-utils-r-apply
+fmt_dollar(9200)
+fmt_dollar(4200.50)
+fmt_pct(0.07)
+fmt_pct(0.456)
+```
 
 :::
 
@@ -172,6 +172,96 @@ ggplot(df_w, aes(x = year, y = amount, fill = layer)) +
 The blue layer grows in a straight line, one \$9,360 deposit per year. The green layer is growth, and it passes the blue layer after about year 18.
 
 ::: panel-tabset
+
+## Excel
+
+Put the inputs in one row:
+
+* `A2`: median income (62400)
+* `B2`: savings rate (0.15)
+* `C2`: annual return (0.08)
+* `D2`: years (40)
+
+Total contributed (the money put in) in `E2`:
+
+```swift
+=A2*B2*D2
+```
+
+Total wealth, contributions plus growth, in `F2`:
+
+```swift
+=(A2*B2)*(((1+C2)^D2-1)/C2)
+```
+
+Excel's built in `FV()` gives the same \$2,424,769 (enter the yearly savings as a negative number because it is cash leaving your pocket):
+
+```swift
+=FV(C2, D2, -A2*B2)
+```
+
+Growth alone in `G2`:
+
+```swift
+=F2-E2
+```
+
+`F2` already includes everything in `E2`, so don't add the two together. To compare savings rates, fill `B3:B4` with 0.10 and 0.20 and copy the row down.
+
+## Python
+
+The Python version of `wealth_formula()` works the same way:
+
+```{python}
+#| label: wealth-formula-py
+def wealth_formula(median_income, savings_rate, annual_return, years):
+    # future value of saving a fixed amount every year (contributions plus growth)
+    annual_savings = median_income * savings_rate
+    return annual_savings * (((1 + annual_return)**years - 1) / annual_return)
+```
+
+After 40 years with median income, a 15% savings rate, and an 8% return:
+
+```{python}
+#| label: wealth-formula-py-apply
+fmt_dollar(wealth_formula(
+    median_income=62400,
+    savings_rate=0.15,
+    annual_return=0.08,
+    years=40
+))
+```
+
+Plain Python numbers are not vectorized, so we loop over the checkpoints:
+
+```{python}
+#| label: wealth-formula-py-checkpoints
+for yrs in [10, 18, 20, 30, 40]:
+    total = wealth_formula(62400, 0.15, 0.08, yrs)
+    put_in = 62400 * 0.15 * yrs
+    print(f"{yrs:>3} yrs  put in {fmt_dollar(put_in, 0):>10}  "
+          f"growth {fmt_dollar(total - put_in, 0):>11}  total {fmt_dollar(total, 0):>11}")
+```
+
+The same income at three savings rates after 40 years:
+
+```{python}
+#| label: wealth-formula-py-rates
+for rate in [0.10, 0.15, 0.20]:
+    print(f"{fmt_pct(rate):>6}  {fmt_dollar(62400 * rate, 0):>8}/yr  "
+          f"{fmt_dollar(wealth_formula(62400, rate, 0.08, 40), 0):>12}")
+```
+
+A savings rate of zero returns zero. A return of exactly zero raises a `ZeroDivisionError` in Python (R returns `NaN` instead), so with no growth use yearly savings × years:
+
+```{python}
+#| label: wealth-formula-py-edge
+print(wealth_formula(62400, savings_rate=0, annual_return=0.08, years=40))
+try:
+    wealth_formula(62400, savings_rate=0.15, annual_return=0, years=40)
+except ZeroDivisionError:
+    print("No growth:", fmt_dollar(62400 * 0.15 * 40))
+```
 
 ## R
 
@@ -238,96 +328,6 @@ wealth_formula(62400, savings_rate = 0.15, annual_return = 0, years = 40)
 
 How to read this result: about \$2.4 million after 40 years, and only \$374,400 of it is money you put in. Time and growth did the rest.
 
-## Python
-
-The Python version of `wealth_formula()` works the same way:
-
-```{python}
-#| label: wealth-formula-py
-def wealth_formula(median_income, savings_rate, annual_return, years):
-    # future value of saving a fixed amount every year (contributions plus growth)
-    annual_savings = median_income * savings_rate
-    return annual_savings * (((1 + annual_return)**years - 1) / annual_return)
-```
-
-After 40 years with median income, a 15% savings rate, and an 8% return:
-
-```{python}
-#| label: wealth-formula-py-apply
-fmt_dollar(wealth_formula(
-    median_income=62400,
-    savings_rate=0.15,
-    annual_return=0.08,
-    years=40
-))
-```
-
-Plain Python numbers are not vectorized, so we loop over the checkpoints:
-
-```{python}
-#| label: wealth-formula-py-checkpoints
-for yrs in [10, 18, 20, 30, 40]:
-    total = wealth_formula(62400, 0.15, 0.08, yrs)
-    put_in = 62400 * 0.15 * yrs
-    print(f"{yrs:>3} yrs  put in {fmt_dollar(put_in, 0):>10}  "
-          f"growth {fmt_dollar(total - put_in, 0):>11}  total {fmt_dollar(total, 0):>11}")
-```
-
-The same income at three savings rates after 40 years:
-
-```{python}
-#| label: wealth-formula-py-rates
-for rate in [0.10, 0.15, 0.20]:
-    print(f"{fmt_pct(rate):>6}  {fmt_dollar(62400 * rate, 0):>8}/yr  "
-          f"{fmt_dollar(wealth_formula(62400, rate, 0.08, 40), 0):>12}")
-```
-
-A savings rate of zero returns zero. A return of exactly zero raises a `ZeroDivisionError` in Python (R returns `NaN` instead), so with no growth use yearly savings × years:
-
-```{python}
-#| label: wealth-formula-py-edge
-print(wealth_formula(62400, savings_rate=0, annual_return=0.08, years=40))
-try:
-    wealth_formula(62400, savings_rate=0.15, annual_return=0, years=40)
-except ZeroDivisionError:
-    print("No growth:", fmt_dollar(62400 * 0.15 * 40))
-```
-
-## Excel
-
-Put the inputs in one row:
-
-* `A2`: median income (62400)
-* `B2`: savings rate (0.15)
-* `C2`: annual return (0.08)
-* `D2`: years (40)
-
-Total contributed (the money put in) in `E2`:
-
-```swift
-=A2*B2*D2
-```
-
-Total wealth, contributions plus growth, in `F2`:
-
-```swift
-=(A2*B2)*(((1+C2)^D2-1)/C2)
-```
-
-Excel's built in `FV()` gives the same \$2,424,769 (enter the yearly savings as a negative number because it is cash leaving your pocket):
-
-```swift
-=FV(C2, D2, -A2*B2)
-```
-
-Growth alone in `G2`:
-
-```swift
-=F2-E2
-```
-
-`F2` already includes everything in `E2`, so don't add the two together. To compare savings rates, fill `B3:B4` with 0.10 and 0.20 and copy the row down.
-
 :::
 
 ## Fixed-Cost Ratio
@@ -374,46 +374,35 @@ The red section covers 5 and a half of the 10 pieces, so fixed costs take 55% of
 
 ::: panel-tabset
 
-## R
+## Excel
 
-```{r}
-#| label: fixed-cost-r
-fixed_cost_ratio <- function(fixed_costs, take_home) {
-  (fixed_costs / take_home) * 100
-}
+Enter fixed costs in `A2` (1760) and take-home pay in `B2` (3200), then in `C2`:
+
+```swift
+=A2/B2*100
 ```
 
-\$1,760 of fixed costs on \$3,200 take-home pay:
+That gives `55`. Or enter `=A2/B2` and format `C2` as a percentage (`Home → %`) to display 55%. For a percent string:
 
-```{r}
-#| label: fixed-cost-r-apply
-fixed_cost_ratio(fixed_costs = 1760, take_home = 3200)
+```swift
+=TEXT(A2/B2, "0.0%")
 ```
 
-How much room is left under the 60% ceiling?
+![](img/income-fixed-cost-ratio-text-perc.png){width="75%"}
 
-```{r}
-#| label: fixed-cost-r-room
-ceiling_60 <- 3200 * 0.60
-ceiling_60
-ceiling_60 - 1760
+The room left under the 60% ceiling, in `D2`:
+
+```swift
+=B2*0.6-A2
 ```
 
-The ratio works on several budgets at once. Below, the same \$1,760 of fixed costs is compared against three paychecks, plus a higher rent on the original paycheck:
+A pass/fail flag in `E2`:
 
-```{r}
-#| label: fixed-cost-r-compare
-budgets <- data.frame(
-  scenario    = c("First job", "Lower pay", "After a raise", "Pricier apartment"),
-  fixed_costs = c(1760, 1760, 1760, 2160),
-  take_home   = c(3200, 2800, 3600, 3200)
-)
-budgets$ratio    <- round(fixed_cost_ratio(budgets$fixed_costs, budgets$take_home), 1)
-budgets$under_60 <- budgets$ratio <= 60
-budgets
+```swift
+=IF(A2/B2<=0.6, "Under 60%", "Over 60%")
 ```
 
-How to read this result: anything at or under 60 leaves at least 40% of the paycheck for savings and flexible spending. A \$400 jump in rent pushes the same paycheck to 67.5%, over the line.
+Add more budgets in rows 3 to 5 and fill `C2:E2` down.
 
 ## Python
 
@@ -460,35 +449,46 @@ for scenario, fixed, pay in budgets:
     print(f"{scenario:<18} {ratio:5.1f}  under 60: {ratio <= 60}")
 ```
 
-## Excel
+## R
 
-Enter fixed costs in `A2` (1760) and take-home pay in `B2` (3200), then in `C2`:
-
-```swift
-=A2/B2*100
+```{r}
+#| label: fixed-cost-r
+fixed_cost_ratio <- function(fixed_costs, take_home) {
+  (fixed_costs / take_home) * 100
+}
 ```
 
-That gives `55`. Or enter `=A2/B2` and format `C2` as a percentage (`Home → %`) to display 55%. For a percent string:
+\$1,760 of fixed costs on \$3,200 take-home pay:
 
-```swift
-=TEXT(A2/B2, "0.0%")
+```{r}
+#| label: fixed-cost-r-apply
+fixed_cost_ratio(fixed_costs = 1760, take_home = 3200)
 ```
 
-![](img/income-fixed-cost-ratio-text-perc.png){width="75%"}
+How much room is left under the 60% ceiling?
 
-The room left under the 60% ceiling, in `D2`:
-
-```swift
-=B2*0.6-A2
+```{r}
+#| label: fixed-cost-r-room
+ceiling_60 <- 3200 * 0.60
+ceiling_60
+ceiling_60 - 1760
 ```
 
-A pass/fail flag in `E2`:
+The ratio works on several budgets at once. Below, the same \$1,760 of fixed costs is compared against three paychecks, plus a higher rent on the original paycheck:
 
-```swift
-=IF(A2/B2<=0.6, "Under 60%", "Over 60%")
+```{r}
+#| label: fixed-cost-r-compare
+budgets <- data.frame(
+  scenario    = c("First job", "Lower pay", "After a raise", "Pricier apartment"),
+  fixed_costs = c(1760, 1760, 1760, 2160),
+  take_home   = c(3200, 2800, 3600, 3200)
+)
+budgets$ratio    <- round(fixed_cost_ratio(budgets$fixed_costs, budgets$take_home), 1)
+budgets$under_60 <- budgets$ratio <= 60
+budgets
 ```
 
-Add more budgets in rows 3 to 5 and fill `C2:E2` down.
+How to read this result: anything at or under 60 leaves at least 40% of the paycheck for savings and flexible spending. A \$400 jump in rent pushes the same paycheck to 67.5%, over the line.
 
 :::
 
@@ -595,6 +595,68 @@ ggplot(df_raise, aes(x = year, y = value)) +
 
 ::: panel-tabset
 
+## Excel
+
+Use the built in `FV()` function: `FV(rate, nper, pmt)`.
+
+* `rate`: monthly return = `7%/12`
+* `nper`: number of months = `25*12`
+* `pmt`: monthly contribution as a negative = `-200`
+
+```swift
+=FV(7%/12, 25*12, -200)
+```
+
+![](img/income-future-value.png){width="75%" fig-align="center"}
+
+This returns \$162,014.34. To compare splits, put the raise in `A2` (400), the share in `B2` (0.5), the yearly rate in `C2` (0.07), and the years in `D2` (25), then in `E2`:
+
+```swift
+=FV(C2/12, D2*12, -A2*B2)
+```
+
+Fill rows 3 to 5 with shares of 0.25, 0.75, and 1, and copy `E2` down. Money put in, in `F2`:
+
+```swift
+=A2*B2*D2*12
+```
+
+## Python
+
+```{python}
+#| label: raise-value-py
+def raise_invested_value(monthly_raise, invest_share, rate, years):
+    contribution = monthly_raise * invest_share
+    monthly_rate = rate / 12
+    periods = years * 12
+    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
+```
+
+Half of a \$400/month raise, invested for 25 years at 7%:
+
+```{python}
+#| label: raise-value-py-apply
+fmt_dollar(raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25))
+```
+
+Sanity check on money put in vs. growth:
+
+```{python}
+#| label: raise-value-py-check
+fv = raise_invested_value(400, 0.5, 0.07, 25)
+put_in = 200 * 25 * 12
+print(fmt_dollar(put_in, 0), fmt_dollar(fv - put_in, 0))
+```
+
+The same \$400 raise split four ways:
+
+```{python}
+#| label: raise-value-py-shares
+for share in [0.25, 0.50, 0.75, 1.00]:
+    print(f"{fmt_pct(share, 0):>5}  {fmt_dollar(400 * share, 0):>5}/mo  "
+          f"{fmt_dollar(raise_invested_value(400, share, 0.07, 25), 0):>9}")
+```
+
 ## R
 
 ```{r}
@@ -640,67 +702,5 @@ data.frame(
 ```
 
 How to read this result: every extra \$100 a month you invest adds about \$81,000 after 25 years. Even the 25% split grows to more than \$80,000.
-
-## Python
-
-```{python}
-#| label: raise-value-py
-def raise_invested_value(monthly_raise, invest_share, rate, years):
-    contribution = monthly_raise * invest_share
-    monthly_rate = rate / 12
-    periods = years * 12
-    return contribution * (((1 + monthly_rate) ** periods - 1) / monthly_rate)
-```
-
-Half of a \$400/month raise, invested for 25 years at 7%:
-
-```{python}
-#| label: raise-value-py-apply
-fmt_dollar(raise_invested_value(monthly_raise=400, invest_share=0.5, rate=0.07, years=25))
-```
-
-Sanity check on money put in vs. growth:
-
-```{python}
-#| label: raise-value-py-check
-fv = raise_invested_value(400, 0.5, 0.07, 25)
-put_in = 200 * 25 * 12
-print(fmt_dollar(put_in, 0), fmt_dollar(fv - put_in, 0))
-```
-
-The same \$400 raise split four ways:
-
-```{python}
-#| label: raise-value-py-shares
-for share in [0.25, 0.50, 0.75, 1.00]:
-    print(f"{fmt_pct(share, 0):>5}  {fmt_dollar(400 * share, 0):>5}/mo  "
-          f"{fmt_dollar(raise_invested_value(400, share, 0.07, 25), 0):>9}")
-```
-
-## Excel
-
-Use the built in `FV()` function: `FV(rate, nper, pmt)`.
-
-* `rate`: monthly return = `7%/12`
-* `nper`: number of months = `25*12`
-* `pmt`: monthly contribution as a negative = `-200`
-
-```swift
-=FV(7%/12, 25*12, -200)
-```
-
-![](img/income-future-value.png){width="75%" fig-align="center"}
-
-This returns \$162,014.34. To compare splits, put the raise in `A2` (400), the share in `B2` (0.5), the yearly rate in `C2` (0.07), and the years in `D2` (25), then in `E2`:
-
-```swift
-=FV(C2/12, D2*12, -A2*B2)
-```
-
-Fill rows 3 to 5 with shares of 0.25, 0.75, and 1, and copy `E2` down. Money put in, in `F2`:
-
-```swift
-=A2*B2*D2*12
-```
 
 :::

@@ -60,48 +60,24 @@ ggplot(df_goal, aes(x = amount, y = bar, fill = part)) +
 Example: a $15,000 down payment in 5 years at 4% takes about $226 a month, $24 less than the $250 you'd need with no interest. Over five years, interest adds about $1,425.
 
 ::: panel-tabset
-## R
+## Excel
 
-`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
+Assuming the goal is in `B2`, the yearly rate is in `C2`, and the number of months is in `D2`, the monthly amount goes in `E2`:
 
-```{r}
-#| label: goal-r
-monthly_for_goal <- function(goal, annual_rate, months) {
-  r <- annual_rate / 12
-  if (r == 0) return(goal / months)
-  goal * r / ((1 + r)^months - 1)
-}
-
-# $15,000 in 5 years at 4%, compared to no interest
-monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
-monthly_for_goal(goal = 15000, annual_rate = 0, months = 60)
+```swift
+=PMT(C2 / 12, D2, 0, -B2)
 ```
 
-How much of the goal comes from interest? Multiply the deposit by the number of months and subtract from the goal.
+Interest earned goes in `F2`:
 
-```{r}
-#| label: goal-r-interest
-pmt <- monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
-c(deposits = pmt * 60, interest = 15000 - pmt * 60)
+```swift
+=B2 - E2 * D2
 ```
 
-Same goal, different rates and deadlines. A longer runway lowers the monthly amount far more than a higher rate does.
+To check the answer, `FV()` should return the goal:
 
-```{r}
-#| label: goal-r-grid
-grid <- expand.grid(annual_rate = c(0, 0.02, 0.04, 0.05), years = c(3, 5, 7))
-grid$monthly <- round(mapply(monthly_for_goal, goal = 15000,
-                             annual_rate = grid$annual_rate,
-                             months = grid$years * 12))
-grid
-```
-
-Sanity check: growing $226.25 a month at 4% for 60 months should land back on $15,000.
-
-```{r}
-#| label: goal-r-check
-r <- 0.04 / 12
-pmt * ((1 + r)^60 - 1) / r
+```swift
+=FV(C2 / 12, D2, -E2)
 ```
 
 ## Python
@@ -147,25 +123,50 @@ r = 0.04 / 12
 print(round(pmt * ((1 + r) ** 60 - 1) / r, 2))
 ```
 
-## Excel
+## R
 
-Assuming the goal is in `B2`, the yearly rate is in `C2`, and the number of months is in `D2`, the monthly amount goes in `E2`:
+`monthly_for_goal()` returns the monthly deposit. A rate of zero falls back to plain division.
 
-```swift
-=PMT(C2 / 12, D2, 0, -B2)
+```{r}
+#| label: goal-r
+monthly_for_goal <- function(goal, annual_rate, months) {
+  r <- annual_rate / 12
+  if (r == 0) return(goal / months)
+  goal * r / ((1 + r)^months - 1)
+}
+
+# $15,000 in 5 years at 4%, compared to no interest
+monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
+monthly_for_goal(goal = 15000, annual_rate = 0, months = 60)
 ```
 
-Interest earned goes in `F2`:
+How much of the goal comes from interest? Multiply the deposit by the number of months and subtract from the goal.
 
-```swift
-=B2 - E2 * D2
+```{r}
+#| label: goal-r-interest
+pmt <- monthly_for_goal(goal = 15000, annual_rate = 0.04, months = 60)
+c(deposits = pmt * 60, interest = 15000 - pmt * 60)
 ```
 
-To check the answer, `FV()` should return the goal:
+Same goal, different rates and deadlines. A longer runway lowers the monthly amount far more than a higher rate does.
 
-```swift
-=FV(C2 / 12, D2, -E2)
+```{r}
+#| label: goal-r-grid
+grid <- expand.grid(annual_rate = c(0, 0.02, 0.04, 0.05), years = c(3, 5, 7))
+grid$monthly <- round(mapply(monthly_for_goal, goal = 15000,
+                             annual_rate = grid$annual_rate,
+                             months = grid$years * 12))
+grid
 ```
+
+Sanity check: growing $226.25 a month at 4% for 60 months should land back on $15,000.
+
+```{r}
+#| label: goal-r-check
+r <- 0.04 / 12
+pmt * ((1 + r)^60 - 1) / r
+```
+
 :::
 
 How to read this result: the monthly amount is your payday transfer. If it doesn't fit your budget, push the date out before you lower the goal; an extra two years cuts the monthly amount by about 30%.
@@ -206,6 +207,55 @@ ggplot(df_seq, aes(x = done, y = plan, fill = goal)) +
 Example: with $600 a month for a $3,000 trip and a $9,000 car, both goals are done in ($3,000 + $9,000) ÷ $600 = 20 months either way. The trip takes 5 months one at a time, or 10 months split evenly.
 
 ::: panel-tabset
+## Excel
+
+Assuming the goal is in `B2` and the monthly amount going to it is in `C2`:
+
+```swift
+=ROUNDUP(B2 / C2, 0)
+```
+
+For the finish line on all goals, put the goals in `B2:B3` and total monthly savings in `D2`:
+
+```swift
+=ROUNDUP(SUM(B2:B3) / D2, 0)
+```
+
+## Python
+
+`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
+
+```{python}
+#| label: sequence-py
+import math
+
+def months_to_fund(goal, monthly):
+    return math.ceil(goal / monthly)
+
+# one at a time: trip first, then car
+print(months_to_fund(3000, 600), months_to_fund(3000 + 9000, 600))
+
+# split evenly: trip gets half until it's done
+print(months_to_fund(3000, 300), months_to_fund(3000 + 9000, 600))
+```
+
+Try other splits:
+
+```{python}
+#| label: sequence-py-splits
+print(f"{'trip share':>10} {'trip month':>10} {'all done':>9}")
+for share in [1, 0.75, 0.5, 0.25]:
+    print(f"{share:>10.0%} {months_to_fund(3000, 600 * share):>10} "
+          f"{months_to_fund(3000 + 9000, 600):>9}")
+```
+
+Edge case: rounding up matters.
+
+```{python}
+#| label: sequence-py-edge
+print(months_to_fund(1000, 300))
+```
+
 ## R
 
 `months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
@@ -244,54 +294,6 @@ Edge case: rounding up matters. A $1,000 goal at $300 a month takes 4 months, no
 months_to_fund(1000, 300)
 ```
 
-## Python
-
-`months_to_fund()` rounds up, since a goal isn't done until the last dollar is in.
-
-```{python}
-#| label: sequence-py
-import math
-
-def months_to_fund(goal, monthly):
-    return math.ceil(goal / monthly)
-
-# one at a time: trip first, then car
-print(months_to_fund(3000, 600), months_to_fund(3000 + 9000, 600))
-
-# split evenly: trip gets half until it's done
-print(months_to_fund(3000, 300), months_to_fund(3000 + 9000, 600))
-```
-
-Try other splits:
-
-```{python}
-#| label: sequence-py-splits
-print(f"{'trip share':>10} {'trip month':>10} {'all done':>9}")
-for share in [1, 0.75, 0.5, 0.25]:
-    print(f"{share:>10.0%} {months_to_fund(3000, 600 * share):>10} "
-          f"{months_to_fund(3000 + 9000, 600):>9}")
-```
-
-Edge case: rounding up matters.
-
-```{python}
-#| label: sequence-py-edge
-print(months_to_fund(1000, 300))
-```
-
-## Excel
-
-Assuming the goal is in `B2` and the monthly amount going to it is in `C2`:
-
-```swift
-=ROUNDUP(B2 / C2, 0)
-```
-
-For the finish line on all goals, put the goals in `B2:B3` and total monthly savings in `D2`:
-
-```swift
-=ROUNDUP(SUM(B2:B3) / D2, 0)
-```
 :::
 
 How to read this result: the order is a choice about which goal you want first, not about saving time overall. Put a fixed date goal (a wedding, a car on its last legs) first, or give it the bigger share.

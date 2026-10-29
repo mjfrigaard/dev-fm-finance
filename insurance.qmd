@@ -60,6 +60,44 @@ ggplot(df_ded, aes(x = year, y = savings, fill = fill)) +
 Car insurance costs $1,500 a year with a $500 deductible, or $1,350 with a $1,000 deductible. ($1,000 − $500) ÷ $150 = about 3.3 years. If you file a claim less often than that, the higher deductible comes out ahead.
 
 ::: panel-tabset
+## Excel
+
+Put the higher deductible in `B2`, the lower deductible in `C2`, and the yearly savings in `D2`.
+
+Break even years in `E2`:
+
+```swift
+=(B2-C2)/D2
+```
+
+Yearly gain if you file one claim every `F2` years:
+
+```swift
+=D2-(B2-C2)/F2
+```
+
+Copy row 2 down to compare several quotes.
+
+## Python
+
+```{python}
+#| label: deductible-py
+def break_even_years(high_deductible, low_deductible, yearly_savings):
+    return (high_deductible - low_deductible) / yearly_savings
+
+# $1,000 vs. $500 deductible, saving $150 a year
+print(round(break_even_years(high_deductible=1000, low_deductible=500, yearly_savings=150), 2))
+
+# other quotes you might see
+quotes = [(1000, 500, 50), (1000, 500, 150), (1000, 500, 300), (2000, 500, 250), (2000, 1000, 120)]
+for high, low, savings in quotes:
+    print(f"${high:,} vs ${low:,}, save ${savings}/yr: {break_even_years(high, low, savings):.1f} years")
+
+# expected yearly gain from the higher deductible if you file one claim every k years
+for k in [2, 3, 5, 10]:
+    print(f"claim every {k:>2} years: {150 - (1000 - 500) / k:+.0f} per year")
+```
+
 ## R
 
 ```{r}
@@ -90,43 +128,6 @@ data.frame(
 
 A break even under one year means the higher deductible pays for itself almost at once. A break even of 10 years means the savings are too small to bother.
 
-## Python
-
-```{python}
-#| label: deductible-py
-def break_even_years(high_deductible, low_deductible, yearly_savings):
-    return (high_deductible - low_deductible) / yearly_savings
-
-# $1,000 vs. $500 deductible, saving $150 a year
-print(round(break_even_years(high_deductible=1000, low_deductible=500, yearly_savings=150), 2))
-
-# other quotes you might see
-quotes = [(1000, 500, 50), (1000, 500, 150), (1000, 500, 300), (2000, 500, 250), (2000, 1000, 120)]
-for high, low, savings in quotes:
-    print(f"${high:,} vs ${low:,}, save ${savings}/yr: {break_even_years(high, low, savings):.1f} years")
-
-# expected yearly gain from the higher deductible if you file one claim every k years
-for k in [2, 3, 5, 10]:
-    print(f"claim every {k:>2} years: {150 - (1000 - 500) / k:+.0f} per year")
-```
-
-## Excel
-
-Put the higher deductible in `B2`, the lower deductible in `C2`, and the yearly savings in `D2`.
-
-Break even years in `E2`:
-
-```swift
-=(B2-C2)/D2
-```
-
-Yearly gain if you file one claim every `F2` years:
-
-```swift
-=D2-(B2-C2)/F2
-```
-
-Copy row 2 down to compare several quotes.
 :::
 
 How to read this result: a positive yearly gain means the higher deductible saves money on average. The gain turns negative only if you claim more often than the break even. Either way, pick the higher deductible only if your emergency fund can cover it.
@@ -175,37 +176,23 @@ ggplot(df_hp, aes(x = year, y = cost, fill = plan)) +
 Plan A has a $100 monthly premium and a $3,000 out of pocket maximum. Plan B has a $40 monthly premium, a $5,000 out of pocket maximum, and $500 a year from your employer in the HSA. In a healthy year ($300 of care), Plan A costs $1,500 and Plan B costs $280. In the worst year, Plan A costs $4,200 and Plan B costs $4,980.
 
 ::: panel-tabset
-## R
+## Excel
 
-```{r}
-#| label: health-r
-plan_cost <- function(monthly_premium, medical_cost, oop_max, employer_hsa = 0) {
-  monthly_premium * 12 + pmin(medical_cost, oop_max) - employer_hsa
-}
+Put the monthly premium in `B2`, medical bills in `C2`, the out of pocket maximum in `D2`, and employer HSA money in `E2`. Put Plan A in row 2 and Plan B in row 3.
 
-# Plan A vs. Plan B in a healthy year ($300 of care) and the worst year
-data.frame(
-  year   = c("healthy", "worst"),
-  plan_a = plan_cost(100, c(300, Inf), oop_max = 3000),
-  plan_b = plan_cost(40, c(300, Inf), oop_max = 5000, employer_hsa = 500)
-)
+Yearly cost in `F2` (copy to `F3`):
 
-# a range of medical years
-bills <- c(0, 300, 1500, 3000, 4000, 4220, 4500, 5000, Inf)
-tbl <- data.frame(
-  medical_bills = bills,
-  plan_a        = plan_cost(100, bills, oop_max = 3000),
-  plan_b        = plan_cost(40, bills, oop_max = 5000, employer_hsa = 500)
-)
-tbl$cheaper <- ifelse(tbl$plan_b < tbl$plan_a, "B",
-                      ifelse(tbl$plan_b > tbl$plan_a, "A", "tie"))
-tbl
-
-# how many healthy years of Plan B savings cover one worst year?
-(4980 - 4200) / (1500 - 280)
+```swift
+=B2*12+MIN(C2,D2)-E2
 ```
 
-Plan B is cheaper in every year with less than $4,220 of medical bills. One healthy year of savings ($1,220) more than covers the $780 extra in a worst year.
+Cheaper plan for these medical bills:
+
+```swift
+=IF(F3<F2,"Plan B",IF(F3>F2,"Plan A","Tie"))
+```
+
+Change `C2:C3` together to test a healthy year, a bad year, or the worst year (use a large number like 999999).
 
 ## Python
 
@@ -240,23 +227,38 @@ print(tbl)
 print((4980 - 4200) / (1500 - 280))
 ```
 
-## Excel
+## R
 
-Put the monthly premium in `B2`, medical bills in `C2`, the out of pocket maximum in `D2`, and employer HSA money in `E2`. Put Plan A in row 2 and Plan B in row 3.
+```{r}
+#| label: health-r
+plan_cost <- function(monthly_premium, medical_cost, oop_max, employer_hsa = 0) {
+  monthly_premium * 12 + pmin(medical_cost, oop_max) - employer_hsa
+}
 
-Yearly cost in `F2` (copy to `F3`):
+# Plan A vs. Plan B in a healthy year ($300 of care) and the worst year
+data.frame(
+  year   = c("healthy", "worst"),
+  plan_a = plan_cost(100, c(300, Inf), oop_max = 3000),
+  plan_b = plan_cost(40, c(300, Inf), oop_max = 5000, employer_hsa = 500)
+)
 
-```swift
-=B2*12+MIN(C2,D2)-E2
+# a range of medical years
+bills <- c(0, 300, 1500, 3000, 4000, 4220, 4500, 5000, Inf)
+tbl <- data.frame(
+  medical_bills = bills,
+  plan_a        = plan_cost(100, bills, oop_max = 3000),
+  plan_b        = plan_cost(40, bills, oop_max = 5000, employer_hsa = 500)
+)
+tbl$cheaper <- ifelse(tbl$plan_b < tbl$plan_a, "B",
+                      ifelse(tbl$plan_b > tbl$plan_a, "A", "tie"))
+tbl
+
+# how many healthy years of Plan B savings cover one worst year?
+(4980 - 4200) / (1500 - 280)
 ```
 
-Cheaper plan for these medical bills:
+Plan B is cheaper in every year with less than $4,220 of medical bills. One healthy year of savings ($1,220) more than covers the $780 extra in a worst year.
 
-```swift
-=IF(F3<F2,"Plan B",IF(F3>F2,"Plan A","Tie"))
-```
-
-Change `C2:C3` together to test a healthy year, a bad year, or the worst year (use a large number like 999999).
 :::
 
 ```{r}
