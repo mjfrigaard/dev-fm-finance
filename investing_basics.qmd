@@ -1,6 +1,15 @@
 ---
 title: "Investing Basics"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -62,94 +77,267 @@ ggplot(df_fv, aes(x = year, y = value, fill = fill)) +
 
 The Rule of 72 is a shortcut. The exact doubling time is log(2) ÷ log(1 + r). The shortcut is very close for returns between about 4% and 12%, and drifts further off at the extremes.
 
-::: panel-tabset
-## Excel
+Read the result as "what one deposit becomes if you leave it alone." At 7%, the Rule of 72 says 10.3 years and the exact answer is 10.2 years, so the shortcut is good enough for planning.
 
-With present value in `A2`, rate in `B2` (as a decimal), and years in `C2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `future_value()`, then find what \$10,000 grows to in 10 years at 7%.
+
+::: panel-tabset
+
+#### Excel
+
+Put the amount in `A2` (10000), the rate in `B2` (0.07), and years in `C2` (10). Find the future value in `D2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =A2*(1+B2)^C2
 ```
 
-The built-in function gives the same number:
+This returns \$19,671.51. `=FV(B2, C2, 0, -A2)` gives the same answer.
+:::
 
-```swift
-=FV(B2, C2, 0, -A2)
+#### Python
+
+```{pyodide}
+#| exercise: fv_1_py
+def future_value(present_value, rate, years):
+    return present_value * (1 + ______) ** ______
+
+future_value(10000, 0.07, 10)
 ```
 
-Rule of 72 with the return as a whole number (`7`) in `E2`, and the exact doubling time with the decimal rate in `B2`:
+::: {.hint exercise="fv_1_py"}
+Grow by `(1 + rate)` once for every year.
+:::
 
-```swift
-=72/E2
-=NPER(B2, 0, -1, 2)
-```
-
-List several horizons down column `C` and copy the first formula down to compare them.
-
-## Python
-
-```{python}
-#| label: compound-py
-import numpy as np
-
+::: {.solution exercise="fv_1_py"}
+```python
 def future_value(present_value, rate, years):
     return present_value * (1 + rate) ** years
 
-def rule_of_72(annual_return_pct):
-    return 72 / annual_return_pct
+future_value(10000, 0.07, 10)
+```
+:::
 
-# $10,000 at 7% for 10 years
-print(future_value(present_value=10000, rate=0.07, years=10))
-
-# years to double at 7%
-print(rule_of_72(annual_return_pct=7))
-
-# the same $10,000 across several horizons
-horizons = np.array([5, 10, 20, 30, 40])
-print(np.round(future_value(10000, 0.07, horizons)))
-
-# sanity check: Rule of 72 vs. the exact doubling time
-rates = np.array([0.02, 0.04, 0.07, 0.10, 0.15])
-for r, rule, exact in zip(rates, rule_of_72(rates * 100), np.log(2) / np.log(1 + rates)):
-    print(f"{r:.0%}: rule {rule:.1f} yrs, exact {exact:.1f} yrs")
+```{pyodide}
+#| exercise: fv_1_py
+#| check: true
+if result is not None and abs(result - 19671.513573) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $19,672. It roughly doubled in 10 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Raise (1 + rate) to the number of years."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: compound-r
+```{webr}
+#| exercise: fv_1_r
+future_value <- function(present_value, rate, years) {
+  present_value * (1 + ______)^______
+}
+future_value(10000, 0.07, 10)
+```
+
+::: {.hint exercise="fv_1_r"}
+Grow by `(1 + rate)` once for every year.
+:::
+
+::: {.solution exercise="fv_1_r"}
+```r
 future_value <- function(present_value, rate, years) {
   present_value * (1 + rate)^years
 }
+future_value(10000, 0.07, 10)
+```
+:::
 
-rule_of_72 <- function(annual_return_pct) {
-  72 / annual_return_pct
+```{webr}
+#| exercise: fv_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 19671.513573) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $19,672. It roughly doubled in 10 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Raise (1 + rate) to the number of years.")
 }
-
-# $10,000 at 7% for 10 years
-future_value(present_value = 10000, rate = 0.07, years = 10)
-
-# years to double at 7%
-rule_of_72(annual_return_pct = 7)
-
-# the same $10,000 across several horizons (40 years matches the book's line chart)
-data.frame(
-  years = c(5, 10, 20, 30, 40),
-  value = round(future_value(10000, 0.07, c(5, 10, 20, 30, 40)))
-)
-
-# sanity check: Rule of 72 vs. the exact doubling time
-rates <- c(0.02, 0.04, 0.07, 0.10, 0.15)
-data.frame(
-  return_pct = rates * 100,
-  rule_of_72 = round(rule_of_72(rates * 100), 1),
-  exact      = round(log(2) / log(1 + rates), 1)
-)
 ```
 
 :::
 
-Read the result as "what one deposit becomes if you leave it alone." At 7%, the Rule of 72 says 10.3 years and the exact answer is 10.2 years, so the shortcut is good enough for planning.
+### Level 2: Practice
+
+Leave the same \$10,000 invested for 40 years at 7%. What is it worth?
+
+::: panel-tabset
+
+#### Excel
+
+Change `C2` to 40.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$149,744.58, about four doublings.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: fv_2_py
+#| setup: true
+def future_value(present_value, rate, years):
+    return present_value * (1 + rate) ** years
+```
+
+```{pyodide}
+#| exercise: fv_2_py
+future_value(______)
+```
+
+::: {.hint exercise="fv_2_py"}
+Same amount and rate, 40 years.
+:::
+
+::: {.solution exercise="fv_2_py"}
+```python
+future_value(10000, 0.07, 40)
+```
+:::
+
+```{pyodide}
+#| exercise: fv_2_py
+#| check: true
+if result is not None and abs(result - 149744.578392) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $150,000. Four doublings: 10k, 20k, 40k, 80k, 160k (roughly)."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 40 years."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fv_2_r
+#| setup: true
+future_value <- function(present_value, rate, years) {
+  present_value * (1 + rate)^years
+}
+```
+
+```{webr}
+#| exercise: fv_2_r
+future_value(______)
+```
+
+::: {.hint exercise="fv_2_r"}
+Same amount and rate, 40 years.
+:::
+
+::: {.solution exercise="fv_2_r"}
+```r
+future_value(10000, 0.07, 40)
+```
+:::
+
+```{webr}
+#| exercise: fv_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 149744.578392) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $150,000. Four doublings: 10k, 20k, 40k, 80k, 160k (roughly).")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 40 years.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The Rule of 72 (72 ÷ return %) estimates doubling time. The exact time is ln(2) ÷ ln(1 + r). For whole-number returns from 1% to 15%, at which return is the rule closest to exact?
+
+::: panel-tabset
+
+#### Excel
+
+Put returns 1 to 15 in `A2:A16`. Find the rule in `B`, the exact time in `C`, and the gap in `D`, then the return with the smallest gap.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`: `=72/A2`. In `C2`: `=LN(2)/LN(1+A2/100)`. In `D2`: `=ABS(B2-C2)`. Fill down, then:
+
+```swift
+=INDEX(A2:A16, MATCH(MIN(D2:D16), D2:D16, 0))
+```
+
+The answer is 8%: 9 years by the rule, 9.006 exact.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: fv_3_py
+import math
+returns = range(1, 16)
+# return with the smallest gap between 72 / r and the exact doubling time
+```
+
+::: {.hint exercise="fv_3_py"}
+The exact time is `math.log(2) / math.log(1 + r / 100)`. Use `min(returns, key=lambda r: abs(...))`.
+:::
+
+::: {.solution exercise="fv_3_py"}
+```python
+import math
+returns = range(1, 16)
+min(returns, key=lambda r: abs(72 / r - math.log(2) / math.log(1 + r / 100)))
+```
+:::
+
+```{pyodide}
+#| exercise: fv_3_py
+#| check: true
+if result is not None and abs(result - 8) < 0.001:
+    feedback = {"correct": True, "message": "Right: 8%. The rule is tuned for returns near 8%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Compare 72 / r with log(2) / log(1 + r/100)."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fv_3_r
+returns <- 1:15
+# return with the smallest gap between 72 / r and the exact doubling time
+```
+
+::: {.hint exercise="fv_3_r"}
+The exact time is `log(2) / log(1 + returns / 100)`. Find the gap for every return, then `returns[which.min(gap)]`.
+:::
+
+::: {.solution exercise="fv_3_r"}
+```r
+returns <- 1:15
+gap <- abs(72 / returns - log(2) / log(1 + returns / 100))
+returns[which.min(gap)]
+```
+:::
+
+```{webr}
+#| exercise: fv_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 8) < 0.001)) {
+  list(correct = TRUE, message = "Right: 8%. The rule is tuned for returns near 8%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Compare 72 / r with log(2) / log(1 + r/100).")
+}
+```
+
+:::
 
 ## Future Value of Regular Contributions
 
@@ -197,77 +385,289 @@ ggplot(df_long, aes(x = year, y = amount, fill = layer)) +
 
 Starting earlier matters more than putting in more. The second example compares the same $500/month started at 25, 35, and 45, all ending at 65. The book's recap number ($50/month for 30 years is about $61,000) is the same math at one tenth the size.
 
+Read the result as two layers. At 30 years, about 70% of the $610,000 is growth, not deposits. Starting at 25 instead of 45 more than quadruples the ending balance while only doubling what you put in.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `future_value_series()`, then find what \$500 a month grows to in 30 years at a 7% yearly return.
+
 ::: panel-tabset
-## Excel
 
-With the monthly contribution in `A2`, the annual rate in `B2` (as a decimal), and the number of years in `C2`:
+#### Excel
 
-```swift
-=A2*(((1+B2/12)^(C2*12)-1)/(B2/12))
-```
+Find the value in one formula with a monthly rate and 360 months.
 
-The built-in `FV()` function gives the same answer:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=FV(B2/12, C2*12, -A2)
+=FV(7%/12, 360, -500)
 ```
 
-Money contributed is `=A2*12*C2`; subtract it from the `FV()` result to get the growth.
+This returns \$609,985.50.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: fv-series-py
-import numpy as np
+```{pyodide}
+#| exercise: series_1_py
+def future_value_series(contribution, rate, periods):
+    return contribution * (((1 + rate) ** ______ - 1) / ______)
 
+future_value_series(500, 0.07 / 12, 30 * 12)
+```
+
+::: {.hint exercise="series_1_py"}
+The growth factor is raised to the number of periods, and divided by the rate.
+:::
+
+::: {.solution exercise="series_1_py"}
+```python
 def future_value_series(contribution, rate, periods):
     return contribution * (((1 + rate) ** periods - 1) / rate)
 
-# $500/month for 30 years at a 7% annual return
-print(future_value_series(contribution=500, rate=0.07 / 12, periods=30 * 12))
+future_value_series(500, 0.07 / 12, 30 * 12)
+```
+:::
 
-# the recap example: $50/month for 30 years
-print(future_value_series(contribution=50, rate=0.07 / 12, periods=30 * 12))
-
-# start age comparison: $500/month until 65
-start_age = np.array([25, 35, 45])
-years = 65 - start_age
-total = future_value_series(500, 0.07 / 12, years * 12)
-contributed = 500 * 12 * years
-for a, c, t in zip(start_age, contributed, total):
-    print(f"start {a}: put in ${c:,.0f}, ends with ${t:,.0f} ({1 - c / t:.0%} growth)")
+```{pyodide}
+#| exercise: series_1_py
+#| check: true
+if result is not None and abs(result - 609985.497888) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $610,000, from $180,000 put in."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use periods and rate."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: fv-series-r
+```{webr}
+#| exercise: series_1_r
+future_value_series <- function(contribution, rate, periods) {
+  contribution * (((1 + rate)^______ - 1) / ______)
+}
+future_value_series(500, 0.07 / 12, 30 * 12)
+```
+
+::: {.hint exercise="series_1_r"}
+The growth factor is raised to the number of periods, and divided by the rate.
+:::
+
+::: {.solution exercise="series_1_r"}
+```r
 future_value_series <- function(contribution, rate, periods) {
   contribution * (((1 + rate)^periods - 1) / rate)
 }
+future_value_series(500, 0.07 / 12, 30 * 12)
+```
+:::
 
-# $500/month for 30 years at a 7% annual return (monthly rate = 0.07 / 12)
-future_value_series(contribution = 500, rate = 0.07 / 12, periods = 30 * 12)
-
-# the recap example: $50/month for 30 years
-future_value_series(contribution = 50, rate = 0.07 / 12, periods = 30 * 12)
-
-# start age comparison: $500/month until 65
-start_age <- c(25, 35, 45)
-years     <- 65 - start_age
-total     <- future_value_series(500, 0.07 / 12, years * 12)
-data.frame(
-  start_age,
-  years,
-  contributed = 500 * 12 * years,
-  total       = round(total),
-  pct_growth  = round(100 * (1 - (500 * 12 * years) / total))
-)
+```{webr}
+#| exercise: series_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 609985.497888) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $610,000, from $180,000 put in.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use periods and rate.")
+}
 ```
 
 :::
 
-Read the result as two layers. At 30 years, about 70% of the $610,000 is growth, not deposits. Starting at 25 instead of 45 more than quadruples the ending balance while only doubling what you put in.
+### Level 2: Practice
+
+Two people invest \$500 a month at 7% until 65. One starts at 25 (40 years), the other at 35 (30 years). How much more does the early starter end with?
+
+::: panel-tabset
+
+#### Excel
+
+Find both values and the difference.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=FV(7%/12, 480, -500) - FV(7%/12, 360, -500)
+```
+
+This returns \$702,421.20, for only \$60,000 more put in.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: series_2_py
+#| setup: true
+def future_value_series(contribution, rate, periods):
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+```
+
+```{pyodide}
+#| exercise: series_2_py
+m = 0.07 / 12
+future_value_series(500, m, ______) - future_value_series(500, m, ______)
+```
+
+::: {.hint exercise="series_2_py"}
+40 years is 480 months; 30 years is 360.
+:::
+
+::: {.solution exercise="series_2_py"}
+```python
+m = 0.07 / 12
+future_value_series(500, m, 480) - future_value_series(500, m, 360)
+```
+:::
+
+```{pyodide}
+#| exercise: series_2_py
+#| check: true
+if result is not None and abs(result - 702421.201279) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $702,000 more. Ten extra years more than doubles the total."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Count the periods in months."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: series_2_r
+#| setup: true
+future_value_series <- function(contribution, rate, periods) {
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+```
+
+```{webr}
+#| exercise: series_2_r
+m <- 0.07 / 12
+future_value_series(500, m, ______) - future_value_series(500, m, ______)
+```
+
+::: {.hint exercise="series_2_r"}
+40 years is 480 months; 30 years is 360.
+:::
+
+::: {.solution exercise="series_2_r"}
+```r
+m <- 0.07 / 12
+future_value_series(500, m, 480) - future_value_series(500, m, 360)
+```
+:::
+
+```{webr}
+#| exercise: series_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 702421.201279) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $702,000 more. Ten extra years more than doubles the total.")
+} else {
+  list(correct = FALSE, message = "Not quite. Count the periods in months.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+A third person starts at 45 (20 years until 65). How much do they need to invest each month at 7% to match the 25-year-old's total from \$500 a month?
+
+::: panel-tabset
+
+#### Excel
+
+Find the monthly amount in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(7%/12, 240, 0, -FV(7%/12, 480, -500))
+```
+
+This returns \$2,519.37 a month, five times as much.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: series_3_py
+#| setup: true
+def future_value_series(contribution, rate, periods):
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+```
+
+```{pyodide}
+#| exercise: series_3_py
+m = 0.07 / 12
+goal = future_value_series(500, m, 480)
+# monthly amount over 240 months that reaches the goal
+```
+
+::: {.hint exercise="series_3_py"}
+The series formula is contribution × factor, so contribution = goal ÷ factor, where factor = ((1 + m) ** 240 - 1) / m.
+:::
+
+::: {.solution exercise="series_3_py"}
+```python
+m = 0.07 / 12
+goal = future_value_series(500, m, 480)
+goal / (((1 + m) ** 240 - 1) / m)
+```
+:::
+
+```{pyodide}
+#| exercise: series_3_py
+#| check: true
+if result is not None and abs(result - 2519.369424) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $2,519 a month. Waiting 20 years costs five times the effort."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the goal by the 240-month growth factor."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: series_3_r
+#| setup: true
+future_value_series <- function(contribution, rate, periods) {
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+```
+
+```{webr}
+#| exercise: series_3_r
+m <- 0.07 / 12
+goal <- future_value_series(500, m, 480)
+# monthly amount over 240 months that reaches the goal
+```
+
+::: {.hint exercise="series_3_r"}
+The series formula is contribution × factor, so contribution = goal ÷ factor, where factor = ((1 + m)^240 - 1) / m.
+:::
+
+::: {.solution exercise="series_3_r"}
+```r
+m <- 0.07 / 12
+goal <- future_value_series(500, m, 480)
+goal / (((1 + m)^240 - 1) / m)
+```
+:::
+
+```{webr}
+#| exercise: series_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2519.369424) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $2,519 a month. Waiting 20 years costs five times the effort.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the goal by the 240-month growth factor.")
+}
+```
+
+:::
 
 ## Real (Inflation-Adjusted) Return
 
@@ -302,64 +702,270 @@ ggplot(df_rr, aes(x = label, y = value, fill = fill)) +
 
 The second example compares several investments against 3% inflation. Cash earning 4% (one of the book's common mistakes) barely beats inflation, and cash earning less than inflation has a negative real return. The last line shows what $76,123 (the book's 30 year example) is worth in today's dollars.
 
+Read a negative real return as "losing buying power, even though the balance went up." The $76,123 in 30 years buys about what $31,400 buys today, which is why the book says to think in real terms.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `real_return()`, then find the real return of 7% against 3% inflation. Give a decimal.
+
 ::: panel-tabset
-## Excel
 
-With nominal return in `A2` and inflation in `B2` (both as decimals):
+#### Excel
 
-```swift
-=(1+A2)/(1+B2)-1
-```
+Put the nominal return in `A2` (0.07) and inflation in `B2` (0.03). Find the real return in `C2`.
 
-To turn a future balance in `C2` into today's dollars over `D2` years:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=C2/(1+B2)^D2
+=(1 + A2) / (1 + B2) - 1
 ```
 
-## Python
+This returns 0.0388, a little under the 4% from simple subtraction.
+:::
 
-```{python}
-#| label: real-return-py
+#### Python
+
+```{pyodide}
+#| exercise: real_1_py
+def real_return(nominal, inflation):
+    return (1 + ______) / (1 + ______) - 1
+
+real_return(0.07, 0.03)
+```
+
+::: {.hint exercise="real_1_py"}
+Divide what your money grows by (1 + nominal) by what prices grow by (1 + inflation).
+:::
+
+::: {.solution exercise="real_1_py"}
+```python
 def real_return(nominal, inflation):
     return (1 + nominal) / (1 + inflation) - 1
 
-# 7% nominal return against 3% inflation
-print(real_return(nominal=0.07, inflation=0.03))
+real_return(0.07, 0.03)
+```
+:::
 
-# several investments against 3% inflation
-for name, nominal in [("Cash", 0.01), ("High yield savings", 0.04),
-                      ("60/40", 0.07), ("Stocks", 0.10)]:
-    print(f"{name} ({nominal:.0%}): simple {nominal - 0.03:.2%}, real {real_return(nominal, 0.03):.2%}")
-
-# $10,000 at 7% for 30 years, in today's dollars
-print(10000 * 1.07 ** 30 / 1.03 ** 30)
+```{pyodide}
+#| exercise: real_1_py
+#| check: true
+if result is not None and abs(result - 0.0388349515) < 1e-07:
+    feedback = {"correct": True, "message": "Right: about 3.88%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Nominal on top, inflation on the bottom."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: real-return-r
+```{webr}
+#| exercise: real_1_r
+real_return <- function(nominal, inflation) {
+  (1 + ______) / (1 + ______) - 1
+}
+real_return(0.07, 0.03)
+```
+
+::: {.hint exercise="real_1_r"}
+Divide what your money grows by (1 + nominal) by what prices grow by (1 + inflation).
+:::
+
+::: {.solution exercise="real_1_r"}
+```r
 real_return <- function(nominal, inflation) {
   (1 + nominal) / (1 + inflation) - 1
 }
+real_return(0.07, 0.03)
+```
+:::
 
-# 7% nominal return against 3% inflation
-real_return(nominal = 0.07, inflation = 0.03)
-
-# several investments against 3% inflation
-data.frame(
-  investment  = c("Cash (1%)", "High yield savings (4%)", "60/40 (7%)", "Stocks (10%)"),
-  nominal     = c(0.01, 0.04, 0.07, 0.10),
-  simple      = c(0.01, 0.04, 0.07, 0.10) - 0.03,
-  real        = round(real_return(c(0.01, 0.04, 0.07, 0.10), 0.03), 4)
-)
-
-# $10,000 at 7% for 30 years, in today's dollars
-10000 * 1.07^30 / 1.03^30
-10000 * (1 + real_return(0.07, 0.03))^30
+```{webr}
+#| exercise: real_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.0388349515) < 1e-07)) {
+  list(correct = TRUE, message = "Right: about 3.88%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Nominal on top, inflation on the bottom.")
+}
 ```
 
 :::
 
-Read a negative real return as "losing buying power, even though the balance went up." The $76,123 in 30 years buys about what $31,400 buys today, which is why the book says to think in real terms.
+### Level 2: Practice
+
+A high-yield savings account pays 4%. With 3% inflation, what is its real return?
+
+::: panel-tabset
+
+#### Excel
+
+Change `A2` to 0.04.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns 0.0097, just under 1% a year of real growth.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: real_2_py
+#| setup: true
+def real_return(nominal, inflation):
+    return (1 + nominal) / (1 + inflation) - 1
+```
+
+```{pyodide}
+#| exercise: real_2_py
+real_return(______)
+```
+
+::: {.hint exercise="real_2_py"}
+Nominal 0.04, inflation 0.03.
+:::
+
+::: {.solution exercise="real_2_py"}
+```python
+real_return(0.04, 0.03)
+```
+:::
+
+```{pyodide}
+#| exercise: real_2_py
+#| check: true
+if result is not None and abs(result - 0.0097087379) < 1e-07:
+    feedback = {"correct": True, "message": "Right: under 1%. Savings keeps pace with prices, but barely grows."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 0.04 and 0.03."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: real_2_r
+#| setup: true
+real_return <- function(nominal, inflation) {
+  (1 + nominal) / (1 + inflation) - 1
+}
+```
+
+```{webr}
+#| exercise: real_2_r
+real_return(______)
+```
+
+::: {.hint exercise="real_2_r"}
+Nominal 0.04, inflation 0.03.
+:::
+
+::: {.solution exercise="real_2_r"}
+```r
+real_return(0.04, 0.03)
+```
+:::
+
+```{webr}
+#| exercise: real_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.0097087379) < 1e-07)) {
+  list(correct = TRUE, message = "Right: under 1%. Savings keeps pace with prices, but barely grows.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 0.04 and 0.03.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+\$10,000 invested at 7% for 30 years, with 3% inflation. What is it worth in today's dollars?
+
+::: panel-tabset
+
+#### Excel
+
+Find the value in today's dollars in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=10000 * (1.07/1.03)^30
+```
+
+This returns \$31,361.48. The statement will say \$76,123, but it only buys what \$31,361 buys today.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: real_3_py
+#| setup: true
+def real_return(nominal, inflation):
+    return (1 + nominal) / (1 + inflation) - 1
+```
+
+```{pyodide}
+#| exercise: real_3_py
+# grow $10,000 at the real return for 30 years
+```
+
+::: {.hint exercise="real_3_py"}
+Use `10000 * (1 + real_return(0.07, 0.03)) ** 30`.
+:::
+
+::: {.solution exercise="real_3_py"}
+```python
+10000 * (1 + real_return(0.07, 0.03)) ** 30
+```
+:::
+
+```{pyodide}
+#| exercise: real_3_py
+#| check: true
+if result is not None and abs(result - 31361.4828763) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $31,361 of today's buying power."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Grow at the real return, not the nominal 7%."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: real_3_r
+#| setup: true
+real_return <- function(nominal, inflation) {
+  (1 + nominal) / (1 + inflation) - 1
+}
+```
+
+```{webr}
+#| exercise: real_3_r
+# grow $10,000 at the real return for 30 years
+```
+
+::: {.hint exercise="real_3_r"}
+Use `10000 * (1 + real_return(0.07, 0.03))^30`.
+:::
+
+::: {.solution exercise="real_3_r"}
+```r
+10000 * (1 + real_return(0.07, 0.03))^30
+```
+:::
+
+```{webr}
+#| exercise: real_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 31361.4828763) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $31,361 of today's buying power.")
+} else {
+  list(correct = FALSE, message = "Not quite. Grow at the real return, not the nominal 7%.")
+}
+```
+
+:::

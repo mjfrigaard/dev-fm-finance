@@ -81,6 +81,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="site_libs/bootstrap/bootstrap-dark-1428555387006d2b360127baf2a02f66.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
 <link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -108,6 +110,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
 
 </head>
@@ -547,8 +551,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is my development scratch space for code and math examples in the <a href="https://github.com/mjfrigaard/fm-finance">fm-finance</a> book.</p>
-<p>Use the navbar to navigate to a chapter.</p>
+<p>This site holds the exercises for <a href="https://mjfrigaard.github.io/fm-finance/"><em>Personal Finance: a Field Manual</em></a>. Each page matches a chapter in the book. It opens with <strong>Book Topics</strong>, a short summary of the chapter, and then turns each math topic into practice.</p>
+<p>Every math topic starts with a bar model (a picture of the numbers) and then three levels of exercises:</p>
+<ul>
+<li><strong>Level 1 (Guided)</strong>: fill in the blanks of a finished formula.</li>
+<li><strong>Level 2 (Practice)</strong>: use the same formula on new numbers.</li>
+<li><strong>Level 3 (Challenge)</strong>: answer a new question with less help.</li>
+</ul>
+<p>Each level has Excel, Python, and R tabs. The R and Python exercises run right in your browser, so you can try them without installing anything. Click <strong>Run Code</strong> to try an answer and <strong>Submit Answer</strong> to check it; the hint and solution are there if you get stuck. The Excel exercises have a solution you can reveal.</p>
+<p>Use the sidebar on the left to pick a chapter. If you’d rather run the code on your own computer, the steps below install R and Python.</p>
 <section id="getting-set-up" class="level2" data-number="1">
 <h2 data-number="1" class="anchored" data-anchor-id="getting-set-up"><span class="header-section-number">1</span> Getting set up</h2>
 <p>The examples in this book are written in two free programming languages: <strong>R</strong> and <strong>Python</strong>. You don’t need to know either one yet—this page walks you through installing both, no matter which computer you use.</p>
@@ -695,7 +706,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="where-to-go-next" class="level2" data-number="4">
 <h2 data-number="4" class="anchored" data-anchor-id="where-to-go-next"><span class="header-section-number">4</span> Where to go next</h2>
-<p>You’re all set! Head to the <a href="./income.html">Income</a> chapter using the navbar to start running the examples.</p>
+<p>You’re all set. Head to the <a href="./income.html">Income</a> chapter in the sidebar to start the exercises. Every solution runs the same way on your computer as it does in the browser.</p>
 <div class="callout callout-style-simple callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -711,9 +722,34 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
 </section>
 
 </main> <!-- /main -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W119
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../..";
+window._ojs.paths.runtimeToRoot = "../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right

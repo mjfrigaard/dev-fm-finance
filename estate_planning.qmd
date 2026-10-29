@@ -1,6 +1,15 @@
 ---
 title: "Estate Planning"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -64,80 +79,295 @@ ggplot(df_nw, aes(x = amount, y = side, fill = side, group = part)) +
 
 Example: ($12,000 + $6,000 + $8,000 + $9,000) − ($6,000 + $1,000) = $35,000 − $7,000 = a net worth of $28,000.
 
-::: panel-tabset
-## Excel
+How to read this result: net worth is the yearly check in on your progress. It's also roughly what your estate would be worth today, before adding any life insurance.
 
-Assuming assets are listed in `B2:B5` and debts in `C2:C3`:
+### Level 1: Guided
+
+Fill in the blanks to finish `net_worth()`, then find the net worth for assets of \$12,000 (401(k)), \$6,000 (Roth IRA), \$8,000 (savings), and \$9,000 (car), with debts of \$6,000 (car loan) and \$1,000 (credit card).
+
+::: panel-tabset
+
+#### Excel
+
+Put the assets in `B2:B5` and the debts in `B7:B8`. Find net worth in `B10`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=SUM(B2:B5) - SUM(C2:C3)
+=SUM(B2:B5) - SUM(B7:B8)
 ```
 
-## Python
+This returns \$28,000.
+:::
 
-`net_worth()` takes two dictionaries, so you can see each item and the total.
+#### Python
 
-```{python}
-#| label: networth-py
+```{pyodide}
+#| exercise: nw_1_py
 def net_worth(assets, debts):
-    return sum(assets.values()) - sum(debts.values())
+    return ______(assets) - ______(debts)
 
-assets = {"401k": 12000, "roth_ira": 6000, "savings": 8000, "car": 9000}
-debts = {"car_loan": 6000, "credit_card": 1000}
-print(net_worth(assets, debts))
+net_worth([12000, 6000, 8000, 9000], [6000, 1000])
 ```
 
-Sanity check: paying off the credit card from savings doesn't change net worth.
+::: {.hint exercise="nw_1_py"}
+Add up everything you own, then everything you owe.
+:::
 
-```{python}
-#| label: networth-py-check
-assets_after = {**assets, "savings": 8000 - 1000}
-debts_after = {**debts, "credit_card": 0}
-print(net_worth(assets_after, debts_after))
+::: {.solution exercise="nw_1_py"}
+```python
+def net_worth(assets, debts):
+    return sum(assets) - sum(debts)
+
+net_worth([12000, 6000, 8000, 9000], [6000, 1000])
+```
+:::
+
+```{pyodide}
+#| exercise: nw_1_py
+#| check: true
+if result is not None and abs(result - 28000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $35,000 owned minus $7,000 owed is $28,000."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Total each side with sum()."}
+feedback
 ```
 
-Edge case: net worth can be negative.
+#### R
 
-```{python}
-#| label: networth-py-edge
-print(net_worth({"savings": 3000, "car": 5000}, {"student_loans": 30000}))
+```{webr}
+#| exercise: nw_1_r
+net_worth <- function(assets, debts) {
+  ______(assets) - ______(debts)
+}
+net_worth(c(12000, 6000, 8000, 9000), c(6000, 1000))
 ```
 
-## R
+::: {.hint exercise="nw_1_r"}
+Add up everything you own, then everything you owe.
+:::
 
-`net_worth()` takes two named vectors, so you can see each item and the total.
-
-```{r}
-#| label: networth-r
+::: {.solution exercise="nw_1_r"}
+```r
 net_worth <- function(assets, debts) {
   sum(assets) - sum(debts)
 }
-
-assets <- c(k401 = 12000, roth_ira = 6000, savings = 8000, car = 9000)
-debts  <- c(car_loan = 6000, credit_card = 1000)
-net_worth(assets, debts)
+net_worth(c(12000, 6000, 8000, 9000), c(6000, 1000))
 ```
+:::
 
-Sanity check: paying off the credit card from savings doesn't change net worth. Cash goes down by $1,000 and so does debt.
-
-```{r}
-#| label: networth-r-check
-assets_after <- replace(assets, "savings", 8000 - 1000)
-debts_after  <- replace(debts, "credit_card", 0)
-net_worth(assets_after, debts_after)
-```
-
-Edge case: net worth can be negative. A recent graduate with $3,000 in savings, a $5,000 car, and $30,000 in student loans starts below zero, and that's common.
-
-```{r}
-#| label: networth-r-edge
-net_worth(assets = c(savings = 3000, car = 5000),
-          debts  = c(student_loans = 30000))
+```{webr}
+#| exercise: nw_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 28000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $35,000 owned minus $7,000 owed is $28,000.")
+} else {
+  list(correct = FALSE, message = "Not quite. Total each side with sum().")
+}
 ```
 
 :::
 
-How to read this result: net worth is the yearly check in on your progress. It's also roughly what your estate would be worth today, before adding any life insurance.
+### Level 2: Practice
+
+A recent graduate has \$3,000 in savings, a \$5,000 car, and \$30,000 of student loans. What is their net worth?
+
+::: panel-tabset
+
+#### Excel
+
+Put the new numbers in the sheet.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns -\$22,000. A negative start is common, not a failure.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: nw_2_py
+#| setup: true
+def net_worth(assets, debts):
+    return sum(assets) - sum(debts)
+```
+
+```{pyodide}
+#| exercise: nw_2_py
+net_worth(______, ______)
+```
+
+::: {.hint exercise="nw_2_py"}
+Assets are `[3000, 5000]`; debts are `[30000]`.
+:::
+
+::: {.solution exercise="nw_2_py"}
+```python
+net_worth([3000, 5000], [30000])
+```
+:::
+
+```{pyodide}
+#| exercise: nw_2_py
+#| check: true
+if result is not None and abs(result - -22000) < 0.01:
+    feedback = {"correct": True, "message": "Right: -$22,000, and that's a normal starting point."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Assets first, debts second."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: nw_2_r
+#| setup: true
+net_worth <- function(assets, debts) {
+  sum(assets) - sum(debts)
+}
+```
+
+```{webr}
+#| exercise: nw_2_r
+net_worth(______, ______)
+```
+
+::: {.hint exercise="nw_2_r"}
+Assets are `c(3000, 5000)`; debts are `30000`.
+:::
+
+::: {.solution exercise="nw_2_r"}
+```r
+net_worth(c(3000, 5000), 30000)
+```
+:::
+
+```{webr}
+#| exercise: nw_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - -22000) < 0.01)) {
+  list(correct = TRUE, message = "Right: -$22,000, and that's a normal starting point.")
+} else {
+  list(correct = FALSE, message = "Not quite. Assets first, debts second.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Track net worth over a year. Using the balance sheet below, how much did net worth grow from last year to this year?
+
+| Item | Type | Last year | This year |
+| :--- | :--- | ---: | ---: |
+| 401(k) | Asset | \$12,000 | \$15,500 |
+| Roth IRA | Asset | \$6,000 | \$8,000 |
+| Savings | Asset | \$8,000 | \$9,500 |
+| Car | Asset | \$9,000 | \$7,500 |
+| Car loan | Debt | \$6,000 | \$3,800 |
+| Credit card | Debt | \$1,000 | \$0 |
+
+::: panel-tabset
+
+#### Excel
+
+Put the table in `A1:D7`. Find net worth for each year with `SUMIF()`, then the change.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=(SUMIF(B2:B7,"Asset",D2:D7)-SUMIF(B2:B7,"Debt",D2:D7)) - (SUMIF(B2:B7,"Asset",C2:C7)-SUMIF(B2:B7,"Debt",C2:C7))
+```
+
+Net worth went from \$28,000 to \$36,700, a gain of \$8,700, even though the car lost \$1,500 of value.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: nw_3_py
+#| setup: true
+import pandas as pd
+sheet = pd.DataFrame({
+    "item": ["401(k)", "Roth IRA", "Savings", "Car", "Car loan", "Credit card"],
+    "type": ["Asset", "Asset", "Asset", "Asset", "Debt", "Debt"],
+    "last_year": [12000, 6000, 8000, 9000, 6000, 1000],
+    "this_year": [15500, 8000, 9500, 7500, 3800, 0]
+})
+```
+
+```{pyodide}
+#| exercise: nw_3_py
+# net worth for each year, then this year minus last year
+```
+
+::: {.hint exercise="nw_3_py"}
+Give debts a sign of -1: `sign = sheet["type"].map({"Asset": 1, "Debt": -1})`. Then `(sheet["this_year"] * sign).sum()` is this year's net worth.
+:::
+
+::: {.solution exercise="nw_3_py"}
+```python
+sign = sheet["type"].map({"Asset": 1, "Debt": -1})
+(sheet["this_year"] * sign).sum() - (sheet["last_year"] * sign).sum()
+```
+:::
+
+```{pyodide}
+#| exercise: nw_3_py
+#| check: true
+if result is not None and abs(result - 8700) < 0.01:
+    feedback = {"correct": True, "message": "Right: up $8,700 to $36,700. Paying down debt counts as much as saving."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract debts from assets in each year before comparing."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: nw_3_r
+#| setup: true
+library(dplyr)
+sheet <- data.frame(
+  item      = c("401(k)", "Roth IRA", "Savings", "Car", "Car loan", "Credit card"),
+  type      = c("Asset", "Asset", "Asset", "Asset", "Debt", "Debt"),
+  last_year = c(12000, 6000, 8000, 9000, 6000, 1000),
+  this_year = c(15500, 8000, 9500, 7500, 3800, 0)
+)
+```
+
+```{webr}
+#| exercise: nw_3_r
+# net worth for each year, then this year minus last year
+```
+
+::: {.hint exercise="nw_3_r"}
+`mutate(sign = if_else(type == "Debt", -1, 1))`, then `summarise(change = sum(this_year * sign) - sum(last_year * sign))`.
+:::
+
+::: {.solution exercise="nw_3_r"}
+```r
+sheet |>
+  mutate(sign = if_else(type == "Debt", -1, 1)) |>
+  summarise(change = sum(this_year * sign) - sum(last_year * sign)) |>
+  pull(change)
+```
+:::
+
+```{webr}
+#| exercise: nw_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 8700) < 0.01)) {
+  list(correct = TRUE, message = "Right: up $8,700 to $36,700. Paying down debt counts as much as saving.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract debts from assets in each year before comparing.")
+}
+```
+
+:::
 
 ## How Much Your Beneficiary Forms Control
 
@@ -173,90 +403,282 @@ ggplot(df_ben, aes(x = amount, y = bar, fill = group)) +
 
 Example: ($12,000 + $6,000 + $45,000 + $8,000) ÷ $80,000 = about 89% of the estate, decided by forms that take minutes to fill out. That's why beneficiary designations come before a will for most young people.
 
+How to read this result: the higher the share, the less your will has to do. With every form filled in, a will only decides the car. With no forms, all $80,000 goes through probate.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `beneficiary_share()`, then find the share of an \$80,000 estate controlled by beneficiary forms when the 401(k) (\$12,000), Roth IRA (\$6,000), life insurance (\$45,000), and savings (\$8,000) all have forms, and the \$9,000 car does not. Give a decimal.
+
 ::: panel-tabset
-## Excel
 
-Assuming assets with a named beneficiary are in `B2:B5` and assets without one are in `C2`:
+#### Excel
 
-```swift
-=SUM(B2:B5) / (SUM(B2:B5) + SUM(C2))
-```
+Put the amounts in `B2:B6` and "Yes"/"No" for has a form in `C2:C6`. Find the share.
 
-To test blank forms, list every asset in `B2:B6` with `Yes` or `No` in `C2:C6` for "has a beneficiary," then:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =SUMIF(C2:C6, "Yes", B2:B6) / SUM(B2:B6)
 ```
 
-## Python
+This returns 0.8875, about 89% of the estate.
+:::
 
-`beneficiary_share()` divides what the forms control by the whole estate.
+#### Python
 
-```{python}
-#| label: beneficiary-py
+```{pyodide}
+#| exercise: ben_1_py
 def beneficiary_share(with_beneficiary, without_beneficiary):
-    named = sum(with_beneficiary.values())
-    return named / (named + sum(without_beneficiary.values()))
+    return sum(with_beneficiary) / (sum(______) + sum(______))
 
-with_beneficiary = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000, "savings_pod": 8000}
-without_beneficiary = {"car": 9000}
-print(beneficiary_share(with_beneficiary, without_beneficiary))
+beneficiary_share([12000, 6000, 45000, 8000], [9000])
 ```
 
-What if some forms are blank?
+::: {.hint exercise="ben_1_py"}
+The bottom of the fraction is the whole estate: both piles together.
+:::
 
-```{python}
-#| label: beneficiary-py-scenarios
-all_assets = {"401k": 12000, "roth_ira": 6000, "life_insurance": 45000,
-              "savings": 8000, "car": 9000}
-scenarios = {
-    "all forms filled": ["401k", "roth_ira", "life_insurance", "savings"],
-    "no POD on savings": ["401k", "roth_ira", "life_insurance"],
-    "only the 401(k)": ["401k"],
-    "no forms at all": [],
+::: {.solution exercise="ben_1_py"}
+```python
+def beneficiary_share(with_beneficiary, without_beneficiary):
+    return sum(with_beneficiary) / (sum(with_beneficiary) + sum(without_beneficiary))
+
+beneficiary_share([12000, 6000, 45000, 8000], [9000])
+```
+:::
+
+```{pyodide}
+#| exercise: ben_1_py
+#| check: true
+if result is not None and abs(result - 0.8875) < 1e-09:
+    feedback = {"correct": True, "message": "Right: about 89%, decided by forms that take minutes to fill out."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide by the total of both piles."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: ben_1_r
+beneficiary_share <- function(with_beneficiary, without_beneficiary) {
+  sum(with_beneficiary) / (sum(______) + sum(______))
 }
-for name, named in scenarios.items():
-    yes = {k: v for k, v in all_assets.items() if k in named}
-    no = {k: v for k, v in all_assets.items() if k not in named}
-    print(f"{name:<18} {beneficiary_share(yes, no):>5.0%}  through will: ${sum(no.values()):,}")
+beneficiary_share(c(12000, 6000, 45000, 8000), 9000)
 ```
 
-## R
+::: {.hint exercise="ben_1_r"}
+The bottom of the fraction is the whole estate: both piles together.
+:::
 
-`beneficiary_share()` divides what the forms control by the whole estate.
-
-```{r}
-#| label: beneficiary-r
+::: {.solution exercise="ben_1_r"}
+```r
 beneficiary_share <- function(with_beneficiary, without_beneficiary) {
   sum(with_beneficiary) / (sum(with_beneficiary) + sum(without_beneficiary))
 }
-
-with_beneficiary    <- c(k401 = 12000, roth_ira = 6000, life_insurance = 45000, savings_pod = 8000)
-without_beneficiary <- c(car = 9000)
-beneficiary_share(with_beneficiary, without_beneficiary)
+beneficiary_share(c(12000, 6000, 45000, 8000), 9000)
 ```
+:::
 
-What if some forms are blank? A blank form moves that account into the "will or state law" pile. Each scenario below starts from the same $80,000 estate.
-
-```{r}
-#| label: beneficiary-r-scenarios
-all_assets <- c(k401 = 12000, roth_ira = 6000, life_insurance = 45000,
-                savings = 8000, car = 9000)
-scenarios <- list(
-  "all forms filled"   = c("k401", "roth_ira", "life_insurance", "savings"),
-  "no POD on savings"  = c("k401", "roth_ira", "life_insurance"),
-  "only the 401(k)"    = c("k401"),
-  "no forms at all"    = character(0)
-)
-data.frame(
-  scenario     = names(scenarios),
-  forms_share  = sapply(scenarios, function(s)
-    beneficiary_share(all_assets[s], all_assets[!names(all_assets) %in% s])),
-  through_will = sapply(scenarios, function(s) sum(all_assets[!names(all_assets) %in% s])),
-  row.names    = NULL
-)
+```{webr}
+#| exercise: ben_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.8875) < 1e-09)) {
+  list(correct = TRUE, message = "Right: about 89%, decided by forms that take minutes to fill out.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide by the total of both piles.")
+}
 ```
 
 :::
 
-How to read this result: the higher the share, the less your will has to do. With every form filled in, a will only decides the car. With no forms, all $80,000 goes through probate.
+### Level 2: Practice
+
+You never added a payable-on-death (POD) designation to the \$8,000 savings account. What share do the forms control now?
+
+::: panel-tabset
+
+#### Excel
+
+Change savings to "No".
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns 0.7875. The \$8,000 now goes through a will or state law.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: ben_2_py
+#| setup: true
+def beneficiary_share(with_beneficiary, without_beneficiary):
+    return sum(with_beneficiary) / (sum(with_beneficiary) + sum(without_beneficiary))
+```
+
+```{pyodide}
+#| exercise: ben_2_py
+beneficiary_share(______, ______)
+```
+
+::: {.hint exercise="ben_2_py"}
+Move the 8000 from the first list to the second.
+:::
+
+::: {.solution exercise="ben_2_py"}
+```python
+beneficiary_share([12000, 6000, 45000], [8000, 9000])
+```
+:::
+
+```{pyodide}
+#| exercise: ben_2_py
+#| check: true
+if result is not None and abs(result - 0.7875) < 1e-09:
+    feedback = {"correct": True, "message": "Right: 78.75%. One missing form moved $8,000 into the will pile."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Savings now belongs with the car."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: ben_2_r
+#| setup: true
+beneficiary_share <- function(with_beneficiary, without_beneficiary) {
+  sum(with_beneficiary) / (sum(with_beneficiary) + sum(without_beneficiary))
+}
+```
+
+```{webr}
+#| exercise: ben_2_r
+beneficiary_share(______, ______)
+```
+
+::: {.hint exercise="ben_2_r"}
+Move the 8000 from the first vector to the second.
+:::
+
+::: {.solution exercise="ben_2_r"}
+```r
+beneficiary_share(c(12000, 6000, 45000), c(8000, 9000))
+```
+:::
+
+```{webr}
+#| exercise: ben_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.7875) < 1e-09)) {
+  list(correct = TRUE, message = "Right: 78.75%. One missing form moved $8,000 into the will pile.")
+} else {
+  list(correct = FALSE, message = "Not quite. Savings now belongs with the car.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Worst case: only the 401(k) has a beneficiary form. How many dollars of the estate would pass through a will (or state law, if there's no will)?
+
+::: panel-tabset
+
+#### Excel
+
+Mark only the 401(k) "Yes" and total the rest.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUMIF(C2:C6, "No", B2:B6)
+```
+
+This returns \$68,000, including the \$45,000 life insurance payout.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: ben_3_py
+#| setup: true
+import pandas as pd
+estate = pd.DataFrame({
+    "account": ["401(k)", "Roth IRA", "Life insurance", "Savings", "Car"],
+    "amount": [12000, 6000, 45000, 8000, 9000],
+    "has_form": [True, True, True, True, False]
+})
+```
+
+```{pyodide}
+#| exercise: ben_3_py
+# set has_form to True only for the 401(k), then total the rest
+```
+
+::: {.hint exercise="ben_3_py"}
+`estate["has_form"] = estate["account"] == "401(k)"`, then sum `amount` where `has_form` is False (use `~`).
+:::
+
+::: {.solution exercise="ben_3_py"}
+```python
+estate["has_form"] = estate["account"] == "401(k)"
+estate.loc[~estate["has_form"], "amount"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: ben_3_py
+#| check: true
+if result is not None and abs(result - 68000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $68,000. Filling out forms is the cheapest estate plan there is."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Everything except the 401(k) goes through the will."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: ben_3_r
+#| setup: true
+library(dplyr)
+estate <- data.frame(
+  account  = c("401(k)", "Roth IRA", "Life insurance", "Savings", "Car"),
+  amount   = c(12000, 6000, 45000, 8000, 9000),
+  has_form = c(TRUE, TRUE, TRUE, TRUE, FALSE)
+)
+```
+
+```{webr}
+#| exercise: ben_3_r
+# set has_form to TRUE only for the 401(k), then total the rest
+```
+
+::: {.hint exercise="ben_3_r"}
+`mutate(has_form = account == "401(k)")`, then `filter(!has_form)` and `summarise(total = sum(amount))`.
+:::
+
+::: {.solution exercise="ben_3_r"}
+```r
+estate |>
+  mutate(has_form = account == "401(k)") |>
+  filter(!has_form) |>
+  summarise(total = sum(amount)) |>
+  pull(total)
+```
+:::
+
+```{webr}
+#| exercise: ben_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 68000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $68,000. Filling out forms is the cheapest estate plan there is.")
+} else {
+  list(correct = FALSE, message = "Not quite. Everything except the 401(k) goes through the will.")
+}
+```
+
+:::

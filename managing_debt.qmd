@@ -1,6 +1,15 @@
 ---
 title: "Managing Debt"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -60,73 +75,268 @@ ggplot(df_apr, aes(x = type, y = cost, fill = type)) +
 
 The gap grows as the APR grows. It also grows with how often interest compounds, but most of the jump happens going from yearly to monthly. Daily adds only a little more. If APR and APY are the same, interest compounds once a year.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `apr_to_apy()`, then find the APY of a 24% APR card that compounds daily. Give the answer as a decimal.
+
 ::: panel-tabset
-## Excel
 
-With the APR in `A2` (as a decimal) and the compounding periods per year in `B2`:
+#### Excel
 
-```swift
-=(1+A2/B2)^B2-1
-```
+Put the APR in `A2` (0.24) and the compounding periods in `B2` (365). Find the APY in `C2`.
 
-The built in `EFFECT()` function gives the same number:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=EFFECT(A2, B2)
+=(1 + A2/B2)^B2 - 1
 ```
 
-For the hidden cost on a balance in `C2`, put this in `D2`:
+This returns 0.2711, or 27.1%. Excel's `=EFFECT(A2, B2)` gives the same answer.
+:::
 
-```swift
-=C2*(EFFECT(A2, B2)-A2)
+#### Python
+
+```{pyodide}
+#| exercise: apy_1_py
+def apr_to_apy(apr, periods_per_year=365):
+    return (1 + apr / ______) ** ______ - 1
+
+apr_to_apy(0.24)
 ```
 
-## Python
+::: {.hint exercise="apy_1_py"}
+The APR is split across every compounding period, and it compounds that many times a year.
+:::
 
-```{python}
-#| label: apr-apy-py
+::: {.solution exercise="apy_1_py"}
+```python
 def apr_to_apy(apr, periods_per_year=365):
     return (1 + apr / periods_per_year) ** periods_per_year - 1
 
-# 24% APR compounded daily
-apr_to_apy(apr=0.24)
+apr_to_apy(0.24)
+```
+:::
+
+```{pyodide}
+#| exercise: apy_1_py
+#| check: true
+if result is not None and abs(result - 0.271148891) < 1e-06:
+    feedback = {"correct": True, "message": "Right: about 27.1%, not the 24% on the statement."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use periods_per_year in both blanks."}
+feedback
 ```
 
-Compare several card rates and compounding schedules, plus the hidden cost on a \$10,000 balance:
+#### R
 
-```{python}
-#| label: apr-apy-py-table
-print(f"{'APR':>5} {'yearly':>8} {'monthly':>8} {'daily':>8} {'hidden':>8}")
-for apr in [0.15, 0.20, 0.24, 0.29]:
-    hidden = 10000 * (apr_to_apy(apr) - apr)
-    print(f"{apr:>5.0%} {apr_to_apy(apr, 1):>8.2%} {apr_to_apy(apr, 12):>8.2%} "
-          f"{apr_to_apy(apr):>8.2%} {hidden:>8,.0f}")
+```{webr}
+#| exercise: apy_1_r
+apr_to_apy <- function(apr, periods_per_year = 365) {
+  (1 + apr / ______)^______ - 1
+}
+apr_to_apy(0.24)
 ```
 
-## R
+::: {.hint exercise="apy_1_r"}
+The APR is split across every compounding period, and it compounds that many times a year.
+:::
 
-```{r}
-#| label: apr-apy-r
+::: {.solution exercise="apy_1_r"}
+```r
 apr_to_apy <- function(apr, periods_per_year = 365) {
   (1 + apr / periods_per_year)^periods_per_year - 1
 }
+apr_to_apy(0.24)
+```
+:::
 
-# 24% APR compounded daily
-apr_to_apy(apr = 0.24)
+```{webr}
+#| exercise: apy_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.271148891) < 1e-06)) {
+  list(correct = TRUE, message = "Right: about 27.1%, not the 24% on the statement.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use periods_per_year in both blanks.")
+}
 ```
 
-Compare several card rates and compounding schedules, plus the hidden cost on a \$10,000 balance:
+:::
 
-```{r}
-#| label: apr-apy-r-table
-aprs <- c(0.15, 0.20, 0.24, 0.29)
-data.frame(
-  apr          = fmt_pct(aprs),
-  yearly       = fmt_pct(apr_to_apy(aprs, 1), 2),
-  monthly      = fmt_pct(apr_to_apy(aprs, 12), 2),
-  daily        = fmt_pct(apr_to_apy(aprs, 365), 2),
-  hidden_cost  = fmt_dollar(10000 * (apr_to_apy(aprs) - aprs), 0)
-)
+### Level 2: Practice
+
+Some cards compound monthly instead of daily. What is the APY of the same 24% APR compounded 12 times a year?
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 12.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns 0.2682, or 26.8%. Monthly compounding costs a little less than daily.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: apy_2_py
+#| setup: true
+def apr_to_apy(apr, periods_per_year=365):
+    return (1 + apr / periods_per_year) ** periods_per_year - 1
+```
+
+```{pyodide}
+#| exercise: apy_2_py
+apr_to_apy(______)
+```
+
+::: {.hint exercise="apy_2_py"}
+Pass the APR and `periods_per_year=12`.
+:::
+
+::: {.solution exercise="apy_2_py"}
+```python
+apr_to_apy(0.24, periods_per_year=12)
+```
+:::
+
+```{pyodide}
+#| exercise: apy_2_py
+#| check: true
+if result is not None and abs(result - 0.268241795) < 1e-06:
+    feedback = {"correct": True, "message": "Right: about 26.8%. Fewer compounding periods, slightly less interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Set periods_per_year to 12."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: apy_2_r
+#| setup: true
+apr_to_apy <- function(apr, periods_per_year = 365) {
+  (1 + apr / periods_per_year)^periods_per_year - 1
+}
+```
+
+```{webr}
+#| exercise: apy_2_r
+apr_to_apy(______)
+```
+
+::: {.hint exercise="apy_2_r"}
+Pass the APR and `periods_per_year = 12`.
+:::
+
+::: {.solution exercise="apy_2_r"}
+```r
+apr_to_apy(0.24, periods_per_year = 12)
+```
+:::
+
+```{webr}
+#| exercise: apy_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.268241795) < 1e-06)) {
+  list(correct = TRUE, message = "Right: about 26.8%. Fewer compounding periods, slightly less interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Set periods_per_year to 12.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+A store card charges 29% APR, compounded daily. On a \$10,000 balance, how many extra dollars a year does compounding add on top of the APR?
+
+::: panel-tabset
+
+#### Excel
+
+Find the hidden cost in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=10000 * (EFFECT(29%, 365) - 29%)
+```
+
+This returns \$462.74 a year.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: apy_3_py
+#| setup: true
+def apr_to_apy(apr, periods_per_year=365):
+    return (1 + apr / periods_per_year) ** periods_per_year - 1
+```
+
+```{pyodide}
+#| exercise: apy_3_py
+# hidden cost = balance x (APY - APR)
+```
+
+::: {.hint exercise="apy_3_py"}
+Find `apr_to_apy(0.29)`, subtract 0.29, and multiply by 10000.
+:::
+
+::: {.solution exercise="apy_3_py"}
+```python
+10000 * (apr_to_apy(0.29) - 0.29)
+```
+:::
+
+```{pyodide}
+#| exercise: apy_3_py
+#| check: true
+if result is not None and abs(result - 462.736146) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $463 a year that never shows up as the quoted rate."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the APR from the APY, then multiply by the balance."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: apy_3_r
+#| setup: true
+apr_to_apy <- function(apr, periods_per_year = 365) {
+  (1 + apr / periods_per_year)^periods_per_year - 1
+}
+```
+
+```{webr}
+#| exercise: apy_3_r
+# hidden cost = balance x (APY - APR)
+```
+
+::: {.hint exercise="apy_3_r"}
+Find `apr_to_apy(0.29)`, subtract 0.29, and multiply by 10000.
+:::
+
+::: {.solution exercise="apy_3_r"}
+```r
+10000 * (apr_to_apy(0.29) - 0.29)
+```
+:::
+
+```{webr}
+#| exercise: apy_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 462.736146) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $463 a year that never shows up as the quoted rate.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the APR from the APY, then multiply by the balance.")
+}
 ```
 
 :::
@@ -165,91 +375,287 @@ ggplot(df_min, aes(x = label, y = amount, fill = fill)) +
 
 The formula only works when the payment is bigger than the first month's interest. If it isn't, the balance never shrinks, and the answer comes back as `NaN` (not a number). Small increases in the payment cut years off the debt.
 
-::: panel-tabset
-## Excel
+### Level 1: Guided
 
-With the balance in `A2`, the monthly payment in `B2`, and the APR in `C2` (as a decimal), `NPER()` solves for the number of months:
+Fill in the blanks to finish `months_to_payoff()`, then find how many months it takes to clear \$5,000 at 22% APR paying \$100 a month.
+
+::: panel-tabset
+
+#### Excel
+
+Put the balance in `A2` (5000), the payment in `B2` (100), and the APR in `C2` (0.22). Find the months in `D2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
 =NPER(C2/12, -B2, A2)
 ```
 
-Total paid goes in `E2` (with months in `D2`):
+This returns about 136.8 months, or 11 years.
+:::
 
-```swift
-=D2*B2
+#### Python
+
+```{pyodide}
+#| exercise: minpay_1_py
+import math
+def months_to_payoff(balance, monthly_payment, apr):
+    r = apr / ______
+    return -math.log(1 - r * ______ / monthly_payment) / math.log(1 + r)
+
+months_to_payoff(5000, 100, 0.22)
 ```
 
-To test other payments, list them down column `B` and fill the formulas down. `NPER()` returns `#NUM!` when the payment is too small to ever pay off the balance.
+::: {.hint exercise="minpay_1_py"}
+The monthly rate is the APR divided by 12. The formula uses the balance in the second blank.
+:::
 
-## Python
-
-```{python}
-#| label: min-payoff-py
+::: {.solution exercise="minpay_1_py"}
+```python
 import math
-
 def months_to_payoff(balance, monthly_payment, apr):
     r = apr / 12
     return -math.log(1 - r * balance / monthly_payment) / math.log(1 + r)
 
-# $5,000 balance, $100/month, 22% APR
-months_to_payoff(balance=5000, monthly_payment=100, apr=0.22)
+months_to_payoff(5000, 100, 0.22)
+```
+:::
+
+```{pyodide}
+#| exercise: minpay_1_py
+#| check: true
+if result is not None and abs(result - 136.779054) < 0.001:
+    feedback = {"correct": True, "message": "Right: about 137 months, more than 11 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 12 for the months and balance for the second blank."}
+feedback
 ```
 
-What happens if you pay more each month? Total paid is roughly months × payment (the last payment is usually a bit smaller).
+#### R
 
-```{python}
-#| label: min-payoff-py-table
-print(f"{'payment':>8} {'months':>7} {'years':>6} {'paid':>8} {'interest':>9}")
-for pmt in [100, 150, 200, 300]:
-    m = months_to_payoff(balance=5000, monthly_payment=pmt, apr=0.22)
-    print(f"{pmt:>8,} {m:>7.0f} {m / 12:>6.1f} {m * pmt:>8,.0f} {m * pmt - 5000:>9,.0f}")
+```{webr}
+#| exercise: minpay_1_r
+months_to_payoff <- function(balance, monthly_payment, apr) {
+  r <- apr / ______
+  -log(1 - r * ______ / monthly_payment) / log(1 + r)
+}
+months_to_payoff(5000, 100, 0.22)
 ```
 
-Sanity check: the payment must beat the first month's interest. In Python, a payment that is too small raises a `ValueError` instead of returning `NaN`.
+::: {.hint exercise="minpay_1_r"}
+The monthly rate is the APR divided by 12. The formula uses the balance in the second blank.
+:::
 
-```{python}
-#| label: min-payoff-py-check
-first_interest = 5000 * 0.22 / 12
-print(round(first_interest, 2), 100 > first_interest, 90 > first_interest)
-```
-
-## R
-
-```{r}
-#| label: min-payoff-r
+::: {.solution exercise="minpay_1_r"}
+```r
 months_to_payoff <- function(balance, monthly_payment, apr) {
   r <- apr / 12
   -log(1 - r * balance / monthly_payment) / log(1 + r)
 }
+months_to_payoff(5000, 100, 0.22)
+```
+:::
 
-# $5,000 balance, $100/month, 22% APR
-months_to_payoff(balance = 5000, monthly_payment = 100, apr = 0.22)
+```{webr}
+#| exercise: minpay_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 136.779054) < 0.001)) {
+  list(correct = TRUE, message = "Right: about 137 months, more than 11 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 12 for the months and balance for the second blank.")
+}
 ```
 
-What happens if you pay more each month? Total paid is roughly months × payment (the last payment is usually a bit smaller).
+:::
 
-```{r}
-#| label: min-payoff-r-table
-payments <- c(100, 150, 200, 300)
-months   <- months_to_payoff(balance = 5000, monthly_payment = payments, apr = 0.22)
-data.frame(
-  payment        = fmt_dollar(payments, 0),
-  months         = round(months),
-  years          = round(months / 12, 1),
-  total_paid     = fmt_dollar(months * payments, 0),
-  total_interest = fmt_dollar(months * payments - 5000, 0)
-)
+### Level 2: Practice
+
+Double the payment to \$200 a month. How much total interest do you pay? (Total paid is roughly months × payment.)
+
+::: panel-tabset
+
+#### Excel
+
+Change `B2` to 200 and find the interest in `E2`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=D2*B2 - A2
 ```
 
-Sanity check: the payment must beat the first month's interest.
+This returns about \$1,750, down from about \$8,700 at \$100 a month.
+:::
 
-```{r}
-#| label: min-payoff-r-check
-first_interest <- 5000 * 0.22 / 12
-first_interest
-100 > first_interest
-90 > first_interest
+#### Python
+
+```{pyodide}
+#| exercise: minpay_2_py
+#| setup: true
+import math
+def months_to_payoff(balance, monthly_payment, apr):
+    r = apr / 12
+    return -math.log(1 - r * balance / monthly_payment) / math.log(1 + r)
+```
+
+```{pyodide}
+#| exercise: minpay_2_py
+months = months_to_payoff(______)
+months * ______ - 5000
+```
+
+::: {.hint exercise="minpay_2_py"}
+Pass 5000, 200, and 0.22. Then multiply the months by the payment.
+:::
+
+::: {.solution exercise="minpay_2_py"}
+```python
+months = months_to_payoff(5000, 200, 0.22)
+months * 200 - 5000
+```
+:::
+
+```{pyodide}
+#| exercise: minpay_2_py
+#| check: true
+if result is not None and abs(result - 1749.537239) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $1,750. Doubling the payment cuts the interest by about 80%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply the months by $200, then subtract the $5,000 balance."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: minpay_2_r
+#| setup: true
+months_to_payoff <- function(balance, monthly_payment, apr) {
+  r <- apr / 12
+  -log(1 - r * balance / monthly_payment) / log(1 + r)
+}
+```
+
+```{webr}
+#| exercise: minpay_2_r
+months <- months_to_payoff(______)
+months * ______ - 5000
+```
+
+::: {.hint exercise="minpay_2_r"}
+Pass 5000, 200, and 0.22. Then multiply the months by the payment.
+:::
+
+::: {.solution exercise="minpay_2_r"}
+```r
+months <- months_to_payoff(5000, 200, 0.22)
+months * 200 - 5000
+```
+:::
+
+```{webr}
+#| exercise: minpay_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1749.537239) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $1,750. Doubling the payment cuts the interest by about 80%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply the months by $200, then subtract the $5,000 balance.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+You want the \$5,000 card (22% APR) gone in 3 years. Write `payment_needed(balance, apr, years)` using the loan payment formula, Payment = Balance × r(1 + r)^n ÷ ((1 + r)^n − 1) with r = APR ÷ 12 and n = months, and find the monthly payment.
+
+::: panel-tabset
+
+#### Excel
+
+Find the payment in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(22%/12, 36, -5000)
+```
+
+This returns \$190.95 a month.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: minpay_3_py
+def payment_needed(balance, apr, years):
+    # your code here
+    pass
+
+payment_needed(5000, 0.22, 3)
+```
+
+::: {.hint exercise="minpay_3_py"}
+Set the monthly rate r to `apr / 12` and the number of payments n to `years * 12`, then return `balance * r * (1 + r) ** n / ((1 + r) ** n - 1)`.
+:::
+
+::: {.solution exercise="minpay_3_py"}
+```python
+def payment_needed(balance, apr, years):
+    r = apr / 12
+    n = years * 12
+    return balance * r * (1 + r) ** n / ((1 + r) ** n - 1)
+
+payment_needed(5000, 0.22, 3)
+```
+:::
+
+```{pyodide}
+#| exercise: minpay_3_py
+#| check: true
+if result is not None and abs(result - 190.952266) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $191 a month clears it in 3 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check that r is monthly and n counts months."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: minpay_3_r
+payment_needed <- function(balance, apr, years) {
+  # your code here
+}
+payment_needed(5000, 0.22, 3)
+```
+
+::: {.hint exercise="minpay_3_r"}
+Set the monthly rate r to `apr / 12` and the number of payments n to `years * 12`, then return `balance * r * (1 + r)^n / ((1 + r)^n - 1)`.
+:::
+
+::: {.solution exercise="minpay_3_r"}
+```r
+payment_needed <- function(balance, apr, years) {
+  r <- apr / 12
+  n <- years * 12
+  balance * r * (1 + r)^n / ((1 + r)^n - 1)
+}
+payment_needed(5000, 0.22, 3)
+```
+:::
+
+```{webr}
+#| exercise: minpay_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 190.952266) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $191 a month clears it in 3 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check that r is monthly and n counts months.")
+}
 ```
 
 :::
@@ -292,84 +698,297 @@ ggplot(df_ti, aes(x = term, y = amount, fill = component)) +
 
 The book rounds the payments to whole dollars. The exact payments are \$511.47 and \$718.39, so the exact interest is a few dollars lower. Each extra year on the loan adds interest, but the monthly payment drops less than you might expect.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `total_interest()`, then find the interest on a \$30,000 car loan paid at \$512 a month for 6 years.
+
 ::: panel-tabset
-## Excel
 
-With the monthly payment in `A2`, the number of months in `B2`, and the principal in `C2`:
+#### Excel
 
-```swift
-=A2*B2-C2
-```
+Put the payment in `A2` (512), the months in `B2` (72), and the principal in `C2` (30000). Find the interest in `D2`.
 
-To get the payment itself from a rate in `D2` (as a decimal):
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=-PMT(D2/12, B2, C2)
+=A2*B2 - C2
 ```
 
-`CUMIPMT()` returns total interest in one step (as a negative number):
+This returns \$6,864.
+:::
 
-```swift
-=-CUMIPMT(D2/12, B2, C2, 1, B2, 0)
+#### Python
+
+```{pyodide}
+#| exercise: interest_1_py
+def total_interest(monthly_payment, n_months, principal):
+    return (monthly_payment * ______) - ______
+
+total_interest(512, 72, 30000)
 ```
 
-## Python
+::: {.hint exercise="interest_1_py"}
+Everything you pay, minus the amount you borrowed.
+:::
 
-```{python}
-#| label: total-interest-py
+::: {.solution exercise="interest_1_py"}
+```python
 def total_interest(monthly_payment, n_months, principal):
     return (monthly_payment * n_months) - principal
 
-# 6-year car loan vs. 4-year, $30,000 principal
-print(total_interest(monthly_payment=512, n_months=72, principal=30000))
-print(total_interest(monthly_payment=719, n_months=48, principal=30000))
+total_interest(512, 72, 30000)
+```
+:::
+
+```{pyodide}
+#| exercise: interest_1_py
+#| check: true
+if result is not None and abs(result - 6864) < 0.01:
+    feedback = {"correct": True, "message": "Right: $6,864 of interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply the payment by the months, then subtract the principal."}
+feedback
 ```
 
-Where do \$512 and \$719 come from? The standard loan payment formula, run here over four terms:
+#### R
 
-```{python}
-#| label: total-interest-py-table
+```{webr}
+#| exercise: interest_1_r
+total_interest <- function(monthly_payment, n_months, principal) {
+  (monthly_payment * ______) - ______
+}
+total_interest(512, 72, 30000)
+```
+
+::: {.hint exercise="interest_1_r"}
+Everything you pay, minus the amount you borrowed.
+:::
+
+::: {.solution exercise="interest_1_r"}
+```r
+total_interest <- function(monthly_payment, n_months, principal) {
+  (monthly_payment * n_months) - principal
+}
+total_interest(512, 72, 30000)
+```
+:::
+
+```{webr}
+#| exercise: interest_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 6864) < 0.01)) {
+  list(correct = TRUE, message = "Right: $6,864 of interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply the payment by the months, then subtract the principal.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+The same loan over 4 years costs \$719 a month. How much interest does the shorter loan save compared with the 6-year loan?
+
+::: panel-tabset
+
+#### Excel
+
+Add the 4-year loan in row 3 and find the savings.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=D2 - D3
+```
+
+The 4-year loan's interest is \$4,512, so it saves \$2,352.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: interest_2_py
+#| setup: true
+def total_interest(monthly_payment, n_months, principal):
+    return (monthly_payment * n_months) - principal
+```
+
+```{pyodide}
+#| exercise: interest_2_py
+six_year = total_interest(512, 72, 30000)
+four_year = total_interest(______)
+______
+```
+
+::: {.hint exercise="interest_2_py"}
+Four years is 48 months. Then subtract the smaller interest from the larger.
+:::
+
+::: {.solution exercise="interest_2_py"}
+```python
+six_year = total_interest(512, 72, 30000)
+four_year = total_interest(719, 48, 30000)
+six_year - four_year
+```
+:::
+
+```{pyodide}
+#| exercise: interest_2_py
+#| check: true
+if result is not None and abs(result - 2352) < 0.01:
+    feedback = {"correct": True, "message": "Right: $2,352 saved for paying $207 more a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Four years is 48 payments of $719."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: interest_2_r
+#| setup: true
+total_interest <- function(monthly_payment, n_months, principal) {
+  (monthly_payment * n_months) - principal
+}
+```
+
+```{webr}
+#| exercise: interest_2_r
+six_year <- total_interest(512, 72, 30000)
+four_year <- total_interest(______)
+______
+```
+
+::: {.hint exercise="interest_2_r"}
+Four years is 48 months. Then subtract the smaller interest from the larger.
+:::
+
+::: {.solution exercise="interest_2_r"}
+```r
+six_year <- total_interest(512, 72, 30000)
+four_year <- total_interest(719, 48, 30000)
+six_year - four_year
+```
+:::
+
+```{webr}
+#| exercise: interest_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2352) < 0.01)) {
+  list(correct = TRUE, message = "Right: $2,352 saved for paying $207 more a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Four years is 48 payments of $719.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Where do payments like \$512 come from? Write `loan_payment(principal, annual_rate, years)` with the loan payment formula, then find the total interest on the \$30,000 loan at 7% over 5 years.
+
+::: panel-tabset
+
+#### Excel
+
+Find the 5-year payment, then the total interest.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(7%/12, 60, -30000)*60 - 30000
+```
+
+The payment is \$594.04 and the interest is \$5,642.16.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: interest_3_py
+#| setup: true
+def total_interest(monthly_payment, n_months, principal):
+    return (monthly_payment * n_months) - principal
+```
+
+```{pyodide}
+#| exercise: interest_3_py
+def loan_payment(principal, annual_rate, years):
+    # your code here
+    pass
+
+# total interest over 5 years
+```
+
+::: {.hint exercise="interest_3_py"}
+Set the monthly rate r to `annual_rate / 12` and n to `years * 12`; the payment is `principal * r * (1 + r) ** n / ((1 + r) ** n - 1)`. Then use `total_interest(payment, 60, 30000)`.
+:::
+
+::: {.solution exercise="interest_3_py"}
+```python
 def loan_payment(principal, annual_rate, years):
     r = annual_rate / 12
     n = years * 12
     return principal * r * (1 + r) ** n / ((1 + r) ** n - 1)
 
-for years in range(3, 7):
-    pmt = loan_payment(principal=30000, annual_rate=0.07, years=years)
-    print(f"{years} years: ${pmt:,.2f}/month, "
-          f"${total_interest(pmt, years * 12, 30000):,.0f} interest")
+total_interest(loan_payment(30000, 0.07, 5), 60, 30000)
+```
+:::
+
+```{pyodide}
+#| exercise: interest_3_py
+#| check: true
+if result is not None and abs(result - 5642.157373) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $5,642, between the 4-year and 6-year loans."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Compute the payment first, then the interest over 60 months."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: total-interest-r
+```{webr}
+#| exercise: interest_3_r
+#| setup: true
 total_interest <- function(monthly_payment, n_months, principal) {
   (monthly_payment * n_months) - principal
 }
-
-# 6-year car loan vs. 4-year, $30,000 principal
-total_interest(monthly_payment = 512, n_months = 72, principal = 30000)
-total_interest(monthly_payment = 719, n_months = 48, principal = 30000)
 ```
 
-Where do \$512 and \$719 come from? The standard loan payment formula, run here over four terms:
+```{webr}
+#| exercise: interest_3_r
+loan_payment <- function(principal, annual_rate, years) {
+  # your code here
+}
+# total interest over 5 years
+```
 
-```{r}
-#| label: total-interest-r-table
+::: {.hint exercise="interest_3_r"}
+Set the monthly rate r to `annual_rate / 12` and n to `years * 12`; the payment is `principal * r * (1 + r)^n / ((1 + r)^n - 1)`. Then use `total_interest(payment, 60, 30000)`.
+:::
+
+::: {.solution exercise="interest_3_r"}
+```r
 loan_payment <- function(principal, annual_rate, years) {
   r <- annual_rate / 12
   n <- years * 12
   principal * r * (1 + r)^n / ((1 + r)^n - 1)
 }
+total_interest(loan_payment(30000, 0.07, 5), 60, 30000)
+```
+:::
 
-years <- 3:6
-pmts  <- loan_payment(principal = 30000, annual_rate = 0.07, years = years)
-data.frame(
-  years    = years,
-  payment  = fmt_dollar(pmts),
-  interest = fmt_dollar(total_interest(pmts, years * 12, 30000), 0)
-)
+```{webr}
+#| exercise: interest_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 5642.157373) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $5,642, between the 4-year and 6-year loans.")
+} else {
+  list(correct = FALSE, message = "Not quite. Compute the payment first, then the interest over 60 months.")
+}
 ```
 
 :::
@@ -408,101 +1027,280 @@ ggplot(df_li, aes(x = amount, y = item, fill = fill)) +
 
 A ratio above 1.0 means the loan bar runs past the salary line. At exactly 1×, every dollar borrowed costs about \$0.0114 a month, so the payment is about 14% of gross pay no matter the major. What changes is how many dollars are left over.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `loan_income_ratio()`, then check \$45,000 of loans against a \$42,000 expected salary.
+
 ::: panel-tabset
-## Excel
 
-With total loans in `A2` and expected salary in `B2`, the ratio goes in `C2`:
+#### Excel
 
-```swift
-=A2/B2
-```
+Put the loans in `A2` (45000) and the salary in `B2` (42000). Find the ratio in `C2`.
 
-The standard 10 year payment at 6.5% goes in `D2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=-PMT(0.065/12, 10*12, A2)
+=A2 / B2
 ```
 
-The share of gross monthly pay goes in `E2` (format as a percentage):
+This returns 1.07, just over the 1× rule.
+:::
 
-```swift
-=D2/(B2/12)
+#### Python
+
+```{pyodide}
+#| exercise: student_1_py
+def loan_income_ratio(loan_total, expected_salary):
+    return ______ / ______
+
+loan_income_ratio(45000, 42000)
 ```
 
-## Python
+::: {.hint exercise="student_1_py"}
+Loans divided by salary.
+:::
 
-```{python}
-#| label: loan-income-py
+::: {.solution exercise="student_1_py"}
+```python
 def loan_income_ratio(loan_total, expected_salary):
     return loan_total / expected_salary
 
-def monthly_standard_payment(principal, annual_rate=0.065, years=10):
-    r = annual_rate / 12
-    n = years * 12
-    return principal * (r * (1 + r)**n) / ((1 + r)**n - 1)
+loan_income_ratio(45000, 42000)
+```
+:::
 
-# $45,000 in loans, $42,000 expected starting salary
-print(loan_income_ratio(loan_total=45000, expected_salary=42000))
-
-# standard 10-year monthly payment on that $45,000
-print(monthly_standard_payment(principal=45000))
+```{pyodide}
+#| exercise: student_1_py
+#| check: true
+if result is not None and abs(result - 1.071428571) < 1e-06:
+    feedback = {"correct": True, "message": "Right: about 1.07, a little over the 1x ceiling."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the loans by the expected salary."}
+feedback
 ```
 
-The monthly bill at the 1× ceiling for the low end of each major's salary range in the book, and the share of gross monthly pay it takes:
+#### R
 
-```{python}
-#| label: loan-income-py-table
-majors = {"Engineering / CS": 70000, "Nursing": 60000, "Business": 50000,
-          "Social Sciences": 38000, "Education": 38000, "Fine Arts": 35000}
-for major, salary in majors.items():
-    pmt = monthly_standard_payment(salary)
-    print(f"{major:<17} ${pmt:>6,.0f}  {pmt / (salary / 12):.1%} of gross")
-
-# sanity check: cost per borrowed dollar
-print(round(monthly_standard_payment(1), 4))
+```{webr}
+#| exercise: student_1_r
+loan_income_ratio <- function(loan_total, expected_salary) {
+  ______ / ______
+}
+loan_income_ratio(45000, 42000)
 ```
 
-## R
+::: {.hint exercise="student_1_r"}
+Loans divided by salary.
+:::
 
-```{r}
-#| label: loan-income-r
+::: {.solution exercise="student_1_r"}
+```r
 loan_income_ratio <- function(loan_total, expected_salary) {
   loan_total / expected_salary
 }
+loan_income_ratio(45000, 42000)
+```
+:::
 
+```{webr}
+#| exercise: student_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 1.071428571) < 1e-06)) {
+  list(correct = TRUE, message = "Right: about 1.07, a little over the 1x ceiling.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the loans by the expected salary.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+What is the standard 10-year monthly payment on that \$45,000 at 6.5%?
+
+::: panel-tabset
+
+#### Excel
+
+Find the payment in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(6.5%/12, 120, -45000)
+```
+
+This returns \$510.97 a month.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: student_2_py
+#| setup: true
+def monthly_standard_payment(principal, annual_rate=0.065, years=10):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: student_2_py
+monthly_standard_payment(______)
+```
+
+::: {.hint exercise="student_2_py"}
+The rate and years already default to 6.5% and 10, so only the principal is needed.
+:::
+
+::: {.solution exercise="student_2_py"}
+```python
+monthly_standard_payment(45000)
+```
+:::
+
+```{pyodide}
+#| exercise: student_2_py
+#| check: true
+if result is not None and abs(result - 510.965897) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $511 a month for 10 years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Pass 45000 as the principal."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: student_2_r
+#| setup: true
 monthly_standard_payment <- function(principal, annual_rate = 0.065, years = 10) {
   r <- annual_rate / 12
   n <- years * 12
   principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
 }
-
-# $45,000 in loans, $42,000 expected starting salary
-loan_income_ratio(loan_total = 45000, expected_salary = 42000)
-
-# standard 10-year monthly payment on that $45,000
-monthly_standard_payment(principal = 45000)
 ```
 
-The monthly bill at the 1× ceiling for the low end of each major's salary range in the book, and the share of gross monthly pay it takes:
-
-```{r}
-#| label: loan-income-r-table
-majors <- data.frame(
-  major  = c("Engineering / CS", "Nursing", "Business", "Social Sciences",
-             "Education", "Fine Arts"),
-  salary = c(70000, 60000, 50000, 38000, 38000, 35000)
-)
-majors$payment   <- monthly_standard_payment(majors$salary)
-majors$pct_gross <- fmt_pct(majors$payment / (majors$salary / 12))
-majors$payment   <- fmt_dollar(majors$payment, 0)
-majors
+```{webr}
+#| exercise: student_2_r
+monthly_standard_payment(______)
 ```
 
-Sanity check: the cost per borrowed dollar.
+::: {.hint exercise="student_2_r"}
+The rate and years already default to 6.5% and 10, so only the principal is needed.
+:::
 
-```{r}
-#| label: loan-income-r-check
-monthly_standard_payment(principal = 1)
+::: {.solution exercise="student_2_r"}
+```r
+monthly_standard_payment(45000)
+```
+:::
+
+```{webr}
+#| exercise: student_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 510.965897) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $511 a month for 10 years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Pass 45000 as the principal.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+A nursing graduate follows the 1× rule exactly: \$60,000 of loans on a \$60,000 salary. What share of gross monthly pay goes to the standard payment? Give a decimal.
+
+::: panel-tabset
+
+#### Excel
+
+Find the payment, then divide by monthly gross pay.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(6.5%/12, 120, -60000) / (60000/12)
+```
+
+This returns 0.136, about 14% of gross pay.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: student_3_py
+#| setup: true
+def monthly_standard_payment(principal, annual_rate=0.065, years=10):
+    r = annual_rate / 12
+    n = years * 12
+    return principal * (r * (1 + r) ** n) / ((1 + r) ** n - 1)
+```
+
+```{pyodide}
+#| exercise: student_3_py
+# payment divided by monthly gross pay
+```
+
+::: {.hint exercise="student_3_py"}
+Monthly gross pay is the salary divided by 12.
+:::
+
+::: {.solution exercise="student_3_py"}
+```python
+monthly_standard_payment(60000) / (60000 / 12)
+```
+:::
+
+```{pyodide}
+#| exercise: student_3_py
+#| check: true
+if result is not None and abs(result - 0.136257573) < 1e-05:
+    feedback = {"correct": True, "message": "Right: about 14% of gross pay, the book's rule of thumb."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the payment by salary / 12."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: student_3_r
+#| setup: true
+monthly_standard_payment <- function(principal, annual_rate = 0.065, years = 10) {
+  r <- annual_rate / 12
+  n <- years * 12
+  principal * (r * (1 + r)^n) / ((1 + r)^n - 1)
+}
+```
+
+```{webr}
+#| exercise: student_3_r
+# payment divided by monthly gross pay
+```
+
+::: {.hint exercise="student_3_r"}
+Monthly gross pay is the salary divided by 12.
+:::
+
+::: {.solution exercise="student_3_r"}
+```r
+monthly_standard_payment(60000) / (60000 / 12)
+```
+:::
+
+```{webr}
+#| exercise: student_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.136257573) < 1e-05)) {
+  list(correct = TRUE, message = "Right: about 14% of gross pay, the book's rule of thumb.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the payment by salary / 12.")
+}
 ```
 
 :::
@@ -544,74 +1342,284 @@ ggplot(df_idr, aes(x = amount, y = bar, fill = part)) +
 
 If your AGI is below the protected amount, the payment is \$0. Each extra \$1,000 of income above that line adds only about \$8 a month under IBR. SAVE used the same formula with a 225% threshold and a 5% undergraduate rate, but it ended in March 2026. RAP uses a sliding share of total AGI instead, so this function does not cover it.
 
-::: panel-tabset
-## Excel
+### Level 1: Guided
 
-With AGI in `A2`, the poverty guideline in `B2` (`15650`), the threshold multiplier in `C2` (`1.5`), and the payment rate in `D2` (`0.10`):
+Fill in the blanks to finish `idr_monthly_payment()` for IBR, then find the payment on a \$50,000 AGI. Discretionary income is AGI minus 1.5 × the \$15,650 poverty guideline.
+
+::: panel-tabset
+
+#### Excel
+
+Put the AGI in `A2` (50000). Find the monthly IBR payment in `B2`.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=ROUND(MAX(0, A2-B2*C2)*D2/12, 2)
+=ROUND(MAX(0, A2 - 1.5*15650) * 10% / 12, 2)
 ```
 
-For IBR on loans from before July 2014, change `D2` to `0.15`. List several incomes down column `A` and fill the formula down to compare them.
+This returns \$221.04.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: idr-payment-py
-def idr_monthly_payment(agi, poverty_guideline=15650,
-                        threshold_pct=1.5, payment_rate=0.10):
+```{pyodide}
+#| exercise: idr_1_py
+def idr_monthly_payment(agi, poverty_guideline=15650, threshold_pct=1.5, payment_rate=0.10):
+    discretionary = max(0, agi - poverty_guideline * ______)
+    return round((discretionary * ______) / 12, 2)
+
+idr_monthly_payment(50000)
+```
+
+::: {.hint exercise="idr_1_py"}
+Use the threshold to scale the poverty guideline, then apply the payment rate.
+:::
+
+::: {.solution exercise="idr_1_py"}
+```python
+def idr_monthly_payment(agi, poverty_guideline=15650, threshold_pct=1.5, payment_rate=0.10):
     discretionary = max(0, agi - poverty_guideline * threshold_pct)
     return round((discretionary * payment_rate) / 12, 2)
 
-# IBR: $50,000 AGI, 150% FPG threshold, 10% rate
-print(idr_monthly_payment(agi=50000))
+idr_monthly_payment(50000)
+```
+:::
 
-# IBR for loans before July 2014: 15% rate
-print(idr_monthly_payment(agi=50000, payment_rate=0.15))
+```{pyodide}
+#| exercise: idr_1_py
+#| check: true
+if result is not None and abs(result - 221.04) < 0.005:
+    feedback = {"correct": True, "message": "Right: about $221 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use threshold_pct, then payment_rate."}
+feedback
 ```
 
-Compare several incomes. The SAVE column is for history only.
+#### R
 
-```{python}
-#| label: idr-payment-py-table
-print(f"{'AGI':>8} {'IBR 10%':>8} {'IBR 15%':>8} {'SAVE':>8}")
-for agi in [20000, 35000, 50000, 75000, 100000]:
-    print(f"{agi:>8,} {idr_monthly_payment(agi):>8,.2f} "
-          f"{idr_monthly_payment(agi, payment_rate=0.15):>8,.2f} "
-          f"{idr_monthly_payment(agi, threshold_pct=2.25, payment_rate=0.05):>8,.2f}")
+```{webr}
+#| exercise: idr_1_r
+idr_monthly_payment <- function(agi, poverty_guideline = 15650,
+                                threshold_pct = 1.5, payment_rate = 0.10) {
+  discretionary <- max(0, agi - poverty_guideline * ______)
+  round((discretionary * ______) / 12, 2)
+}
+idr_monthly_payment(50000)
 ```
 
-## R
+::: {.hint exercise="idr_1_r"}
+Use the threshold to scale the poverty guideline, then apply the payment rate.
+:::
 
-```{r}
-#| label: idr-payment-r
-idr_monthly_payment <- function(agi,
-                                poverty_guideline = 15650,
-                                threshold_pct     = 1.5,
-                                payment_rate      = 0.10) {
+::: {.solution exercise="idr_1_r"}
+```r
+idr_monthly_payment <- function(agi, poverty_guideline = 15650,
+                                threshold_pct = 1.5, payment_rate = 0.10) {
   discretionary <- max(0, agi - poverty_guideline * threshold_pct)
   round((discretionary * payment_rate) / 12, 2)
 }
+idr_monthly_payment(50000)
+```
+:::
 
-# IBR: $50,000 AGI, 150% FPG threshold, 10% rate
-idr_monthly_payment(agi = 50000)
-
-# IBR for loans before July 2014: 15% rate
-idr_monthly_payment(agi = 50000, payment_rate = 0.15)
+```{webr}
+#| exercise: idr_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 221.04) < 0.005)) {
+  list(correct = TRUE, message = "Right: about $221 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use threshold_pct, then payment_rate.")
+}
 ```
 
-`max()` is not vectorized, so use `sapply()` to compare several incomes. The SAVE column is for history only.
+:::
 
-```{r}
-#| label: idr-payment-r-table
-agis <- c(20000, 35000, 50000, 75000, 100000)
-data.frame(
-  agi       = fmt_dollar(agis, 0),
-  ibr_new   = sapply(agis, idr_monthly_payment),
-  ibr_old   = sapply(agis, idr_monthly_payment, payment_rate = 0.15),
-  save_undg = sapply(agis, idr_monthly_payment, threshold_pct = 2.25, payment_rate = 0.05)
-)
+### Level 2: Practice
+
+IBR loans from before July 2014 use a 15% payment rate. What is the payment on the same \$50,000 AGI?
+
+::: panel-tabset
+
+#### Excel
+
+Change 10% to 15% in the formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=ROUND(MAX(0, A2 - 1.5*15650) * 15% / 12, 2)
+```
+
+This returns \$331.56.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: idr_2_py
+#| setup: true
+def idr_monthly_payment(agi, poverty_guideline=15650, threshold_pct=1.5, payment_rate=0.10):
+    discretionary = max(0, agi - poverty_guideline * threshold_pct)
+    return round((discretionary * payment_rate) / 12, 2)
+```
+
+```{pyodide}
+#| exercise: idr_2_py
+idr_monthly_payment(______)
+```
+
+::: {.hint exercise="idr_2_py"}
+Pass the AGI and `payment_rate=0.15`.
+:::
+
+::: {.solution exercise="idr_2_py"}
+```python
+idr_monthly_payment(50000, payment_rate=0.15)
+```
+:::
+
+```{pyodide}
+#| exercise: idr_2_py
+#| check: true
+if result is not None and abs(result - 331.56) < 0.005:
+    feedback = {"correct": True, "message": "Right: about $332, half again as much."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Change only the payment rate."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: idr_2_r
+#| setup: true
+idr_monthly_payment <- function(agi, poverty_guideline = 15650,
+                                threshold_pct = 1.5, payment_rate = 0.10) {
+  discretionary <- max(0, agi - poverty_guideline * threshold_pct)
+  round((discretionary * payment_rate) / 12, 2)
+}
+```
+
+```{webr}
+#| exercise: idr_2_r
+idr_monthly_payment(______)
+```
+
+::: {.hint exercise="idr_2_r"}
+Pass the AGI and `payment_rate = 0.15`.
+:::
+
+::: {.solution exercise="idr_2_r"}
+```r
+idr_monthly_payment(50000, payment_rate = 0.15)
+```
+:::
+
+```{webr}
+#| exercise: idr_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 331.56) < 0.005)) {
+  list(correct = TRUE, message = "Right: about $332, half again as much.")
+} else {
+  list(correct = FALSE, message = "Not quite. Change only the payment rate.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+`max()` only works on one income at a time. Find the IBR payment for three incomes at once: \$20,000, \$35,000, and \$50,000.
+
+::: panel-tabset
+
+#### Excel
+
+Put the incomes in `A2:A4` and fill the formula down.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula in `B2`, filled down, returns \$0.00, \$96.04, and \$221.04. Below \$23,475 the payment is \$0.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: idr_3_py
+#| setup: true
+def idr_monthly_payment(agi, poverty_guideline=15650, threshold_pct=1.5, payment_rate=0.10):
+    discretionary = max(0, agi - poverty_guideline * threshold_pct)
+    return round((discretionary * payment_rate) / 12, 2)
+```
+
+```{pyodide}
+#| exercise: idr_3_py
+agis = [20000, 35000, 50000]
+# one payment per income
+```
+
+::: {.hint exercise="idr_3_py"}
+A list comprehension runs the function once per item: `[idr_monthly_payment(a) for a in agis]`.
+:::
+
+::: {.solution exercise="idr_3_py"}
+```python
+agis = [20000, 35000, 50000]
+[idr_monthly_payment(a) for a in agis]
+```
+:::
+
+```{pyodide}
+#| exercise: idr_3_py
+#| check: true
+if result == [0, 96.04, 221.04]:
+    feedback = {"correct": True, "message": "Right: $0, $96.04, and $221.04. Low incomes owe nothing."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Return one payment for each of the three incomes."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: idr_3_r
+#| setup: true
+idr_monthly_payment <- function(agi, poverty_guideline = 15650,
+                                threshold_pct = 1.5, payment_rate = 0.10) {
+  discretionary <- max(0, agi - poverty_guideline * threshold_pct)
+  round((discretionary * payment_rate) / 12, 2)
+}
+```
+
+```{webr}
+#| exercise: idr_3_r
+agis <- c(20000, 35000, 50000)
+# one payment per income
+```
+
+::: {.hint exercise="idr_3_r"}
+`sapply(agis, idr_monthly_payment)` runs the function once per income.
+:::
+
+::: {.solution exercise="idr_3_r"}
+```r
+agis <- c(20000, 35000, 50000)
+sapply(agis, idr_monthly_payment)
+```
+:::
+
+```{webr}
+#| exercise: idr_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), c(0, 96.04, 221.04)))) {
+  list(correct = TRUE, message = "Right: $0, $96.04, and $221.04. Low incomes owe nothing.")
+} else {
+  list(correct = FALSE, message = "Not quite. Return one payment for each of the three incomes.")
+}
 ```
 
 :::
@@ -657,74 +1665,272 @@ ggplot(df_dti, aes(x = "", y = amount, fill = component)) +
 
 DTI uses gross pay (before taxes), so it looks smaller than how it feels. At about 36%, this borrower sits right on the line between manageable and stretched. Paying off one \$400 car payment would bring them to about 30%.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `dti_ratio()`, then find the DTI for \$2,500 of debt payments on \$7,000 gross monthly income.
+
 ::: panel-tabset
-## Excel
 
-With monthly debt payments in `A2` and gross monthly income in `B2`, the DTI goes in `C2`:
+#### Excel
 
-```swift
-=A2/B2*100
-```
+Put the payments in `A2` (2500) and gross income in `B2` (7000). Find the DTI in `C2`.
 
-The benchmark label goes in `D2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=IFS(C2<20, "Healthy", C2<36, "Manageable", C2<43, "Stretched", TRUE, "Danger zone")
+=A2 / B2 * 100
 ```
 
-## Python
+This returns 35.7.
+:::
 
-```{python}
-#| label: dti-py
+#### Python
+
+```{pyodide}
+#| exercise: dti_1_py
+def dti_ratio(monthly_debt_payments, gross_monthly_income):
+    return (______ / ______) * 100
+
+dti_ratio(2500, 7000)
+```
+
+::: {.hint exercise="dti_1_py"}
+Debt payments divided by gross income.
+:::
+
+::: {.solution exercise="dti_1_py"}
+```python
 def dti_ratio(monthly_debt_payments, gross_monthly_income):
     return (monthly_debt_payments / gross_monthly_income) * 100
 
-# $2,500 in debt payments on $7,000 gross income
-dti_ratio(monthly_debt_payments=2500, gross_monthly_income=7000)
+dti_ratio(2500, 7000)
+```
+:::
+
+```{pyodide}
+#| exercise: dti_1_py
+#| check: true
+if result is not None and abs(result - 35.71428571) < 0.001:
+    feedback = {"correct": True, "message": "Right: about 36%, right at the edge of manageable."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide debt payments by gross income."}
+feedback
 ```
 
-Several scenarios, labeled with the book's benchmarks:
+#### R
 
-```{python}
-#| label: dti-py-table
-def dti_band(dti):
-    if dti < 20:
-        return "Healthy"
-    elif dti < 36:
-        return "Manageable"
-    elif dti < 43:
-        return "Stretched"
-    return "Danger zone"
-
-for debt in [1000, 1750, 2500, 2800, 3200]:
-    dti = dti_ratio(debt, 7000)
-    print(f"${debt:,}: {dti:.1f}% ({dti_band(dti)})")
+```{webr}
+#| exercise: dti_1_r
+dti_ratio <- function(monthly_debt_payments, gross_monthly_income) {
+  (______ / ______) * 100
+}
+dti_ratio(2500, 7000)
 ```
 
-## R
+::: {.hint exercise="dti_1_r"}
+Debt payments divided by gross income.
+:::
 
-```{r}
-#| label: dti-r
+::: {.solution exercise="dti_1_r"}
+```r
 dti_ratio <- function(monthly_debt_payments, gross_monthly_income) {
   (monthly_debt_payments / gross_monthly_income) * 100
 }
+dti_ratio(2500, 7000)
+```
+:::
 
-# $2,500 in debt payments on $7,000 gross income
-dti_ratio(monthly_debt_payments = 2500, gross_monthly_income = 7000)
+```{webr}
+#| exercise: dti_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 35.71428571) < 0.001)) {
+  list(correct = TRUE, message = "Right: about 36%, right at the edge of manageable.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide debt payments by gross income.")
+}
 ```
 
-Several scenarios, labeled with the book's benchmarks:
+:::
 
-```{r}
-#| label: dti-r-table
-debts <- c(1000, 1750, 2500, 2800, 3200)
-dti   <- dti_ratio(debts, gross_monthly_income = 7000)
-data.frame(
-  debt_payments = fmt_dollar(debts, 0),
-  dti           = round(dti, 1),
-  band          = cut(dti, breaks = c(-Inf, 20, 36, 43, Inf), right = FALSE,
-                      labels = c("Healthy", "Manageable", "Stretched", "Danger zone"))
-)
+### Level 2: Practice
+
+Lenders like a DTI of 36% or less. On \$7,000 of gross monthly income, what is the most you can pay toward debts and stay there?
+
+::: panel-tabset
+
+#### Excel
+
+Find the ceiling in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=7000 * 36%
+```
+
+This returns \$2,520.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: dti_2_py
+gross = 7000
+______
+```
+
+::: {.hint exercise="dti_2_py"}
+Flip the formula: payments = DTI × income. Write 36% as 0.36.
+:::
+
+::: {.solution exercise="dti_2_py"}
+```python
+gross = 7000
+gross * 0.36
+```
+:::
+
+```{pyodide}
+#| exercise: dti_2_py
+#| check: true
+if result is not None and abs(result - 2520) < 0.01:
+    feedback = {"correct": True, "message": "Right: $2,520 a month, only $20 more than today."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply income by 0.36."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: dti_2_r
+gross <- 7000
+______
+```
+
+::: {.hint exercise="dti_2_r"}
+Flip the formula: payments = DTI × income. Write 36% as 0.36.
+:::
+
+::: {.solution exercise="dti_2_r"}
+```r
+gross <- 7000
+gross * 0.36
+```
+:::
+
+```{webr}
+#| exercise: dti_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2520) < 0.01)) {
+  list(correct = TRUE, message = "Right: $2,520 a month, only $20 more than today.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply income by 0.36.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Five borrowers each earn \$7,000 a month, with debt payments of \$1,000, \$1,750, \$2,500, \$2,800, and \$3,200. How many are at 36% DTI or higher?
+
+::: panel-tabset
+
+#### Excel
+
+Put the payments in `A2:A6`, the DTI in `B2:B6`, and count.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`, filled down: `=A2/7000*100`. Then:
+
+```swift
+=COUNTIF(B2:B6, ">=36")
+```
+
+The answer is 2 (40% and 45.7%).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: dti_3_py
+#| setup: true
+def dti_ratio(monthly_debt_payments, gross_monthly_income):
+    return (monthly_debt_payments / gross_monthly_income) * 100
+
+import pandas as pd
+borrowers = pd.DataFrame({"debt_payments": [1000, 1750, 2500, 2800, 3200]})
+```
+
+```{pyodide}
+#| exercise: dti_3_py
+# add a dti column, then count rows at 36 or higher
+```
+
+::: {.hint exercise="dti_3_py"}
+`borrowers["dti"] = dti_ratio(borrowers["debt_payments"], 7000)`, then `(borrowers["dti"] >= 36).sum()`.
+:::
+
+::: {.solution exercise="dti_3_py"}
+```python
+borrowers["dti"] = dti_ratio(borrowers["debt_payments"], 7000)
+(borrowers["dti"] >= 36).sum()
+```
+:::
+
+```{pyodide}
+#| exercise: dti_3_py
+#| check: true
+if result is not None and abs(result - 2) < 0.001:
+    feedback = {"correct": True, "message": "Right: 2 borrowers, at 40% and 45.7%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. $2,500 is 35.7%, just under the line."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: dti_3_r
+#| setup: true
+library(dplyr)
+dti_ratio <- function(monthly_debt_payments, gross_monthly_income) {
+  (monthly_debt_payments / gross_monthly_income) * 100
+}
+borrowers <- data.frame(debt_payments = c(1000, 1750, 2500, 2800, 3200))
+```
+
+```{webr}
+#| exercise: dti_3_r
+# add a dti column, then count rows at 36 or higher
+```
+
+::: {.hint exercise="dti_3_r"}
+`mutate(dti = dti_ratio(debt_payments, 7000))`, then `filter(dti >= 36)` and `nrow()`.
+:::
+
+::: {.solution exercise="dti_3_r"}
+```r
+borrowers |>
+  mutate(dti = dti_ratio(debt_payments, 7000)) |>
+  filter(dti >= 36) |>
+  nrow()
+```
+:::
+
+```{webr}
+#| exercise: dti_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2) < 0.001)) {
+  list(correct = TRUE, message = "Right: 2 borrowers, at 40% and 45.7%.")
+} else {
+  list(correct = FALSE, message = "Not quite. $2,500 is 35.7%, just under the line.")
+}
 ```
 
 :::
@@ -768,54 +1974,87 @@ ggplot(df_pi, aes(x = option, y = rate, fill = option)) +
 
 A 2% edge sounds small, but it compounds. On \$10,000 over 10 years, it is the gap between about \$16,300 (the guaranteed path) and about \$19,700 (the expected path). The book's rule of thumb also adds a middle zone: between 4% and 6%, do both.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `payoff_vs_invest()`, then compare a 5% mortgage with an expected 7% return.
+
 ::: panel-tabset
-## Excel
 
-With the loan rate in `A2` and the expected return in `B2`:
+#### Excel
 
-```swift
-=IF(A2>B2, "Pay off the debt", IF(A2<B2, "Invest the difference", "Roughly a wash; do both"))
-```
+Put the loan rate in `A2` (0.05) and the expected return in `B2` (0.07). Write the decision in `C2`.
 
-The yearly edge goes in `C2`, and the 10 year value of \$10,000 on each path goes in `D2` and `E2`:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=B2-A2
-=10000*(1+A2)^10
-=10000*(1+B2)^10
+=IF(A2 > B2, "Pay off the debt", IF(A2 < B2, "Invest the difference", "Roughly a wash; do both"))
+```
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: payoff_1_py
+def payoff_vs_invest(loan_rate, expected_return):
+    if loan_rate > expected_return:
+        return ______
+    elif loan_rate < expected_return:
+        return ______
+    return "Roughly a wash; do both"
+
+payoff_vs_invest(0.05, 0.07)
 ```
 
-## Python
+::: {.hint exercise="payoff_1_py"}
+If the loan costs more than investing earns, pay it off. Otherwise invest. Use the labels "Pay off the debt" and "Invest the difference".
+:::
 
-```{python}
-#| label: payoff-vs-invest-py
+::: {.solution exercise="payoff_1_py"}
+```python
 def payoff_vs_invest(loan_rate, expected_return):
     if loan_rate > expected_return:
         return "Pay off the debt"
     elif loan_rate < expected_return:
         return "Invest the difference"
-    else:
-        return "Roughly a wash; do both"
+    return "Roughly a wash; do both"
 
-# 5% mortgage vs. expected 7% return
-payoff_vs_invest(loan_rate=0.05, expected_return=0.07)
+payoff_vs_invest(0.05, 0.07)
+```
+:::
+
+```{pyodide}
+#| exercise: payoff_1_py
+#| check: true
+if result == 'Invest the difference':
+    feedback = {"correct": True, "message": "Right: the math favors investing by about 2% a year (but the 5% is guaranteed)."}
+else:
+    feedback = {"correct": False, "message": "Not quite. A 5% loan costs less than a 7% return earns."}
+feedback
 ```
 
-Several loan rates against the same 7% expected return, plus what \$10,000 becomes in 10 years either way:
+#### R
 
-```{python}
-#| label: payoff-vs-invest-py-table
-for rate in [0.03, 0.05, 0.07, 0.09, 0.22]:
-    payoff_path = 10000 * (1 + rate) ** 10
-    invest_path = 10000 * 1.07 ** 10
-    print(f"{rate:>4.0%}: edge {0.07 - rate:>+5.0%}  {payoff_vs_invest(rate, 0.07):<24}"
-          f" ${payoff_path:>7,.0f} vs ${invest_path:>7,.0f}")
+```{webr}
+#| exercise: payoff_1_r
+payoff_vs_invest <- function(loan_rate, expected_return) {
+  if (loan_rate > expected_return) {
+    ______
+  } else if (loan_rate < expected_return) {
+    ______
+  } else {
+    "Roughly a wash; do both"
+  }
+}
+payoff_vs_invest(0.05, 0.07)
 ```
 
-## R
+::: {.hint exercise="payoff_1_r"}
+If the loan costs more than investing earns, pay it off. Otherwise invest. Use the labels "Pay off the debt" and "Invest the difference".
+:::
 
-```{r}
-#| label: payoff-vs-invest-r
+::: {.solution exercise="payoff_1_r"}
+```r
 payoff_vs_invest <- function(loan_rate, expected_return) {
   if (loan_rate > expected_return) {
     "Pay off the debt"
@@ -825,23 +2064,203 @@ payoff_vs_invest <- function(loan_rate, expected_return) {
     "Roughly a wash; do both"
   }
 }
+payoff_vs_invest(0.05, 0.07)
+```
+:::
 
-# 5% mortgage vs. expected 7% return
-payoff_vs_invest(loan_rate = 0.05, expected_return = 0.07)
+```{webr}
+#| exercise: payoff_1_r
+#| check: true
+if (identical(as.character(.result), "Invest the difference")) {
+  list(correct = TRUE, message = "Right: the math favors investing by about 2% a year (but the 5% is guaranteed).")
+} else {
+  list(correct = FALSE, message = "Not quite. A 5% loan costs less than a 7% return earns.")
+}
 ```
 
-Several loan rates against the same 7% expected return, plus what \$10,000 becomes in 10 years either way:
+:::
 
-```{r}
-#| label: payoff-vs-invest-r-table
-loan_rates <- c(0.03, 0.05, 0.07, 0.09, 0.22)
-data.frame(
-  loan_rate   = fmt_pct(loan_rates),
-  edge        = fmt_pct(0.07 - loan_rates),
-  decision    = sapply(loan_rates, payoff_vs_invest, expected_return = 0.07),
-  payoff_path = fmt_dollar(10000 * (1 + loan_rates)^10, 0),
-  invest_path = fmt_dollar(10000 * 1.07^10, 0)
-)
+### Level 2: Practice
+
+Put a number on that 2% edge. You have \$10,000. After 10 years, how much more do you have by investing at 7% than by paying down the 5% mortgage (which "earns" 5%)?
+
+::: panel-tabset
+
+#### Excel
+
+Find the difference in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=10000*1.07^10 - 10000*1.05^10
+```
+
+This returns \$3,382.57.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: payoff_2_py
+invest = 10000 * (1 + 0.07) ** 10
+payoff = ______
+invest - payoff
+```
+
+::: {.hint exercise="payoff_2_py"}
+Paying off the mortgage grows like an investment at the loan rate, 5%.
+:::
+
+::: {.solution exercise="payoff_2_py"}
+```python
+invest = 10000 * (1 + 0.07) ** 10
+payoff = 10000 * (1 + 0.05) ** 10
+invest - payoff
+```
+:::
+
+```{pyodide}
+#| exercise: payoff_2_py
+#| check: true
+if result is not None and abs(result - 3382.567305) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $3,383 more, if the 7% shows up."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Grow the payoff path at 5% for 10 years."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: payoff_2_r
+invest <- 10000 * (1 + 0.07)^10
+payoff <- ______
+invest - payoff
+```
+
+::: {.hint exercise="payoff_2_r"}
+Paying off the mortgage grows like an investment at the loan rate, 5%.
+:::
+
+::: {.solution exercise="payoff_2_r"}
+```r
+invest <- 10000 * (1 + 0.07)^10
+payoff <- 10000 * (1 + 0.05)^10
+invest - payoff
+```
+:::
+
+```{webr}
+#| exercise: payoff_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 3382.567305) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $3,383 more, if the 7% shows up.")
+} else {
+  list(correct = FALSE, message = "Not quite. Grow the payoff path at 5% for 10 years.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The book's rule of thumb: above 6% pay it off, 4% to 6% do both, below 4% invest. Write `book_rule(loan_rate)` that returns "Pay off", "Do both", or "Invest", and apply it to loans at 3%, 5%, and 7%.
+
+::: panel-tabset
+
+#### Excel
+
+With rates in `A2:A4`, write the rule in `B2` and fill down.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=IF(A2 > 6%, "Pay off", IF(A2 >= 4%, "Do both", "Invest"))
+```
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: payoff_3_py
+def book_rule(loan_rate):
+    # your code here
+    pass
+
+[book_rule(r) for r in [0.03, 0.05, 0.07]]
+```
+
+::: {.hint exercise="payoff_3_py"}
+Use `if loan_rate > 0.06:`, then `elif loan_rate >= 0.04:`, then the rest.
+:::
+
+::: {.solution exercise="payoff_3_py"}
+```python
+def book_rule(loan_rate):
+    if loan_rate > 0.06:
+        return "Pay off"
+    elif loan_rate >= 0.04:
+        return "Do both"
+    return "Invest"
+
+[book_rule(r) for r in [0.03, 0.05, 0.07]]
+```
+:::
+
+```{pyodide}
+#| exercise: payoff_3_py
+#| check: true
+if result == ["Invest", "Do both", "Pay off"]:
+    feedback = {"correct": True, "message": "Right: Invest, Do both, Pay off."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Check the order of your conditions: test the highest rate first."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: payoff_3_r
+#| setup: true
+library(dplyr)
+```
+
+```{webr}
+#| exercise: payoff_3_r
+book_rule <- function(loan_rate) {
+  # your code here
+}
+book_rule(c(0.03, 0.05, 0.07))
+```
+
+::: {.hint exercise="payoff_3_r"}
+`case_when()` handles a whole vector: `loan_rate > 0.06 ~ "Pay off"`, then `loan_rate >= 0.04 ~ "Do both"`, then `.default = "Invest"`.
+:::
+
+::: {.solution exercise="payoff_3_r"}
+```r
+book_rule <- function(loan_rate) {
+  case_when(
+    loan_rate > 0.06 ~ "Pay off",
+    loan_rate >= 0.04 ~ "Do both",
+    .default = "Invest"
+  )
+}
+book_rule(c(0.03, 0.05, 0.07))
+```
+:::
+
+```{webr}
+#| exercise: payoff_3_r
+#| check: true
+if (identical(.result, c("Invest", "Do both", "Pay off"))) {
+  list(correct = TRUE, message = "Right: Invest, Do both, Pay off.")
+} else {
+  list(correct = FALSE, message = "Not quite. Check the order of your conditions: test the highest rate first.")
+}
 ```
 
 :::
@@ -886,61 +2305,238 @@ ggplot(df_av, aes(x = factor(order), y = balance, fill = fill)) +
 
 The book says to find the cost of snowball with a payoff calculator. The extra code below is a small one. It pays every minimum, sends the rest of a fixed monthly budget to the target debt, and rolls each freed up payment onto the next debt. The difference in total interest is the price of the snowball's quick early wins. With these three cards, snowball costs about \$338 more and takes one extra month.
 
+### Level 1: Guided
+
+The avalanche method pays the highest APR first. Fill in the blank to sort the three cards and return the name of the first target.
+
 ::: panel-tabset
-## Excel
 
-Put the debts in a table with headers in row 1 (`name`, `balance`, `apr`) and data in `A2:C4`. Avalanche order (highest APR first):
+#### Excel
 
-```swift
-=SORT(A2:C4, 3, -1)
-```
+With names in `A2:A4`, balances in `B2:B4`, and APRs in `C2:C4`, find the card with the highest APR.
 
-Snowball order (smallest balance first):
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=SORT(A2:C4, 2, 1)
+=INDEX(A2:A4, MATCH(MAX(C2:C4), C2:C4, 0))
 ```
 
-Interest saved next month by an extra payment in `E1`, filled down next to each debt:
+This returns Card B (24%).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: avalanche_1_py
+#| setup: true
+import pandas as pd
+debts = pd.DataFrame({
+    "name": ["Card A", "Card B", "Card C"],
+    "balance": [1000, 5000, 2000],
+    "apr": [0.18, 0.24, 0.15]
+})
+```
+
+```{pyodide}
+#| exercise: avalanche_1_py
+debts.sort_values(______, ascending=False).iloc[0]["name"]
+```
+
+::: {.hint exercise="avalanche_1_py"}
+Sort by the `"apr"` column, highest first.
+:::
+
+::: {.solution exercise="avalanche_1_py"}
+```python
+debts.sort_values("apr", ascending=False).iloc[0]["name"]
+```
+:::
+
+```{pyodide}
+#| exercise: avalanche_1_py
+#| check: true
+if result == 'Card B':
+    feedback = {"correct": True, "message": "Right: Card B at 24%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Sort by APR from highest to lowest."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: avalanche_1_r
+#| setup: true
+library(dplyr)
+debts <- data.frame(
+  name    = c("Card A", "Card B", "Card C"),
+  balance = c(1000, 5000, 2000),
+  apr     = c(0.18, 0.24, 0.15)
+)
+```
+
+```{webr}
+#| exercise: avalanche_1_r
+debts |>
+  arrange(desc(______)) |>
+  slice(1) |>
+  pull(name)
+```
+
+::: {.hint exercise="avalanche_1_r"}
+Sort by the `apr` column, highest first.
+:::
+
+::: {.solution exercise="avalanche_1_r"}
+```r
+debts |>
+  arrange(desc(apr)) |>
+  slice(1) |>
+  pull(name)
+```
+:::
+
+```{webr}
+#| exercise: avalanche_1_r
+#| check: true
+if (identical(as.character(.result), "Card B")) {
+  list(correct = TRUE, message = "Right: Card B at 24%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Sort by APR from highest to lowest.")
+}
+```
+
+:::
+
+### Level 2: Practice
+
+The snowball method pays the smallest balance first for a quick win. Which card is the first snowball target?
+
+::: panel-tabset
+
+#### Excel
+
+Find the card with the smallest balance.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=$E$1*C2/12
+=INDEX(A2:A4, MATCH(MIN(B2:B4), B2:B4, 0))
 ```
 
-## Python
+This returns Card A (\$1,000).
+:::
 
-```{python}
-#| label: avalanche-snowball-py
-# avalanche: highest APR first
+#### Python
+
+```{pyodide}
+#| exercise: avalanche_2_py
+#| setup: true
+import pandas as pd
+debts = pd.DataFrame({
+    "name": ["Card A", "Card B", "Card C"],
+    "balance": [1000, 5000, 2000],
+    "apr": [0.18, 0.24, 0.15]
+})
+```
+
+```{pyodide}
+#| exercise: avalanche_2_py
+______
+```
+
+::: {.hint exercise="avalanche_2_py"}
+Sort by `"balance"`, smallest first (the default), and take the first name.
+:::
+
+::: {.solution exercise="avalanche_2_py"}
+```python
+debts.sort_values("balance").iloc[0]["name"]
+```
+:::
+
+```{pyodide}
+#| exercise: avalanche_2_py
+#| check: true
+if result == 'Card A':
+    feedback = {"correct": True, "message": "Right: Card A, gone in a few months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Sort by balance, smallest first."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: avalanche_2_r
+#| setup: true
+library(dplyr)
+debts <- data.frame(
+  name    = c("Card A", "Card B", "Card C"),
+  balance = c(1000, 5000, 2000),
+  apr     = c(0.18, 0.24, 0.15)
+)
+```
+
+```{webr}
+#| exercise: avalanche_2_r
+______
+```
+
+::: {.hint exercise="avalanche_2_r"}
+`arrange(balance)` sorts smallest first. Then `slice(1)` and `pull(name)`.
+:::
+
+::: {.solution exercise="avalanche_2_r"}
+```r
+debts |>
+  arrange(balance) |>
+  slice(1) |>
+  pull(name)
+```
+:::
+
+```{webr}
+#| exercise: avalanche_2_r
+#| check: true
+if (identical(as.character(.result), "Card A")) {
+  list(correct = TRUE, message = "Right: Card A, gone in a few months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Sort by balance, smallest first.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+`payoff_sim()` pays the minimums (\$25, \$100, \$40) and sends the rest of a \$400 monthly budget to the first card in order. It returns the months and total interest. How much more interest does the snowball cost than the avalanche?
+
+::: panel-tabset
+
+#### Excel
+
+This one needs a month-by-month table. Build columns for each card's balance, interest, and payment for 26 rows, or skip to the Python or R tab.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The avalanche pays \$1,782.34 of interest over 25 months and the snowball \$2,120.62 over 26, so the snowball costs \$338.28 more.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: avalanche_3_py
+#| setup: true
 def order_avalanche(debts):
     return sorted(debts, key=lambda d: d["apr"], reverse=True)
 
-# snowball: smallest balance first
 def order_snowball(debts):
     return sorted(debts, key=lambda d: d["balance"])
 
-# your debts, as a list of small records
-debts = [
-    {"name": "Card A", "balance": 1000, "apr": 0.18},
-    {"name": "Card B", "balance": 5000, "apr": 0.24},
-    {"name": "Card C", "balance": 2000, "apr": 0.15},
-]
-
-print([d["name"] for d in order_avalanche(debts)])
-print([d["name"] for d in order_snowball(debts)])
-```
-
-Interest saved next month by an extra \$100 on each card:
-
-```{python}
-#| label: avalanche-snowball-py-saved
-{d["name"]: 100 * d["apr"] / 12 for d in debts}
-```
-
-Simulate both orders with \$400 a month and minimums of \$25, \$100, and \$40:
-
-```{python}
-#| label: avalanche-snowball-py-sim
 def payoff_sim(debts, budget, order_fn):
     d = order_fn(debts)
     bal = [x["balance"] for x in d]
@@ -958,51 +2554,52 @@ def payoff_sim(debts, budget, order_fn):
             amt = min(extra, bal[i])
             bal[i] -= amt
             extra -= amt
-    return months, round(interest, 2)
+    return {"months": months, "interest": round(interest, 2)}
 
-for d, m in zip(debts, [25, 100, 40]):
-    d["min_pay"] = m
-
-print("avalanche:", payoff_sim(debts, 400, order_avalanche))
-print("snowball: ", payoff_sim(debts, 400, order_snowball))
+debts = [
+    {"name": "Card A", "balance": 1000, "apr": 0.18, "min_pay": 25},
+    {"name": "Card B", "balance": 5000, "apr": 0.24, "min_pay": 100},
+    {"name": "Card C", "balance": 2000, "apr": 0.15, "min_pay": 40},
+]
 ```
 
-## R
-
-```{r}
-#| label: avalanche-snowball-r
-# avalanche: highest APR first
-order_avalanche <- function(debts) {
-  debts[order(-debts$apr), ]
-}
-
-# snowball: smallest balance first
-order_snowball <- function(debts) {
-  debts[order(debts$balance), ]
-}
-
-# your debts, as a small table
-debts <- data.frame(
-  name    = c("Card A", "Card B", "Card C"),
-  balance = c(1000, 5000, 2000),
-  apr     = c(0.18, 0.24, 0.15)
-)
-
-order_avalanche(debts)
-order_snowball(debts)
+```{pyodide}
+#| exercise: avalanche_3_py
+avalanche = payoff_sim(debts, 400, order_avalanche)
+snowball = payoff_sim(______)
+______
 ```
 
-Interest saved next month by an extra \$100 on each card:
+::: {.hint exercise="avalanche_3_py"}
+Pass `order_snowball` as the third argument. Each result is a dict, so use `["interest"]`.
+:::
 
-```{r}
-#| label: avalanche-snowball-r-saved
-setNames(100 * debts$apr / 12, debts$name)
+::: {.solution exercise="avalanche_3_py"}
+```python
+avalanche = payoff_sim(debts, 400, order_avalanche)
+snowball = payoff_sim(debts, 400, order_snowball)
+snowball["interest"] - avalanche["interest"]
+```
+:::
+
+```{pyodide}
+#| exercise: avalanche_3_py
+#| check: true
+if result is not None and abs(result - 338.28) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $338 more, and one extra month, for the motivation of a quick win."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the avalanche interest from the snowball interest."}
+feedback
 ```
 
-Simulate both orders with \$400 a month and minimums of \$25, \$100, and \$40:
+#### R
 
-```{r}
-#| label: avalanche-snowball-r-sim
+```{webr}
+#| exercise: avalanche_3_r
+#| setup: true
+order_avalanche <- function(debts) debts[order(-debts$apr), ]
+order_snowball  <- function(debts) debts[order(debts$balance), ]
+
 payoff_sim <- function(debts, budget, order_fn) {
   d <- order_fn(debts)
   bal <- d$balance
@@ -1025,11 +2622,41 @@ payoff_sim <- function(debts, budget, order_fn) {
   c(months = months, interest = round(interest, 2))
 }
 
-debts$min_pay <- c(25, 100, 40)
-rbind(
-  avalanche = payoff_sim(debts, budget = 400, order_fn = order_avalanche),
-  snowball  = payoff_sim(debts, budget = 400, order_fn = order_snowball)
+debts <- data.frame(
+  name    = c("Card A", "Card B", "Card C"),
+  balance = c(1000, 5000, 2000),
+  apr     = c(0.18, 0.24, 0.15),
+  min_pay = c(25, 100, 40)
 )
+```
+
+```{webr}
+#| exercise: avalanche_3_r
+avalanche <- payoff_sim(debts, 400, order_avalanche)
+snowball <- payoff_sim(______)
+______
+```
+
+::: {.hint exercise="avalanche_3_r"}
+Pass `order_snowball` as the third argument. Each result is a named vector, so use `["interest"]`.
+:::
+
+::: {.solution exercise="avalanche_3_r"}
+```r
+avalanche <- payoff_sim(debts, 400, order_avalanche)
+snowball <- payoff_sim(debts, 400, order_snowball)
+snowball["interest"] - avalanche["interest"]
+```
+:::
+
+```{webr}
+#| exercise: avalanche_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 338.28) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $338 more, and one extra month, for the motivation of a quick win.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the avalanche interest from the snowball interest.")
+}
 ```
 
 :::
@@ -1077,81 +2704,306 @@ ggplot(df_util, aes(x = "", y = amount, fill = component)) +
 
 Check each card and the total. A low total can hide one maxed out card. Closing an old card lowers your total limit, so the same balance shows a higher utilization.
 
+### Level 1: Guided
+
+Fill in the blanks to finish `credit_utilization()`, then find the utilization of a \$3,000 balance on a \$10,000 limit.
+
 ::: panel-tabset
-## Excel
 
-With balances in `B2:B4` and limits in `C2:C4`, per card utilization goes in `D2` (fill down):
+#### Excel
 
-```swift
-=B2/C2*100
-```
+Put the balance in `A2` (3000) and the limit in `B2` (10000). Find utilization in `C2`.
 
-Overall utilization:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=SUM(B2:B4)/SUM(C2:C4)*100
+=A2 / B2 * 100
 ```
 
-Flag any card over 30%:
+This returns 30, right at the threshold.
+:::
 
-```swift
-=IF(D2>30, "Over 30%", "OK")
+#### Python
+
+```{pyodide}
+#| exercise: util_1_py
+def credit_utilization(balance, credit_limit):
+    return (______ / ______) * 100
+
+credit_utilization(3000, 10000)
 ```
 
-## Python
+::: {.hint exercise="util_1_py"}
+Balance divided by limit.
+:::
 
-```{python}
-#| label: utilization-py
+::: {.solution exercise="util_1_py"}
+```python
 def credit_utilization(balance, credit_limit):
     return (balance / credit_limit) * 100
 
-# $3,000 balance on a $10,000 limit
-credit_utilization(balance=3000, credit_limit=10000)
+credit_utilization(3000, 10000)
+```
+:::
+
+```{pyodide}
+#| exercise: util_1_py
+#| check: true
+if result is not None and abs(result - 30) < 0.001:
+    feedback = {"correct": True, "message": "Right: 30%, right at the threshold."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the balance by the limit."}
+feedback
 ```
 
-Per card and overall, for three cards:
+#### R
 
-```{python}
-#| label: utilization-py-table
-cards = {"Card A": (300, 5000), "Card B": (2700, 3000), "Card C": (0, 7000)}
-for name, (bal, lim) in cards.items():
-    print(f"{name}: {credit_utilization(bal, lim):.0f}%")
-
-total_bal = sum(b for b, _ in cards.values())
-total_lim = sum(l for _, l in cards.values())
-print(f"Overall: {credit_utilization(total_bal, total_lim):.0f}%")
-print(f"Overall without Card C: {credit_utilization(total_bal, total_lim - 7000):.1f}%")
+```{webr}
+#| exercise: util_1_r
+credit_utilization <- function(balance, credit_limit) {
+  (______ / ______) * 100
+}
+credit_utilization(3000, 10000)
 ```
 
-## R
+::: {.hint exercise="util_1_r"}
+Balance divided by limit.
+:::
 
-```{r}
-#| label: utilization-r
+::: {.solution exercise="util_1_r"}
+```r
 credit_utilization <- function(balance, credit_limit) {
   (balance / credit_limit) * 100
 }
+credit_utilization(3000, 10000)
+```
+:::
 
-# $3,000 balance on a $10,000 limit
-credit_utilization(balance = 3000, credit_limit = 10000)
+```{webr}
+#| exercise: util_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 30) < 0.001)) {
+  list(correct = TRUE, message = "Right: 30%, right at the threshold.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the balance by the limit.")
+}
 ```
 
-Per card and overall, for three cards:
+:::
 
-```{r}
-#| label: utilization-r-table
+### Level 2: Practice
+
+Three cards: Card A \$300 of \$5,000, Card B \$2,700 of \$3,000, and Card C \$0 of \$7,000. What is the overall utilization?
+
+::: panel-tabset
+
+#### Excel
+
+With balances in `B2:B4` and limits in `C2:C4`, find the overall utilization.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUM(B2:B4) / SUM(C2:C4) * 100
+```
+
+This returns 20, even though Card B alone is at 90%.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: util_2_py
+#| setup: true
+def credit_utilization(balance, credit_limit):
+    return (balance / credit_limit) * 100
+
+import pandas as pd
+cards = pd.DataFrame({
+    "card": ["Card A", "Card B", "Card C"],
+    "balance": [300, 2700, 0],
+    "limit": [5000, 3000, 7000]
+})
+```
+
+```{pyodide}
+#| exercise: util_2_py
+credit_utilization(______, ______)
+```
+
+::: {.hint exercise="util_2_py"}
+Add up the `balance` column and the `limit` column first.
+:::
+
+::: {.solution exercise="util_2_py"}
+```python
+credit_utilization(cards["balance"].sum(), cards["limit"].sum())
+```
+:::
+
+```{pyodide}
+#| exercise: util_2_py
+#| check: true
+if result is not None and abs(result - 20) < 0.001:
+    feedback = {"correct": True, "message": "Right: 20% overall, even with Card B at 90%."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Total the balances and the limits, then divide."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: util_2_r
+#| setup: true
+library(dplyr)
+credit_utilization <- function(balance, credit_limit) {
+  (balance / credit_limit) * 100
+}
 cards <- data.frame(
   card    = c("Card A", "Card B", "Card C"),
   balance = c(300, 2700, 0),
   limit   = c(5000, 3000, 7000)
 )
-cards$utilization <- credit_utilization(cards$balance, cards$limit)
-cards
+```
 
-# overall
-credit_utilization(sum(cards$balance), sum(cards$limit))
+```{webr}
+#| exercise: util_2_r
+cards |>
+  summarise(overall = credit_utilization(______, ______)) |>
+  pull(overall)
+```
 
-# overall if Card C (the $7,000 limit) is closed
-credit_utilization(sum(cards$balance), sum(cards$limit[1:2]))
+::: {.hint exercise="util_2_r"}
+Add up the `balance` column and the `limit` column first.
+:::
+
+::: {.solution exercise="util_2_r"}
+```r
+cards |>
+  summarise(overall = credit_utilization(sum(balance), sum(limit))) |>
+  pull(overall)
+```
+:::
+
+```{webr}
+#| exercise: util_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 20) < 0.001)) {
+  list(correct = TRUE, message = "Right: 20% overall, even with Card B at 90%.")
+} else {
+  list(correct = FALSE, message = "Not quite. Total the balances and the limits, then divide.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+You never use Card C, so you're tempted to close it. What would your overall utilization be without its \$7,000 limit?
+
+::: panel-tabset
+
+#### Excel
+
+Find the overall utilization using only Cards A and B.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUM(B2:B4) / SUM(C2:C3) * 100
+```
+
+This returns 37.5, over the 30% line. Closing an unused card can hurt your score.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: util_3_py
+#| setup: true
+def credit_utilization(balance, credit_limit):
+    return (balance / credit_limit) * 100
+
+import pandas as pd
+cards = pd.DataFrame({
+    "card": ["Card A", "Card B", "Card C"],
+    "balance": [300, 2700, 0],
+    "limit": [5000, 3000, 7000]
+})
+```
+
+```{pyodide}
+#| exercise: util_3_py
+# drop Card C, then find the overall utilization
+```
+
+::: {.hint exercise="util_3_py"}
+Keep the other rows with `cards[cards["card"] != "Card C"]`, then total balances and limits.
+:::
+
+::: {.solution exercise="util_3_py"}
+```python
+open_cards = cards[cards["card"] != "Card C"]
+credit_utilization(open_cards["balance"].sum(), open_cards["limit"].sum())
+```
+:::
+
+```{pyodide}
+#| exercise: util_3_py
+#| check: true
+if result is not None and abs(result - 37.5) < 0.001:
+    feedback = {"correct": True, "message": "Right: 37.5%. Closing an unused card raises utilization."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Remove Card C's limit, keep the same balances."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: util_3_r
+#| setup: true
+library(dplyr)
+credit_utilization <- function(balance, credit_limit) {
+  (balance / credit_limit) * 100
+}
+cards <- data.frame(
+  card    = c("Card A", "Card B", "Card C"),
+  balance = c(300, 2700, 0),
+  limit   = c(5000, 3000, 7000)
+)
+```
+
+```{webr}
+#| exercise: util_3_r
+# drop Card C, then find the overall utilization
+```
+
+::: {.hint exercise="util_3_r"}
+`filter(card != "Card C")`, then `summarise()` with the sums.
+:::
+
+::: {.solution exercise="util_3_r"}
+```r
+cards |>
+  filter(card != "Card C") |>
+  summarise(overall = credit_utilization(sum(balance), sum(limit))) |>
+  pull(overall)
+```
+:::
+
+```{webr}
+#| exercise: util_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 37.5) < 0.001)) {
+  list(correct = TRUE, message = "Right: 37.5%. Closing an unused card raises utilization.")
+} else {
+  list(correct = FALSE, message = "Not quite. Remove Card C's limit, keep the same balances.")
+}
 ```
 
 :::

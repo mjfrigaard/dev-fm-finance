@@ -48,7 +48,7 @@ website:
           - r_vs_py.qmd
 
 format:
-  html:
+  live-html:
     theme:
       light: [flatly, custom.scss, terminal.scss, light.scss]
       dark: [darkly, custom.scss, terminal.scss, dark.scss]

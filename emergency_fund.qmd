@@ -1,6 +1,15 @@
 ---
 title: "Emergency Fund"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -62,111 +77,325 @@ ggplot(df_target, aes(x = months, y = target, fill = months)) +
         panel.grid.minor = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `emergency_fund_target()`, then find the target for \$3,500 of essential expenses and 4 months of coverage.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming essential monthly expenses are in cell `A2` and the number of months is in `B2`:
+Put essential expenses in `A2` (3500) and months in `B2` (4). Find the target in `C2`.
 
-``` swift
-=A2*B2
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=A2 * B2
 ```
 
-To build the baseline, list essential categories in `D2:D7` with amounts in `E2:E7`, and put `=SUM(E2:E7)` in `A2`.
+This returns \$14,000.
+:::
 
-For a grid, put expense levels down `A5:A7` and months across `B4:E4`. In `B5`, enter the formula below and fill right and down:
+#### Python
 
-``` swift
-=$A5*B$4
+```{pyodide}
+#| exercise: target_1_py
+def emergency_fund_target(monthly_expenses, months=3):
+    return ______ * ______
+
+emergency_fund_target(3500, months=4)
 ```
 
-## Python
+::: {.hint exercise="target_1_py"}
+One block of expenses for every month you want covered.
+:::
 
-The Python version of `emergency_fund_target()` works the same way.
-
-```{python}
-#| label: ef-target-py
+::: {.solution exercise="target_1_py"}
+```python
 def emergency_fund_target(monthly_expenses, months=3):
     return monthly_expenses * months
 
-print(emergency_fund_target(monthly_expenses=3500, months=3))
-print(emergency_fund_target(monthly_expenses=3500, months=4))
-print(emergency_fund_target(monthly_expenses=3500, months=6))
+emergency_fund_target(3500, months=4)
+```
+:::
+
+```{pyodide}
+#| exercise: target_1_py
+#| check: true
+if result is not None and abs(result - 14000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $14,000 covers 4 months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply monthly expenses by months."}
+feedback
 ```
 
-Build the essential expenses number from its parts first.
+#### R
 
-```{python}
-#| label: ef-target-py-baseline
-essentials = {"housing": 1600, "groceries": 550, "utilities": 300,
-              "transportation": 600, "health": 250, "min_debt": 200}
-sum(essentials.values())
+```{webr}
+#| exercise: target_1_r
+emergency_fund_target <- function(monthly_expenses, months = 3) {
+  ______ * ______
+}
+emergency_fund_target(3500, months = 4)
 ```
 
-Every combination of expense level and months.
+::: {.hint exercise="target_1_r"}
+One block of expenses for every month you want covered.
+:::
 
-```{python}
-#| label: ef-target-py-grid
-expenses = [2500, 3500, 5000]
-months = [3, 4, 6, 9]
-print("           " + "".join(f"{m:>9} mo" for m in months))
-for e in expenses:
-    row = "".join(f"{emergency_fund_target(e, m):>12,}" for m in months)
-    print(f"${e:,}/mo  {row}")
-```
-
-Sanity check: the \$1,000 starter fund covers well under one month of essentials.
-
-```{python}
-#| label: ef-target-py-check
-round(1000 / 3500, 2)
-```
-
-How to read this: pick your row by essential expenses and your column by risk. A stable, single household spending \$3,500 might choose 4 months (\$14,000); a self-employed one might choose 9 (\$31,500).
-
-## R
-
-`emergency_fund_target()` multiplies essential monthly expenses by the months you want covered.
-
-```{r}
-#| label: ef-target-r
+::: {.solution exercise="target_1_r"}
+```r
 emergency_fund_target <- function(monthly_expenses, months = 3) {
   monthly_expenses * months
 }
+emergency_fund_target(3500, months = 4)
+```
+:::
 
-emergency_fund_target(monthly_expenses = 3500, months = 3)
-emergency_fund_target(monthly_expenses = 3500, months = 4)
-emergency_fund_target(monthly_expenses = 3500, months = 6)
+```{webr}
+#| exercise: target_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 14000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $14,000 covers 4 months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply monthly expenses by months.")
+}
 ```
 
-Build the essential expenses number from its parts first. These categories match the book's baseline table.
+:::
 
-```{r}
-#| label: ef-target-r-baseline
-essentials <- c(housing = 1600, groceries = 550, utilities = 300,
-                transportation = 600, health = 250, min_debt = 200)
-sum(essentials)
+### Level 2: Practice
+
+Build the essential expenses from the book's baseline (housing \$1,600, groceries \$550, utilities \$300, transportation \$600, health \$250, minimum debt payments \$200), then find a 6-month target.
+
+::: panel-tabset
+
+#### Excel
+
+Put the categories in `A2:A7` and amounts in `B2:B7`. Find the 6-month target in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUM(B2:B7) * 6
 ```
 
-Different households land in different places on the risk chart. `outer()` shows every combination of expense level and months.
+Essentials total \$3,500, so the target is \$21,000.
+:::
 
-```{r}
-#| label: ef-target-r-grid
-expenses <- c(2500, 3500, 5000)
-months   <- c(3, 4, 6, 9)
-grid <- outer(expenses, months, emergency_fund_target)
-dimnames(grid) <- list(paste0("$", expenses, "/mo"), paste(months, "mo"))
-grid
+#### Python
+
+```{pyodide}
+#| exercise: target_2_py
+#| setup: true
+def emergency_fund_target(monthly_expenses, months=3):
+    return monthly_expenses * months
+
+import pandas as pd
+essentials = pd.DataFrame({
+    "category": ["Housing", "Groceries", "Utilities", "Transportation", "Health", "Minimum debt"],
+    "amount": [1600, 550, 300, 600, 250, 200]
+})
 ```
 
-Sanity check: the \$1,000 starter fund covers well under one month of essentials, which is why it is a first step and not the finish line.
-
-```{r}
-#| label: ef-target-r-check
-1000 / 3500
+```{pyodide}
+#| exercise: target_2_py
+monthly = ______
+emergency_fund_target(monthly, months=6)
 ```
 
-How to read this: pick your row by essential expenses and your column by risk. A stable, single household spending \$3,500 might choose 4 months (\$14,000); a self-employed one might choose 9 (\$31,500).
+::: {.hint exercise="target_2_py"}
+Add up the `amount` column with `.sum()`.
+:::
+
+::: {.solution exercise="target_2_py"}
+```python
+monthly = essentials["amount"].sum()
+emergency_fund_target(monthly, months=6)
+```
+:::
+
+```{pyodide}
+#| exercise: target_2_py
+#| check: true
+if result is not None and abs(result - 21000) < 0.01:
+    feedback = {"correct": True, "message": "Right: $3,500 of essentials, $21,000 for 6 months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Total the six categories, then multiply by 6."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: target_2_r
+#| setup: true
+library(dplyr)
+emergency_fund_target <- function(monthly_expenses, months = 3) {
+  monthly_expenses * months
+}
+essentials <- data.frame(
+  category = c("Housing", "Groceries", "Utilities", "Transportation", "Health", "Minimum debt"),
+  amount   = c(1600, 550, 300, 600, 250, 200)
+)
+```
+
+```{webr}
+#| exercise: target_2_r
+essentials |>
+  summarise(monthly = ______) |>
+  mutate(target = emergency_fund_target(monthly, months = 6)) |>
+  pull(target)
+```
+
+::: {.hint exercise="target_2_r"}
+Add up the `amount` column with `sum()`.
+:::
+
+::: {.solution exercise="target_2_r"}
+```r
+essentials |>
+  summarise(monthly = sum(amount)) |>
+  mutate(target = emergency_fund_target(monthly, months = 6)) |>
+  pull(target)
+```
+:::
+
+```{webr}
+#| exercise: target_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 21000) < 0.01)) {
+  list(correct = TRUE, message = "Right: $3,500 of essentials, $21,000 for 6 months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Total the six categories, then multiply by 6.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Risk sets the months: stable income needs 4, dependents need 6, and self-employed income needs 9. Find the target for each household below.
+
+| Household | Essentials | Situation |
+| :--- | ---: | :--- |
+| A | \$2,500 | Stable |
+| B | \$3,500 | Dependents |
+| C | \$5,000 | Self-employed |
+
+::: panel-tabset
+
+#### Excel
+
+Put essentials in `B2:B4` and the situation in `C2:C4`. Find each target in `D`.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `D2`, then fill down:
+
+```swift
+=B2 * SWITCH(C2, "Stable", 4, "Dependents", 6, "Self-employed", 9)
+```
+
+The targets are \$10,000, \$21,000, and \$45,000.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: target_3_py
+#| setup: true
+def emergency_fund_target(monthly_expenses, months=3):
+    return monthly_expenses * months
+
+import numpy as np
+import pandas as pd
+households = pd.DataFrame({
+    "household": ["A", "B", "C"],
+    "essentials": [2500, 3500, 5000],
+    "situation": ["Stable", "Dependents", "Self-employed"]
+})
+```
+
+```{pyodide}
+#| exercise: target_3_py
+# add a months column from the situation, then the target
+```
+
+::: {.hint exercise="target_3_py"}
+`households["situation"].map({"Stable": 4, "Dependents": 6, "Self-employed": 9})` turns each label into months. Return the target column as a list with `.tolist()`.
+:::
+
+::: {.solution exercise="target_3_py"}
+```python
+households["months"] = households["situation"].map({"Stable": 4, "Dependents": 6, "Self-employed": 9})
+households["target"] = emergency_fund_target(households["essentials"], households["months"])
+households["target"].tolist()
+```
+:::
+
+```{pyodide}
+#| exercise: target_3_py
+#| check: true
+if result == [10000, 21000, 45000]:
+    feedback = {"correct": True, "message": "Right: $10,000, $21,000, and $45,000. Risk matters as much as spending."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Stable is 4 months, dependents 6, self-employed 9."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: target_3_r
+#| setup: true
+library(dplyr)
+emergency_fund_target <- function(monthly_expenses, months = 3) {
+  monthly_expenses * months
+}
+households <- data.frame(
+  household  = c("A", "B", "C"),
+  essentials = c(2500, 3500, 5000),
+  situation  = c("Stable", "Dependents", "Self-employed")
+)
+```
+
+```{webr}
+#| exercise: target_3_r
+# add a months column from the situation, then the target
+```
+
+::: {.hint exercise="target_3_r"}
+Inside `mutate()`, use `case_when(situation == "Stable" ~ 4, ...)` for months, then `emergency_fund_target(essentials, months)`. Finish with `pull(target)`.
+:::
+
+::: {.solution exercise="target_3_r"}
+```r
+households |>
+  mutate(
+    months = case_when(
+      situation == "Stable" ~ 4,
+      situation == "Dependents" ~ 6,
+      situation == "Self-employed" ~ 9
+    ),
+    target = emergency_fund_target(essentials, months)
+  ) |>
+  pull(target)
+```
+:::
+
+```{webr}
+#| exercise: target_3_r
+#| check: true
+if (isTRUE(all.equal(as.numeric(.result), c(10000, 21000, 45000)))) {
+  list(correct = TRUE, message = "Right: $10,000, $21,000, and $45,000. Risk matters as much as spending.")
+} else {
+  list(correct = FALSE, message = "Not quite. Stable is 4 months, dependents 6, self-employed 9.")
+}
+```
 
 :::
 
@@ -203,89 +432,288 @@ ggplot(df_gap, aes(x = amount, y = bar, fill = part)) +
         panel.grid.minor = element_blank(), axis.text.y = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `months_to_ef_goal()`, then find how long it takes to reach \$14,000 with \$2,000 saved and \$500 a month.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming the target is in `A2`, your current balance is in `B2`, and your monthly contribution is in `C2`:
+Put the target in `A2` (14000), the balance in `B2` (2000), and the contribution in `C2` (500). Find the whole months in `D2`.
 
-``` swift
-=ROUNDUP(MAX(0, A2-B2)/C2, 0)
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=ROUNDUP(MAX(0, A2 - B2) / C2, 0)
 ```
 
-To compare contributions, keep the target in `A2` and balance in `B2`, list contributions down `C2:C5`, and in `D2` enter the formula below and fill down:
+This returns 24.
+:::
 
-``` swift
-=ROUNDUP(MAX(0, $A$2-$B$2)/C2, 0)
-```
+#### Python
 
-## Python
-
-The Python version of `months_to_ef_goal()` works the same way.
-
-```{python}
-#| label: ef-months-py
+```{pyodide}
+#| exercise: months_1_py
 import math
+def months_to_ef_goal(target, current_balance, monthly_contribution):
+    remaining = max(0, ______ - ______)
+    return math.ceil(remaining / monthly_contribution)
 
+months_to_ef_goal(14000, 2000, 500)
+```
+
+::: {.hint exercise="months_1_py"}
+What's left is the target minus what you already have.
+:::
+
+::: {.solution exercise="months_1_py"}
+```python
+import math
 def months_to_ef_goal(target, current_balance, monthly_contribution):
     remaining = max(0, target - current_balance)
     return math.ceil(remaining / monthly_contribution)
 
-print(months_to_ef_goal(target=14000, current_balance=2000, monthly_contribution=500))
+months_to_ef_goal(14000, 2000, 500)
+```
+:::
+
+```{pyodide}
+#| exercise: months_1_py
+#| check: true
+if result is not None and abs(result - 24) < 0.001:
+    feedback = {"correct": True, "message": "Right: 24 months, two years."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the current balance from the target."}
+feedback
 ```
 
-Compare several contribution levels.
+#### R
 
-```{python}
-#| label: ef-months-py-table
-for c in [300, 500, 750, 1000]:
-    print(f"${c:>5,}/month -> {months_to_ef_goal(14000, 2000, c):>3} months")
+```{webr}
+#| exercise: months_1_r
+months_to_ef_goal <- function(target, current_balance, monthly_contribution) {
+  remaining <- max(0, ______ - ______)
+  ceiling(remaining / monthly_contribution)
+}
+months_to_ef_goal(14000, 2000, 500)
 ```
 
-Edge cases: a full fund needs 0 months, and an uneven gap needs one extra, smaller final month.
+::: {.hint exercise="months_1_r"}
+What's left is the target minus what you already have.
+:::
 
-```{python}
-#| label: ef-months-py-edge
-print(months_to_ef_goal(14000, 15000, 500))
-print(months_to_ef_goal(14000, 1900, 500))
-```
-
-How to read this: going from \$500 to \$1,000 a month cuts 24 months to 12. Doubling the contribution halves the wait.
-
-## R
-
-`months_to_ef_goal()` subtracts what you have saved from the target, divides by the contribution, and rounds up to whole months.
-
-```{r}
-#| label: ef-months-r
+::: {.solution exercise="months_1_r"}
+```r
 months_to_ef_goal <- function(target, current_balance, monthly_contribution) {
   remaining <- max(0, target - current_balance)
   ceiling(remaining / monthly_contribution)
 }
+months_to_ef_goal(14000, 2000, 500)
+```
+:::
 
-months_to_ef_goal(target = 14000, current_balance = 2000, monthly_contribution = 500)
+```{webr}
+#| exercise: months_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 24) < 0.001)) {
+  list(correct = TRUE, message = "Right: 24 months, two years.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the current balance from the target.")
+}
 ```
 
-Compare the three contribution levels from the book's building chart. `max()` is not vectorized over targets, but the contribution argument is, so this works directly.
+:::
 
-```{r}
-#| label: ef-months-r-table
-contributions <- c(300, 500, 750, 1000)
-data.frame(
-  contribution = contributions,
-  months       = months_to_ef_goal(14000, 2000, contributions)
-)
+### Level 2: Practice
+
+Double the contribution to \$1,000 a month. How many months now?
+
+::: panel-tabset
+
+#### Excel
+
+Change `C2` to 1000.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns 12. Doubling the contribution halves the wait.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: months_2_py
+#| setup: true
+import math
+def months_to_ef_goal(target, current_balance, monthly_contribution):
+    remaining = max(0, target - current_balance)
+    return math.ceil(remaining / monthly_contribution)
 ```
 
-Edge cases: a fund that is already full needs 0 months, and a gap that does not divide evenly needs one extra, smaller final month.
-
-```{r}
-#| label: ef-months-r-edge
-months_to_ef_goal(14000, current_balance = 15000, monthly_contribution = 500)
-months_to_ef_goal(14000, current_balance = 1900, monthly_contribution = 500)
+```{pyodide}
+#| exercise: months_2_py
+months_to_ef_goal(______)
 ```
 
-How to read this: going from \$500 to \$1,000 a month cuts 24 months to 12. Doubling the contribution halves the wait.
+::: {.hint exercise="months_2_py"}
+Same target and balance, new contribution.
+:::
+
+::: {.solution exercise="months_2_py"}
+```python
+months_to_ef_goal(14000, 2000, 1000)
+```
+:::
+
+```{pyodide}
+#| exercise: months_2_py
+#| check: true
+if result is not None and abs(result - 12) < 0.001:
+    feedback = {"correct": True, "message": "Right: 12 months. Double the contribution, half the wait."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use a $1,000 contribution."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: months_2_r
+#| setup: true
+months_to_ef_goal <- function(target, current_balance, monthly_contribution) {
+  remaining <- max(0, target - current_balance)
+  ceiling(remaining / monthly_contribution)
+}
+```
+
+```{webr}
+#| exercise: months_2_r
+months_to_ef_goal(______)
+```
+
+::: {.hint exercise="months_2_r"}
+Same target and balance, new contribution.
+:::
+
+::: {.solution exercise="months_2_r"}
+```r
+months_to_ef_goal(14000, 2000, 1000)
+```
+:::
+
+```{webr}
+#| exercise: months_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 12) < 0.001)) {
+  list(correct = TRUE, message = "Right: 12 months. Double the contribution, half the wait.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use a $1,000 contribution.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+You want the \$14,000 fund done in 18 months or less, starting from \$2,000. Contributions come in \$50 steps from \$300 to \$1,000. What is the smallest one that finishes in time?
+
+::: panel-tabset
+
+#### Excel
+
+Put \$300 to \$1,000 in steps of 50 in `A5:A19`, the months for each in `B5:B19`, and find the smallest contribution that takes 18 months or less.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B5`, filled down: `=ROUNDUP((14000-2000)/A5, 0)`. Then:
+
+```swift
+=MINIFS(A5:A19, B5:B19, "<=18")
+```
+
+The answer is \$700 (18 months; \$650 takes 19).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: months_3_py
+#| setup: true
+import math
+def months_to_ef_goal(target, current_balance, monthly_contribution):
+    remaining = max(0, target - current_balance)
+    return math.ceil(remaining / monthly_contribution)
+```
+
+```{pyodide}
+#| exercise: months_3_py
+contributions = range(300, 1001, 50)
+# find the smallest contribution that takes 18 months or less
+```
+
+::: {.hint exercise="months_3_py"}
+Use `min(c for c in contributions if months_to_ef_goal(14000, 2000, c) <= 18)`.
+:::
+
+::: {.solution exercise="months_3_py"}
+```python
+contributions = range(300, 1001, 50)
+min(c for c in contributions if months_to_ef_goal(14000, 2000, c) <= 18)
+```
+:::
+
+```{pyodide}
+#| exercise: months_3_py
+#| check: true
+if result is not None and abs(result - 700) < 0.001:
+    feedback = {"correct": True, "message": "Right: $700 a month. $650 would take 19 months."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Keep contributions that finish in 18 months or less, then take the smallest."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: months_3_r
+#| setup: true
+months_to_ef_goal <- function(target, current_balance, monthly_contribution) {
+  remaining <- max(0, target - current_balance)
+  ceiling(remaining / monthly_contribution)
+}
+```
+
+```{webr}
+#| exercise: months_3_r
+contributions <- seq(300, 1000, by = 50)
+# find the smallest contribution that takes 18 months or less
+```
+
+::: {.hint exercise="months_3_r"}
+The contribution argument is vectorized, so `months_to_ef_goal(14000, 2000, contributions)` gives all the months at once. Then `min(contributions[...])`.
+:::
+
+::: {.solution exercise="months_3_r"}
+```r
+contributions <- seq(300, 1000, by = 50)
+months <- months_to_ef_goal(14000, 2000, contributions)
+min(contributions[months <= 18])
+```
+:::
+
+```{webr}
+#| exercise: months_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 700) < 0.001)) {
+  list(correct = TRUE, message = "Right: $700 a month. $650 would take 19 months.")
+} else {
+  list(correct = FALSE, message = "Not quite. Keep contributions that finish in 18 months or less, then take the smallest.")
+}
+```
 
 :::
 
@@ -322,88 +750,280 @@ ggplot(df_slices, aes(x = amount, y = bar, fill = fill, group = slice)) +
         axis.text.y = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `monthly_contribution_needed()`, then find the monthly amount to build \$14,000 in 18 months with \$2,000 saved.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming the target is in `A2`, your current balance is in `B2`, and the number of months is in `C2`:
+Put the target in `A2` (14000), the balance in `B2` (2000), and the months in `C2` (18). Find the monthly amount in `D2`, rounded up to the dollar.
 
-``` swift
-=ROUNDUP(MAX(0, A2-B2)/C2, 0)
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=ROUNDUP(MAX(0, A2 - B2) / C2, 0)
 ```
 
-To compare deadlines, list months down `C2:C5` and in `D2` enter the formula below and fill down:
+This returns \$667.
+:::
 
-``` swift
-=ROUNDUP(MAX(0, $A$2-$B$2)/C2, 0)
-```
+#### Python
 
-## Python
-
-The Python version of `monthly_contribution_needed()` works the same way.
-
-```{python}
-#| label: ef-contrib-py
+```{pyodide}
+#| exercise: contrib_1_py
 import math
+def monthly_contribution_needed(target, current_balance, months):
+    remaining = max(0, target - current_balance)
+    return math.ceil(______ / ______)
 
+monthly_contribution_needed(14000, 2000, 18)
+```
+
+::: {.hint exercise="contrib_1_py"}
+Split what's left evenly across the months.
+:::
+
+::: {.solution exercise="contrib_1_py"}
+```python
+import math
 def monthly_contribution_needed(target, current_balance, months):
     remaining = max(0, target - current_balance)
     return math.ceil(remaining / months)
 
-print(monthly_contribution_needed(target=14000, current_balance=2000, months=18))
+monthly_contribution_needed(14000, 2000, 18)
+```
+:::
+
+```{pyodide}
+#| exercise: contrib_1_py
+#| check: true
+if result is not None and abs(result - 667) < 0.001:
+    feedback = {"correct": True, "message": "Right: $667 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide what's left by the months."}
+feedback
 ```
 
-Compare a few deadlines.
+#### R
 
-```{python}
-#| label: ef-contrib-py-table
-for m in [12, 18, 24, 36]:
-    print(f"{m:>2} months -> ${monthly_contribution_needed(14000, 2000, m):,}/month")
+```{webr}
+#| exercise: contrib_1_r
+monthly_contribution_needed <- function(target, current_balance, months) {
+  remaining <- max(0, target - current_balance)
+  ceiling(______ / ______)
+}
+monthly_contribution_needed(14000, 2000, 18)
 ```
 
-Sanity check: 18 payments of \$667 slightly overshoot the \$12,000 gap.
+::: {.hint exercise="contrib_1_r"}
+Split what's left evenly across the months.
+:::
 
-```{python}
-#| label: ef-contrib-py-check
-print(667 * 18, math.ceil(12000 / 667))
-```
-
-How to read this: if \$667 does not fit your budget, stretch the deadline. Moving from 18 to 24 months drops the payment to \$500.
-
-## R
-
-`monthly_contribution_needed()` flips the question: given a deadline, it returns the monthly amount, rounded up to the next dollar.
-
-```{r}
-#| label: ef-contrib-r
+::: {.solution exercise="contrib_1_r"}
+```r
 monthly_contribution_needed <- function(target, current_balance, months) {
   remaining <- max(0, target - current_balance)
   ceiling(remaining / months)
 }
+monthly_contribution_needed(14000, 2000, 18)
+```
+:::
 
-monthly_contribution_needed(target = 14000, current_balance = 2000, months = 18)
+```{webr}
+#| exercise: contrib_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 667) < 0.001)) {
+  list(correct = TRUE, message = "Right: $667 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide what's left by the months.")
+}
 ```
 
-Compare a few deadlines.
+:::
 
-```{r}
-#| label: ef-contrib-r-table
-deadlines <- c(12, 18, 24, 36)
-data.frame(
-  months  = deadlines,
-  monthly = monthly_contribution_needed(14000, 2000, deadlines)
-)
+### Level 2: Practice
+
+\$667 doesn't fit the budget. Stretch the deadline to 24 months. What is the monthly amount now?
+
+::: panel-tabset
+
+#### Excel
+
+Change `C2` to 24.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$500.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: contrib_2_py
+#| setup: true
+import math
+def monthly_contribution_needed(target, current_balance, months):
+    remaining = max(0, target - current_balance)
+    return math.ceil(remaining / months)
 ```
 
-Sanity check: rounding up means 18 payments of \$667 slightly overshoot the \$12,000 gap, so you finish on time.
-
-```{r}
-#| label: ef-contrib-r-check
-667 * 18
-ceiling(12000 / 667)
+```{pyodide}
+#| exercise: contrib_2_py
+monthly_contribution_needed(______)
 ```
 
-How to read this: if \$667 does not fit your budget, stretch the deadline. Moving from 18 to 24 months drops the payment to \$500.
+::: {.hint exercise="contrib_2_py"}
+Same target and balance, 24 months.
+:::
+
+::: {.solution exercise="contrib_2_py"}
+```python
+monthly_contribution_needed(14000, 2000, 24)
+```
+:::
+
+```{pyodide}
+#| exercise: contrib_2_py
+#| check: true
+if result is not None and abs(result - 500) < 0.001:
+    feedback = {"correct": True, "message": "Right: $500 a month. Six more months saves $167 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 24 months."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: contrib_2_r
+#| setup: true
+monthly_contribution_needed <- function(target, current_balance, months) {
+  remaining <- max(0, target - current_balance)
+  ceiling(remaining / months)
+}
+```
+
+```{webr}
+#| exercise: contrib_2_r
+monthly_contribution_needed(______)
+```
+
+::: {.hint exercise="contrib_2_r"}
+Same target and balance, 24 months.
+:::
+
+::: {.solution exercise="contrib_2_r"}
+```r
+monthly_contribution_needed(14000, 2000, 24)
+```
+:::
+
+```{webr}
+#| exercise: contrib_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 500) < 0.001)) {
+  list(correct = TRUE, message = "Right: $500 a month. Six more months saves $167 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 24 months.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+The fund sits in a 4.5% high-yield account while you build it, so interest does some of the work. Write `contribution_with_interest(target, current_balance, annual_rate, months)` and find the monthly amount to reach \$14,000 in 18 months from \$2,000. The formula is (Target − Balance × (1 + r)^n) × r ÷ ((1 + r)^n − 1), with r = annual rate ÷ 12.
+
+::: panel-tabset
+
+#### Excel
+
+Find the monthly amount in one formula.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=PMT(4.5%/12, 18, -2000, 14000)
+```
+
+This returns about \$638.17, about \$29 a month less than ignoring interest. (Excel shows it as negative because it is money leaving your pocket.)
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: contrib_3_py
+def contribution_with_interest(target, current_balance, annual_rate, months):
+    # your code here
+    pass
+
+contribution_with_interest(14000, 2000, 0.045, 18)
+```
+
+::: {.hint exercise="contrib_3_py"}
+Set `monthly_rate = annual_rate / 12` and `growth = (1 + monthly_rate) ** months`, then return `(target - current_balance * growth) * monthly_rate / (growth - 1)`.
+:::
+
+::: {.solution exercise="contrib_3_py"}
+```python
+def contribution_with_interest(target, current_balance, annual_rate, months):
+    monthly_rate = annual_rate / 12
+    growth = (1 + monthly_rate) ** months
+    return (target - current_balance * growth) * monthly_rate / (growth - 1)
+
+contribution_with_interest(14000, 2000, 0.045, 18)
+```
+:::
+
+```{pyodide}
+#| exercise: contrib_3_py
+#| check: true
+if result is not None and abs(result - 638.168519) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $638, so interest covers about $29 a month."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Grow the starting balance too, and use the monthly rate."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: contrib_3_r
+contribution_with_interest <- function(target, current_balance, annual_rate, months) {
+  # your code here
+}
+contribution_with_interest(14000, 2000, 0.045, 18)
+```
+
+::: {.hint exercise="contrib_3_r"}
+Set `monthly_rate <- annual_rate / 12` and `growth <- (1 + monthly_rate)^months`, then return `(target - current_balance * growth) * monthly_rate / (growth - 1)`.
+:::
+
+::: {.solution exercise="contrib_3_r"}
+```r
+contribution_with_interest <- function(target, current_balance, annual_rate, months) {
+  monthly_rate <- annual_rate / 12
+  growth <- (1 + monthly_rate)^months
+  (target - current_balance * growth) * monthly_rate / (growth - 1)
+}
+contribution_with_interest(14000, 2000, 0.045, 18)
+```
+:::
+
+```{webr}
+#| exercise: contrib_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 638.168519) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $638, so interest covers about $29 a month.")
+} else {
+  list(correct = FALSE, message = "Not quite. Grow the starting balance too, and use the monthly rate.")
+}
+```
 
 :::
 
@@ -439,105 +1059,300 @@ ggplot(df_int, aes(x = amount, y = bar, fill = part)) +
         panel.grid.minor = element_blank(), axis.text.y = element_blank())
 ```
 
+### Level 1: Guided
+
+Fill in the blanks to finish `ef_growth()`, then find what \$14,000 grows to in 12 months at 4.5%.
+
 ::: panel-tabset
 
-## Excel
+#### Excel
 
-Assuming the balance is in `A2`, the annual rate is in `B2` (as a decimal), and the number of months is in `C2`:
+Put the balance in `A2` (14000), the rate in `B2` (0.045), and months in `C2` (12). Find the balance in `D2`.
 
-``` swift
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
 =A2*(1+B2/12)^C2
 ```
 
-Interest earned on its own is the future value minus the balance:
+This returns \$14,643.16.
+:::
 
-``` swift
-=A2*(1+B2/12)^C2 - A2
+#### Python
+
+```{pyodide}
+#| exercise: growth_1_py
+def ef_growth(balance, annual_rate, months):
+    monthly_rate = annual_rate / ______
+    return balance * (1 + monthly_rate) ** ______
+
+ef_growth(14000, 0.045, 12)
 ```
 
-If the bank quotes an APY in `B2` and you hold for a full year, this gives the exact year-end balance:
+::: {.hint exercise="growth_1_py"}
+Split the yearly rate across 12 months, then compound once per month.
+:::
 
-``` swift
-=A2*(1+B2)
-```
-
-## Python
-
-The Python version of `ef_growth()` works the same way.
-
-```{python}
-#| label: ef-growth-py
+::: {.solution exercise="growth_1_py"}
+```python
 def ef_growth(balance, annual_rate, months):
     monthly_rate = annual_rate / 12
     return balance * (1 + monthly_rate) ** months
 
-print(ef_growth(balance=14000, annual_rate=0.045, months=12))
+ef_growth(14000, 0.045, 12)
+```
+:::
+
+```{pyodide}
+#| exercise: growth_1_py
+#| check: true
+if result is not None and abs(result - 14643.157553) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $14,643, so $643 of interest."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Divide the rate by 12 and raise to the months."}
+feedback
 ```
 
-Compare where you park the fund.
+#### R
 
-```{python}
-#| label: ef-growth-py-table
-rates = {"big_bank": 0.0001, "hysa_low": 0.035, "hysa": 0.045}
-for name, r in rates.items():
-    print(f"{name:<9} ${ef_growth(14000, r, 12) - 14000:>7,.2f} interest")
+```{webr}
+#| exercise: growth_1_r
+ef_growth <- function(balance, annual_rate, months) {
+  monthly_rate <- annual_rate / ______
+  balance * (1 + monthly_rate)^______
+}
+ef_growth(14000, 0.045, 12)
 ```
 
-The running total of interest at each quarter.
+::: {.hint exercise="growth_1_r"}
+Split the yearly rate across 12 months, then compound once per month.
+:::
 
-```{python}
-#| label: ef-growth-py-months
-for m in [3, 6, 9, 12]:
-    print(f"month {m:>2}: ${ef_growth(14000, 0.045, m) - 14000:,.2f}")
-```
-
-Sanity check: if 4.5% is the APY, the year-end balance is simply \$14,000 × 1.045. Treating 4.5% as a monthly compounded rate gives about \$13 more.
-
-```{python}
-#| label: ef-growth-py-check
-print(round(14000 * 1.045, 2))
-```
-
-How to read this: roughly \$630 to \$645 a year is enough to cover a small car repair without touching the fund. At a big bank rate, the same money earns about \$1.
-
-## R
-
-`ef_growth()` grows a balance month by month at a given annual rate.
-
-```{r}
-#| label: ef-growth-r
+::: {.solution exercise="growth_1_r"}
+```r
 ef_growth <- function(balance, annual_rate, months) {
   monthly_rate <- annual_rate / 12
   balance * (1 + monthly_rate)^months
 }
+ef_growth(14000, 0.045, 12)
+```
+:::
 
-ef_growth(balance = 14000, annual_rate = 0.045, months = 12)
+```{webr}
+#| exercise: growth_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 14643.157553) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $14,643, so $643 of interest.")
+} else {
+  list(correct = FALSE, message = "Not quite. Divide the rate by 12 and raise to the months.")
+}
 ```
 
-Where you park the fund matters. Compare a typical big bank savings rate with a high-yield account.
+:::
 
-```{r}
-#| label: ef-growth-r-table
-rates <- c(big_bank = 0.0001, hysa_low = 0.035, hysa = 0.045)
-interest <- ef_growth(14000, rates, 12) - 14000
-round(interest, 2)
+### Level 2: Practice
+
+A big bank savings account pays 0.01%. Over 12 months, how much more interest does the 4.5% high-yield account earn on \$14,000?
+
+::: panel-tabset
+
+#### Excel
+
+Find both interest amounts and the difference.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=(14000*(1+4.5%/12)^12 - 14000) - (14000*(1+0.01%/12)^12 - 14000)
 ```
 
-Interest builds a little faster each month. Here is the running total at each quarter.
+This returns about \$641.76. The big bank pays about \$1.40.
+:::
 
-```{r}
-#| label: ef-growth-r-months
-qtrs <- c(3, 6, 9, 12)
-data.frame(month = qtrs, interest = round(ef_growth(14000, 0.045, qtrs) - 14000, 2))
+#### Python
+
+```{pyodide}
+#| exercise: growth_2_py
+#| setup: true
+def ef_growth(balance, annual_rate, months):
+    monthly_rate = annual_rate / 12
+    return balance * (1 + monthly_rate) ** months
 ```
 
-Sanity check: banks usually quote APY, which already includes compounding. If 4.5% is the APY, the year-end balance is simply \$14,000 × 1.045 = \$14,630. The formula above treats 4.5% as a rate compounded monthly, which gives about \$13 more.
-
-```{r}
-#| label: ef-growth-r-check
-14000 * 1.045
+```{pyodide}
+#| exercise: growth_2_py
+hysa = ef_growth(14000, 0.045, 12) - 14000
+big_bank = ______
+hysa - big_bank
 ```
 
-How to read this: roughly \$630 to \$645 a year is enough to cover a small car repair without touching the fund. At a big bank rate, the same money earns about \$1.
+::: {.hint exercise="growth_2_py"}
+Write 0.01% as 0.0001.
+:::
+
+::: {.solution exercise="growth_2_py"}
+```python
+hysa = ef_growth(14000, 0.045, 12) - 14000
+big_bank = ef_growth(14000, 0.0001, 12) - 14000
+hysa - big_bank
+```
+:::
+
+```{pyodide}
+#| exercise: growth_2_py
+#| check: true
+if result is not None and abs(result - 641.757486) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $642 more for moving the same money."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Write 0.01% as 0.0001 and subtract the starting balance from both."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: growth_2_r
+#| setup: true
+ef_growth <- function(balance, annual_rate, months) {
+  monthly_rate <- annual_rate / 12
+  balance * (1 + monthly_rate)^months
+}
+```
+
+```{webr}
+#| exercise: growth_2_r
+hysa <- ef_growth(14000, 0.045, 12) - 14000
+big_bank <- ______
+hysa - big_bank
+```
+
+::: {.hint exercise="growth_2_r"}
+Write 0.01% as 0.0001.
+:::
+
+::: {.solution exercise="growth_2_r"}
+```r
+hysa <- ef_growth(14000, 0.045, 12) - 14000
+big_bank <- ef_growth(14000, 0.0001, 12) - 14000
+hysa - big_bank
+```
+:::
+
+```{webr}
+#| exercise: growth_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 641.757486) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $642 more for moving the same money.")
+} else {
+  list(correct = FALSE, message = "Not quite. Write 0.01% as 0.0001 and subtract the starting balance from both.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+A surprise \$300 car repair is coming. At 4.5%, after how many whole months has the \$14,000 fund earned at least \$300 of interest?
+
+::: panel-tabset
+
+#### Excel
+
+Put months 1 to 24 in `A5:A28`, find the interest at each month in `B`, then find the first month at or above \$300.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B5`, filled down: `=14000*(1+4.5%/12)^A5 - 14000`. Then:
+
+```swift
+=MATCH(TRUE, B5:B28>=300, 0)
+```
+
+The answer is 6 months.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: growth_3_py
+#| setup: true
+def ef_growth(balance, annual_rate, months):
+    monthly_rate = annual_rate / 12
+    return balance * (1 + monthly_rate) ** months
+```
+
+```{pyodide}
+#| exercise: growth_3_py
+months = 1
+# keep adding a month until interest reaches $300
+
+months
+```
+
+::: {.hint exercise="growth_3_py"}
+Use `while ef_growth(14000, 0.045, months) - 14000 < 300:` and add 1 to `months` inside the loop.
+:::
+
+::: {.solution exercise="growth_3_py"}
+```python
+months = 1
+while ef_growth(14000, 0.045, months) - 14000 < 300:
+    months += 1
+
+months
+```
+:::
+
+```{pyodide}
+#| exercise: growth_3_py
+#| check: true
+if result is not None and abs(result - 6) < 0.001:
+    feedback = {"correct": True, "message": "Right: 6 months. The fund pays for its own small surprises."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Interest is the balance minus the $14,000 you started with."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: growth_3_r
+#| setup: true
+ef_growth <- function(balance, annual_rate, months) {
+  monthly_rate <- annual_rate / 12
+  balance * (1 + monthly_rate)^months
+}
+```
+
+```{webr}
+#| exercise: growth_3_r
+months <- 1:24
+# find the first month interest reaches $300
+```
+
+::: {.hint exercise="growth_3_r"}
+`ef_growth()` is vectorized: pass all 24 months, subtract 14000, and use `min(months[...])`.
+:::
+
+::: {.solution exercise="growth_3_r"}
+```r
+months <- 1:24
+interest <- ef_growth(14000, 0.045, months) - 14000
+min(months[interest >= 300])
+```
+:::
+
+```{webr}
+#| exercise: growth_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 6) < 0.001)) {
+  list(correct = TRUE, message = "Right: 6 months. The fund pays for its own small surprises.")
+} else {
+  list(correct = FALSE, message = "Not quite. Interest is the balance minus the $14,000 you started with.")
+}
+```
 
 :::

@@ -1,6 +1,15 @@
 ---
 title: "Index Funds"
+engine: knitr
+webr:
+  packages:
+    - dplyr
+pyodide:
+  packages:
+    - pandas
 ---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
 ```{r}
 #| label: setup-r
@@ -14,6 +23,12 @@ source("_common.R")
 #| label: setup-py
 #| include: false
 ```
+
+::: {.callout-tip}
+## How these exercises work
+
+Each topic starts with a real scenario and a bar model, then three levels of exercises. **Level 1 (Guided)** fills in the blanks of a finished function. **Level 2 (Practice)** applies it to new numbers. **Level 3 (Challenge)** asks a new question with little scaffolding. The R and Python exercises run in your browser: click **Run Code** to try, **Submit Answer** to check, and use the hint or solution if you get stuck. Excel exercises have a solution you can reveal.
+:::
 
 ## Book Topics
 
@@ -56,67 +71,290 @@ ggplot(df_fee, aes(x = fee, y = fund, fill = fill)) +
 
 The second example uses a table of typical expense ratios across a few balances. The fee grows with your balance, so a fee that costs pocket change at $10,000 costs real money at $250,000.
 
+Read the fee as dollars you never see. The active fund costs $2,500 a year on $250,000, and the index fund costs $100.
+
+### Level 1: Guided
+
+Fill in the blanks to finish `yearly_fee()`, then find this year's fee on \$10,000 in an index fund with a 0.04% expense ratio.
+
 ::: panel-tabset
-## Excel
 
-With `Balance` in `B2` and `Expense ratio` in `C2`:
+#### Excel
 
-```swift
-=B2 * C2
-```
+Put the balance in `A2` (10000) and the expense ratio in `B2` (0.0004). Find the fee in `C2`.
 
-For a table, put balances down column `A` (`A3:A5`) and ratios across row 2 (`B2:D2`), then fill `B3` across and down:
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=$A3 * B$2
+=A2 * B2
 ```
 
-## Python
+This returns \$4.
+:::
 
-```{python}
-#| label: fee-py
-import numpy as np
+#### Python
 
+```{pyodide}
+#| exercise: fee_1_py
+def yearly_fee(balance, expense_ratio):
+    return ______ * ______
+
+yearly_fee(10000, 0.0004)
+```
+
+::: {.hint exercise="fee_1_py"}
+The fee is a percentage of your balance. 0.04% is 0.0004.
+:::
+
+::: {.solution exercise="fee_1_py"}
+```python
 def yearly_fee(balance, expense_ratio):
     return balance * expense_ratio
 
-# $10,000 in an index fund vs. an active fund
-print(yearly_fee(balance=10000, expense_ratio=np.array([0.0004, 0.01])))
+yearly_fee(10000, 0.0004)
+```
+:::
 
-# several funds across several balances
-ratios = {"index": 0.0004, "target_date": 0.0010, "active": 0.01}
-for bal in [10000, 50000, 250000]:
-    fees = ", ".join(f"{k} ${yearly_fee(bal, v):,.0f}" for k, v in ratios.items())
-    print(f"${bal:,}: {fees}")
-
-# sanity check: how many times as expensive?
-print(0.01 / 0.0004)
+```{pyodide}
+#| exercise: fee_1_py
+#| check: true
+if result is not None and abs(result - 4) < 0.001:
+    feedback = {"correct": True, "message": "Right: $4 a year."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Multiply the balance by the expense ratio."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: fee-r
+```{webr}
+#| exercise: fee_1_r
+yearly_fee <- function(balance, expense_ratio) {
+  ______ * ______
+}
+yearly_fee(10000, 0.0004)
+```
+
+::: {.hint exercise="fee_1_r"}
+The fee is a percentage of your balance. 0.04% is 0.0004.
+:::
+
+::: {.solution exercise="fee_1_r"}
+```r
 yearly_fee <- function(balance, expense_ratio) {
   balance * expense_ratio
 }
+yearly_fee(10000, 0.0004)
+```
+:::
 
-# $10,000 in an index fund vs. an active fund
-yearly_fee(balance = 10000, expense_ratio = c(0.0004, 0.01))
-
-# several funds across several balances
-ratios   <- c(index = 0.0004, target_date = 0.0010, active = 0.01)
-balances <- c(10000, 50000, 250000)
-fees <- outer(balances, ratios, yearly_fee)
-data.frame(balance = balances, fees)
-
-# sanity check: how many times as expensive?
-0.01 / 0.0004
+```{webr}
+#| exercise: fee_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 4) < 0.001)) {
+  list(correct = TRUE, message = "Right: $4 a year.")
+} else {
+  list(correct = FALSE, message = "Not quite. Multiply the balance by the expense ratio.")
+}
 ```
 
 :::
 
-Read the fee as dollars you never see. The active fund costs $2,500 a year on $250,000, and the index fund costs $100.
+### Level 2: Practice
+
+An active fund charges 1%. What is this year's fee on a \$250,000 balance?
+
+::: panel-tabset
+
+#### Excel
+
+Change `A2` to 250000 and `B2` to 0.01.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+The same formula returns \$2,500, every year, whether the fund does well or not.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: fee_2_py
+#| setup: true
+def yearly_fee(balance, expense_ratio):
+    return balance * expense_ratio
+```
+
+```{pyodide}
+#| exercise: fee_2_py
+yearly_fee(______)
+```
+
+::: {.hint exercise="fee_2_py"}
+Write 1% as 0.01.
+:::
+
+::: {.solution exercise="fee_2_py"}
+```python
+yearly_fee(250000, 0.01)
+```
+:::
+
+```{pyodide}
+#| exercise: fee_2_py
+#| check: true
+if result is not None and abs(result - 2500) < 0.01:
+    feedback = {"correct": True, "message": "Right: $2,500 a year. The index fund would charge $100."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 250000 and 0.01."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fee_2_r
+#| setup: true
+yearly_fee <- function(balance, expense_ratio) {
+  balance * expense_ratio
+}
+```
+
+```{webr}
+#| exercise: fee_2_r
+yearly_fee(______)
+```
+
+::: {.hint exercise="fee_2_r"}
+Write 1% as 0.01.
+:::
+
+::: {.solution exercise="fee_2_r"}
+```r
+yearly_fee(250000, 0.01)
+```
+:::
+
+```{webr}
+#| exercise: fee_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 2500) < 0.01)) {
+  list(correct = TRUE, message = "Right: $2,500 a year. The index fund would charge $100.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 250000 and 0.01.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Your portfolio holds \$40,000 in an index fund (0.04%), \$25,000 in a target-date fund (0.10%), and \$10,000 in an active fund (1%). What is the blended expense ratio of the whole portfolio? Give a decimal.
+
+::: panel-tabset
+
+#### Excel
+
+Put balances in `B2:B4` and ratios in `C2:C4`. Find the total fee and divide by the total balance.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=SUMPRODUCT(B2:B4, C2:C4) / SUM(B2:B4)
+```
+
+This returns 0.00188, or 0.188%. The \$10,000 active fund causes most of it (\$100 of the \$141 in fees).
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: fee_3_py
+#| setup: true
+def yearly_fee(balance, expense_ratio):
+    return balance * expense_ratio
+
+import pandas as pd
+portfolio = pd.DataFrame({
+    "fund": ["Index", "Target date", "Active"],
+    "balance": [40000, 25000, 10000],
+    "expense_ratio": [0.0004, 0.0010, 0.01]
+})
+```
+
+```{pyodide}
+#| exercise: fee_3_py
+# total fees divided by total balance
+```
+
+::: {.hint exercise="fee_3_py"}
+Add a `fee` column with `yearly_fee()`, then `portfolio["fee"].sum() / portfolio["balance"].sum()`.
+:::
+
+::: {.solution exercise="fee_3_py"}
+```python
+portfolio["fee"] = yearly_fee(portfolio["balance"], portfolio["expense_ratio"])
+portfolio["fee"].sum() / portfolio["balance"].sum()
+```
+:::
+
+```{pyodide}
+#| exercise: fee_3_py
+#| check: true
+if result is not None and abs(result - 0.00188) < 1e-07:
+    feedback = {"correct": True, "message": "Right: 0.188%. The small active fund causes most of the fees."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Weight each ratio by its balance: total fees over total balance."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: fee_3_r
+#| setup: true
+library(dplyr)
+yearly_fee <- function(balance, expense_ratio) {
+  balance * expense_ratio
+}
+portfolio <- data.frame(
+  fund          = c("Index", "Target date", "Active"),
+  balance       = c(40000, 25000, 10000),
+  expense_ratio = c(0.0004, 0.0010, 0.01)
+)
+```
+
+```{webr}
+#| exercise: fee_3_r
+# total fees divided by total balance
+```
+
+::: {.hint exercise="fee_3_r"}
+`mutate(fee = yearly_fee(balance, expense_ratio))`, then `summarise(blended = sum(fee) / sum(balance))`.
+:::
+
+::: {.solution exercise="fee_3_r"}
+```r
+portfolio |>
+  mutate(fee = yearly_fee(balance, expense_ratio)) |>
+  summarise(blended = sum(fee) / sum(balance)) |>
+  pull(blended)
+```
+:::
+
+```{webr}
+#| exercise: fee_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.00188) < 1e-07)) {
+  list(correct = TRUE, message = "Right: 0.188%. The small active fund causes most of the fees.")
+} else {
+  list(correct = FALSE, message = "Not quite. Weight each ratio by its balance: total fees over total balance.")
+}
+```
+
+:::
 
 ## What Fees Cost Over a Lifetime
 
@@ -160,72 +398,309 @@ ggplot(df_drag, aes(x = year, y = value, fill = fund)) +
 
 The second example tries several expense ratios over 40 years and reports the share of the low cost result each one loses. The edge case is a 0% fee, which is just the plain annuity from Investing Basics.
 
-::: panel-tabset
-## Excel
+Read the lifetime cost as a share, not a dollar amount. A 1% fee takes about 23% of the ending balance, which is why the book says close to a quarter. A negative "lost" number means that fund beat the 0.04% index fund (only possible here with a lower fee).
 
-With `Contribution` in `B2`, `Return` in `C2`, `Expense ratio` in `D2`, and `Years` in `E2`:
+### Level 1: Guided
+
+Fill in the blanks to finish `future_value_after_fees()`, then find what \$300 a month grows to over 40 years at 7% in an index fund charging 0.04%.
+
+::: panel-tabset
+
+#### Excel
+
+Find the value in one formula with the fee taken off the return.
+
+::: {.callout-note collapse="true"}
+## Solution
 
 ```swift
-=FV((C2 - D2) / 12, E2 * 12, -B2)
+=FV((7%-0.04%)/12, 480, -300)
 ```
 
-Copy the row down with different expense ratios in column `D` to build the comparison table.
+This returns \$778,654.71.
+:::
 
-## Python
+#### Python
 
-```{python}
-#| label: fee-drag-py
-import numpy as np
+```{pyodide}
+#| exercise: drag_1_py
+def future_value_after_fees(contribution, annual_return, expense_ratio, years):
+    rate = (annual_return - ______) / 12
+    periods = years * 12
+    return contribution * (((1 + rate) ** periods - 1) / rate)
 
+future_value_after_fees(300, 0.07, ______, 40)
+```
+
+::: {.hint exercise="drag_1_py"}
+The fee comes straight off the return. 0.04% is 0.0004.
+:::
+
+::: {.solution exercise="drag_1_py"}
+```python
 def future_value_after_fees(contribution, annual_return, expense_ratio, years):
     rate = (annual_return - expense_ratio) / 12
     periods = years * 12
     return contribution * (((1 + rate) ** periods - 1) / rate)
 
-# $300/month for 40 years at 7%, index fund vs. active fund
-index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
-active_fund = future_value_after_fees(300, 0.07, 0.01, 40)
-print(round(index_fund), round(active_fund), round(index_fund - active_fund))
+future_value_after_fees(300, 0.07, 0.0004, 40)
+```
+:::
 
-# share of the index fund result lost to the 1% fee
-print((index_fund - active_fund) / index_fund)
-
-# several expense ratios over 40 years
-er = np.array([0, 0.0004, 0.001, 0.005, 0.01, 0.015])
-fv = future_value_after_fees(300, 0.07, er, 40)
-for e, v in zip(er, fv):
-    print(f"{e:.2%}: ${v:,.0f} ({1 - v / index_fund:+.1%} vs. index)")
+```{pyodide}
+#| exercise: drag_1_py
+#| check: true
+if result is not None and abs(result - 778654.709926) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $778,655 from $144,000 put in."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Subtract the expense ratio from the return, and pass 0.0004."}
+feedback
 ```
 
-## R
+#### R
 
-```{r}
-#| label: fee-drag-r
+```{webr}
+#| exercise: drag_1_r
+future_value_after_fees <- function(contribution, annual_return, expense_ratio, years) {
+  rate    <- (annual_return - ______) / 12
+  periods <- years * 12
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+future_value_after_fees(300, 0.07, ______, 40)
+```
+
+::: {.hint exercise="drag_1_r"}
+The fee comes straight off the return. 0.04% is 0.0004.
+:::
+
+::: {.solution exercise="drag_1_r"}
+```r
 future_value_after_fees <- function(contribution, annual_return, expense_ratio, years) {
   rate    <- (annual_return - expense_ratio) / 12
   periods <- years * 12
   contribution * (((1 + rate)^periods - 1) / rate)
 }
+future_value_after_fees(300, 0.07, 0.0004, 40)
+```
+:::
 
-# $300/month for 40 years at 7%, index fund vs. active fund
-index_fund  <- future_value_after_fees(300, 0.07, 0.0004, 40)
-active_fund <- future_value_after_fees(300, 0.07, 0.01, 40)
-c(index_fund = index_fund, active_fund = active_fund,
-  cost_of_fees = index_fund - active_fund)
-
-# share of the index fund result lost to the 1% fee
-(index_fund - active_fund) / index_fund
-
-# several expense ratios over 40 years
-er <- c(0, 0.0004, 0.001, 0.005, 0.01, 0.015)
-fv <- future_value_after_fees(300, 0.07, er, 40)
-data.frame(
-  expense_ratio_pct = er * 100,
-  ending_balance    = round(fv),
-  lost_vs_index_pct = round(100 * (1 - fv / index_fund), 1)
-)
+```{webr}
+#| exercise: drag_1_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 778654.709926) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $778,655 from $144,000 put in.")
+} else {
+  list(correct = FALSE, message = "Not quite. Subtract the expense ratio from the return, and pass 0.0004.")
+}
 ```
 
 :::
 
-Read the lifetime cost as a share, not a dollar amount. A 1% fee takes about 23% of the ending balance, which is why the book says close to a quarter. A negative "lost" number means that fund beat the 0.04% index fund (only possible here with a lower fee).
+### Level 2: Practice
+
+Same \$300 a month for 40 years at 7%, but in an active fund charging 1%. How much does the fee cost compared with the index fund?
+
+::: panel-tabset
+
+#### Excel
+
+Find both values and the difference.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+```swift
+=FV((7%-0.04%)/12, 480, -300) - FV((7%-1%)/12, 480, -300)
+```
+
+This returns \$181,207.49.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: drag_2_py
+#| setup: true
+def future_value_after_fees(contribution, annual_return, expense_ratio, years):
+    rate = (annual_return - expense_ratio) / 12
+    periods = years * 12
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+```
+
+```{pyodide}
+#| exercise: drag_2_py
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund = future_value_after_fees(______)
+index_fund - active_fund
+```
+
+::: {.hint exercise="drag_2_py"}
+Only the expense ratio changes: 0.01.
+:::
+
+::: {.solution exercise="drag_2_py"}
+```python
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund = future_value_after_fees(300, 0.07, 0.01, 40)
+index_fund - active_fund
+```
+:::
+
+```{pyodide}
+#| exercise: drag_2_py
+#| check: true
+if result is not None and abs(result - 181207.489626) < 0.01:
+    feedback = {"correct": True, "message": "Right: about $181,000, from the same $144,000 put in."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Use 0.01 for the active fund."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: drag_2_r
+#| setup: true
+future_value_after_fees <- function(contribution, annual_return, expense_ratio, years) {
+  rate    <- (annual_return - expense_ratio) / 12
+  periods <- years * 12
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+```
+
+```{webr}
+#| exercise: drag_2_r
+index_fund <- future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund <- future_value_after_fees(______)
+index_fund - active_fund
+```
+
+::: {.hint exercise="drag_2_r"}
+Only the expense ratio changes: 0.01.
+:::
+
+::: {.solution exercise="drag_2_r"}
+```r
+index_fund <- future_value_after_fees(300, 0.07, 0.0004, 40)
+active_fund <- future_value_after_fees(300, 0.07, 0.01, 40)
+index_fund - active_fund
+```
+:::
+
+```{webr}
+#| exercise: drag_2_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 181207.489626) < 0.01)) {
+  list(correct = TRUE, message = "Right: about $181,000, from the same $144,000 put in.")
+} else {
+  list(correct = FALSE, message = "Not quite. Use 0.01 for the active fund.")
+}
+```
+
+:::
+
+### Level 3: Challenge
+
+Compare expense ratios of 0%, 0.04%, 0.10%, 0.50%, 1%, and 1.5% over the same 40 years. Which is the lowest ratio that loses more than 10% of the index fund's (0.04%) ending balance?
+
+::: panel-tabset
+
+#### Excel
+
+Put the ratios in `A2:A7`, the ending balance in `B`, and the share lost in `C`. Find the first ratio above 10%.
+
+::: {.callout-note collapse="true"}
+## Solution
+
+In `B2`: `=FV((7%-A2)/12, 480, -300)`. In `C2`: `=1 - B2/$B$3`. Fill down, then:
+
+```swift
+=INDEX(A2:A7, MATCH(TRUE, C2:C7>0.1, 0))
+```
+
+The answer is 0.50%, which loses 12% of the ending balance.
+:::
+
+#### Python
+
+```{pyodide}
+#| exercise: drag_3_py
+#| setup: true
+def future_value_after_fees(contribution, annual_return, expense_ratio, years):
+    rate = (annual_return - expense_ratio) / 12
+    periods = years * 12
+    return contribution * (((1 + rate) ** periods - 1) / rate)
+```
+
+```{pyodide}
+#| exercise: drag_3_py
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+ratios = [0, 0.0004, 0.001, 0.005, 0.01, 0.015]
+# lowest ratio whose ending balance is more than 10% below index_fund
+```
+
+::: {.hint exercise="drag_3_py"}
+Share lost is `1 - fv / index_fund`. Use `min(er for er in ratios if ...)`.
+:::
+
+::: {.solution exercise="drag_3_py"}
+```python
+index_fund = future_value_after_fees(300, 0.07, 0.0004, 40)
+ratios = [0, 0.0004, 0.001, 0.005, 0.01, 0.015]
+min(er for er in ratios if 1 - future_value_after_fees(300, 0.07, er, 40) / index_fund > 0.10)
+```
+:::
+
+```{pyodide}
+#| exercise: drag_3_py
+#| check: true
+if result is not None and abs(result - 0.005) < 1e-09:
+    feedback = {"correct": True, "message": "Right: 0.5% already costs 12% of the ending balance."}
+else:
+    feedback = {"correct": False, "message": "Not quite. Compare each ending balance with the 0.04% index fund."}
+feedback
+```
+
+#### R
+
+```{webr}
+#| exercise: drag_3_r
+#| setup: true
+future_value_after_fees <- function(contribution, annual_return, expense_ratio, years) {
+  rate    <- (annual_return - expense_ratio) / 12
+  periods <- years * 12
+  contribution * (((1 + rate)^periods - 1) / rate)
+}
+```
+
+```{webr}
+#| exercise: drag_3_r
+index_fund <- future_value_after_fees(300, 0.07, 0.0004, 40)
+ratios <- c(0, 0.0004, 0.001, 0.005, 0.01, 0.015)
+# lowest ratio whose ending balance is more than 10% below index_fund
+```
+
+::: {.hint exercise="drag_3_r"}
+The function is vectorized over `expense_ratio`. Share lost is `1 - fv / index_fund`; then `min(ratios[...])`.
+:::
+
+::: {.solution exercise="drag_3_r"}
+```r
+index_fund <- future_value_after_fees(300, 0.07, 0.0004, 40)
+ratios <- c(0, 0.0004, 0.001, 0.005, 0.01, 0.015)
+fv <- future_value_after_fees(300, 0.07, ratios, 40)
+min(ratios[1 - fv / index_fund > 0.10])
+```
+:::
+
+```{webr}
+#| exercise: drag_3_r
+#| check: true
+if (isTRUE(abs(as.numeric(.result) - 0.005) < 1e-09)) {
+  list(correct = TRUE, message = "Right: 0.5% already costs 12% of the ending balance.")
+} else {
+  list(correct = FALSE, message = "Not quite. Compare each ending balance with the 0.04% index fund.")
+}
+```
+
+:::
