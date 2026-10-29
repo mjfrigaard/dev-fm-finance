@@ -20,41 +20,6 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
 </style>
 
 
@@ -73,16 +38,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-a4ffa0dce75e473123300348af87f86f.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-0b6abf8d875de3fd307ac76efce9d94f.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-1428555387006d2b360127baf2a02f66.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-454ade2835fbed6d6b765e7f03ec0a8a.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
-<script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
-<link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-42ed7287b56c5c583e2c2463c9cf4916.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "sidebar",
   "copy-button": false,
@@ -110,175 +69,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
-<script type="module" src="site_libs/quarto-ojs/quarto-ojs-runtime.js"></script>
-<link href="site_libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
 
 
 </head>
 
-<body class="nav-sidebar docked quarto-light"><script id="quarto-html-before-body" type="application/javascript">
-    const toggleBodyColorMode = (bsSheetEl) => {
-      const mode = bsSheetEl.getAttribute("data-mode");
-      const bodyEl = window.document.querySelector("body");
-      if (mode === "dark") {
-        bodyEl.classList.add("quarto-dark");
-        bodyEl.classList.remove("quarto-light");
-      } else {
-        bodyEl.classList.add("quarto-light");
-        bodyEl.classList.remove("quarto-dark");
-      }
-    }
-    const toggleBodyColorPrimary = () => {
-      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
-      if (bsSheetEl) {
-        toggleBodyColorMode(bsSheetEl);
-      }
-    }
-    const setColorSchemeToggle = (alternate) => {
-      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
-      for (let i=0; i < toggles.length; i++) {
-        const toggle = toggles[i];
-        if (toggle) {
-          if (alternate) {
-            toggle.classList.add("alternate");
-          } else {
-            toggle.classList.remove("alternate");
-          }
-        }
-      }
-    };
-    const toggleColorMode = (alternate) => {
-      // Switch the stylesheets
-      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
-      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-      manageTransitions('#quarto-margin-sidebar .nav-link', false);
-      if (alternate) {
-        // note: dark is layered on light, we don't disable primary!
-        enableStylesheet(alternateStylesheets);
-        for (const sheetNode of alternateStylesheets) {
-          if (sheetNode.id === "quarto-bootstrap") {
-            toggleBodyColorMode(sheetNode);
-          }
-        }
-      } else {
-        disableStylesheet(alternateStylesheets);
-        enableStylesheet(primaryStylesheets)
-        toggleBodyColorPrimary();
-      }
-      manageTransitions('#quarto-margin-sidebar .nav-link', true);
-      // Switch the toggles
-      setColorSchemeToggle(alternate)
-      // Hack to workaround the fact that safari doesn't
-      // properly recolor the scrollbar when toggling (#1455)
-      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
-        manageTransitions("body", false);
-        window.scrollTo(0, 1);
-        setTimeout(() => {
-          window.scrollTo(0, 0);
-          manageTransitions("body", true);
-        }, 40);
-      }
-    }
-    const disableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        stylesheet.rel = 'disabled-stylesheet';
-      }
-    }
-    const enableStylesheet = (stylesheets) => {
-      for (let i=0; i < stylesheets.length; i++) {
-        const stylesheet = stylesheets[i];
-        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
-          stylesheet.rel = 'stylesheet';
-        }
-      }
-    }
-    const manageTransitions = (selector, allowTransitions) => {
-      const els = window.document.querySelectorAll(selector);
-      for (let i=0; i < els.length; i++) {
-        const el = els[i];
-        if (allowTransitions) {
-          el.classList.remove('notransition');
-        } else {
-          el.classList.add('notransition');
-        }
-      }
-    }
-    const isFileUrl = () => {
-      return window.location.protocol === 'file:';
-    }
-    const hasAlternateSentinel = () => {
-      let styleSentinel = getColorSchemeSentinel();
-      if (styleSentinel !== null) {
-        return styleSentinel === "alternate";
-      } else {
-        return false;
-      }
-    }
-    const setStyleSentinel = (alternate) => {
-      const value = alternate ? "alternate" : "default";
-      if (!isFileUrl()) {
-        window.localStorage.setItem("quarto-color-scheme", value);
-      } else {
-        localAlternateSentinel = value;
-      }
-    }
-    const getColorSchemeSentinel = () => {
-      if (!isFileUrl()) {
-        const storageValue = window.localStorage.getItem("quarto-color-scheme");
-        return storageValue != null ? storageValue : localAlternateSentinel;
-      } else {
-        return localAlternateSentinel;
-      }
-    }
-    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
-      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
-      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
-      let newTheme = '';
-      if(authorPrefersDark) {
-        newTheme = isAlternate ? baseTheme : alternateTheme;
-      } else {
-        newTheme = isAlternate ? alternateTheme : baseTheme;
-      }
-      const changeGiscusTheme = () => {
-        // From: https://github.com/giscus/giscus/issues/336
-        const sendMessage = (message) => {
-          const iframe = document.querySelector('iframe.giscus-frame');
-          if (!iframe) return;
-          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
-        }
-        sendMessage({
-          setConfig: {
-            theme: newTheme
-          }
-        });
-      }
-      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
-      if (isGiscussLoaded) {
-        changeGiscusTheme();
-      }
-    };
-    const authorPrefersDark = false;
-    const darkModeDefault = authorPrefersDark;
-      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
-    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
-    // Dark / light mode switch
-    window.quartoToggleColorScheme = () => {
-      // Read the current dark / light value
-      let toAlternate = !hasAlternateSentinel();
-      toggleColorMode(toAlternate);
-      setStyleSentinel(toAlternate);
-      toggleGiscusIfUsed(toAlternate, darkModeDefault);
-      window.dispatchEvent(new Event('resize'));
-    };
-    // Switch to dark mode if need be
-    if (hasAlternateSentinel()) {
-      toggleColorMode(true);
-    } else {
-      toggleColorMode(false);
-    }
-  </script>
+<body class="nav-sidebar docked fullcontent quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -303,9 +98,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">DEV (fm-finance)</a> 
-        <div class="sidebar-tools-main tools-wide">
+        <div class="sidebar-tools-main">
     <a href="https://github.com/mjfrigaard/dev-fm-finance" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-github"></i></a>
-  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
   <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Toggle reader mode">
   <div class="quarto-reader-toggle-btn">
   <i class="bi"></i>
@@ -499,6 +293,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">R vs.&nbsp;Python</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./setup.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Getting set up</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -506,31 +306,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
-    <h2 id="toc-title">Contents</h2>
-   
-  <ul>
-  <li><a href="#getting-set-up" id="toc-getting-set-up" class="nav-link active" data-scroll-target="#getting-set-up"><span class="header-section-number">1</span> Getting set up</a></li>
-  <li><a href="#installing-r" id="toc-installing-r" class="nav-link" data-scroll-target="#installing-r"><span class="header-section-number">2</span> Installing R</a>
-  <ul>
-  <li><a href="#step-1-install-r" id="toc-step-1-install-r" class="nav-link" data-scroll-target="#step-1-install-r"><span class="header-section-number">2.1</span> Step 1 — Install R</a></li>
-  <li><a href="#step-2-install-rstudio" id="toc-step-2-install-rstudio" class="nav-link" data-scroll-target="#step-2-install-rstudio"><span class="header-section-number">2.2</span> Step 2 — Install RStudio</a></li>
-  <li><a href="#step-3-check-that-r-works" id="toc-step-3-check-that-r-works" class="nav-link" data-scroll-target="#step-3-check-that-r-works"><span class="header-section-number">2.3</span> Step 3 — Check that R works</a></li>
-  </ul></li>
-  <li><a href="#installing-python" id="toc-installing-python" class="nav-link" data-scroll-target="#installing-python"><span class="header-section-number">3</span> Installing Python</a>
-  <ul>
-  <li><a href="#step-1-install-python" id="toc-step-1-install-python" class="nav-link" data-scroll-target="#step-1-install-python"><span class="header-section-number">3.1</span> Step 1 — Install Python</a></li>
-  <li><a href="#step-2-install-positron" id="toc-step-2-install-positron" class="nav-link" data-scroll-target="#step-2-install-positron"><span class="header-section-number">3.2</span> Step 2 — Install Positron</a></li>
-  <li><a href="#step-3-check-that-python-works" id="toc-step-3-check-that-python-works" class="nav-link" data-scroll-target="#step-3-check-that-python-works"><span class="header-section-number">3.3</span> Step 3 — Check that Python works</a></li>
-  </ul></li>
-  <li><a href="#where-to-go-next" id="toc-where-to-go-next" class="nav-link" data-scroll-target="#where-to-go-next"><span class="header-section-number">4</span> Where to go next</a></li>
-  </ul>
-</nav>
-    </div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content">
-
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
@@ -551,220 +329,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This site holds the exercises for <a href="https://mjfrigaard.github.io/fm-finance/"><em>Personal Finance: a Field Manual</em></a>. Each page matches a chapter in the book. It opens with <strong>Book Topics</strong>, a short summary of the chapter, and then turns each math topic into practice.</p>
+<p>This site holds the exercises for <a href="https://mjfrigaard.github.io/fm-finance/"><em>Personal Finance: a Field Manual</em></a>. Reading about the math is a good start, but the formulas stick once you work through them with real numbers. Each page here matches a chapter in the book. It opens with <strong>Book Topics</strong>, a short summary of the chapter, and then turns each math topic into practice.</p>
+<section id="how-the-exercises-work" class="level2">
+<h2 class="anchored" data-anchor-id="how-the-exercises-work">How the exercises work</h2>
 <p>Every math topic starts with a bar model (a picture of the numbers) and then three levels of exercises:</p>
 <ul>
 <li><strong>Level 1 (Guided)</strong>: fill in the blanks of a finished formula.</li>
 <li><strong>Level 2 (Practice)</strong>: use the same formula on new numbers.</li>
 <li><strong>Level 3 (Challenge)</strong>: answer a new question with less help.</li>
 </ul>
-<p>Each level has Excel, Python, and R tabs. The R and Python exercises run right in your browser, so you can try them without installing anything. Click <strong>Run Code</strong> to try an answer and <strong>Submit Answer</strong> to check it; the hint and solution are there if you get stuck. The Excel exercises have a solution you can reveal.</p>
-<p>Use the sidebar on the left to pick a chapter. If you’d rather run the code on your own computer, the steps below install R and Python.</p>
-<section id="getting-set-up" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="getting-set-up"><span class="header-section-number">1</span> Getting set up</h2>
-<p>The examples in this book are written in two free programming languages: <strong>R</strong> and <strong>Python</strong>. You don’t need to know either one yet—this page walks you through installing both, no matter which computer you use.</p>
-<div class="callout callout-style-simple callout-tip">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>You only have to do this once. Set aside about 20–30 minutes, and feel free to take it one language at a time.</p>
-</div>
-</div>
-</div>
-<p>A few words you’ll see along the way:</p>
-<ul>
-<li><strong>Install</strong>: download a program and add it to your computer, the same way you’d add any app.</li>
-<li><strong>Console</strong>: a window where you type a command and the computer types back. We use it only to check that things are working.</li>
-<li><strong>IDE</strong> (<em>Integrated Development Environment</em>): a friendly workspace for writing and running code. Think of it as a word processor built for programming.</li>
-</ul>
+<p>Each level has Excel, Python, and R tabs. Excel is included because it’s used in just about every organization, so it’s the tool you’re most likely to have at work. R and Python are included because both are open source (and free), so anyone can use them. You don’t have to learn all three; pick the tab that fits the tool you use now (or the one you want to learn).</p>
+<p>The R and Python exercises run right in your browser, so you can try them without installing anything. Click <strong>Run Code</strong> to try an answer and <strong>Submit Answer</strong> to check it. If you get stuck, the hint and solution are there. The Excel exercises have a solution you can reveal.</p>
 </section>
-<section id="installing-r" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="installing-r"><span class="header-section-number">2</span> Installing R</h2>
-<p>R is the language I’m most familiar with, so we will install it first. We’ll install two things: <strong>R</strong> itself (the engine) and <strong>RStudio</strong> (the workspace where you’ll actually write code).</p>
-<section id="step-1-install-r" class="level3" data-number="2.1">
-<h3 data-number="2.1" class="anchored" data-anchor-id="step-1-install-r"><span class="header-section-number">2.1</span> Step 1 — Install R</h3>
-<p>Pick the tab for your computer below.</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="" aria-current="page">Windows</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false" href="">macOS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false" href="">Linux</a></li></ul>
-<div class="tab-content">
-<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
-<ol type="1">
-<li>Go to the R download page: <a href="https://cran.r-project.org/bin/windows/base/">cran.r-project.org/bin/windows/base</a>.</li>
-<li>Click the large <strong>Download R for Windows</strong> link at the top.</li>
-<li>Open the file you just downloaded (it’ll be in your <em>Downloads</em> folder).</li>
-<li>Click <strong>Next</strong> through the installer, accepting the suggested options.</li>
-</ol>
-</div>
-<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-<ol type="1">
-<li>Go to the R download page: <a href="https://cran.r-project.org/bin/macosx/">cran.r-project.org/bin/macosx</a>.</li>
-<li>Download the file that matches your Mac:
-<ul>
-<li><strong>Apple Silicon</strong> (M1, M2, M3, or newer) — most Macs sold since late 2020.</li>
-<li><strong>Intel</strong> — older Macs.</li>
-<li><em>Not sure?</em> Click the Apple menu () in the top-left corner → <strong>About This Mac</strong>. If it says “Apple M…”, choose Apple Silicon.</li>
-</ul></li>
-<li>Open the downloaded <code>.pkg</code> file and click <strong>Continue</strong> through the installer.</li>
-</ol>
-</div>
-<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
-<p>Most Linux systems install R through their built-in software manager. Open a terminal and run the command for your system:</p>
-<p>On Ubuntu, Pop!_OS, or Debian:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install r-base</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On Fedora:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dnf install R</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-</section>
-<section id="step-2-install-rstudio" class="level3" data-number="2.2">
-<h3 data-number="2.2" class="anchored" data-anchor-id="step-2-install-rstudio"><span class="header-section-number">2.2</span> Step 2 — Install RStudio</h3>
-<p>RStudio is the same on every operating system.</p>
-<ol type="1">
-<li>Go to <a href="https://posit.co/download/rstudio-desktop/">posit.co/download/rstudio-desktop</a>.</li>
-<li>Scroll to <strong>Step 2</strong> on that page and click the download button for your computer (the website detects it for you).</li>
-<li>Open the downloaded file and follow the prompts to install.</li>
-</ol>
-<div class="callout callout-style-simple callout-note">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-body-container">
-<p>Install R <em>before</em> RStudio. RStudio is just the workspace—it needs R already on your computer to do anything.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="step-3-check-that-r-works" class="level3" data-number="2.3">
-<h3 data-number="2.3" class="anchored" data-anchor-id="step-3-check-that-r-works"><span class="header-section-number">2.3</span> Step 3 — Check that R works</h3>
-<p>Open <strong>RStudio</strong>. In the <strong>Console</strong> (the panel on the left), type the line below and press <kbd>Enter</kbd>:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="sc">+</span> <span class="dv">2</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>If you see <code>[1] 4</code>, R is working. 🎉</p>
-</section>
-</section>
-<section id="installing-python" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="installing-python"><span class="header-section-number">3</span> Installing Python</h2>
-<p>Python is the second language we’ll use. We’ll install Python itself and a free workspace called <strong>Positron</strong>.</p>
-<section id="step-1-install-python" class="level3" data-number="3.1">
-<h3 data-number="3.1" class="anchored" data-anchor-id="step-1-install-python"><span class="header-section-number">3.1</span> Step 1 — Install Python</h3>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Windows</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false" href="">macOS</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false" href="">Linux</a></li></ul>
-<div class="tab-content">
-<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
-<ol type="1">
-<li>Go to <a href="https://www.python.org/downloads/">python.org/downloads</a> and click the yellow <strong>Download Python</strong> button.</li>
-<li>Open the downloaded file.</li>
-<li><strong>Important:</strong> on the first installer screen, check the box that says <strong>Add Python to PATH</strong> <em>before</em> clicking <strong>Install Now</strong>. This lets your computer find Python later.</li>
-</ol>
-</div>
-<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-<ol type="1">
-<li>Go to <a href="https://www.python.org/downloads/">python.org/downloads</a> and click the yellow <strong>Download Python</strong> button.</li>
-<li>Open the downloaded <code>.pkg</code> file and click <strong>Continue</strong> through the installer, accepting the suggested options.</li>
-</ol>
-</div>
-<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
-<p>Most Linux systems already include Python. Open a terminal and run the command for your system to make sure it’s installed:</p>
-<p>On Ubuntu, Pop!_OS, or Debian:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update <span class="kw">&amp;&amp;</span> <span class="fu">sudo</span> apt install python3 python3-pip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>On Fedora:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> dnf install python3 python3-pip</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-</section>
-<section id="step-2-install-positron" class="level3" data-number="3.2">
-<h3 data-number="3.2" class="anchored" data-anchor-id="step-2-install-positron"><span class="header-section-number">3.2</span> Step 2 — Install Positron</h3>
-<p>Positron is a free workspace for writing Python (and R) code, made by the same team as RStudio.</p>
-<ol type="1">
-<li>Go to <a href="https://positron.posit.co/download.html">positron.posit.co/download</a>.</li>
-<li>Download the version for your computer.</li>
-<li>Open the downloaded file and follow the prompts to install.</li>
-</ol>
-</section>
-<section id="step-3-check-that-python-works" class="level3" data-number="3.3">
-<h3 data-number="3.3" class="anchored" data-anchor-id="step-3-check-that-python-works"><span class="header-section-number">3.3</span> Step 3 — Check that Python works</h3>
-<p>Open a <strong>console</strong> and type the line below, then press <kbd>Enter</kbd>:</p>
-<div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Windows</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false" href="">macOS / Linux</a></li></ul>
-<div class="tab-content">
-<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
-<p>Open the <strong>Start</strong> menu, type <code>cmd</code>, and open <strong>Command Prompt</strong>. Then run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
-<p>Open the <strong>Terminal</strong> app and run:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python3</span> <span class="at">--version</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
-</div>
-<p>If you see something like <code>Python 3.12.0</code>, Python is working. 🎉</p>
-</section>
-</section>
-<section id="where-to-go-next" class="level2" data-number="4">
-<h2 data-number="4" class="anchored" data-anchor-id="where-to-go-next"><span class="header-section-number">4</span> Where to go next</h2>
-<p>You’re all set. Head to the <a href="./income.html">Income</a> chapter in the sidebar to start the exercises. Every solution runs the same way on your computer as it does in the browser.</p>
-<div class="callout callout-style-simple callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Tip</span>Stuck?
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>If an install didn’t work, the most common fixes are restarting your computer (so it notices the new software) and re-running the check command from the steps above.</p>
-</div>
-</div>
+<section id="finding-your-way-around" class="level2">
+<h2 class="anchored" data-anchor-id="finding-your-way-around">Finding your way around</h2>
+<p>Use the sidebar on the left to pick a chapter. The sidebar also has a Resources section with two reference pages. <a href="./setup.html">Getting set up</a> walks through installing R, Python, RStudio, and Positron on your own computer. Nobody needs these steps to do the exercises, since everything here runs in the browser; they’re for when you want to run the code locally. <a href="./r_vs_py.html">R vs.&nbsp;Python</a> is a quick reference for the main differences in syntax and style between the two languages.</p>
 
 
-<script type="ojs-module-contents">
-eyJjb250ZW50cyI6W119
-</script>
-<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
-<div id="exercise-loading-status" class="d-flex gap-2">
-
-</div>
-<div class="spinner-grow spinner-grow-sm">
-
-</div>
-</div>
-<script type="vfs-file">
-W10=
-</script>
 </section>
 
 </main> <!-- /main -->
-<script type="ojs-module-contents">
-eyJjb250ZW50cyI6W119
-</script>
-<script type="module">
-if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
-window._ojs.paths.runtimeToDoc = "../..";
-window._ojs.paths.runtimeToRoot = "../..";
-window._ojs.paths.docToRoot = "";
-window._ojs.selfContained = false;
-window._ojs.runtime.interpretFromScriptTags();
-</script>
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
-    // Ensure there is a toggle, if there isn't float one in the top right
-    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
-      const a = window.document.createElement('a');
-      a.classList.add('top-right');
-      a.classList.add('quarto-color-scheme-toggle');
-      a.href = "";
-      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
-      const i = window.document.createElement("i");
-      i.classList.add('bi');
-      a.appendChild(i);
-      window.document.body.appendChild(a);
-    }
-    setColorSchemeToggle(hasAlternateSentinel())
     const icon = "";
     const anchorJS = new window.AnchorJS();
     anchorJS.options = {
@@ -1104,64 +690,25 @@ window._ojs.runtime.interpretFromScriptTags();
           }
         };
       }
-        const annoteTargets = window.document.querySelectorAll('.code-annotation-anchor');
-        for (let i=0; i<annoteTargets.length; i++) {
-          const annoteTarget = annoteTargets[i];
-          const targetCell = annoteTarget.getAttribute("data-target-cell");
-          const targetAnnotation = annoteTarget.getAttribute("data-target-annotation");
-          const contentFn = () => {
-            const content = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
-            if (content) {
-              const tipContent = content.cloneNode(true);
-              tipContent.classList.add("code-annotation-tip-content");
-              return tipContent.outerHTML;
-            }
-          }
-          const config = {
-            allowHTML: true,
-            content: contentFn,
-            onShow: (instance) => {
-              selectCodeLines(instance.reference);
-              instance.reference.classList.add('code-annotation-active');
-              window.tippy.hideAll();
-            },
-            onHide: (instance) => {
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
               unselectCodeLines();
-              instance.reference.classList.remove('code-annotation-active');
-            },
-            maxWidth: 300,
-            delay: [50, 0],
-            duration: [200, 0],
-            offset: [5, 10],
-            arrow: true,
-            appendTo: function(el) {
-              return el.parentElement.parentElement.parentElement;
-            },
-            interactive: true,
-            interactiveBorder: 10,
-            theme: 'quarto',
-            placement: 'right',
-            popperOptions: {
-              modifiers: [
-              {
-                name: 'flip',
-                options: {
-                  flipVariations: false, // true by default
-                  allowedAutoPlacements: ['right'],
-                  fallbackPlacements: ['right', 'top', 'top-start', 'top-end', 'bottom', 'bottom-start', 'bottom-end', 'left'],
-                },
-              },
-              {
-                name: 'preventOverflow',
-                options: {
-                  mainAxis: false,
-                  altAxis: false
-                }
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
               }
-              ]        
-            }      
-          };
-          window.tippy(annoteTarget, config); 
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
         }
     const findCites = (el) => {
       const parentEl = el.parentElement;
