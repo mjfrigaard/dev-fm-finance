@@ -1,45 +1,32 @@
 # DEV (fm-finance)
 
-This folder is for testing the code and functions in the fm-finance book.
+Interactive exercises for [Personal Finance: a Field Manual](https://mjfrigaard.github.io/fm-finance/). Each page matches a chapter in the book. It opens with Book Topics (a short chapter summary), then turns each math topic into a bar model and three levels of exercises:
 
-## Shiny apps
+* Level 1 (Guided): fill in the blanks of a finished formula.
+* Level 2 (Practice): use the same formula on new numbers.
+* Level 3 (Challenge): answer a new question with less help.
 
-Interactive apps live under `_apps/`, organized by language and chapter:
+Each level has Excel, Python, and R tabs. The R and Python exercises run in the browser through the [quarto-live](https://github.com/r-wasm/quarto-live) extension (`_extensions/r-wasm/live/`), so readers don't need to install anything.
+
+## Contents
 
 ```
-_apps/
-├── R/
-│   └── budgeting/
-│       └── app.R
-└── Python/
-    └── budgeting/
-        └── app.py
+Foundations        income, tracking_spending, budgeting, managing_debt, emergency_fund
+Savings            savings_strategies, high_yield_accounts, automating_savings
+Investing          investing_basics, retirement_accounts, index_funds, asset_allocation
+Taxes & Insurance  taxes, insurance
+Planning           financial_goals, major_purchases, estate_planning
+Resources          r_vs_py, setup
 ```
 
-### R
+Shared setup code lives in `_common.R` and `_common.py`. Themes are in `custom.scss`, `terminal.scss`, `light.scss`, and `dark.scss`.
 
-From an R session (with `shiny` and `bslib` installed):
+## Rendering
 
-```r
-shiny::runApp("_apps/R/budgeting")
-```
-
-Or from the terminal:
+Render locally (requires Quarto, R, and Python):
 
 ```bash
-Rscript -e 'shiny::runApp("_apps/R/budgeting")'
+quarto render
 ```
 
-### Python
-
-With `shiny` installed (`pip install shiny`):
-
-```bash
-shiny run _apps/Python/budgeting/app.py
-```
-
-To enable auto-reload during development:
-
-```bash
-shiny run --reload _apps/Python/budgeting/app.py
-```
+Results are frozen in `_freeze/` (`freeze: auto`), so commit `_freeze/` after rendering. Pushing to `main` runs `.github/workflows/publish.yml`, which renders from the frozen results and deploys `_site/` to GitHub Pages.

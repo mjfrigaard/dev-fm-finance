@@ -34,10 +34,10 @@ Each topic starts with a real scenario and a bar model, then three levels of exe
 
 - **Debt hierarchy**: every debt has a price (its APR); toxic debt (15 to 29% APR: credit cards, payday loans) gets attacked first, moderate debt (5 to 10%: car loans, private student loans) gets paid down steadily, and strategic debt (3 to 7%: mortgages, federal student loans) gets paid on schedule
 - **Credit cards**: pay them off before nearly every other goal (except insurance deductibles and an employer match); the playbook is stop using them, negotiate the APR, pick avalanche or snowball, consider a 0% transfer or cheaper loan, and automate minimums; once paid in full monthly, use cards as a payment tool
+- **Car loans**: depreciating assets financed at 7 to 9%; buy used, pay cash, keep loans under 36 months, follow the 20/4/10 rule
 - **Student loans**: the return depends on the income premium the degree creates; the 1× rule caps total debt at your expected first year salary, which works out to roughly 14% of gross pay on a standard 10 year plan at 6.5%
 - **Federal IDR plans**: payments are a share of discretionary income (AGI minus a multiple of the poverty guideline); SAVE ended in March 2026, RAP starts July 2026 (1 to 10% of AGI, 30 years), IBR is the stable fallback, and PSLF forgives the rest after 10 years of public service
 - **Pay off vs. invest**: compare the loan rate to your expected after tax return (above 6% pay off, 4 to 6% do both, below 4% invest), then add a peace of mind premium
-- **Car loans**: depreciating assets financed at 7 to 9%; buy used, pay cash, keep loans under 36 months, follow the 20/4/10 rule
 - **Debt and the FOO**: high interest debt is step 3, low interest debt is step 9; moderate debt sits in between, after emergency reserves
 
 ## APR vs. APY
